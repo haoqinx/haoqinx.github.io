@@ -172,63 +172,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/06/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88%EF%BC%882%EF%BC%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/06/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88%EF%BC%882%EF%BC%89/" class="post-title-link" itemprop="url">Untitled</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-06 00:01:16" itemprop="dateCreated datePublished" datetime="2021-09-06T00:01:16+08:00">2021-09-06</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -335,6 +278,108 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88%EF%BC%882%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88%EF%BC%882%EF%BC%89/" class="post-title-link" itemprop="url">effective-c++系列：对象模型杂谈（2）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-08-20 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-20T00:00:00+08:00">2021-08-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-09-06 11:14:37" itemprop="dateModified" datetime="2021-09-06T11:14:37+08:00">2021-09-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="1、在构造函数和析构函数中能调用虚函数吗？"><a href="#1、在构造函数和析构函数中能调用虚函数吗？" class="headerlink" title="1、在构造函数和析构函数中能调用虚函数吗？"></a>1、在构造函数和析构函数中能调用虚函数吗？</h3><ul>
+<li><p>严禁在构造函数中调用虚函数</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">dosome</span><span class="params">()</span><span class="keyword">const</span></span>&#123;&#125;;</span><br><span class="line">    <span class="built_in">A</span>()&#123;</span><br><span class="line">        <span class="built_in">dosome</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> :</span> <span class="keyword">public</span> A&#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">dosome</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line">B b;<span class="comment">//往往会出现意想不到的错误</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果在父类的构造函数中调用虚函数，当使用子类对象的时候，会首先调用父类的构造函数。  </li>
+<li>在父类构造函数执行过程中，this指针为base class对象，因此在dosome()函数中的操作是在父类对象中完成的。</li>
+<li><font color=orange>由于虚函数dosome()在父类对象中完成，往往达不到多态（延迟绑定）的目的。</font></li>
+</ul>
+</li>
+<li><p>严禁在析构函数中调用虚函数</p>
+<ul>
+<li>在子类对象析构时顺序为先将自身的local data释放，然后调用父类的析构函数，如果父类析构存在虚函数，那么编译器会有两种选择：调用虚函数的基类版本或者调用虚函数的派生类版本。</li>
+<li>如果调用派生类版本的函数，此时子类部分已经释放，会导致严重错误。</li>
+<li><font color=orange>实际情况是编译器会调用基类版本的虚函数，那么和构造函数一样，不会发生多态。</font></li>
+</ul>
+</li>
+<li><p>解决方式</p>
+<ul>
+<li>将在构造或析构函数中调用的函数设置为non-virtual，要求子类对象在构造时传递必要的信息。</li>
+</ul>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">dosome</span><span class="params">(<span class="keyword">const</span> string&amp; info)</span><span class="keyword">const</span></span>&#123;&#125;;</span><br><span class="line">    <span class="built_in">A</span>(<span class="keyword">const</span> string&amp; info)&#123;</span><br><span class="line">        <span class="built_in">dosome</span>(info);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> :</span> <span class="keyword">public</span> A&#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">    <span class="function"><span class="keyword">static</span> string <span class="title">createParamter</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">dosome</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line">    <span class="built_in">B</span>():<span class="built_in">A</span>(<span class="built_in">createParamter</span>())&#123;&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="2、如果new、delete、delete-没有成对使用会发生什么？"><a href="#2、如果new、delete、delete-没有成对使用会发生什么？" class="headerlink" title="2、如果new、delete、delete[]没有成对使用会发生什么？"></a>2、如果new、delete、delete[]没有成对使用会发生什么？</h3></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">string* s = <span class="keyword">new</span> string[<span class="number">100</span>];</span><br><span class="line"><span class="comment">//do something</span></span><br><span class="line"><span class="keyword">delete</span> s;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>上述情况下，只会释放s的第一个对象，其余99个对象会造成内存泄露。</li>
+<li>实际上，对于一组对象，delete[]会寻找数组前的一个count计数来获取<br><img src="/images/001.png"></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/16/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9Aconst%E8%AF%A6%E8%A7%A3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -366,7 +411,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-09-05 23:58:42" itemprop="dateModified" datetime="2021-09-05T23:58:42+08:00">2021-09-05</time>
+                <time title="Modified: 2021-09-06 10:35:24" itemprop="dateModified" datetime="2021-09-06T10:35:24+08:00">2021-09-06</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -434,6 +479,90 @@
 <li>通常情况下如果不希望改变文件指针、函数内部等更改数据，就命名为const类型  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>&#123;</span></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">//不希望改变x,y，函数内部也不希望改变data</span></span><br><span class="line">    <span class="function"><span class="keyword">inline</span> T <span class="title">sum</span> <span class="params">(<span class="keyword">const</span> T&amp; x, <span class="keyword">const</span> T&amp; y)</span> <span class="keyword">const</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> x + y;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">A&lt;complex&lt;<span class="keyword">int</span>&gt;&gt; test = A&lt;complex&lt;<span class="keyword">int</span>&gt;&gt;();</span><br><span class="line"><span class="function">complex&lt;<span class="keyword">int</span>&gt; <span class="title">a</span><span class="params">(<span class="number">1</span>,<span class="number">1</span>)</span></span>;</span><br><span class="line"><span class="function">complex&lt;<span class="keyword">int</span>&gt; <span class="title">b</span><span class="params">(<span class="number">1</span>,<span class="number">1</span>)</span></span>;</span><br><span class="line">cout &lt;&lt; test.<span class="built_in">sum</span>(a,b);</span><br></pre></td></tr></table></figure></li>
 <li>修饰class内部的static和non-static成员变量  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>&#123;</span></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> x = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">static</span> <span class="keyword">int</span> y = <span class="number">0</span>;</span><br><span class="line">&#125;;  </span><br></pre></td></tr></table></figure></li>
 <li>修饰指针、指针所指物  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> * <span class="keyword">const</span> p1; <span class="comment">// p1:只读  *p1:变量</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> *p2; <span class="comment">// p2:变量 *p2:只读</span></span><br><span class="line"><span class="keyword">int</span> <span class="keyword">const</span> *p3; <span class="comment">// p3:变量 *p3:只读</span></span><br><span class="line"><span class="keyword">int</span> <span class="keyword">const</span> * <span class="keyword">const</span> p4; <span class="comment">// p4:只读 *p4:只读</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> * <span class="keyword">const</span> p5; <span class="comment">// p5:只读 *p5:只读</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="6、const初始化"><a href="#6、const初始化" class="headerlink" title="6、const初始化"></a>6、const初始化</h3><ul>
+<li><p>在c++ 11 之前，普通变量、常量（const）、静态（static）、静态常量（static const)的初始化和声明如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th align="center">type</th>
+<th align="center">声明时初始化</th>
+<th align="center">初始化列表初始化</th>
+<th align="center">构造函数内初始化</th>
+<th align="center">类外初始化</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">普通变量</td>
+<td align="center">x</td>
+<td align="center">√</td>
+<td align="center">√</td>
+<td align="center">x <font color=green>(整型除外)</font></td>
+</tr>
+<tr>
+<td align="center">const</td>
+<td align="center">x</td>
+<td align="center">√</td>
+<td align="center">x</td>
+<td align="center">x</td>
+</tr>
+<tr>
+<td align="center">static</td>
+<td align="center">x</td>
+<td align="center">x</td>
+<td align="center">x</td>
+<td align="center">√</td>
+</tr>
+<tr>
+<td align="center">static const</td>
+<td align="center">x</td>
+<td align="center">x</td>
+<td align="center">x</td>
+<td align="center">√</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>c++ 11之后，如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th align="center">type</th>
+<th align="center">声明时初始化</th>
+<th align="center">初始化列表初始化</th>
+<th align="center">构造函数内初始化</th>
+<th align="center">类外初始化</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">普通变量</td>
+<td align="center"><font color=orange>√</font></td>
+<td align="center">√</td>
+<td align="center">√</td>
+<td align="center">x <font color=green>(整型除外)</font></td>
+</tr>
+<tr>
+<td align="center">const</td>
+<td align="center">x</td>
+<td align="center">√</td>
+<td align="center">x</td>
+<td align="center">x</td>
+</tr>
+<tr>
+<td align="center">static</td>
+<td align="center">x</td>
+<td align="center">x</td>
+<td align="center">x</td>
+<td align="center">√</td>
+</tr>
+<tr>
+<td align="center">static const</td>
+<td align="center">x</td>
+<td align="center">x</td>
+<td align="center">x</td>
+<td align="center">√</td>
+</tr>
+</tbody></table>
+</li>
 </ul>
 
       
