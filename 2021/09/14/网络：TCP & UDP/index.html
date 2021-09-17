@@ -30,8 +30,13 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://haoqinx.github.io/images/tcp-1.png">
 <meta property="og:image" content="http://haoqinx.github.io/images/tcp-2.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/tcp-3.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/tcp-4.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/tcp-5.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/tcp-6.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/tcp-7.png">
 <meta property="article:published_time" content="2021-09-13T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-09-15T03:32:15.999Z">
+<meta property="article:modified_time" content="2021-09-15T15:10:48.238Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="协议">
 <meta name="twitter:card" content="summary">
@@ -210,7 +215,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-09-15 11:32:15" itemprop="dateModified" datetime="2021-09-15T11:32:15+08:00">2021-09-15</time>
+                <time title="Modified: 2021-09-15 23:10:48" itemprop="dateModified" datetime="2021-09-15T23:10:48+08:00">2021-09-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -243,6 +248,62 @@
 </ul>
 <p>对于一台计算机，它的操作系统实现了从传输层到物理层<br>对于一个路由器，实现了从网络层到物理层<br>对于交换机，实现了从数据链路层到物理层<br>对于集线器，只实现了物理层  </p>
 <p><img src="/images/tcp-2.png"></p>
+<h3 id="TCP报文"><a href="#TCP报文" class="headerlink" title="TCP报文"></a>TCP报文</h3><p>TCP数据被封装在ip数据包中。<br><img src="/images/tcp-3.png"></p>
+<p>TCP头部为20字节源端口号（16位）和目的端口号（16位），再加上Ip首部的源IP地址和目的IP地址可以唯一确定一个TCP连接  </p>
+<ul>
+<li>数据序号（16位）：表示在这个报文段中的第一个数据字节序号；</li>
+<li>确认序号：仅当ACK标志为1时有效，确认号表示期望收到的下一个字节的序号偏移：就是头部长度，有4位，跟IP头部一样，以4字节为单位。最大是60个字节；</li>
+<li>保留位：6位，必须为0；</li>
+<li>6个标志位：URG-紧急指针有效；ACK-确认序号有效；PSH-接收方应尽快将这个报文交给应用层；RST-连接重置；SYN-同步序号用来发起一个连接；FIN-终止一个连接；</li>
+<li>窗口字段：16位，代表的是窗口的字节容量，也就是TCP的标准窗口最大为2^16 - 1 = 65535个字节</li>
+<li>校验和：源机器基于数据内容计算一个数值，收信息机要与源机器数值结果完全一样，从而证明数据的有效性。检验和覆盖了整个的TCP报文段：这是一个强制性的字段，一定是由发送端计算和存储，并由接收端进行验证的。</li>
+</ul>
+<h3 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h3><p><img src="/images/tcp-4.png"></p>
+<ul>
+<li>第一次握手：客户端发送位码为 SYN = 1（SYN 标志位置位），随机产生初始序列号 Seq = J 的数据包到服务器。服务器由 SYN = 1（置位）知道，客户端要求建立联机。</li>
+<li>第二次握手：服务器收到请求后要确认联机信息，向客户端发送确认号Ack = （客户端的Seq +1，J+1），SYN = 1，ACK = 1（SYN，ACK 标志位置位），随机产生的序列号 Seq = K 的数据包。</li>
+<li>第三次握手：客户端收到后检查 Ack 是否正确，即第一次发送的 Seq +1（J+1），以及位码ACK是否为1。若正确，客户端会再发送 Ack = （服务器端的Seq+1，K+1），ACK = 1，以及序号Seq为服务器确认号J 的确认包。服务器收到后确认之前发送的 Seq（K+1） 值与 ACK= 1 （ACK置位）则连接建立成功。</li>
+</ul>
+<p>Q：为什么是三次握手？<br>A：三次握手的目的是建立可靠的通信信道，说到通讯，简单来说就是数据的发送与接收，而三次握手最主要的目的就是双方确认自己与对方的发送与接收是正常的。<br>第一次握手，发送端：什么都确认不了；接收端：对方发送正常，自己接受正常；<br>第二次握手，发送端：对方发送，接受正常，自己发送，接受正常 ；接收端：对方发送正常，自己接受正常；<br>第三次握手，发送端：对方发送，接受正常，自己发送，接受正常；接收端：对方发送，接受正常，自己发送，接受正常。 </p>
+<p>Q：两次握手不行吗？为什么TCP客户端最后还要发送一次确认呢？<br>A：主要防止已经失效的连接请求报文突然又传送到了服务器，从而产生错误。<br>经典场景：客户端发送了第一个请求连接并且没有丢失，只是因为在网络结点中滞留的时间太长了由于TCP的客户端迟迟没有收到确认报文，以为服务器没有收到，此时重新向服务器发送这条报文，此后客户端和服务器经过两次握手完成连接，传输数据，然后关闭连接。此时此前滞留的那一次请求连接，网络通畅了到达服务器，这个报文本该是失效的，但是，两次握手的机制将会让客户端和服务器再次建立连接，这将导致不必要的错误和资源的浪费。如果采用的是三次握手，就算是那一次失效的报文传送过来了，服务端接受到了那条失效报文并且回复了确认报文，但是客户端不会再次发出确认。由于服务器收不到确认，就知道客户端并没有请求连接。</p>
+<p>Q：TCP三次握手中，最后一次回复丢失，会发生什么？<br>A：如果最后一次ACK在网络中丢失，那么Server端（服务端）该TCP连接的状态仍为SYN_RECV，并且根据 TCP的超时重传机制依次等待3秒、6秒、12秒后重新发送 SYN+ACK 包，以便 Client（客户端）重新发送ACK包；<br>如果重发指定次数后，仍然未收到ACK应答，那么一段时间后，Server（服务端）自动关闭这个连接；<br>但是Client（客户端）认为这个连接已经建立，如果Client（客户端）端向Server（服务端）发送数据，Server端（服务端）将以RST包（Reset，标示复位，用于异常的关闭连接）响应，此时，客户端知道第三次握手失败。</p>
+<h3 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h3><p><img src="/images/tcp-5.png"></p>
+<p>这里我们假定客户端主动关闭（实际上谁先执行主动关闭没本质区别，通话结束了，谁先挂断没啥区别）：</p>
+<ul>
+<li>客户端发送一个FIN Seq = M（FIN置位，序号为M）包，用来关闭客户端到服务器端的数据传送。</li>
+<li>服务器端收到这个FIN，它发回一个ACK，确认序号Ack 为收到的序号M+1。</li>
+<li>服务器端关闭与客户端的连接，发送一个FIN Seq = N 给客户端。</li>
+<li>客户端发回ACK 报文确认，确认序号Ack 为收到的序号N+1。</li>
+</ul>
+<p>Q：为什么连接的时候是三次握手，关闭的时候却是四次握手？<br>A：建立连接的时候， 服务器在LISTEN状态下，收到建立连接请求的SYN报文后，把ACK和SYN放在一个报文里发送给客户端。关闭连接时，服务器收到对方的FIN报文时，仅仅表示对方不再发送数据了但是还能接收数据，而自己也未必全部数据都发送给对方了,所以服务器可以立即关闭，也可以发送一些数据给对方后，再发送FIN报文给对方来表示同意现在关闭连接。因此，服务器ACK和FIN一般都会分开发送，从而导致多了一次。 </p>
+<p>Q：为什么TCP挥手每两次中间有一个 FIN-WAIT2等待时间？<br>A：主动关闭的一端调用完close以后（即发FIN给被动关闭的一端， 并且收到其对FIN的确认ACK则进入FIN_WAIT_2状态。如果这个时候因为网络突然断掉、被动关闭的一段宕机等原因，导致主动关闭的一端不能收到被动关闭的一端发来的FIN（防止对端不发送关闭连接的FIN包给本端），这个时候就需要FIN_WAIT_2定时器， 如果在该定时器超时的时候，还是没收到被动关闭一端发来的FIN，那么直接释放这个链接，进入CLOSE状态。 </p>
+<p>Q：为什么客户端最后还要等待2MSL？ 为什么还有个TIME-WAIT的时间等待？<br>A：保证客户端发送的最后一个ACK报文能够到达服务器，因为这个ACK报文可能丢失，服务器已经发送了FIN+ACK报文，请求断开，客户端却没有回应，于是服务器又会重新发送一次，而客户端就能在这个2MSL时间段内收到这个重传的报文，接着给出回应报文，并且会重启2MSL计时器。防止类似与“三次握手”中提到了的“已经失效的连接请求报文段”出现在本连接中。客户端发送完最后一个确认报文后，在这个2MSL时间中，就可以使本连接持续的时间内所产生的所有报文段都从网络中消失，这样新的连接中不会出现旧连接的请求报文。2MSL，最大报文生存时间，一个MSL 30 秒，2MSL = 60s。 </p>
+<p>Q：客户端 TIME-WAIT 状态过多会产生什么后果？怎样处理？<br>A：作为服务器，短时间内关闭了大量的Client连接，就会造成服务器上出现大量的TIME_WAIT连接，占据大量的tuple /tApl/ ，严重消耗着服务器的资源，此时部分客户端就会显示连接不上，作为客户端，短时间内大量的短连接，会大量消耗的Client机器的端口，毕竟端口只有65535个，端口被耗尽了，后续就无法在发起新的连接了在高并发短连接的TCP服务器上，当服务器处理完请求后立刻主动正常关闭连接。这个场景下会出现大量socket处于TIME_WAIT状态。如果客户端的并发量持续很高，此时部分客户端就会显示连接不上高并发可以让服务器在短时间范围内同时占用大量端口，而端口有个0~65535的范围，并不是很多，刨除系统和其他服务要用的，剩下的就更少了。短连接表示“业务处理+传输数据的时间 远远小于 TIMEWAIT超时的时间”的连接。<br>解决方法：用负载均衡来抗这些高并发的短请求；服务器可以设置 SO_REUSEADDR 套接字选项来避免 TIME_WAIT状态，TIME_WAIT 状态可以通过优化服务器参数得到解决，因为发生TIME_WAIT的情况是服务器自己可控的，要么就是对方连接的异常，要么就是自己没有迅速回收资源，总之不是由于自己程序错误导致的强制关闭，发送 RST 包越过TIMEWAIT状态，直接进入CLOSED状态。  </p>
+<p>Q：服务器出现了大量 CLOSE_WAIT 状态如何解决？<br>A：大量 CLOSE_WAIT 表示程序出现了问题，对方的 socket 已经关闭连接，而我方忙于读或写没有及时关闭连接，需要检查代码，特别是释放资源的代码，或者是处理请求的线程配置。  </p>
+<p>Q：服务端会有一个TIME_WAIT状态吗？如果是服务端主动断开连接呢？<br>A：发起链接的主动方基本都是客户端，但是断开连接的主动方服务器和客户端都可以充当，也就是说，只要是主动断开连接的，就会有 TIME_WAIT状态四次挥手是指断开一个TCP连接时，需要客户端和服务端总共发送4个包以确认连接的断开。在socket编程中，这一过程由客户端或服务端任一方执行close来触发由于TCP连接时全双工的，因此，每个方向的数据传输通道都必须要单独进行关闭。</p>
+<h3 id="状态转移"><a href="#状态转移" class="headerlink" title="状态转移"></a>状态转移</h3><p>下图展示了三次握手、数据传输、四次挥手过程的状态图。<br><img src="/images/tcp-6.png"><br>下图是经典的TCP状态转移图：<br><img src="/images/tcp-7.png"></p>
+<p>上半部分是三次握手的状态转移，下半部分是四次挥手的状态转移。</p>
+<ol>
+<li>CLOSED：起始点，在超时或者连接关闭时候进入此状态，这并不是一个真正的状态，而是这个状态图的假想起点和终点。</li>
+<li>LISTEN：服务器端等待连接的状态。服务器经过 socket，bind，listen 函数之后进入此状态，开始监听客户端发过来的连接请求。此称为应用程序被动打开（等到客户端连接请求）。</li>
+<li>SYN_SENT：第一次握手发生阶段，客户端发起连接。客户端调用 connect，发送 SYN 给服务器端，然后进入 SYN_SENT 状态，等待服务器端确认（三次握手中的第二个报文）。如果服务器端不能连接，则直接进入CLOSED状态。</li>
+<li>SYN_RCVD：第二次握手发生阶段，跟 3 对应，这里是服务器端接收到了客户端的 SYN，此时服务器由 LISTEN 进入 SYN_RCVD状态，同时服务器端回应一个 ACK，然后再发送一个 SYN 即 SYN+ACK 给客户端。状态图中还描绘了这样一种情况，当客户端在发送 SYN 的同时也收到服务器端的 SYN请求，即两个同时发起连接请求，那么客户端就会从 SYN_SENT 转换到 SYN_REVD 状态。</li>
+<li>ESTABLISHED：第三次握手发生阶段，客户端接收到服务器端的 ACK 包（ACK，SYN）之后，也会发送一个 ACK 确认包，客户端进入 ESTABLISHED 状态，表明客户端这边已经准备好，但TCP 需要两端都准备好才可以进行数据传输。服务器端收到客户端的 ACK 之后会从 SYN_RCVD 状态转移到 ESTABLISHED 状态，表明服务器端也准备好进行数据传输了。这样客户端和服务器端都是 ESTABLISHED 状态，就可以进行后面的数据传输了。所以 ESTABLISHED 也可以说是一个数据传送状态。</li>
+</ol>
+<p>结合第一张三次握手过程图，从报文的角度看状态变迁：SYN_SENT 状态表示已经客户端已经发送了 SYN 报文，SYN_RCVD 状态表示服务器端已经接收到了 SYN 报文。<br>下面看看TCP四次挥手过程的状态变迁。</p>
+<ol>
+<li>FIN_WAIT_1：第一次挥手。主动关闭的一方（执行主动关闭的一方既可以是客户端，也可以是服务器端，这里以客户端执行主动关闭为例），终止连接时，发送 FIN 给对方，然后等待对方返回 ACK 。调用 close() 第一次挥手就进入此状态。</li>
+<li>CLOSE_WAIT：接收到FIN 之后，被动关闭的一方进入此状态。具体动作是接收到 FIN，同时发送 ACK。之所以叫 CLOSE_WAIT 可以理解为被动关闭的一方此时正在等待上层应用程序发出关闭连接指令。前面已经说过，TCP关闭是全双工过程，这里客户端执行了主动关闭，被动方服务器端接收到FIN 后也需要调用 close 关闭，这个 CLOSE_WAIT 就是处于这个状态，等待发送 FIN，发送了FIN 则进入 LAST_ACK 状态。</li>
+<li>FIN_WAIT_2：主动端（这里是客户端）先执行主动关闭发送FIN，然后接收到被动方返回的 ACK 后进入此状态。</li>
+<li>LAST_ACK：被动方（服务器端）发起关闭请求，由状态2 进入此状态，具体动作是发送 FIN给对方，同时在接收到ACK 时进入CLOSED状态。</li>
+<li>CLOSING：两边同时发起关闭请求时（即主动方发送FIN，等待被动方返回ACK，同时被动方也发送了FIN，主动方接收到了FIN之后，发送ACK给被动方），主动方会由FIN_WAIT_1 进入此状态，等待被动方返回ACK。</li>
+<li>TIME_WAIT：从状态变迁图会看到，四次挥手操作最后都会经过这样一个状态然后进入CLOSED状态。共有三个状态会进入该状态<ul>
+<li>由CLOSING进入：同时发起关闭情况下，当主动端接收到ACK后，进入此状态，实际上这里的同时是这样的情况：客户端发起关闭请求，发送FIN之后等待服务器端回应ACK，但此时服务器端同时也发起关闭请求，也发送了FIN，并且被客户端先于ACK接收到。</li>
+<li>由FIN_WAIT_1进入：发起关闭后，发送了FIN，等待ACK的时候，正好被动方（服务器端）也发起关闭请求，发送了FIN，这时客户端接收到了先前ACK，也收到了对方的FIN，然后发送ACK（对对方FIN的回应），与CLOSING进入的状态不同的是接收到FIN和ACK的先后顺序。</li>
+<li>由FIN_WAIT_2进入：这是不同时的情况，主动方在完成自身发起的主动关闭请求后，接收到了对方发送过来的FIN，然后回应 ACK。</li>
+</ul>
+</li>
+</ol>
 
     </div>
 
@@ -265,8 +326,8 @@
       <i class="fa fa-chevron-left"></i> c++11新特性：Alias-Template
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9Aselect,poll,epoll/" rel="next" title="Linux网络编程：select、poll、epoll">
-      Linux网络编程：select、poll、epoll <i class="fa fa-chevron-right"></i>
+    <a href="/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9A%E5%90%8C%E6%AD%A5%E5%BC%82%E6%AD%A5%EF%BC%8C%E9%98%BB%E5%A1%9E%EF%BC%8CIO%E5%A4%8D%E7%94%A8/" rel="next" title="Linux网络编程：同步/异步，阻塞/非阻塞，IO复用">
+      Linux网络编程：同步/异步，阻塞/非阻塞，IO复用 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -326,7 +387,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">前置知识</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">前置知识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP%E6%8A%A5%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">TCP报文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="nav-number">3.</span> <span class="nav-text">三次握手</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B"><span class="nav-number">4.</span> <span class="nav-text">四次挥手</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E8%BD%AC%E7%A7%BB"><span class="nav-number">5.</span> <span class="nav-text">状态转移</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -342,7 +403,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-count">39</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
