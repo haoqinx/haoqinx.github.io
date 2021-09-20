@@ -30,7 +30,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://haoqinx.github.io/images/select-1.png">
 <meta property="article:published_time" content="2021-09-13T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-09-16T08:20:18.559Z">
+<meta property="article:modified_time" content="2021-09-17T08:25:11.648Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="网络编程">
 <meta name="twitter:card" content="summary">
@@ -209,7 +209,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-09-16 16:20:18" itemprop="dateModified" datetime="2021-09-16T16:20:18+08:00">2021-09-16</time>
+                <time title="Modified: 2021-09-17 16:25:11" itemprop="dateModified" datetime="2021-09-17T16:25:11+08:00">2021-09-17</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -250,7 +250,16 @@
 <li><p>唤醒该进程的过程通常是在所监测文件的设备驱动内实现的，驱动程序维护了针对自身资源读写的等待队列。当设备驱动发现自身资源变为可读写并且有进程睡眠在该资源的等待队列上时，就会唤醒这个资源等待队列上的进程。</p>
 </li>
 </ol>
-<h3 id="poll和select的区别"><a href="#poll和select的区别" class="headerlink" title="poll和select的区别"></a>poll和select的区别</h3>
+<h3 id="poll和select的区别"><a href="#poll和select的区别" class="headerlink" title="poll和select的区别"></a>poll和select的区别</h3><ol>
+<li>使用的是定长数组，而poll是通过用户自定义数组长度的形式（pollfd[]）。</li>
+<li>select只支持最大fd &lt; 1024，如果单个进程的文件句柄数超过1024，select就不能用了。poll在接口上无限制，考虑到每次都要拷贝到内核，一般文件句柄多的情况下建议用poll。</li>
+<li>select由于使用的是位运算，所以select需要分别设置read/write/error fds的掩码。而poll是通过设置数据结构中fd和event参数来实现read/write，比如读为POLLIN，写为POLLOUT，出错为POLLERR：</li>
+<li>：select中fd_set是被内核和用户共同修改的，所以要么每次FD_CLR再FD_SET，要么备份一份memcpy进去。而poll中用户修改的是events，系统修改的是revents。所以参考muduo的代码，都不需要自己去清除revents，从而使得代码更加简洁。</li>
+<li>select的timeout使用的是struct timeval *timeout，poll的timeout单位是int。</li>
+<li>select使用的是绝对时间，poll使用的是相对时间。</li>
+<li>select的timeout为NULL时表示无限等待，否则是指定的超时目标时间；poll的timeout为-1表示无限等待。所以有用select来实现usleep的。</li>
+</ol>
+
     </div>
 
     
@@ -268,12 +277,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9A%E5%90%8C%E6%AD%A5%E5%BC%82%E6%AD%A5%EF%BC%8C%E9%98%BB%E5%A1%9E%EF%BC%8CIO%E5%A4%8D%E7%94%A8/" rel="prev" title="Linux网络编程：同步/异步，阻塞/非阻塞，IO复用">
-      <i class="fa fa-chevron-left"></i> Linux网络编程：同步/异步，阻塞/非阻塞，IO复用
+    <a href="/2021/09/14/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9A%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/" rel="prev" title="c++11新特性：智能指针">
+      <i class="fa fa-chevron-left"></i> c++11新特性：智能指针
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9Aepoll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86/" rel="next" title="Linux网络编程：epoll内核原理">
-      Linux网络编程：epoll内核原理 <i class="fa fa-chevron-right"></i>
+    <a href="/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9A%E5%90%8C%E6%AD%A5%E5%BC%82%E6%AD%A5%EF%BC%8C%E9%98%BB%E5%A1%9E%EF%BC%8CIO%E5%A4%8D%E7%94%A8/" rel="next" title="Linux网络编程：同步/异步，阻塞/非阻塞，IO复用">
+      Linux网络编程：同步/异步，阻塞/非阻塞，IO复用 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -349,7 +358,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">43</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -358,7 +367,7 @@
         <span class="site-state-item-name">categories</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
