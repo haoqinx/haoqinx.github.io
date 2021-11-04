@@ -827,7 +827,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-11-04 21:13:13" itemprop="dateModified" datetime="2021-11-04T21:13:13+08:00">2021-11-04</time>
+                <time title="Modified: 2021-11-04 21:14:58" itemprop="dateModified" datetime="2021-11-04T21:14:58+08:00">2021-11-04</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -858,35 +858,14 @@
 <li>leader：处理所有客户端请求，如果一个可会断和follower通信，那么follower会重定向给leader；</li>
 <li>candidate：用来选举新leader。<br>下图展示了上面三种状态的转换：<br><img src="/images/redis-raft-1.png"></li>
 </ul>
-<p>Raft把时间分割成任意长度的任期，如下图所示：<br><img src="/images/redis-raft-2.png"></p>
-<p>每一个服务器节点存储一个当前任期号，该编号随着时间单调递增。不同的服务器节点观察到的任期转换的次数可能不同，在某些情况下，一个服务器节点可能没有看到 leader 选举过程或者甚至整个任期全程。任期在 Raft 算法中充当逻辑时钟的作用，这使得服务器节点可以发现一些过期的信息比如过时的leader。</p>
-<ul>
-<li>如果一个服务器的当前任期号比其他的小，该服务器会将自己的任期号更新为较大的那个值；</li>
-<li>如果一个 candidate 或者 leader 发现自己的任期号过期了，它会立即回到 follower 状态；</li>
-<li>如果一个节点接收到一个包含过期的任期号的请求，它会直接拒绝这个请求。</li>
-</ul>
-<ol start="2">
-<li>Leader选举  </li>
-</ol>
-<p>Raft 使用一种心跳机制来触发 leader 选举。<br>当服务器程序启动时，他们都是 follower。<br>如果一个 follower 在一段选举超时时间内没有接收到任何消息，它就假设系统中没有可用的 leader ，然后开始进行选举以选出新的 leader 。<br>选举的流程大概是：  </p>
-<ul>
-<li>follower 先增加自己的当前任期号并且转换到 candidate 状态。</li>
-<li>投票给自己并且并行地向集群中的其他服务器节点发送 RequestVote RPC。</li>
-<li>当一个 candidate 获得集群中过半服务器节点针对同一个任期的投票，它就赢得了这次选举并成为 leader。（投票按照先来先得的原则）。</li>
-<li>在等待投票期间，candidate 可能会收到另一个声称自己是 leader 的服务器节点发来的 AppendEntries RPC 。如果这个 leader 的任期号（包含在RPC中）不小于 candidate 当前的任期号，那么 candidate 会承认该 leader 的合法地位并回到 follower 状态。 如果 RPC 中的任期号比自己的小，那么 candidate 就会拒绝这次的 RPC 并且继续保持 candidate 状态。</li>
-<li> 如果candidate 既没有赢得选举也没有输：如果有多个 follower 同时成为 candidate ，那么选票可能会被瓜分以至于没有 candidate 赢得过半的投票。当这种情况发生时，每一个候选人都会超时，然后通过增加当前任期号来开始一轮新的选举。然而，如果没有其他机制的话，该情况可能会无限重复。<br>为了避免选票瓜分，也就是follower都投票给自己，Raft使用随机选举超时时间来解决。选举超时时间是从一个固定的区间（例如 150-300 毫秒）随机选择。这样可以把服务器都分散开以至于在大多数情况下只有一个服务器会选举超时；然后该服务器赢得选举并在其他服务器超时之前发送心跳。每个 candidate 在开始一次选举的时候会重置一个随机的选举超时时间，然后一直等待直到选举超时。</li>
-</ul>
-<h3 id="日志复制"><a href="#日志复制" class="headerlink" title="日志复制"></a>日志复制</h3><p>Leader 一旦被选举出来，就开始为客户端请求提供服务。客户端的每一个请求都包含一条将被复制状态机执行的指令。Leader 把该指令作为一个新的条目追加到日志中去，然后并行的发起 AppendEntries RPC 给其他的服务器，让它们复制该条目。  </p>
-<p>每个日志条目存储一条状态机指令和 leader 收到该指令时的任期号。如下图所示：<br><img src="/images/redis-raft-3.png"><br>Leader 决定什么时候把日志条目应用到状态机中是安全的；这种日志条目被称为已提交的。Raft 算法保证所有已提交的日志条目都是持久化的并且最终会被所有可用的状态机执行。一旦创建该日志条目的 leader 将它复制到过半的服务器上，该日志条目就会被提交（例如在图中的条目 7）。<br>正常操作期间，leader 和 follower 的日志保持一致，所以 AppendEntries RPC 的一致性检查从来不会失败。然而，leader 崩溃的情况会使日志处于不一致的状态：<br><img src="/images/redis-raft-4.png"><br>Follower 可能缺少一些在新 leader 中有的日志条目，也可能拥有一些新 leader 没有的日志条目，或者同时发生。缺失或多出日志条目的情况可能会涉及到多个任期。  </p>
-<ul>
-<li>要使得 follower 的日志跟自己一致，leader 必须找到两者达成一致的最大的日志条目（索引最大），删除 follower 日志中从那个点之后的所有日志条目，并且将自己从那个点之后的所有日志条目发送给 follower。</li>
-<li>Leader 针对每一个 follower 都维护了一个 nextIndex ，表示 leader 要发送给 follower 的下一个日志条目的索引。当选出一个新 leader 时，该 leader 将所有 nextIndex 的值都初始化为自己最后一个日志条目的 index 加1。如果 follower 的日志和 leader 的不一致，那么下一次 AppendEntries RPC 中的一致性检查就会失败。在被 follower 拒绝之后，leaer 就会减小 nextIndex 值并重试 AppendEntries RPC 。最终 nextIndex 会在某个位置使得 leader 和 follower 的日志达成一致。此时，AppendEntries RPC 就会成功，将 follower 中跟 leader 冲突的日志条目全部删除然后追加 leader 中的日志条目（如果有需要追加的日志条目的话）。一旦 AppendEntries RPC 成功，follower 的日志就和 leader 一致，并且在该任期接下来的时间里保持一致。</li>
-</ul>
-<h3 id="安全限制"><a href="#安全限制" class="headerlink" title="安全限制"></a>安全限制</h3><ol>
-<li>选举限制<br>Raft 使用投票的方式来阻止 candidate 赢得选举除非该 candidate 包含了所有已经提交的日志条目。候选人为了赢得选举必须与集群中的过半节点通信，这意味着至少其中一个服务器节点包含了所有已提交的日志条目。如果 candidate 的日志至少和过半的服务器节点一样新（接下来会精确地定义“新”），那么他一定包含了所有已经提交的日志条目。RequestVote RPC 执行了这样的限制： RPC 中包含了 candidate 的日志信息，如果投票者自己的日志比 candidate 的还新，它会拒绝掉该投票请求。<br>Raft 通过比较两份日志中最后一条日志条目的索引值和任期号来定义谁的日志比较新。如果两份日志最后条目的任期号不同，那么任期号大的日志更新。如果两份日志最后条目的任期号相同，那么日志较长的那个更新。</li>
-<li>提交之前任期内的日志条目<br>一旦当前任期内的某个日志条目已经存储到过半的服务器节点上，leader 就知道该日志条目已经被提交了。如果某个 leader 在提交某个日志条目之前崩溃了，以后的 leader 会试图完成该日志条目的复制。然而，如果是之前任期内的某个日志条目已经存储到过半的服务器节点上，leader 也无法立即断定该日志条目已经被提交了。图 8 展示了一种情况，一个已经被存储到过半节点上的老日志条目，仍然有可能会被未来的 leader 覆盖掉。<br><img src="/images/redis-raft-4.png"><br>如图的时间序列展示了为什么 leader 无法判断老的任期号内的日志是否已经被提交。在 (a) 中，S1 是 leader ，部分地复制了索引位置 2 的日志条目。在 (b) 中，S1 崩溃了，然后 S5 在任期 3 中通过 S3、S4 和自己的选票赢得选举，然后从客户端接收了一条不一样的日志条目放在了索引 2 处。然后到 (c)，S5 又崩溃了；S1 重新启动，选举成功，继续复制日志。此时，来自任期 2 的那条日志已经被复制到了集群中的大多数机器上，但是还没有被提交。如果 S1 在 (d) 中又崩溃了，S5 可以重新被选举成功（通过来自 S2，S3 和 S4 的选票），然后覆盖了他们在索引 2 处的日志。但是，在崩溃之前，如果 S1 在自己的任期里复制了日志条目到大多数机器上，如 (e) 中，然后这个条目就会被提交（S5 就不可能选举成功）。 在这种情况下，之前的所有日志也被提交了。<br>为了消除图中描述的问题，Raft 永远不会通过计算副本数目的方式来提交之前任期内的日志条目。只有 leader 当前任期内的日志条目才通过计算副本数目的方式来提交；一旦当前任期的某个日志条目以这种方式被提交，那么由于日志匹配特性，之前的所有日志条目也都会被间接地提交。在某些情况下，领导人可以安全地断定一个老的日志条目已经被提交（例如，如果该条目已经存储到所有服务器上），但是 Raft 为了简化问题使用了一种更加保守的方法。<br>Raft 会在提交规则上增加额外的复杂性是因为当 leader 复制之前任期内的日志条目时，这些日志条目都保留原来的任期号。在其他的一致性算法中，如果一个新的 leader 要重新复制之前的任期里的日志时，它必须使用当前新的任期号。Raft 的做法使得更加容易推导出（reason about）日志条目，因为他们自始至终都使用同一个任期号。另外，和其他的算法相比，Raft 中的新 leader 只需要发送更少的日志条目（其他算法中必须在它们被提交之前发送更多的冗余日志条目来给它们重新编号）。</li>
-</ol>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9Araft%E5%92%8C%E5%A4%8D%E5%88%B6/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -987,7 +966,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%8D%E5%88%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -1001,7 +980,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8/" class="post-title-link" itemprop="url">redis系列：压缩列表</a>
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%8D%E5%88%B6/" class="post-title-link" itemprop="url">redis系列：复制</a>
         </h2>
 
         <div class="post-meta">
@@ -1018,7 +997,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:17:15" itemprop="dateModified" datetime="2021-10-29T20:17:15+08:00">2021-10-29</time>
+                <time title="Modified: 2021-11-02 19:57:24" itemprop="dateModified" datetime="2021-11-02T19:57:24+08:00">2021-11-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1041,15 +1020,31 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p>在3.0版本中基本结构如下图所示：<br><img src="/images/redis-zl-1.png"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <h3 id="完全复制"><a href="#完全复制" class="headerlink" title="完全复制"></a>完全复制</h3><ul>
+<li>第一步是同步<br>1）从服务器向主服务器发送SYNC命令。<br>2）收到SYNC命令的主服务器执行BGSAVE命令，在后台生成一个RDB文件，并使用一个缓冲区记录从现在开始执行的所有写命令。<br>3）BGSAVE命令执行完毕后，将生成的RDB文件传输给从服务器，从服务器接收到开始更新。<br>4）主服务器将记录在缓冲区的所有写命令发送给从服务器，从服务器状态更新。<br>如下图示例所示：<br><img src="/images/redis-sync-1.png"></li>
+<li>命令传播<br>主服务器将更改服务器状态的命令发送给从服务器。</li>
+</ul>
+<h3 id="部分复制"><a href="#部分复制" class="headerlink" title="部分复制"></a>部分复制</h3><p>完全复制在效率上比较低，应为每次都需要生成RDB文件，从服务器也需要从RDB恢复数据。因此考虑部分复制，在非第一次同步的情况下，只传播断线过程中执行的更改主服务器状态的命令。如下图所示：<br><img src="/images/redis-sync-2.png"><br>部分同步的实现有三个部分</p>
+<ul>
+<li>主服务器的复制偏移量和从服务器的复制偏移量。</li>
+<li>主服务器的复制积压缓冲区。</li>
+<li>服务器的运行ID。</li>
+</ul>
+<ol>
+<li>复制偏移量<br>主服务器每次传输N个字节数据，就将复制偏移量+N，从服务器收到N个字节，就加N，通过复制偏移量就可以知道是否是同步状态。</li>
+<li>积压缓冲区<br>复制积压缓冲区维护一个固定长度的队列，大小为1MB。固定长度就是说队列的长度是固定的，如果入队后队列长度超过固定值，就将多余的值弹出。队列会保存字节的复制偏移量和字节内容。<br><img src="/images/redis-sync-3.png"></li>
+</ol>
+<h3 id="复制的实现"><a href="#复制的实现" class="headerlink" title="复制的实现"></a>复制的实现</h3><p>通过向从服务器发送SLAVEOF命令，可以让从服务器复制一个主服务器。</p>
+<ul>
+<li>设置主服务器地址和端口<br>从服务器需要首先保存主服务器的地址和端口。</li>
+<li>建立套接字连接</li>
+<li>发送ping命令<br>有两个作用：<br>1）检查套接字读写是否正常。<br>2）检查主服务器是否能正产处理请求。<br>如果返回一个命令回复但从服务器无法在规定时间内读取命令回复的内容，那么表示网络连接异常。如果返回一个错误，那么主服务器无法处理。</li>
+<li>身份验证  </li>
+<li>发送端口数据</li>
+<li>同步</li>
+<li>命令传播</li>
+</ul>
+
       
     </div>
 
