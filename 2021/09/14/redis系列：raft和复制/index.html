@@ -23,7 +23,7 @@
 
   <meta name="description" content="Raft算法 基本概念在任何时刻，服务器节点都处于三个状态之一：leader、follower或者candidate。   follwer：不会发送任何请求，只相应leader和candidate的请求； leader：处理所有客户端请求，如果一个可会断和follower通信，那么follower会重定向给leader； candidate：用来选举新leader。下图展示了上面三种状态的转换：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="redis系列：raft &amp;&amp; 复制">
+<meta property="og:title" content="redis系列：raft一致性算法">
 <meta property="og:url" content="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9Araft%E5%92%8C%E5%A4%8D%E5%88%B6/index.html">
 <meta property="og:site_name" content="面向自由编程">
 <meta property="og:description" content="Raft算法 基本概念在任何时刻，服务器节点都处于三个状态之一：leader、follower或者candidate。   follwer：不会发送任何请求，只相应leader和candidate的请求； leader：处理所有客户端请求，如果一个可会断和follower通信，那么follower会重定向给leader； candidate：用来选举新leader。下图展示了上面三种状态的转换：">
@@ -34,7 +34,7 @@
 <meta property="og:image" content="http://haoqinx.github.io/images/redis-raft-4.png">
 <meta property="og:image" content="http://haoqinx.github.io/images/redis-raft-4.png">
 <meta property="article:published_time" content="2021-09-13T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-11-05T12:52:27.274Z">
+<meta property="article:modified_time" content="2021-11-16T09:01:21.021Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -53,7 +53,7 @@
   };
 </script>
 
-  <title>redis系列：raft && 复制 | 面向自由编程</title>
+  <title>redis系列：raft一致性算法 | 面向自由编程</title>
   
 
 
@@ -186,7 +186,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          redis系列：raft && 复制
+          redis系列：raft一致性算法
         </h1>
 
         <div class="post-meta">
@@ -203,7 +203,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-11-05 20:52:27" itemprop="dateModified" datetime="2021-11-05T20:52:27+08:00">2021-11-05</time>
+                <time title="Modified: 2021-11-16 17:01:21" itemprop="dateModified" datetime="2021-11-16T17:01:21+08:00">2021-11-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -264,7 +264,7 @@
 <li>选举限制<br>Raft 使用投票的方式来阻止 candidate 赢得选举除非该 candidate 包含了所有已经提交的日志条目。候选人为了赢得选举必须与集群中的过半节点通信，这意味着至少其中一个服务器节点包含了所有已提交的日志条目。如果 candidate 的日志至少和过半的服务器节点一样新（接下来会精确地定义“新”），那么他一定包含了所有已经提交的日志条目。RequestVote RPC 执行了这样的限制： RPC 中包含了 candidate 的日志信息，如果投票者自己的日志比 candidate 的还新，它会拒绝掉该投票请求。<br>Raft 通过比较两份日志中最后一条日志条目的索引值和任期号来定义谁的日志比较新。如果两份日志最后条目的任期号不同，那么任期号大的日志更新。如果两份日志最后条目的任期号相同，那么日志较长的那个更新。</li>
 <li>提交之前任期内的日志条目<br>一旦当前任期内的某个日志条目已经存储到过半的服务器节点上，leader 就知道该日志条目已经被提交了。如果某个 leader 在提交某个日志条目之前崩溃了，以后的 leader 会试图完成该日志条目的复制。然而，如果是之前任期内的某个日志条目已经存储到过半的服务器节点上，leader 也无法立即断定该日志条目已经被提交了。图 8 展示了一种情况，一个已经被存储到过半节点上的老日志条目，仍然有可能会被未来的 leader 覆盖掉。<br><img src="/images/redis-raft-4.png"><br>如图的时间序列展示了为什么 leader 无法判断老的任期号内的日志是否已经被提交。在 (a) 中，S1 是 leader ，部分地复制了索引位置 2 的日志条目。在 (b) 中，S1 崩溃了，然后 S5 在任期 3 中通过 S3、S4 和自己的选票赢得选举，然后从客户端接收了一条不一样的日志条目放在了索引 2 处。然后到 (c)，S5 又崩溃了；S1 重新启动，选举成功，继续复制日志。此时，来自任期 2 的那条日志已经被复制到了集群中的大多数机器上，但是还没有被提交。如果 S1 在 (d) 中又崩溃了，S5 可以重新被选举成功（通过来自 S2，S3 和 S4 的选票），然后覆盖了他们在索引 2 处的日志。但是，在崩溃之前，如果 S1 在自己的任期里复制了日志条目到大多数机器上，如 (e) 中，然后这个条目就会被提交（S5 就不可能选举成功）。 在这种情况下，之前的所有日志也被提交了。<br>为了消除图中描述的问题，Raft 永远不会通过计算副本数目的方式来提交之前任期内的日志条目。只有 leader 当前任期内的日志条目才通过计算副本数目的方式来提交；一旦当前任期的某个日志条目以这种方式被提交，那么由于日志匹配特性，之前的所有日志条目也都会被间接地提交。在某些情况下，领导人可以安全地断定一个老的日志条目已经被提交（例如，如果该条目已经存储到所有服务器上），但是 Raft 为了简化问题使用了一种更加保守的方法。<br>Raft 会在提交规则上增加额外的复杂性是因为当 leader 复制之前任期内的日志条目时，这些日志条目都保留原来的任期号。在其他的一致性算法中，如果一个新的 leader 要重新复制之前的任期里的日志时，它必须使用当前新的任期号。Raft 的做法使得更加容易推导出（reason about）日志条目，因为他们自始至终都使用同一个任期号。另外，和其他的算法相比，Raft 中的新 leader 只需要发送更少的日志条目（其他算法中必须在它们被提交之前发送更多的冗余日志条目来给它们重新编号）。</li>
 </ol>
-<h3 id="哨兵机制"><a href="#哨兵机制" class="headerlink" title="哨兵机制"></a>哨兵机制</h3>
+
     </div>
 
     
@@ -347,7 +347,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Raft%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">Raft算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E5%A4%8D%E5%88%B6"><span class="nav-number">2.</span> <span class="nav-text">日志复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E9%99%90%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">安全限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E6%9C%BA%E5%88%B6"><span class="nav-number">4.</span> <span class="nav-text">哨兵机制</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Raft%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">Raft算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E5%A4%8D%E5%88%B6"><span class="nav-number">2.</span> <span class="nav-text">日志复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E9%99%90%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">安全限制</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -363,7 +363,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-count">64</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
