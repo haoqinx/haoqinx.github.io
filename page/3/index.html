@@ -163,6 +163,255 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9AHTTPS&TLS&SSL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9AHTTPS&TLS&SSL/" class="post-title-link" itemprop="url">网络复习：HTTPS/TLS/SSL</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-11-17 19:25:33" itemprop="dateModified" datetime="2021-11-17T19:25:33+08:00">2021-11-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="SSL-TLS"><a href="#SSL-TLS" class="headerlink" title="SSL/TLS"></a>SSL/TLS</h3><ol>
+<li>基本流程</li>
+</ol>
+<ul>
+<li>客户端想服务端索要并验证公钥。</li>
+<li>双方协商生成对话密钥。</li>
+<li>双方采用对话密钥进行加密通信。</li>
+</ul>
+<ol start="2">
+<li>详细解释<br>上面流程的第一二两步叫做握手。如下图所示：<br><img src="/images/tls-1.png"><br>一共有四次通信，在握手阶段都是明文。</li>
+</ol>
+<ul>
+<li>客户端发出请求（ClientHello）<br>  客户端主要向服务器提供以下信息<ul>
+<li>支持的协议版本，比如TLS 1.0版。</li>
+<li>一个客户端生成的随机数，稍后用于生成”对话密钥”。</li>
+<li>支持的加密方法，比如RSA公钥加密。</li>
+<li>支持的压缩方法。</li>
+</ul>
+</li>
+<li>服务器回应（SeverHello）<br>  服务器收到客户端请求后，向客户端发出回应，这叫做SeverHello。服务器的回应包含以下内容。<ul>
+<li>确认使用的加密通信协议版本，比如TLS 1.0版本。如果浏览器与服务器支持的版本不一致，服务器关闭加密通信。</li>
+<li>一个服务器生成的随机数，稍后用于生成”对话密钥”。</li>
+<li>确认使用的加密方法，比如RSA公钥加密。</li>
+<li>服务器证书。</li>
+</ul>
+</li>
+<li>客户端回应<br>  客户端收到回应之后，首先验证证书，若没有问题，就从证书中取出公钥，然后发送下面三个信息：<ul>
+<li>一个随机数。该随机数用服务器公钥加密，防止被窃听。</li>
+<li>编码改变通知，表示随后的信息都将用双方商定的加密方法和密钥发送。</li>
+<li>客户端握手结束通知，表示客户端的握手阶段已经结束。这一项同时也是前面发送的所有内容的hash值，用来供服务器校验。</li>
+</ul>
+</li>
+<li>服务器的最后回应<br>  服务器收到客户端的第三个随机数pre-master key之后，计算生成本次会话所用的”会话密钥”。然后，向客户端最后发送下面信息。<ul>
+<li>编码改变通知，表示随后的信息都将用双方商定的加密方法和密钥发送。</li>
+<li>服务器握手结束通知，表示服务器的握手阶段已经结束。这一项同时也是前面发送的所有内容的hash值，用来供客户端校验。  </li>
+</ul>
+</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38265137/article/details/90112705">关于TLS这篇文章讲的很详细</a></p>
+<h3 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h3><p>https的流程大概是：</p>
+<ol>
+<li>与目标机器443端口tcp连接。</li>
+<li>利用TLS协议获取服务器证书，与服务器通信商议对称密钥，此后报文通过对称加密保护。</li>
+<li>使用普通http传输报文。</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E6%99%BA%E8%83%BD%E8%8A%AF%E7%89%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/%E6%99%BA%E8%83%BD%E8%8A%AF%E7%89%87/" class="post-title-link" itemprop="url">嵌入式人工智能</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-11-06 00:15:20" itemprop="dateModified" datetime="2021-11-06T00:15:20+08:00">2021-11-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%A1%AC%E4%BB%B6%E6%9E%B6%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">硬件架构</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="嵌入式人工智能"><a href="#嵌入式人工智能" class="headerlink" title="嵌入式人工智能"></a>嵌入式人工智能</h3><ol>
+<li><p>人工智能的发展</p>
+<ol>
+<li>机器学习</li>
+<li>深度学习</li>
+<li>人工智能</li>
+</ol>
+</li>
+<li><p>硬件架构<br> 本小节主要介绍常用的处理器，在云端或嵌入式端广泛运用在深度学习训练、推理过程的加速。</p>
+<ol>
+<li>GPU<br>图像处理器。<br>GPU采用数量众多的计算单元和超长的流水线，善于处理图像领域的运算加速。但GPU无法单独工作，必须由CPU进行控制调用才能工作。CPU可单独作用，处理复杂的逻辑运算和不同的数据类型，但当需要大量的处理类型统一的数据时，则可调用GPU进行并行计算。深度学习的崛起受到GPU发展的推动。<ol>
+<li>GPU发展历史</li>
+<li>GPU功能</li>
+<li>GPU物理架构<ol>
+<li>NVidia Tesla架构（<a target="_blank" rel="noopener" href="https://images.nvidia.cn/content/pdf/tesla/whitepaper/pascal-architecture-whitepaper.pdf%EF%BC%89">https://images.nvidia.cn/content/pdf/tesla/whitepaper/pascal-architecture-whitepaper.pdf）</a></li>
+<li>NVidia Fermi架构</li>
+<li>NVidia Maxwell架构</li>
+<li>NVidia Kepler架构</li>
+<li>NVidia Turing架构（<a target="_blank" rel="noopener" href="https://images.nvidia.cn/aem-dam/en-zz/Solutions/design-visualization/technologies/turing-architecture/NVIDIA-Turing-Architecture-Whitepaper.pdf%EF%BC%89">https://images.nvidia.cn/aem-dam/en-zz/Solutions/design-visualization/technologies/turing-architecture/NVIDIA-Turing-Architecture-Whitepaper.pdf）</a></li>
+</ol>
+</li>
+<li>GPU运行机制（<a target="_blank" rel="noopener" href="http://haifux.org/lectures/267/Introduction-to-GPUs.pdf">http://haifux.org/lectures/267/Introduction-to-GPUs.pdf</a><br><a target="_blank" rel="noopener" href="http://download.nvidia.com/developer/cuda/seminar/TDCI_Arch.pdf%EF%BC%89">http://download.nvidia.com/developer/cuda/seminar/TDCI_Arch.pdf）</a><ol>
+<li>渲染总览</li>
+<li>逻辑管线</li>
+<li>技术要点</li>
+<li>GPU资源机制</li>
+</ol>
+</li>
+<li>总结  </li>
+</ol>
+</li>
+<li>FPGA<br>半定制化的人工智能专用芯片。FPGA适用于多指令，单数据流的分析，与GPU相反，因此常用于预测阶段，如云端。<ol>
+<li>FPGA发展历史</li>
+<li>FPGA功能</li>
+<li>FPGA工作原理</li>
+<li>定制化FPGA智能芯片DPU<ol>
+<li>基本概念<br>DPU（Deep learning Processing Unit）深度学习处理器</li>
+<li></li>
+</ol>
+</li>
+</ol>
+</li>
+<li>ASIC<br>ASIC是指依产品需求不同而定制化的特殊规格集成电路，由特定使用者要求和特定电子系统的需要而设计、制造。<ol>
+<li>TPU（Tensor Processing Unit）<br>张量处理器<br>谷歌专门为加速深层神经网络运算能力而研发的一款芯片，其实也是一款ASIC。TPU与同期的CPU和GPU相比，可以提供15-30倍的性能提升，以及30-80倍的效率（性能/瓦特）提升。</li>
+<li>NPU（（Neural network Processing Unit）<br>神经网络处理器<br>用电路模拟人类的神经元和突触结构，将神经网络结构直接以硬件形式体现。</li>
+</ol>
+</li>
+<li>总结与比较</li>
+</ol>
+</li>
+<li><p>软件框架</p>
+<ol>
+<li>armnn</li>
+<li>tensor Lite</li>
+<li>tensorRT</li>
+</ol>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9APING%E5%91%BD%E4%BB%A4%E5%8E%9F%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -396,6 +645,180 @@
 <li>二进制分帧：应用层(HTTP/2)和传输层(TCP or UDP)之间增加一个二进制分帧层。（HTTP 1.X 是基于文本的，因为是文本，就导致了它必须是个整体，在传输是不可切割的，只能整体去传。但 HTTP 2.0 是基于二进制流的。）</li>
 </ul>
 
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E8%87%AA%E9%97%AE%E6%B8%85%E5%8D%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/%E8%87%AA%E9%97%AE%E6%B8%85%E5%8D%95/" class="post-title-link" itemprop="url">大总结</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-11-18 21:47:25" itemprop="dateModified" datetime="2021-11-18T21:47:25+08:00">2021-11-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BB%BC%E5%90%88/" itemprop="url" rel="index"><span itemprop="name">综合</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="C-基础"><a href="#C-基础" class="headerlink" title="C++基础"></a>C++基础</h1><ol>
+<li><p>对const的理解？const指针和引用的区别？</p>
+</li>
+<li><p>#define和const的区别？</p>
+</li>
+<li><p>说说static关键字的用法？</p>
+</li>
+<li><p>inline函数的使用？</p>
+</li>
+<li><p>知道#pragma pack(n)吗？怎么实现内存对齐的？</p>
+</li>
+<li><p>解释下”extern C”，在什么时候会用到？</p>
+</li>
+<li><p>用struct实现下继承？</p>
+</li>
+<li><p>解释下friend关键字？</p>
+</li>
+<li><p>多态的实现方式？</p>
+</li>
+<li><p>虚析构函数？虚构造函数？</p>
+</li>
+<li><p>说说虚表的内存布局？</p>
+</li>
+<li><p>纯虚函数？虚继承？</p>
+</li>
+<li><p>模板继承？模板特化/偏特化？</p>
+</li>
+<li><h1 id="C-11"><a href="#C-11" class="headerlink" title="C++11"></a>C++11</h1></li>
+<li><p>decltype用过吗?</p>
+</li>
+<li><p>左值引用和右值引用是什么？</p>
+</li>
+<li><p>移动语义和完美转发说说？</p>
+</li>
+<li><p>智能指针有哪些？</p>
+</li>
+<li><p>说说每个的实现原理和应用场景？</p>
+</li>
+<li><h1 id="C-内存"><a href="#C-内存" class="headerlink" title="C++内存"></a>C++内存</h1></li>
+<li><p>new/delete 和malloc/free区别？</p>
+</li>
+<li><p>ralloc/alloca</p>
+</li>
+<li><p>双重free会发生什么？</p>
+</li>
+<li><p>如何定义一个只能在栈/堆上生成的对象？</p>
+</li>
+<li><p>讲下ptmalloc？</p>
+</li>
+<li><p>讲下tcmalloc？</p>
+</li>
+<li><p>讲下jemalloc？</p>
+</li>
+</ol>
+<ul>
+<li>只能在堆上<br>方法：将析构函数设置为私有<br>原因：C++ 是静态绑定语言，编译器管理栈上对象的生命周期，编译器在为类对象分配栈空间时，会先检查类的析构函数的访问性。若析构函数不可访问，则不能在栈上创建对象。</li>
+<li>只能在栈上<br>方法：将 new 和 delete 重载为私有<br>原因：在堆上生成对象，使用 new 关键词操作，其过程分为两阶段：第一阶段，使用 new 在堆上寻找可用内存，分配给对象；第二阶段，调用构造函数生成对象。将 new 操作设置为私有，那么第一阶段就无法完成，就不能够在堆上生成对象。</li>
+</ul>
+<ol start="5">
+<li>知道哪些强制类型转换？（static_cast)<h1 id="STL"><a href="#STL" class="headerlink" title="STL"></a>STL</h1></li>
+<li>五大组成部分？</li>
+<li>有哪些容器？</li>
+<li>vector/map/哈希/deque底层实现？</li>
+<li>sort算法实现是什么？全都是快排吗？</li>
+</ol>
+<h1 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h1><ol>
+<li>TCP三次握手，四次挥手详细流程？</li>
+<li>三次握手两次行不行？</li>
+<li>sock函数和三次握手的对应？</li>
+<li>服务器大量TIME_WAIT怎么办？</li>
+<li>TCP粘包？</li>
+<li>TCP拥塞控制？</li>
+<li>http1.0/1.1/2.0区别？</li>
+<li>TLS/HTTPS握手过程？</li>
+<li>ARP协议？</li>
+<li>PING命令实现原理？</li>
+<li>Traceroute命令实现原理？</li>
+</ol>
+<h1 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h1><ol>
+<li>进程和线程？</li>
+<li>内核态和用户态？</li>
+<li>进程间通信方式每个详细说？优缺点？</li>
+<li>线程间通信方式详细说？</li>
+<li>进程线程拥有的资源集合？</li>
+<li>讲讲死锁？</li>
+<li>线程池实现一下？</li>
+<li>主机字节序和网络字节序？如何判断大端小端？写个程序。</li>
+<li>虚拟内存？</li>
+<li>页表工作原理，MMU底层原理？</li>
+<li><h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1></li>
+<li>B树/B+树/红黑树有什么区别？</li>
+<li>红黑树旋转？</li>
+<li>排序算法复杂度？</li>
+</ol>
+<h1 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h1><ol>
+<li>MYSQL索引作用？索引失效？</li>
+<li>MYSQL引擎？</li>
+<li>MYSQL锁？</li>
+<li>MYSQL事务？</li>
+<li>实现一个堆？</li>
+</ol>
+<h1 id="中间件"><a href="#中间件" class="headerlink" title="中间件"></a>中间件</h1><h1 id="场景设计"><a href="#场景设计" class="headerlink" title="场景设计"></a>场景设计</h1><h1 id="智力题"><a href="#智力题" class="headerlink" title="智力题"></a>智力题</h1>
       
     </div>
 
@@ -658,88 +1081,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atemplate-template-parameter/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atemplate-template-parameter/" class="post-title-link" itemprop="url">c++11新特性：template-template-parameter</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-04 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-04T00:00:00+08:00">2021-09-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:08:38" itemprop="dateModified" datetime="2021-10-29T20:08:38+08:00">2021-10-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><p>模板参数就是模板的参数，它是一种模板技巧，形式如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">template</span>&lt;<span class="keyword">typename</span> U&gt; <span class="keyword">typename</span> Container&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span>&#123;</span></span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        Container&lt;T&gt; c;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="built_in">Foo</span>()&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">long</span> i = <span class="number">0</span>; i &lt; SIZE; ++i)&#123;</span><br><span class="line">                c.<span class="built_in">insert</span>(c.<span class="built_in">end</span>(), <span class="built_in">T</span>());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atemplate-template-parameter/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Alambda/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -799,171 +1140,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Alambda/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9A%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9A%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/" class="post-title-link" itemprop="url">c++11新特性：右值引用</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-04 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-04T00:00:00+08:00">2021-09-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 19:38:37" itemprop="dateModified" datetime="2021-10-29T19:38:37+08:00">2021-10-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>是一种新的引用类型。可以来帮助解决unnecessary copying问题和实现完美转发。<br>当右手边是一个右值，那么左手边可以steal resources from right side，而不需要重新分配内存。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9A%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atype-Alias,noexcept,override,final/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atype-Alias,noexcept,override,final/" class="post-title-link" itemprop="url">c++11新特性：type-Alias,noexcept,override,final</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-04 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-04T00:00:00+08:00">2021-09-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:08:43" itemprop="dateModified" datetime="2021-10-29T20:08:43+08:00">2021-10-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="Type-Alias"><a href="#Type-Alias" class="headerlink" title="Type Alias"></a>Type Alias</h3><p>在c++11之前定义函数指针需要typedef或者#define：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span><span class="params">(*func)</span><span class="params">(<span class="keyword">int</span>,<span class="keyword">int</span>)</span></span>;</span><br></pre></td></tr></table></figure>
-<p>现在我们可以使用using关键字定义，更加直观：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> func = <span class="built_in"><span class="keyword">void</span></span>(*)(<span class="keyword">int</span>,<span class="keyword">int</span>)</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atype-Alias,noexcept,override,final/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -1054,20 +1230,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">67</span>
+          <span class="site-state-item-count">70</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
