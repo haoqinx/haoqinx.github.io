@@ -21,19 +21,20 @@
     var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="星海横流 岁月成碑">
-<meta property="og:type" content="website">
-<meta property="og:title" content="categories">
-<meta property="og:url" content="http://haoqinx.github.io/categories/index.html">
+  <meta name="description" content="问题描述vscode Remote SSH 抽风系列：报错command ‘_workbench.downloadResource’ failed” when connecting to a remote host via ssh.     主要问题是我的远程Linux环境是连不上网的，我用本机Windows系统搭建了一个Apache服务器，Linux代理到本机端口实现访问外网。    vscod">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vscode远程登录不上（command &#39;_workbench.downloadResource&#39; failed&quot; when connecting to a remote host via ssh）">
+<meta property="og:url" content="http://haoqinx.github.io/2020/10/02/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%EF%BC%9Avscode%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95%E5%87%BA%E9%94%99/index.html">
 <meta property="og:site_name" content="面向自由编程">
-<meta property="og:description" content="星海横流 岁月成碑">
+<meta property="og:description" content="问题描述vscode Remote SSH 抽风系列：报错command ‘_workbench.downloadResource’ failed” when connecting to a remote host via ssh.     主要问题是我的远程Linux环境是连不上网的，我用本机Windows系统搭建了一个Apache服务器，Linux代理到本机端口实现访问外网。    vscod">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2021-10-29T09:01:17.000Z">
-<meta property="article:modified_time" content="2021-10-29T09:11:41.287Z">
+<meta property="article:published_time" content="2020-10-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-23T06:15:25.185Z">
 <meta property="article:author" content="hqin">
+<meta property="article:tag" content="Bug">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://haoqinx.github.io/categories/">
+<link rel="canonical" href="http://haoqinx.github.io/2020/10/02/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%EF%BC%9Avscode%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95%E5%87%BA%E9%94%99/">
 
 
 <script id="page-configurations">
@@ -41,13 +42,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'en'
   };
 </script>
 
-  <title>categories | 面向自由编程
-</title>
+  <title>vscode远程登录不上（command '_workbench.downloadResource' failed" when connecting to a remote host via ssh） | 面向自由编程</title>
   
 
 
@@ -159,51 +159,120 @@
       <div class="main-inner">
         <div class="content-wrap">
           
-  
-  
 
-          <div class="content page posts-expand">
+          <div class="content post posts-expand">
             
 
     
-    
-    
-    <div class="post-block" lang="en">
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2020/10/02/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%EF%BC%9Avscode%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95%E5%87%BA%E9%94%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
       <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          vscode远程登录不上（command '_workbench.downloadResource' failed" when connecting to a remote host via ssh）
+        </h1>
 
-<h1 class="post-title" itemprop="name headline">categories
-</h1>
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
 
-<div class="post-meta">
+              <time title="Created: 2020-10-02 00:00:00" itemprop="dateCreated datePublished" datetime="2020-10-02T00:00:00+08:00">2020-10-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-11-23 14:15:25" itemprop="dateModified" datetime="2021-11-23T14:15:25+08:00">2021-11-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Bug/" itemprop="url" rel="index"><span itemprop="name">Bug</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><p>vscode Remote SSH 抽风系列：报错command ‘_workbench.downloadResource’ failed” when connecting to a remote host via ssh.   </p>
+<ol>
+<li><p>主要问题是我的远程Linux环境是连不上网的，我用本机Windows系统搭建了一个Apache服务器，Linux代理到本机端口实现访问外网。  </p>
+</li>
+<li><p>vscode Remote SSH连接的时候需要下载一个.vscode-server文件，vscode中一直显示下载失败。一直提示重新输入密码？？就不能提示下下载失败吗？？什么伞兵设置？</p>
+<span id="more"></span>
+<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3></li>
+<li><p>在你远程登录的那个文件夹下面找到<br>/home/.vscode-server/bin/ccbaa2d27e38e5afa3e5c21c1c7bef4657064247<br>这个文件，commitid就是后面那一串ccbaa2d27e38e5afa3e5c21c1c7bef4657064247 </p>
+</li>
+<li><p>手动下载  </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://vscode.cdn.azure.cn/stable/$&#123;commit&#125;/vscode-server-linux-x64.tar.gz  </span><br></pre></td></tr></table></figure>
+<p>或者在windows上下好scp上去</p>
+</li>
+<li><p>解压并且改名</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf vscode-server.tar.gz</span><br><span class="line">mv vscode-server</span><br></pre></td></tr></table></figure></li>
+<li><p><font color=red>设置下载结束标志</font>   </p>
+</li>
+</ol>
+<p>注意这步很坑，如果没设置就会让你一直下，在这里卡了好久。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch vscode-scp-done.flag</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>重新连接就好了</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Bug/" rel="tag"># Bug</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/02/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" rel="next" title="数据挖掘">
+      数据挖掘 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
-</div>
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
-          <div class="category-all-page">
-            <div class="category-all-title">
-              15 categories in total
-            </div>
-            <div class="category-all">
-              <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Bug/">Bug</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C++</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/STL/">STL</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/muduo/">muduo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">多线程</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%A1%AC%E4%BB%B6%E6%9E%B6%E6%9E%84/">硬件架构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BB%BC%E5%90%88/">综合</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><span class="category-list-count">5</span></li></ul>
-            </div>
-          </div>
-        
-      </div>
-      
-      
-      
-    </div>
-    
-
-    
-    
-    
 
 
           </div>
@@ -254,6 +323,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">解决方法</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
