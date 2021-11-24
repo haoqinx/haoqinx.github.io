@@ -29,7 +29,7 @@
 <meta property="og:description" content="终极总结 C++基础 对const的理解？const指针和引用的区别？  #define和const的区别？  说说static关键字的用法？  inline函数的使用？  知道#pragma pack(n)吗？怎么实现内存对齐的？  解释下”extern C”，在什么时候会用到？  用struct实现下继承？  解释下friend关键字？  多态的实现方式？  虚析构函数？虚构造函数？  说说虚">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-09-13T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-11-22T14:29:07.149Z">
+<meta property="article:modified_time" content="2021-11-24T02:54:50.938Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="综合">
 <meta name="twitter:card" content="summary">
@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-11-22 22:29:07" itemprop="dateModified" datetime="2021-11-22T22:29:07+08:00">2021-11-22</time>
+                <time title="Modified: 2021-11-24 10:54:50" itemprop="dateModified" datetime="2021-11-24T10:54:50+08:00">2021-11-24</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -274,13 +274,10 @@
 </li>
 <li><p>讲下jemalloc？</p>
 </li>
+<li><p>知道哪些强制类型转换？（static_cast等)</p>
+</li>
 </ol>
-<ul>
-<li>只能在堆上<br>方法：将析构函数设置为私有<br>原因：C++ 是静态绑定语言，编译器管理栈上对象的生命周期，编译器在为类对象分配栈空间时，会先检查类的析构函数的访问性。若析构函数不可访问，则不能在栈上创建对象。</li>
-<li>只能在栈上<br>方法：将 new 和 delete 重载为私有<br>原因：在堆上生成对象，使用 new 关键词操作，其过程分为两阶段：第一阶段，使用 new 在堆上寻找可用内存，分配给对象；第二阶段，调用构造函数生成对象。将 new 操作设置为私有，那么第一阶段就无法完成，就不能够在堆上生成对象。</li>
-</ul>
-<ol start="5">
-<li>知道哪些强制类型转换？（static_cast)<h1 id="STL"><a href="#STL" class="headerlink" title="STL"></a>STL</h1></li>
+<h1 id="STL"><a href="#STL" class="headerlink" title="STL"></a>STL</h1><ol>
 <li>五大组成部分？</li>
 <li>有哪些容器？</li>
 <li>vector/map/哈希/deque底层实现？</li>
@@ -322,7 +319,25 @@
 <li>MYSQL事务？</li>
 <li>实现一个堆？</li>
 </ol>
-<h1 id="中间件"><a href="#中间件" class="headerlink" title="中间件"></a>中间件</h1><h1 id="场景设计"><a href="#场景设计" class="headerlink" title="场景设计"></a>场景设计</h1><h1 id="智力题"><a href="#智力题" class="headerlink" title="智力题"></a>智力题</h1>
+<h1 id="中间件"><a href="#中间件" class="headerlink" title="中间件"></a>中间件</h1><ol>
+<li>redis基本数据结构？</li>
+<li>redis跳表？具体操作插入删除？</li>
+<li>redis的zset？</li>
+<li>redis缓存策略？</li>
+<li>redis淘汰策略？</li>
+<li>redis哨兵模式、集群模式？</li>
+<li>redis哨兵模式和集群模式优缺点？</li>
+<li>redis持久化？</li>
+<li>redis缓存和主库不一致？</li>
+</ol>
+<h1 id="场景设计"><a href="#场景设计" class="headerlink" title="场景设计"></a>场景设计</h1><h1 id="智力题"><a href="#智力题" class="headerlink" title="智力题"></a>智力题</h1><ol>
+<li>有十个机器，九个生产的金币是5g，只有一个生产是4g，给你一个称，怎么一次找出那个生产4g的机器。</li>
+</ol>
+<p>将机器从1开始编号到10，每个机器取对应编号个硬币，共计55个硬币。<br>假设每个机器生产的硬币都是5g，则这55个硬币总总量为275g；<br>与实际的重量做差值，即为生产4g硬币对应机器的编号。<br>（如果是1号机器，因为只取了1个硬币，重量比2</p>
+<ol start="2">
+<li>给一个硬币，要求生成1/5的概率。<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">g1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span> / <span class="built_in">random</span>() &gt; <span class="number">0.5</span> ? <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">ing <span class="title">getAns</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        res = (<span class="built_in">g1</span>() &lt;&lt; <span class="number">2</span>) + (<span class="built_in">g1</span>() &lt;&lt; <span class="number">1</span>) + <span class="built_in">g1</span>();</span><br><span class="line">    &#125; <span class="keyword">while</span> (res == <span class="number">7</span> || res == <span class="number">6</span> || res == <span class="number">5</span>);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+
     </div>
 
     
@@ -340,8 +355,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%20&%20UDP/" rel="prev" title="网络复习：TCP & UDP">
-      <i class="fa fa-chevron-left"></i> 网络复习：TCP & UDP
+    <a href="/2021/09/14/%E8%99%9A%E6%8B%9F%E5%8C%96%EF%BC%9Adocker%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" rel="prev" title="Docker底层原理：CGroup & Namespace">
+      <i class="fa fa-chevron-left"></i> Docker底层原理：CGroup & Namespace
     </a></div>
       <div class="post-nav-item">
     <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9Ahttp/" rel="next" title="网络复习：HTTP1.0/1.1/2.0">
@@ -421,20 +436,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">83</span>
+          <span class="site-state-item-count">86</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-count">29</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
