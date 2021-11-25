@@ -163,6 +163,91 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">c++STL系列：常见问题</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-10-29 20:09:27" itemprop="dateModified" datetime="2021-10-29T20:09:27+08:00">2021-10-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="为什么set-map底层用红黑树而不用AVL树？"><a href="#为什么set-map底层用红黑树而不用AVL树？" class="headerlink" title="为什么set/map底层用红黑树而不用AVL树？"></a>为什么set/map底层用红黑树而不用AVL树？</h3><p>红黑树与AVL比较：</p>
+<ol>
+<li><p>AVL是严格平衡的，频繁的插入和删除，会引起频繁的rebalance，导致效率降低；红黑树是弱平衡的，算是一种折中，插入最多旋转2次，删除最多旋转3次。</p>
+</li>
+<li><p>红黑树在查找、插入删除的复杂度都是O(logn)，且性能稳定，所以STL里面很多结构包括map底层都是使用的红黑树。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9AG2.9%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -894,124 +979,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Anew&&delete/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Anew&&delete/" class="post-title-link" itemprop="url">c++内存管理系列：new/operator new/placement new</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-08-29 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-29T00:00:00+08:00">2021-08-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:09:13" itemprop="dateModified" datetime="2021-10-29T20:09:13+08:00">2021-10-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="内存分配的层面"><a href="#内存分配的层面" class="headerlink" title="内存分配的层面"></a>内存分配的层面</h3><ul>
-<li><p>c++ 内存分配相相关函数如下表所示。</p>
-<table>
-<thead>
-<tr>
-<th align="center">分配</th>
-<th align="center">释放</th>
-<th align="center">类属</th>
-<th align="center">可否重载</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">malloc()</td>
-<td align="center">free()</td>
-<td align="center">C函数</td>
-<td align="center">x</td>
-</tr>
-<tr>
-<td align="center">new</td>
-<td align="center">delete</td>
-<td align="center">C++表达式</td>
-<td align="center">x</td>
-</tr>
-<tr>
-<td align="center">::operator new()</td>
-<td align="center">::operator delete()</td>
-<td align="center">C++函数</td>
-<td align="center">√</td>
-</tr>
-<tr>
-<td align="center">allocator<T>::allocate()</td>
-<td align="center">allocator<T>::deallocate()</td>
-<td align="center">C++标准库</td>
-<td align="center">可自由设计并搭配任何容器</td>
-</tr>
-</tbody></table>
-</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Anew&&delete/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1083,7 +1050,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">86</span>
+          <span class="site-state-item-count">87</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
