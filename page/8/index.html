@@ -163,6 +163,88 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/27/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E8%99%9A%E7%BB%A7%E6%89%BF%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/08/27/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E8%99%9A%E7%BB%A7%E6%89%BF%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80/" class="post-title-link" itemprop="url">effective-c++系列：单继承、多继承、虚函数、虚继承内存布局</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-08-27 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-27T00:00:00+08:00">2021-08-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-10-29 20:10:13" itemprop="dateModified" datetime="2021-10-29T20:10:13+08:00">2021-10-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="虚函数内存模型"><a href="#虚函数内存模型" class="headerlink" title="虚函数内存模型"></a>虚函数内存模型</h3><ul>
+<li>我们可以用基类型A的引用或者指针持有实际类型为派生类B的对象，这意味着，编译时我们无法通过其声明类型来确定其实际类型，也就无法确定应该调用哪个具体的虚函数。考虑到程序中的每个函数都在内存中有着唯一的地址，我们可以将具体函数的地址作为成员变量，存放在对象之中，这样就可以在运行时，通过访问这个成员变量，获取到实际类型虚函数的地址。
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/08/27/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E8%99%9A%E7%BB%A7%E6%89%BF%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/25/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9Aprivate%E7%BB%A7%E6%89%BF%E5%92%8C%E5%A4%9A%E7%BB%A7%E6%89%BF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -580,88 +662,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%BC%95%E7%94%A8%E6%B5%85%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%BC%95%E7%94%A8%E6%B5%85%E6%9E%90/" class="post-title-link" itemprop="url">effective-c++系列：引用浅析</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-08-20 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-20T00:00:00+08:00">2021-08-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:10:18" itemprop="dateModified" datetime="2021-10-29T20:10:18+08:00">2021-10-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><ul>
-<li>引用不是新定义一个变量，而是给一个已经存在的变量取了一个别名，编译器不会为引用变量开辟内存空间，它和它引用的变量共用同一块内存空间。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%BC%95%E7%94%A8%E6%B5%85%E6%9E%90/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88%EF%BC%882%EF%BC%89/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -721,6 +721,88 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88%EF%BC%882%EF%BC%89/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%BC%95%E7%94%A8%E6%B5%85%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%BC%95%E7%94%A8%E6%B5%85%E6%9E%90/" class="post-title-link" itemprop="url">effective-c++系列：引用浅析</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-08-20 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-20T00:00:00+08:00">2021-08-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-10-29 20:10:18" itemprop="dateModified" datetime="2021-10-29T20:10:18+08:00">2021-10-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><ul>
+<li>引用不是新定义一个变量，而是给一个已经存在的变量取了一个别名，编译器不会为引用变量开辟内存空间，它和它引用的变量共用同一块内存空间。
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%BC%95%E7%94%A8%E6%B5%85%E6%9E%90/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -907,90 +989,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/12/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%90%84%E7%A7%8D%E9%94%81%E5%A4%A7%E6%80%BB%E7%BB%93/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/08/12/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%90%84%E7%A7%8D%E9%94%81%E5%A4%A7%E6%80%BB%E7%BB%93/" class="post-title-link" itemprop="url">Linux内核系列：各种锁大总结</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-08-12 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-12T00:00:00+08:00">2021-08-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-11-23 21:29:39" itemprop="dateModified" datetime="2021-11-23T21:29:39+08:00">2021-11-23</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="乐观锁和悲观锁"><a href="#乐观锁和悲观锁" class="headerlink" title="乐观锁和悲观锁"></a>乐观锁和悲观锁</h3><ol>
-<li>定义<ul>
-<li>乐观锁：每次获取数据的时候，都不会担心数据被修改，所以每次获取数据的时候都不会进行加锁，但是在更新数据的时候需要判断该数据是否被别人修改过。如果数据被其他线程修改，则不进行数据更新，如果数据没有被其他线程修改，则进行数据更新。由于数据没有进行加锁，期间该数据可以被其他线程进行读写操作。</li>
-<li>悲观锁：每次获取数据的时候，都会担心数据被修改，所以每次获取数据的时候都会进行加锁，确保在自己使用的过程中数据不会被别人修改，使用完成后进行数据解锁。由于数据进行加锁，期间对该数据进行读写的其他线程都会进行等待。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/08/12/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%90%84%E7%A7%8D%E9%94%81%E5%A4%A7%E6%80%BB%E7%BB%93/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1062,20 +1060,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-count">92</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-count">32</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
