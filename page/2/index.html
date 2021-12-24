@@ -163,7 +163,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -177,7 +177,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8/" class="post-title-link" itemprop="url">redis系列：压缩列表</a>
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/" class="post-title-link" itemprop="url">redis系列：RDB & AOF</a>
         </h2>
 
         <div class="post-meta">
@@ -194,7 +194,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:17:15" itemprop="dateModified" datetime="2021-10-29T20:17:15+08:00">2021-10-29</time>
+                <time title="Modified: 2021-11-21 11:14:45" itemprop="dateModified" datetime="2021-11-21T11:14:45+08:00">2021-11-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -217,187 +217,24 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p>在3.0版本中基本结构如下图所示：<br><img src="/images/redis-zl-1.png"></p>
+          <h3 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h3><ol>
+<li>文件结构<br><img src="/images/redis-ar-1.png"><br>一个完整的RDB文件包含上面各部分。  </li>
+</ol>
+<ul>
+<li>REDIS：5字节，检查是否为RDB文件。</li>
+<li>db_version:4字节，字符串表示的整数，记录版本号。</li>
+<li>database：0或n个数据库的键值对数据。</li>
+<li>EOF：1字节，表示正文结束。</li>
+<li>check_sum：8字节长无符号整数，保存一个校验和，根据前面四个部分计算得到。  </li>
+</ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8/#more" rel="contents">
+              <a class="btn" href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
           <!--/noindex-->
         
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%93%A8%E5%85%B5%E5%92%8C%E9%9B%86%E7%BE%A4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%93%A8%E5%85%B5%E5%92%8C%E9%9B%86%E7%BE%A4/" class="post-title-link" itemprop="url">redis系列：哨兵和集群</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-11-19 11:19:35" itemprop="dateModified" datetime="2021-11-19T11:19:35+08:00">2021-11-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="哨兵模式"><a href="#哨兵模式" class="headerlink" title="哨兵模式"></a>哨兵模式</h3><p>基本概念和详细流程见《Redis设计与实现》、《Redis5设计与源码分析》，只说下自己的理解。<br>下图是一个基本的主从复制的哨兵系统：<br><img src="/images/sen-1.png"><br>主要有三种角色：哨兵、主服务器，从服务器。</p>
-<ul>
-<li>哨兵：一种特殊的redis服务端，使用哨兵专用命令。用来监控主从状态，执行故障转移等。</li>
-<li>主服务器：执行客户端请求，同步自身数据到从服务器。</li>
-<li>从服务器：从主服务器同步数据。</li>
-</ul>
-<p>系统的重要逻辑点有：</p>
-<ol>
-<li>哨兵读入用户指定的配置文件，对每个要被监视的主服务器建立一个示例结构，然后创建连向主服务器的命令连接和订阅连接，命令用来向主服务器发送命令请求，订阅用来接受指定频道的消息。</li>
-<li>哨兵向服务器发送INFO命令来获得主服务器及所有从服务器的地址信息，然后创建对应的实例。</li>
-<li>哨兵每10s向主服务器和从服务器方发送INFO命令，如果判定主服务器下线，或者正在执行故障转移，频率增大到1s一次。</li>
-<li>哨兵会对和自己同时监视主服务器的哨兵每2s通信一次（通信通过服务器的__sentinel__:hello中转传播），表示自己存在，同时也会接受其他哨兵的消息。</li>
-<li>哨兵之间只有命令连接，哨兵和服务器之间有命令和订阅连接。</li>
-<li>哨兵1s一次向主服务器，从服务器，哨兵节点发PING命令，根据回复判断在线状态，如果收到无效回复或没有回复，就判断此节点为主观下线。</li>
-<li>判断主观下线之后，向其他哨兵询问，如果超过半数确认则判定为客观下线。</li>
-<li>哨兵通过raft一致性算法选举出头哨兵，头哨兵执行故障转移操作。</li>
-<li>故障转移通过在下线的主服务器的从服务器列表中来选择，选择状态良好，和主服务器通信时间最新，复制偏移量更大，ID更小的节点。</li>
-<li>将此从服务器置为主服务器，原主服务器若上线则置为从服务器。</li>
-</ol>
-<h3 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h3><p>基本概念和详细流程见《Redis设计与实现》、《Redis5设计与源码分析》，只说下自己的理解。<br>只阐述下主要流程：</p>
-<ol>
-<li>节点之间通过两两握手来讲其他节点添加到自己的集群中。其实就是在自己的数据结构上初始化节点结构体。</li>
-<li>集群中的16384个槽分派给节点（<a href="https://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">为什么是16384个节点</a>）。</li>
-<li>节点接受到一个命令请求，会使用CRC16(key) % 16384 来确定槽，如果不是自己负责，会自动重定向到正确的节点（怎么重定向？其实就是有一个数据，记录了每个槽对应的节点指针）。</li>
-<li>重新分片的原理：见《Redis设计与实现》p266.</li>
-<li>集群中的节点通过gossip协议通信，常见的消息有MEET,PING,PONG,PUBLISH,FAIL等。</li>
-</ol>
-<h3 id="单机模式，主从模式，哨兵模式，集群模式优缺点："><a href="#单机模式，主从模式，哨兵模式，集群模式优缺点：" class="headerlink" title="单机模式，主从模式，哨兵模式，集群模式优缺点："></a>单机模式，主从模式，哨兵模式，集群模式优缺点：</h3><ol>
-<li>单机模式</li>
-</ol>
-<ul>
-<li>优点：<ul>
-<li>架构简单，部署方便</li>
-<li>性价比高</li>
-<li>性能高</li>
-</ul>
-</li>
-<li>缺点：<ul>
-<li>不保证数据可靠性</li>
-<li>在缓存使用，进程重启之后容易丢失数据，不能解决缓存预热问题。（ps:缓存预热：新的缓存系统没有任何缓存数据，在缓存重建数据的过程中，系统性能和数据库负载都不太好，所以最好是在系统上线之前就把要缓存的热点数据加载到缓存中，这种缓存预加载手段就是预热。）</li>
-</ul>
-</li>
-</ul>
-<ol start="2">
-<li>主从模式</li>
-</ol>
-<ul>
-<li>优点：<ul>
-<li>高可靠行：能够在主库主张自动切换从库</li>
-<li>读写分离：从节点扩展读数据库的压力，只有主节点才能写</li>
-</ul>
-</li>
-<li>缺点：<ul>
-<li>故障恢复复杂，主节点出现异常，需要手动将从节点配置为主节点</li>
-<li>主节点写能力有限，大量写容易宕机</li>
-<li>主机单机存储有限</li>
-<li>原生复制弊端（早期版本）：如：Redis 复制中断后，Slave 会发起 psync，此时如果同步不成功，则会进行全量同步，主库执行全量备份的同时可能会造成毫秒或秒级的卡顿;又由于 COW 机制，导致极端情况下的主库内存溢出，程序异常退出或宕机;主库节点生成备份文件导致服务器磁盘 IO 和 CPU(压缩)资源消耗;发送数 GB 大小的备份文件导致服务器出口带宽暴增，阻塞请求，建议升级到最新版本。</li>
-</ul>
-</li>
-</ul>
-<ol start="3">
-<li>哨兵模式：</li>
-</ol>
-<ul>
-<li><p>优点：</p>
-<ul>
-<li>Redis Sentinel 集群部署简单。</li>
-<li>能够解决 Redis 主从模式下的高可用切换问题。</li>
-<li>很方便实现 Redis 数据节点的线形扩展，轻松突破 Redis 自身单线程瓶颈，可极大满足 Redis 大容量或高性能的业务需求。</li>
-<li>可以实现一套 Sentinel 监控一组 Redis 数据节点或多组数据节点。</li>
-</ul>
-</li>
-<li><p>缺点：</p>
-<ul>
-<li>是一种中心化的集群实现方案：始终只有一个Redis主机来接收和处理写请求，写操作受单机瓶颈影响。</li>
-<li>集群里所有节点保存的都是全量数据，浪费内存空间，没有真正实现分布式存储。数据量过大时，主从同步严重影响master的性能。</li>
-<li>Redis主机宕机后，哨兵模式正在投票选举的情况之外，因为投票选举结束之前，谁也不知道主机和从机是谁，此时Redis也会开启保护机制，禁止写操作，直到选举出了新的Redis主机。</li>
-</ul>
-</li>
-</ul>
-<ol start="4">
-<li>集群模式</li>
-</ol>
-<ul>
-<li><p>优点：</p>
-<ul>
-<li>无中心架构。数据按照 slot 存储分布在多个节点，节点间数据共享，可动态调整数据分布。</li>
-<li>可扩展性：可线性扩展到 1000 多个节点，节点可动态添加或删除。</li>
-<li>高可用性：部分节点不可用时，集群仍可用。通过增加 Slave 做 standby 数据副本，能够实现故障自动 failover，节点之间通过 gossip 协议交换状态信息，用投票机制完成 Slave 到 Master 的角色提升。</li>
-</ul>
-</li>
-<li><p>缺点：</p>
-<ul>
-<li>Key 事务操作支持有限，只支持多 key 在同一节点上的事务操作，当多个 Key 分布于不同的节点上时无法使用事务功能。</li>
-<li>Key 作为数据分区的最小粒度，不能将一个很大的键值对象如 hash、list 等映射到不同的节点。</li>
-<li>不支持多数据库空间，单机下的 redis 可以支持到 16 个数据库，集群模式下只能使用 1 个数据库空间，即 db 0。</li>
-</ul>
-</li>
-</ul>
-
       
     </div>
 
@@ -595,6 +432,178 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%93%A8%E5%85%B5%E5%92%8C%E9%9B%86%E7%BE%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%93%A8%E5%85%B5%E5%92%8C%E9%9B%86%E7%BE%A4/" class="post-title-link" itemprop="url">redis系列：哨兵和集群</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-11-19 11:19:35" itemprop="dateModified" datetime="2021-11-19T11:19:35+08:00">2021-11-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="哨兵模式"><a href="#哨兵模式" class="headerlink" title="哨兵模式"></a>哨兵模式</h3><p>基本概念和详细流程见《Redis设计与实现》、《Redis5设计与源码分析》，只说下自己的理解。<br>下图是一个基本的主从复制的哨兵系统：<br><img src="/images/sen-1.png"><br>主要有三种角色：哨兵、主服务器，从服务器。</p>
+<ul>
+<li>哨兵：一种特殊的redis服务端，使用哨兵专用命令。用来监控主从状态，执行故障转移等。</li>
+<li>主服务器：执行客户端请求，同步自身数据到从服务器。</li>
+<li>从服务器：从主服务器同步数据。</li>
+</ul>
+<p>系统的重要逻辑点有：</p>
+<ol>
+<li>哨兵读入用户指定的配置文件，对每个要被监视的主服务器建立一个示例结构，然后创建连向主服务器的命令连接和订阅连接，命令用来向主服务器发送命令请求，订阅用来接受指定频道的消息。</li>
+<li>哨兵向服务器发送INFO命令来获得主服务器及所有从服务器的地址信息，然后创建对应的实例。</li>
+<li>哨兵每10s向主服务器和从服务器方发送INFO命令，如果判定主服务器下线，或者正在执行故障转移，频率增大到1s一次。</li>
+<li>哨兵会对和自己同时监视主服务器的哨兵每2s通信一次（通信通过服务器的__sentinel__:hello中转传播），表示自己存在，同时也会接受其他哨兵的消息。</li>
+<li>哨兵之间只有命令连接，哨兵和服务器之间有命令和订阅连接。</li>
+<li>哨兵1s一次向主服务器，从服务器，哨兵节点发PING命令，根据回复判断在线状态，如果收到无效回复或没有回复，就判断此节点为主观下线。</li>
+<li>判断主观下线之后，向其他哨兵询问，如果超过半数确认则判定为客观下线。</li>
+<li>哨兵通过raft一致性算法选举出头哨兵，头哨兵执行故障转移操作。</li>
+<li>故障转移通过在下线的主服务器的从服务器列表中来选择，选择状态良好，和主服务器通信时间最新，复制偏移量更大，ID更小的节点。</li>
+<li>将此从服务器置为主服务器，原主服务器若上线则置为从服务器。</li>
+</ol>
+<h3 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h3><p>基本概念和详细流程见《Redis设计与实现》、《Redis5设计与源码分析》，只说下自己的理解。<br>只阐述下主要流程：</p>
+<ol>
+<li>节点之间通过两两握手来讲其他节点添加到自己的集群中。其实就是在自己的数据结构上初始化节点结构体。</li>
+<li>集群中的16384个槽分派给节点（<a href="https://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">为什么是16384个节点</a>）。</li>
+<li>节点接受到一个命令请求，会使用CRC16(key) % 16384 来确定槽，如果不是自己负责，会自动重定向到正确的节点（怎么重定向？其实就是有一个数据，记录了每个槽对应的节点指针）。</li>
+<li>重新分片的原理：见《Redis设计与实现》p266.</li>
+<li>集群中的节点通过gossip协议通信，常见的消息有MEET,PING,PONG,PUBLISH,FAIL等。</li>
+</ol>
+<h3 id="单机模式，主从模式，哨兵模式，集群模式优缺点："><a href="#单机模式，主从模式，哨兵模式，集群模式优缺点：" class="headerlink" title="单机模式，主从模式，哨兵模式，集群模式优缺点："></a>单机模式，主从模式，哨兵模式，集群模式优缺点：</h3><ol>
+<li>单机模式</li>
+</ol>
+<ul>
+<li>优点：<ul>
+<li>架构简单，部署方便</li>
+<li>性价比高</li>
+<li>性能高</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>不保证数据可靠性</li>
+<li>在缓存使用，进程重启之后容易丢失数据，不能解决缓存预热问题。（ps:缓存预热：新的缓存系统没有任何缓存数据，在缓存重建数据的过程中，系统性能和数据库负载都不太好，所以最好是在系统上线之前就把要缓存的热点数据加载到缓存中，这种缓存预加载手段就是预热。）</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li>主从模式</li>
+</ol>
+<ul>
+<li>优点：<ul>
+<li>高可靠行：能够在主库主张自动切换从库</li>
+<li>读写分离：从节点扩展读数据库的压力，只有主节点才能写</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>故障恢复复杂，主节点出现异常，需要手动将从节点配置为主节点</li>
+<li>主节点写能力有限，大量写容易宕机</li>
+<li>主机单机存储有限</li>
+<li>原生复制弊端（早期版本）：如：Redis 复制中断后，Slave 会发起 psync，此时如果同步不成功，则会进行全量同步，主库执行全量备份的同时可能会造成毫秒或秒级的卡顿;又由于 COW 机制，导致极端情况下的主库内存溢出，程序异常退出或宕机;主库节点生成备份文件导致服务器磁盘 IO 和 CPU(压缩)资源消耗;发送数 GB 大小的备份文件导致服务器出口带宽暴增，阻塞请求，建议升级到最新版本。</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>哨兵模式：</li>
+</ol>
+<ul>
+<li><p>优点：</p>
+<ul>
+<li>Redis Sentinel 集群部署简单。</li>
+<li>能够解决 Redis 主从模式下的高可用切换问题。</li>
+<li>很方便实现 Redis 数据节点的线形扩展，轻松突破 Redis 自身单线程瓶颈，可极大满足 Redis 大容量或高性能的业务需求。</li>
+<li>可以实现一套 Sentinel 监控一组 Redis 数据节点或多组数据节点。</li>
+</ul>
+</li>
+<li><p>缺点：</p>
+<ul>
+<li>是一种中心化的集群实现方案：始终只有一个Redis主机来接收和处理写请求，写操作受单机瓶颈影响。</li>
+<li>集群里所有节点保存的都是全量数据，浪费内存空间，没有真正实现分布式存储。数据量过大时，主从同步严重影响master的性能。</li>
+<li>Redis主机宕机后，哨兵模式正在投票选举的情况之外，因为投票选举结束之前，谁也不知道主机和从机是谁，此时Redis也会开启保护机制，禁止写操作，直到选举出了新的Redis主机。</li>
+</ul>
+</li>
+</ul>
+<ol start="4">
+<li>集群模式</li>
+</ol>
+<ul>
+<li><p>优点：</p>
+<ul>
+<li>无中心架构。数据按照 slot 存储分布在多个节点，节点间数据共享，可动态调整数据分布。</li>
+<li>可扩展性：可线性扩展到 1000 多个节点，节点可动态添加或删除。</li>
+<li>高可用性：部分节点不可用时，集群仍可用。通过增加 Slave 做 standby 数据副本，能够实现故障自动 failover，节点之间通过 gossip 协议交换状态信息，用投票机制完成 Slave 到 Master 的角色提升。</li>
+</ul>
+</li>
+<li><p>缺点：</p>
+<ul>
+<li>Key 事务操作支持有限，只支持多 key 在同一节点上的事务操作，当多个 Key 分布于不同的节点上时无法使用事务功能。</li>
+<li>Key 作为数据分区的最小粒度，不能将一个很大的键值对象如 hash、list 等映射到不同的节点。</li>
+<li>不支持多数据库空间，单机下的 redis 可以支持到 16 个数据库，集群模式下只能使用 1 个数据库空间，即 db 0。</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -758,88 +767,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B7%B3%E8%B7%83%E8%A1%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B7%B3%E8%B7%83%E8%A1%A8/" class="post-title-link" itemprop="url">redis系列：跳跃表</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 19:38:30" itemprop="dateModified" datetime="2021-10-29T19:38:30+08:00">2021-10-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p>数据结构如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> &#123;</span></span><br><span class="line">    <span class="comment">//成员对象</span></span><br><span class="line">    robj *obj;</span><br><span class="line">    <span class="comment">//分值</span></span><br><span class="line">    <span class="keyword">double</span> score;</span><br><span class="line">    <span class="comment">//后退指针</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">backward</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistLevel</span> &#123;</span></span><br><span class="line">        <span class="comment">//前进指针</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">forward</span>;</span></span><br><span class="line">        <span class="comment">//跨度</span></span><br><span class="line">        <span class="keyword">unsigned</span> <span class="keyword">int</span> span;</span><br><span class="line">    &#125; level[];</span><br><span class="line">&#125; zskiplistNode;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplist</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">header</span>, *<span class="title">tail</span>;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> length;</span><br><span class="line">    <span class="keyword">int</span> level;</span><br><span class="line">&#125; zskiplist;</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B7%B3%E8%B7%83%E8%A1%A8/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -967,6 +894,88 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B7%B3%E8%B7%83%E8%A1%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B7%B3%E8%B7%83%E8%A1%A8/" class="post-title-link" itemprop="url">redis系列：跳跃表</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-10-29 19:38:30" itemprop="dateModified" datetime="2021-10-29T19:38:30+08:00">2021-10-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p>数据结构如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> &#123;</span></span><br><span class="line">    <span class="comment">//成员对象</span></span><br><span class="line">    robj *obj;</span><br><span class="line">    <span class="comment">//分值</span></span><br><span class="line">    <span class="keyword">double</span> score;</span><br><span class="line">    <span class="comment">//后退指针</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">backward</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistLevel</span> &#123;</span></span><br><span class="line">        <span class="comment">//前进指针</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">forward</span>;</span></span><br><span class="line">        <span class="comment">//跨度</span></span><br><span class="line">        <span class="keyword">unsigned</span> <span class="keyword">int</span> span;</span><br><span class="line">    &#125; level[];</span><br><span class="line">&#125; zskiplistNode;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplist</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">header</span>, *<span class="title">tail</span>;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> length;</span><br><span class="line">    <span class="keyword">int</span> level;</span><br><span class="line">&#125; zskiplist;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B7%B3%E8%B7%83%E8%A1%A8/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/ubuntu%E6%B7%B1%E5%9D%91%EF%BC%9A%E6%9D%83%E9%99%90%E5%92%8C%E7%BD%91%E7%BB%9C/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1076,7 +1085,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E6%97%A0%E9%94%81%E9%98%9F%E5%88%97/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AB%E6%A0%91%EF%BC%8CB+%E6%A0%91%EF%BC%8C%E7%BA%A2%E9%BB%91%E6%A0%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -1090,7 +1099,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/14/%E6%97%A0%E9%94%81%E9%98%9F%E5%88%97/" class="post-title-link" itemprop="url">无锁队列</a>
+            <a href="/2021/09/14/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AB%E6%A0%91%EF%BC%8CB+%E6%A0%91%EF%BC%8C%E7%BA%A2%E9%BB%91%E6%A0%91/" class="post-title-link" itemprop="url">数据结构：B树，B+树，B*树，红黑树</a>
         </h2>
 
         <div class="post-meta">
@@ -1107,7 +1116,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-30 18:30:58" itemprop="dateModified" datetime="2021-10-30T18:30:58+08:00">2021-10-30</time>
+                <time title="Modified: 2021-12-01 14:35:56" itemprop="dateModified" datetime="2021-12-01T14:35:56+08:00">2021-12-01</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1115,7 +1124,7 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">多线程</span></a>
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
                 </span>
             </span>
 
@@ -1130,10 +1139,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="CAS原子操作"><a href="#CAS原子操作" class="headerlink" title="CAS原子操作"></a>CAS原子操作</h3><p>CAS英文全称Compare &amp; Set(Swap),也就是原子操作，执行过程中不能被中断，在X86中有相应的汇编指令CMPCHG来实现。<br>CAS机制当中使用了3个基本操作数：内存地址V，旧的预期值A，要修改的新值B。<br>更新一个变量的时候，只有当变量的预期值A和内存地址V当中的实际值相同时，才会将内存地址V对应的值修改为B。</p>
+          <h3 id="B树"><a href="#B树" class="headerlink" title="B树"></a>B树</h3><p>B-tree树即B树，B即Balanced，平衡的意思。因为B树的原英文名称为B-tree，而国内很多人喜欢把B-tree译作B-树，其实，这是个非常不好的直译，很容易让人产生误解。如人们可能会以为B-树是一种树，而B树又是另一种树。而事实上是，B-tree就是指的B树。<br>B树的定义如下：</p>
+<ul>
+<li>定义任意非叶子结点最多只有M个儿子，且M&gt;2；</li>
+<li>根结点的儿子数为[2, M]；</li>
+<li>除根结点以外的非叶子结点的儿子数为[M/2, M]，向上取整；</li>
+<li>非叶子结点的关键字个数=儿子数-1；</li>
+<li>所有叶子结点位于同一层；</li>
+<li>k个关键字把节点拆成k+1段，分别指向k+1个儿子，同时满足查找树的大小关系。
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/09/14/%E6%97%A0%E9%94%81%E9%98%9F%E5%88%97/#more" rel="contents">
+              <a class="btn" href="/2021/09/14/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AB%E6%A0%91%EF%BC%8CB+%E6%A0%91%EF%BC%8C%E7%BA%A2%E9%BB%91%E6%A0%91/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
