@@ -163,7 +163,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%88%B0%E5%BA%95%E4%BB%80%E4%B9%88%E6%98%AF%E8%BF%9B%E7%A8%8B%EF%BC%8C%E7%BA%BF%E7%A8%8B/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AB%E6%A0%91%EF%BC%8CB+%E6%A0%91%EF%BC%8C%E7%BA%A2%E9%BB%91%E6%A0%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -177,7 +177,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/02/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%88%B0%E5%BA%95%E4%BB%80%E4%B9%88%E6%98%AF%E8%BF%9B%E7%A8%8B%EF%BC%8C%E7%BA%BF%E7%A8%8B/" class="post-title-link" itemprop="url">Linux内核系列：到底什么是进程，线程</a>
+            <a href="/2021/09/14/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AB%E6%A0%91%EF%BC%8CB+%E6%A0%91%EF%BC%8C%E7%BA%A2%E9%BB%91%E6%A0%91/" class="post-title-link" itemprop="url">数据结构：B树，B+树，B*树，红黑树</a>
         </h2>
 
         <div class="post-meta">
@@ -187,14 +187,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-11-22 19:11:18" itemprop="dateModified" datetime="2021-11-22T19:11:18+08:00">2021-11-22</time>
+                <time title="Modified: 2021-12-01 14:35:56" itemprop="dateModified" datetime="2021-12-01T14:35:56+08:00">2021-12-01</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -202,7 +202,7 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
                 </span>
             </span>
 
@@ -217,11 +217,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h3><h4 id="一个普遍的定义"><a href="#一个普遍的定义" class="headerlink" title="一个普遍的定义"></a>一个普遍的定义</h4><ul>
-<li>进程是计算机中的程序关于某数据集合上的一次运行活动，是系统进行资源分配和调度的基本单位，是操作系统结构的基础。<br>上面的定义应该是比较广泛的一种定义，但是定义地非常模糊，也不好理解究竟在操作系统中进程是什么。下面以Linux操作系统为例，说明究竟在操作系统中进程以什么方式存在。
+          <h3 id="B树"><a href="#B树" class="headerlink" title="B树"></a>B树</h3><p>B-tree树即B树，B即Balanced，平衡的意思。因为B树的原英文名称为B-tree，而国内很多人喜欢把B-tree译作B-树，其实，这是个非常不好的直译，很容易让人产生误解。如人们可能会以为B-树是一种树，而B树又是另一种树。而事实上是，B-tree就是指的B树。<br>B树的定义如下：</p>
+<ul>
+<li>定义任意非叶子结点最多只有M个儿子，且M&gt;2；</li>
+<li>根结点的儿子数为[2, M]；</li>
+<li>除根结点以外的非叶子结点的儿子数为[M/2, M]，向上取整；</li>
+<li>非叶子结点的关键字个数=儿子数-1；</li>
+<li>所有叶子结点位于同一层；</li>
+<li>k个关键字把节点拆成k+1段，分别指向k+1个儿子，同时满足查找树的大小关系。
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/09/02/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%88%B0%E5%BA%95%E4%BB%80%E4%B9%88%E6%98%AF%E8%BF%9B%E7%A8%8B%EF%BC%8C%E7%BA%BF%E7%A8%8B/#more" rel="contents">
+              <a class="btn" href="/2021/09/14/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AB%E6%A0%91%EF%BC%8CB+%E6%A0%91%EF%BC%8C%E7%BA%A2%E9%BB%91%E6%A0%91/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -245,7 +251,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E6%97%A0%E9%94%81%E9%98%9F%E5%88%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -259,7 +265,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/02/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="post-title-link" itemprop="url">Linux内核系列：多线程和线程同步</a>
+            <a href="/2021/09/14/%E6%97%A0%E9%94%81%E9%98%9F%E5%88%97/" class="post-title-link" itemprop="url">无锁队列</a>
         </h2>
 
         <div class="post-meta">
@@ -269,14 +275,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-11-23 20:33:14" itemprop="dateModified" datetime="2021-11-23T20:33:14+08:00">2021-11-23</time>
+                <time title="Modified: 2021-10-30 18:30:58" itemprop="dateModified" datetime="2021-10-30T18:30:58+08:00">2021-10-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -284,7 +290,7 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                  <a href="/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">多线程</span></a>
                 </span>
             </span>
 
@@ -299,76 +305,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="线程间通信"><a href="#线程间通信" class="headerlink" title="线程间通信"></a>线程间通信</h3><ol>
-<li>不同进程的线程之间通信，等同于进程间通信。</li>
-<li>相同进程中不同线程之间通信，主要是线程同步，避免对临界区资源的破坏。</li>
-</ol>
-<h3 id="线程同步"><a href="#线程同步" class="headerlink" title="线程同步"></a>线程同步</h3><ol>
-<li>互斥锁</li>
-</ol>
-<p>互斥量是最简单的同步机制，即互斥锁。多个进程(线程)均可以访问到一个互斥量，通过对互斥量加锁，从而来保护一个临界区,防止其它进程(线程)同时进入临界区，保护临界资源互斥访问。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;error.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">pthread_mutex_t</span> m;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> resource = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">func</span><span class="params">(<span class="keyword">void</span>* args)</span></span>&#123;</span><br><span class="line">     <span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">          <span class="built_in">pthread_mutex_lock</span>(&amp;m);</span><br><span class="line">          <span class="keyword">pthread_t</span> res = <span class="built_in">pthread_self</span>();</span><br><span class="line">          cout &lt;&lt; <span class="string">&quot;current thread : &quot;</span> &lt;&lt; res &lt;&lt; endl;</span><br><span class="line">          cout &lt;&lt; <span class="string">&quot;resource: &quot;</span> &lt;&lt; resource &lt;&lt; endl;</span><br><span class="line">          ++ resource;</span><br><span class="line">          <span class="built_in">pthread_mutex_unlock</span>(&amp;m);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> handler(msg) \</span></span><br><span class="line"><span class="meta">          perror(msg);\</span></span><br><span class="line"><span class="meta">          exit(-1);</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span>  </span>&#123;  </span><br><span class="line">     <span class="keyword">pthread_t</span> p1, p2;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">pthread_mutex_init</span>(&amp;m, <span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span>(<span class="built_in">pthread_create</span>(&amp;p1, <span class="literal">nullptr</span>, func, <span class="number">0</span>))&#123;</span><br><span class="line">          <span class="built_in">handler</span>(<span class="string">&quot;thread create error&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">if</span>(<span class="built_in">pthread_create</span>(&amp;p2, <span class="literal">nullptr</span>, func, <span class="number">0</span>))&#123;</span><br><span class="line">          <span class="built_in">handler</span>(<span class="string">&quot;thread create error&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">if</span>(<span class="built_in">pthread_join</span>(p1, <span class="literal">nullptr</span>))&#123;</span><br><span class="line">          <span class="built_in">handler</span>(<span class="string">&quot;error&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">if</span>(<span class="built_in">pthread_join</span>(p2, <span class="literal">nullptr</span>))&#123;</span><br><span class="line">          <span class="built_in">handler</span>(<span class="string">&quot;error&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li>条件变量</li>
-</ol>
-<p>条件变量是并发编程中的一种同步机制。条件变量使得线程能够阻塞到等待某个条件发生后，再继续执行</p>
-<ul>
-<li>条件变量的实现原理：<br>条件变量其实就是一种等待机制，每个条件变量对应一个等待原因和等待队列，通常有两种操作：wait和signal。<br>条件变量的伪代码：<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Condition</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> waitNum = <span class="number">0</span>;</span><br><span class="line">    WaitQueue q;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待队列中。<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Condition::<span class="built_in">Wait</span>(lock)</span><br><span class="line">&#123;</span><br><span class="line">	++numWaiting;</span><br><span class="line">	Add current thread to WaitQueue q;</span><br><span class="line">	<span class="built_in">release</span>(lock);</span><br><span class="line">	<span class="built_in">schedule</span>(); <span class="comment">//调度机制，让出CPU</span></span><br><span class="line">	<span class="built_in">acquire</span>(lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-对于singal操作来说，则如果等待队列中有线程的话，将它取出唤醒，waitNum减一即可。<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Condition::<span class="built_in">Singal</span>()&#123;</span><br><span class="line">	<span class="keyword">if</span>(waitNum &gt; <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		remove t from q;</span><br><span class="line">		<span class="built_in">wakeup</span>(q);</span><br><span class="line">		--waitNum;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-条件变量的原理虽然很简单，但是使用起来却是比较费脑，还是参考<a target="_blank" rel="noopener" href="https://www.cnblogs.com/Solstice/p/3309089.html">陈硕大佬这篇文章</a>正确使用，下面是一个<font color=orange>保证不会出错的使用方法。</font>经典例子见<a target="_blank" rel="noopener" href="https://github.com/chenshuo/recipes/blob/master/thread/test/Waiter_test.cc">github</a></li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Waiter7</span> :</span> <span class="keyword">public</span> Waiter</span><br><span class="line">&#123;</span><br><span class="line"> <span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">wait</span><span class="params">()</span> <span class="keyword">override</span></span></span><br><span class="line"><span class="function">  </span>&#123;</span><br><span class="line">    <span class="built_in">pthread_mutex_lock</span>(&amp;mutex_);</span><br><span class="line">    <span class="keyword">while</span> (!signaled_)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">pthread_cond_wait</span>(&amp;cond_, &amp;mutex_);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">pthread_mutex_unlock</span>(&amp;mutex_);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">signal</span><span class="params">()</span> <span class="keyword">override</span> <span class="comment">// Sorry, bad name in base class, poor OOP</span></span></span><br><span class="line"><span class="function">  </span>&#123;</span><br><span class="line">    <span class="built_in">broadcast</span>();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">broadcast</span><span class="params">()</span></span></span><br><span class="line"><span class="function">  </span>&#123;</span><br><span class="line">    <span class="built_in">pthread_mutex_lock</span>(&amp;mutex_);</span><br><span class="line">    <span class="built_in">pthread_cond_broadcast</span>(&amp;cond_);</span><br><span class="line">    signaled_ = <span class="literal">true</span>;</span><br><span class="line">    <span class="built_in">pthread_mutex_unlock</span>(&amp;mutex_);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">private</span>:</span><br><span class="line">  <span class="keyword">bool</span> signaled_ = <span class="literal">false</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>条件变量里面有个经典的假唤醒问题，特别是在广播的时候，一个条件满足了，但是当被唤醒线程拿到资源的时候其实已经被其他线程先行一步消耗了，因此需要在等待时使用while循环判断和等待。<br>这个其实和网络编程里面的惊群现象比较相似。</p>
-<ol start="3">
-<li>读写锁</li>
-</ol>
-<p>读写锁的核心思想是：将线程访问共享数据时发出的请求分为两种，分别是：</p>
-<ul>
-<li>读请求：只读取共享数据，不做任何修改；</li>
-<li>写请求：存在修改共享数据的行为。</li>
-</ul>
-<p>当有多个线程发出读请求时，这些线程可以同时执行，也就是说，共享数据的值可以同时被多个发出读请求的线程获取；当有多个线程发出写请求时，这些线程只能一个一个地执行（同步执行）。此外，当发出读请求的线程正在执行时，发出写请求的线程必须等待前者执行完后才能开始执行；当发出写请求的线程正在执行时，发出读请求的线程也必须等待前者执行完后才能开始执行。</p>
-<p>本质上，读写锁就是一个全局变量，发出读请求和写请求的线程都可以访问它。为了区别线程发出的请求类别，当读写锁被发出读请求的线程占用时，我们称它为“读锁”；当读写锁被发出写请求的线程占用时，称它为“写锁”。  </p>
-<table>
-<thead>
-<tr>
-<th>当前读写锁模式</th>
-<th>读请求</th>
-<th>写请求</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>无锁</td>
-<td>允许占用</td>
-<td>允许占用</td>
-</tr>
-<tr>
-<td>读锁</td>
-<td>允许占用</td>
-<td>阻塞线程执行</td>
-</tr>
-<tr>
-<td>写锁</td>
-<td>阻塞线程执行</td>
-<td>阻塞线程执行</td>
-</tr>
-</tbody></table>
-<ul>
-<li><p>当读写锁未被任何线程占用时，发出读请求和写请求的线程都可以占用它。注意，由于读请求和写请求的线程不能同时执行，读写锁默认会优先分配给发出读请求的线程。</p>
-</li>
-<li><p>当读写锁的状态为“读锁”时，表明当前执行的是发出读请求的线程（可能有多个）。此时如果又有线程发出读请求，该线程不会被阻塞，但如果有线程发出写请求，它就会被阻塞，直到读写锁状态改为“无锁”。</p>
-</li>
-<li><p>当读写锁状态为“写锁”时，表明当前执行的是发出写请求的线程（只能有 1 个）。此时无论其它线程发出的是读请求还是写请求，都必须等待读写锁状态改为“无锁”后才能执行。</p>
-</li>
-</ul>
-<p>总的来说，对于进程空间中的共享资源，读写锁允许发出“读”请求的线程共享资源，发出“写”请求的线程必须独占资源，进而实现线程同步。</p>
-<ol start="4">
-<li>信号量</li>
-</ol>
-<p>在linux中进程和线程相似，参考前面的<a href="https://haoqinx.github.io/2021/09/14/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/">进程间通信</a>。</p>
-
+          <h3 id="CAS原子操作"><a href="#CAS原子操作" class="headerlink" title="CAS原子操作"></a>CAS原子操作</h3><p>CAS英文全称Compare &amp; Set(Swap),也就是原子操作，执行过程中不能被中断，在X86中有相应的汇编指令CMPCHG来实现。<br>CAS机制当中使用了3个基本操作数：内存地址V，旧的预期值A，要修改的新值B。<br>更新一个变量的时候，只有当变量的预期值A和内存地址V当中的实际值相同时，才会将内存地址V对应的值修改为B。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/%E6%97%A0%E9%94%81%E9%98%9F%E5%88%97/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -387,7 +332,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E6%99%BA%E8%83%BD%E8%8A%AF%E7%89%87/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -401,7 +346,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/02/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/" class="post-title-link" itemprop="url">Linux内核系列：编译链接</a>
+            <a href="/2021/09/14/%E6%99%BA%E8%83%BD%E8%8A%AF%E7%89%87/" class="post-title-link" itemprop="url">嵌入式人工智能</a>
         </h2>
 
         <div class="post-meta">
@@ -411,14 +356,14 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-09-22 14:02:10" itemprop="dateModified" datetime="2021-09-22T14:02:10+08:00">2021-09-22</time>
+                <time title="Modified: 2021-11-19 22:43:11" itemprop="dateModified" datetime="2021-11-19T22:43:11+08:00">2021-11-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -426,7 +371,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                  <a href="/categories/%E7%A1%AC%E4%BB%B6%E6%9E%B6%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">硬件架构</span></a>
                 </span>
             </span>
 
@@ -441,49 +386,528 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="预编译"><a href="#预编译" class="headerlink" title="预编译"></a>预编译</h3><p>第一步预编译的过程个相当于如下命令</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">gcc -E hello.c -o hello.i</span></span><br></pre></td></tr></table></figure>
-<p>预编译主要处理源文件中以#开始的预编译命令</p>
-<ul>
-<li>将所有#define删除，并展开所有宏定义、</li>
-<li>处理所有条件编译指令，如#if,#ifdef,#elif,#else,#endif</li>
-<li>处理#include指令，将被包含的文件插入到该编译指令的位置。<font color=orange>注意这可能是个递归的过程，也就是被包含的文件可能还包含其他文件.</font></li>
-<li>删除所有注释</li>
-<li>添加行号和文件名标识，如#2”hello.c” 2,以便编译时编译器产生调试用的行号信息和产生编译错误或警告时的行号提示。</li>
-<li>保留所有#pragma编译器指令，因为编译器必须使用他们。</li>
-</ul>
-<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>过程相当于</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">gcc -S hello.i -o hello.s</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>词法分析：有限状态机</li>
-<li>语法分析：语法树</li>
-<li>语义分析：静态语义、动态语义</li>
-<li>中间代码生成：生成三地址码</li>
-<li>目标代码生成：生成汇编代码</li>
-<li>优化</li>
-</ul>
-<h3 id="静态链接"><a href="#静态链接" class="headerlink" title="静态链接"></a>静态链接</h3><p>静态链接就是将几个输出目标文件合并成一个输出文件。</p>
+          <h3 id="嵌入式人工智能第六章"><a href="#嵌入式人工智能第六章" class="headerlink" title="嵌入式人工智能第六章"></a>嵌入式人工智能第六章</h3><ol>
+<li><p>人工智能的发展</p>
 <ol>
-<li>最简单的就是按序叠加：<br><img src="/images/static-1.png"></li>
+<li>机器学习（参考《机器学习》周志华，《统计学习方法》）<ol>
+<li>模型评估方法</li>
+<li>监督学习（分类，强化学习）</li>
+<li>半监督学习，无监督学习（聚类）</li>
+<li>集成学习</li>
+<li>概率图模型</li>
+<li>规则学习</li>
 </ol>
-<p>但是这种做法浪费空间并且有大量内存碎片。<br>2. 相似段合并：<br><img src="/images/static-2.png"></p>
-<p>整个链接过程分两步：</p>
-<ul>
-<li>空间和地址分配：扫描所有输出目标文件，获得各个段的长度，属性和位置，将输入目标文件的符号表中所有符号定义和符号引用手机起来，统一放到一个全局符号表，连接器能够获得所有输入目标文件的的段长度，将它们合并。</li>
-<li>符号解析和重定位：使用第一步的信息，读取输入文件中段的数据，重定位信息，进行符号解析和重定位。<font color=orange>核心是重定位过程。</font></li>
+</li>
+<li>深度学习（参考《深度学习》）<ol>
+<li>深度前馈网络</li>
+<li>正则化</li>
+<li>优化（梯度下降）</li>
+<li>卷积网络（CNN）</li>
+<li>RNN/LSTM</li>
+<li>其他前沿理论（配分函数和近似推断，自编码器，生成对抗网络，图神经网络）</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>硬件架构<br> 本小节主要介绍常用的处理器，在嵌入式端广泛运用在深度学习训练、推理过程的加速。</p>
+<ol>
+<li>GPU<br>图像处理器。<br>GPU采用数量众多的计算单元和超长的流水线，善于处理图像领域的运算加速。但GPU无法单独工作，必须由CPU进行控制调用才能工作。CPU可单独作用，处理复杂的逻辑运算和不同的数据类型，但当需要大量的处理类型统一的数据时，则可调用GPU进行并行计算。深度学习的崛起受到GPU发展的推动。<ol>
+<li>GPU发展历史</li>
+<li>GPU功能</li>
+<li>GPU物理架构(以Nvidia为例)<ol>
+<li>NVidia Tesla架构（<a target="_blank" rel="noopener" href="https://images.nvidia.cn/content/pdf/tesla/whitepaper/pascal-architecture-whitepaper.pdf%EF%BC%89">https://images.nvidia.cn/content/pdf/tesla/whitepaper/pascal-architecture-whitepaper.pdf）</a></li>
+<li>NVidia Fermi架构</li>
+<li>NVidia Maxwell架构</li>
+<li>NVidia Kepler架构</li>
+<li>NVidia Turing架构（<a target="_blank" rel="noopener" href="https://images.nvidia.cn/aem-dam/en-zz/Solutions/design-visualization/technologies/turing-architecture/NVIDIA-Turing-Architecture-Whitepaper.pdf%EF%BC%89">https://images.nvidia.cn/aem-dam/en-zz/Solutions/design-visualization/technologies/turing-architecture/NVIDIA-Turing-Architecture-Whitepaper.pdf）</a></li>
+</ol>
+</li>
+<li>GPU运行机制（[]<a target="_blank" rel="noopener" href="http://haifux.org/lectures/267/Introduction-to-GPUs.pdf">http://haifux.org/lectures/267/Introduction-to-GPUs.pdf</a><br><a target="_blank" rel="noopener" href="http://download.nvidia.com/developer/cuda/seminar/TDCI_Arch.pdf%EF%BC%89">http://download.nvidia.com/developer/cuda/seminar/TDCI_Arch.pdf）</a><ol>
+<li>渲染总览</li>
+<li>逻辑管线</li>
+<li>技术要点</li>
+<li>GPU资源机制</li>
+</ol>
+</li>
+<li>总结 </li>
+</ol>
+</li>
+<li>FPGA （Field Programmable Gate Array，现场可编程门阵列）<br>(这部分内容非常新，资料不多，很多是专利和未公开架构。如专利201880061751.0)<br>半定制化的人工智能专用芯片。FPGA适用于多指令，单数据流的分析，与GPU相反，因此常用于预测阶段，如云端。（下面除5之外，参考《FPGA原理和结构》，在本书7.7章有深度学习结合FPGA，但过于简单）<ol>
+<li>FPGA发展历史</li>
+<li>FPGA构成要素和结构</li>
+<li>FPGA工作原理</li>
+<li>FPGA开发流程</li>
+<li>FPGA AI芯片案例：DPU（资源连接：<a target="_blank" rel="noopener" href="https://blogs.nvidia.com/blog/2020/05/20/whats-a-dpu-data-processing-unit/%EF%BC%89">https://blogs.nvidia.com/blog/2020/05/20/whats-a-dpu-data-processing-unit/）</a><ol>
+<li>基本概念<br>DPU（Deep learning Processing Unit）深度学习处理器</li>
+<li>工作原理</li>
+<li>和CPU/GPU优势  </li>
+</ol>
+</li>
+</ol>
+</li>
+<li>ASIC（Application Specific IntegratedCircuit）<br>ASIC是指依产品需求不同而定制化的特殊规格集成电路，由特定使用者要求和特定电子系统的需要而设计、制造。（参考《高级ASIC芯片综合》）<ol>
+<li>基本概念</li>
+<li>静态时序分析</li>
+<li>设计约束和优化设计</li>
+<li>物理综合</li>
+<li>ASIC AI芯片案例<br> TPU（Tensor Processing Unit）<br> (参考论文 <a target="_blank" rel="noopener" href="https://arxiv.org/ftp/arxiv/papers/1704/1704.04760.pdf">https://arxiv.org/ftp/arxiv/papers/1704/1704.04760.pdf</a>)<br> 张量处理器<br> 谷歌专门为加速深层神经网络运算能力而研发的一款芯片，其实也是一款ASIC。TPU与同期的CPU和GPU相比，可以提供15-30倍的性能提升，以及30-80倍的效率（性能/瓦特）提升。<ol>
+<li>架构</li>
+<li>实现  </li>
+</ol>
+ <em>备选：NPU（（Neural network Processing Unit）<br> 神经网络处理器：用电路模拟人类的神经元和突触结构，将神经网络结构直接以硬件形式体现。但是没有找到相关论文。</em></li>
+</ol>
+</li>
+<li>总结与比较<ol>
+<li>优缺点（能耗，推理速度，通用性，复杂程度，成本）<br> 例：<ul>
+<li>GPU性能好，功耗高，通用性好。管理控制能力（最弱），功耗（最高）。</li>
+<li>FPGA可编程，灵活程度介于GPU和ASIC之间。开发难度大、只适合定点运算、价格比较昂贵。</li>
+<li>ASIC,作为集成电路技术与特定用户的整机或系统技术紧密结合的产物，与通用集成电路相比具有体积更小、重量更轻、 功耗更低、可靠性提高、性能提高、保密性增强、成本降低等优点。</li>
 </ul>
-<p>使用objdump查看链接前后地址的分配的情况：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">a.o:     file format elf64-x86-64</span><br><span class="line"></span><br><span class="line">Sections:</span><br><span class="line">Idx Name          Size      VMA               LMA               File off  Algn</span><br><span class="line">  0 .text         00000028  0000000000000000  0000000000000000  00000040  2**0</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE</span><br><span class="line">  1 .data         00000000  0000000000000000  0000000000000000  00000068  2**0</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, DATA</span><br><span class="line">  2 .bss          00000000  0000000000000000  0000000000000000  00000068  2**0</span><br><span class="line">                  ALLOC</span><br><span class="line">  3 .comment      00000036  0000000000000000  0000000000000000  00000068  2**0</span><br><span class="line">                  CONTENTS, READONLY</span><br><span class="line">  4 .note.GNU-stack 00000000  0000000000000000  0000000000000000  0000009e  2**0</span><br><span class="line">                  CONTENTS, READONLY</span><br><span class="line">  5 .eh_frame     00000038  0000000000000000  0000000000000000  000000a0  2**3</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">b.o:     file format elf64-x86-64</span><br><span class="line"></span><br><span class="line">Sections:</span><br><span class="line">Idx Name          Size      VMA               LMA               File off  Algn</span><br><span class="line">  0 .text         00000000  0000000000000000  0000000000000000  00000040  2**0</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, CODE</span><br><span class="line">  1 .data         00000004  0000000000000000  0000000000000000  00000040  2**2</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, DATA</span><br><span class="line">  2 .bss          00000000  0000000000000000  0000000000000000  00000044  2**0</span><br><span class="line">                  ALLOC</span><br><span class="line">  3 .comment      00000036  0000000000000000  0000000000000000  00000044  2**0</span><br><span class="line">                  CONTENTS, READONLY</span><br><span class="line">  4 .note.GNU-stack 00000000  0000000000000000  0000000000000000  0000007a  2**0</span><br><span class="line">                  CONTENTS, READONLY</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ab:     file format elf64-x86-64</span><br><span class="line"></span><br><span class="line">Sections:</span><br><span class="line">Idx Name          Size      VMA               LMA               File off  Algn</span><br><span class="line">  0 .text         0000003a  00000000004000e8  00000000004000e8  000000e8  2**0</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, CODE</span><br><span class="line">  1 .eh_frame     00000058  0000000000400128  0000000000400128  00000128  2**3</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line">  2 .data         00000004  0000000000600180  0000000000600180  00000180  2**2</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, DATA</span><br><span class="line">  3 .comment      00000035  0000000000000000  0000000000000000  00000184  2**0</span><br><span class="line">                  CONTENTS, READONLY</span><br></pre></td></tr></table></figure>
-<p><font color=orange>在链接之前，目标文件中所有的段的VMA都是0，因为虚拟空间还没有分配。在链接之后被分配了地址0x0000003a。</font></p>
-<p>下一步就是符号地址的确定。<br>由于符号在段内的相对位置是固定的，因此函数名和变量的地址也就确定了，这时候我们需要给每个符号加上一个偏移量，使他们能够调整到正确的虚拟地址上。<br>完成上述空间和地址的分配步骤之后，就进行符号解析和重定位。<br>那么链接器需要知道哪些指令需要被调整。<br>事实上在ELF文件中有一个<font color = orange>重定位表</font>来专门保存。<br>使用objdump -r a.o来查看。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">a.o:     file format elf64-x86-64</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [.text]:</span><br><span class="line">OFFSET           TYPE              VALUE </span><br><span class="line">0000000000000023 R_X86_64_32       shared</span><br><span class="line">0000000000000030 R_X86_64_PC32     swap-0x0000000000000004</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [.eh_frame]:</span><br><span class="line">OFFSET           TYPE              VALUE </span><br><span class="line">0000000000000020 R_X86_64_PC32     .text</span><br></pre></td></tr></table></figure>
-
-<p>OFFSET对应指令位置，VALUE对应符号.在连接过程中会扫描符号表，如果符号未定义，会报链接错误。<br>静态链接的缺点很明显，一是浪费空间，因为每个可执行程序中对所有需要的目标文件都要有一份副本，所以如果多个程序对同一个目标文件都有依赖，如多个程序中都调用了printf()函数，则这多个程序中都含有printf.o，所以同一个目标文件都在内存存在多个副本；另一方面就是更新比较困难，因为每当库函数的代码修改了，这个时候就需要重新进行编译链接形成可执行程序。但是静态链接的优点就是，在可执行程序中已经具备了所有执行程序所需要的任何东西，在执行的时候运行速度快。</p>
-<h3 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h3><p>动态链接出现的原因就是为了解决静态链接中提到的两个问题，一方面是空间浪费，另外一方面是更新困难。下面介绍一下如何解决这两个问题。  </p>
+</li>
+<li>应用场景（大型高性能计算、通用嵌入式、定制化嵌入式）</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>软件框架<br> （主流<strong>开发</strong>框架是tensorflow和pytorch，嵌入式端一般有tensorlite，armnn，tensorrt和一些其他中间协议，但原理书籍几乎没有，下面以tensorflow为例，参考开源书《Tensorflow内核剖析》，下载地址<a target="_blank" rel="noopener" href="https://raw.github.com/horance-liu/tensorflow-internals/master/tensorflow-internals.pdf%EF%BC%89">https://raw.github.com/horance-liu/tensorflow-internals/master/tensorflow-internals.pdf）</a></p>
+<ol>
+<li>依赖环境</li>
+<li>系统架构<ol>
+<li>Client</li>
+<li>Master</li>
+<li>Worker</li>
+<li>Kernel</li>
+</ol>
+</li>
+<li>图控制</li>
+<li>会话管理</li>
+<li>编程模型<ol>
+<li>计算图</li>
+<li>设备</li>
+<li>会话</li>
+<li>变量</li>
+<li>队列</li>
+</ol>
+</li>
+<li>嵌入式部署<br> 本小节主要介绍目前主流的嵌入式AI<strong>部署</strong>框架:<ol>
+<li>基于硬件环境<ol>
+<li>基于arm架构：armnn（<br>官网 <a target="_blank" rel="noopener" href="https://developer.arm.com/solutions/machine-learning-on-arm/developer-material/white-papers-and-research-papers">https://developer.arm.com/solutions/machine-learning-on-arm/developer-material/white-papers-and-research-papers</a><br>软件地址：<a target="_blank" rel="noopener" href="https://github.com/ARM-software/armnn%EF%BC%89">https://github.com/ARM-software/armnn）</a><ol>
+<li>硬件设计（<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1801.06274.pdf%EF%BC%89">https://arxiv.org/pdf/1801.06274.pdf）</a></li>
+<li>软件优化（<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1801.04326.pdf%EF%BC%89">https://arxiv.org/pdf/1801.04326.pdf）</a></li>
+</ol>
+</li>
+<li>基于通用GPU/CPU：tensorflow Lite(官网：<a target="_blank" rel="noopener" href="https://www.tensorflow.org/lite?hl=zh-cn">https://www.tensorflow.org/lite?hl=zh-cn</a>)<br>特点：</li>
+</ol>
 <ul>
-<li>动态链接的过程：<br>假设现在有两个程序program1.o和program2.o，这两者共用同一个库lib.o,假设首先运行程序program1，系统首先加载program1.o，当系统发现program1.o中用到了lib.o，即program1.o依赖于lib.o，那么系统接着加载lib.o，如果program1.o和lib.o还依赖于其他目标文件，则依次全部加载到内存中。当program2运行时，同样的加载program2.o，然后发现program2.o依赖于lib.o，但是此时lib.o已经存在于内存中，这个时候就不再进行重新加载，而是将内存中已经存在的lib.o映射到program2的虚拟地址空间中，从而进行链接（这个链接过程和静态链接类似）形成可执行程序。</li>
-<li>优缺点<br>动态链接的优点显而易见，就是即使需要每个程序都依赖同一个库，但是该库不会像静态链接那样在内存中存在多分，副本，而是这多个程序在执行时共享同一份副本；另一个优点是，更新也比较方便，更新时只需要替换原来的目标文件，而无需将所有的程序再重新链接一遍。当程序下一次运行时，新版本的目标文件会被自动加载到内存并且链接起来，程序就完成了升级的目标。但是动态链接也是有缺点的，因为把链接推迟到了程序运行时，所以每次执行程序都需要进行链接，所以性能会有一定损失。</li>
-<li>如何重定位？<br>前面我们讲过静态链接时地址的重定位，那我们现在就在想动态链接的地址又是如何重定位的呢？虽然动态链接把链接过程推迟到了程序运行时，但是在形成可执行文件时（注意形成可执行文件和执行程序是两个概念），还是需要用到动态链接库。比如我们在形成可执行程序时，发现引用了一个外部的函数，此时会检查动态链接库，发现这个函数名是一个动态链接符号，此时可执行程序就不对这个符号进行重定位，而把这个过程留到装载时再进行。</li>
+<li>为不同端上优化的核心operator的解释器（Interpreter）打包成一个轻量的二进制包；</li>
+<li>丰富的平台支持。Android和iOS设备、嵌入式Linux、微控制器设备等；</li>
+<li>多语言API调用支持。Java, Swift, Objective-C, C++, and Python；</li>
+<li>高性能。针对硬件精心优化的底层kernel实现，如预融合策略的激活和bias算子/底层kernel；</li>
+<li>模型优化工具。量化模型，该策略可在不影响精度的前提下减小模型尺寸；</li>
+<li>高效模型格式。使用轻量的FlatBuffer（跨平台，且比protobuf性能好，最初为游戏和性能相关任务而开发）。</li>
+</ul>
+<ol start="3">
+<li>其他框架：tensorRT</li>
+</ol>
+</li>
+<li>基于编译方法：TVM（<a target="_blank" rel="noopener" href="https://tvm.apache.org/%EF%BC%89">https://tvm.apache.org/）</a></li>
+<li>基于文件格式：ONNX（<a target="_blank" rel="noopener" href="https://onnx.ai/%EF%BC%89">https://onnx.ai/）</a></li>
+<li>对比<ol>
+<li>支持的平台</li>
+<li>推理性能对比</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>综合案例</p>
+<ol>
+<li>评价标准<ol>
+<li>模型精度（准确率，召回率，精确率，F值）</li>
+<li>能耗</li>
+<li>吞吐量和时延</li>
+<li>能效比</li>
+</ol>
+</li>
+<li>目标检测<ol>
+<li>数据集（COCO）</li>
+<li>算法：YOLO mobile/YOLO v4</li>
+<li>模型训练</li>
+<li>模型部署</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9AHTTPS&TLS&SSL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9AHTTPS&TLS&SSL/" class="post-title-link" itemprop="url">网络复习：HTTPS/TLS/SSL</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-11-17 19:25:33" itemprop="dateModified" datetime="2021-11-17T19:25:33+08:00">2021-11-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="SSL-TLS"><a href="#SSL-TLS" class="headerlink" title="SSL/TLS"></a>SSL/TLS</h3><ol>
+<li>基本流程</li>
+</ol>
+<ul>
+<li>客户端想服务端索要并验证公钥。</li>
+<li>双方协商生成对话密钥。</li>
+<li>双方采用对话密钥进行加密通信。</li>
+</ul>
+<ol start="2">
+<li>详细解释<br>上面流程的第一二两步叫做握手。如下图所示：<br><img src="/images/tls-1.png"><br>一共有四次通信，在握手阶段都是明文。</li>
+</ol>
+<ul>
+<li>客户端发出请求（ClientHello）<br>  客户端主要向服务器提供以下信息<ul>
+<li>支持的协议版本，比如TLS 1.0版。</li>
+<li>一个客户端生成的随机数，稍后用于生成”对话密钥”。</li>
+<li>支持的加密方法，比如RSA公钥加密。</li>
+<li>支持的压缩方法。</li>
+</ul>
+</li>
+<li>服务器回应（SeverHello）<br>  服务器收到客户端请求后，向客户端发出回应，这叫做SeverHello。服务器的回应包含以下内容。<ul>
+<li>确认使用的加密通信协议版本，比如TLS 1.0版本。如果浏览器与服务器支持的版本不一致，服务器关闭加密通信。</li>
+<li>一个服务器生成的随机数，稍后用于生成”对话密钥”。</li>
+<li>确认使用的加密方法，比如RSA公钥加密。</li>
+<li>服务器证书。</li>
+</ul>
+</li>
+<li>客户端回应<br>  客户端收到回应之后，首先验证证书，若没有问题，就从证书中取出公钥，然后发送下面三个信息：<ul>
+<li>一个随机数。该随机数用服务器公钥加密，防止被窃听。</li>
+<li>编码改变通知，表示随后的信息都将用双方商定的加密方法和密钥发送。</li>
+<li>客户端握手结束通知，表示客户端的握手阶段已经结束。这一项同时也是前面发送的所有内容的hash值，用来供服务器校验。</li>
+</ul>
+</li>
+<li>服务器的最后回应<br>  服务器收到客户端的第三个随机数pre-master key之后，计算生成本次会话所用的”会话密钥”。然后，向客户端最后发送下面信息。<ul>
+<li>编码改变通知，表示随后的信息都将用双方商定的加密方法和密钥发送。</li>
+<li>服务器握手结束通知，表示服务器的握手阶段已经结束。这一项同时也是前面发送的所有内容的hash值，用来供客户端校验。  </li>
+</ul>
+</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38265137/article/details/90112705">关于TLS这篇文章讲的很详细</a></p>
+<h3 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h3><p>https的流程大概是：</p>
+<ol>
+<li>与目标机器443端口tcp连接。</li>
+<li>利用TLS协议获取服务器证书，与服务器通信商议对称密钥，此后报文通过对称加密保护。</li>
+<li>使用普通http传输报文。</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9APING%E5%91%BD%E4%BB%A4%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9APING%E5%91%BD%E4%BB%A4%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">网络复习：PING & traceroute命令原理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-11-17 21:19:34" itemprop="dateModified" datetime="2021-11-17T21:19:34+08:00">2021-11-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="ICMP"><a href="#ICMP" class="headerlink" title="ICMP"></a>ICMP</h3><p>ping 基于ICMP协议，ICMP 主要的功能包括：确认 IP 包是否成功送达目标地址、报告发送过程中 IP 包被废弃的原因和改善网络设置等。<br>ICMP报文格式如下，封装在IP包里面，工作在网络层：<br><img src="/images/icmp-1.png"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9APING%E5%91%BD%E4%BB%A4%E5%8E%9F%E7%90%86/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E3%80%81%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E3%80%81%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/" class="post-title-link" itemprop="url">网络复习：TCP滑动窗口、拥塞控制</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-11-17 11:21:38" itemprop="dateModified" datetime="2021-11-17T11:21:38+08:00">2021-11-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h3><h4 id="固定窗口的问题"><a href="#固定窗口的问题" class="headerlink" title="固定窗口的问题"></a>固定窗口的问题</h4><p><img src="/images/tcp-2-1.png"><br>我们假设这个固定窗口的大小为1，也就是每次只能发送一个数据，只有接收方对这个数据进行了确认后才能发送第二个数据。在图中我们可以看到，发送方每发送一个数据接收方就要给发送方一个ACK对这个数据进行确认。只有接收了这个确认数据以后发送方才能传输下个数据。<br>这样大大降低了网络吞吐量。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E3%80%81%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9Ahttp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9Ahttp/" class="post-title-link" itemprop="url">网络复习：HTTP1.0/1.1/2.0</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-11-17 16:44:34" itemprop="dateModified" datetime="2021-11-17T16:44:34+08:00">2021-11-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="HTTP1-0"><a href="#HTTP1-0" class="headerlink" title="HTTP1.0"></a>HTTP1.0</h3><p>每一个请求建立一个TCP连接，请求完成后立马断开连接。这将会导致2个问题：连接无法复用，head of line blocking<br>连接无法复用会导致每次请求都经历三次握手和慢启动。三次握手在高延迟的场景下影响较明显，慢启动则对文件类大请求影响较大。head of line blocking会导致带宽无法被充分利用，以及后续健康请求被阻塞.</p>
+<h3 id="HTTP1-1"><a href="#HTTP1-1" class="headerlink" title="HTTP1.1"></a>HTTP1.1</h3><p>HTTP1.0每次请求都需要建立TCP连接，请求结束之后需要断开连接。为了克服这个缺陷，1.1升级了下面这些功能：</p>
+<ul>
+<li>支持长连接：在使用长连接的情况下，当一个网页打开完成后，客户端和服务器之间用于传输HTTP数据的TCP连接不会关闭，客户端再次访问这个服务器时，会继续使用这一条已经建立的连接。Keep-Alive不会永久保持连接，它有一个保持时间，可以在不同的服务器软件（如Apache）中设定这个时间。实现长连接需要客户端和服务端都支持长连接。</li>
+<li>支持虚拟主机（host字段），一个服务器可以放置多个网站，充分利用服务器资源。</li>
+<li>流水线：包含多个请求和应答可以在一个tcp连接中传输。但是线头阻塞可能会影响性能。</li>
+<li>带宽优化：支持断点续传。</li>
+<li>缓存策略：强缓存（ Cache-Control 浏览器命中的缓存），协商缓存（当浏览器没有命中强缓存后，便会命中协商缓存）。</li>
+</ul>
+<h3 id="HTTP-2-0"><a href="#HTTP-2-0" class="headerlink" title="HTTP 2.0"></a>HTTP 2.0</h3><p>HTTP2.0的新特性主要有下面几点：</p>
+<ul>
+<li>多路复用：做到同一个连接并发处理多个请求，而且并发请求的数量比HTTP1.1大了好几个数量级。</li>
+<li>数据压缩：使用HPACK算法对header的数据进行压缩，这样数据体积小了，在网络上传输就会更快。</li>
+<li>服务器推送：对支持HTTP2.0的web server请求数据的时候，服务器会顺便把一些客户端需要的资源一起推送到客户端，免得客户端再次创建连接发送请求到服务器端获取。这种方式非常合适加载静态资源。</li>
+<li>二进制分帧：应用层(HTTP/2)和传输层(TCP or UDP)之间增加一个二进制分帧层。（HTTP 1.X 是基于文本的，因为是文本，就导致了它必须是个整体，在传输是不可切割的，只能整体去传。但 HTTP 2.0 是基于二进制流的。）</li>
 </ul>
 
       
@@ -504,7 +928,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E7%94%B5%E6%BA%90%E9%94%AE%E5%88%B0%E5%90%AF%E5%8A%A8%E5%85%A8%E8%BF%87%E7%A8%8B%E6%B5%85%E6%9E%90/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E8%87%AA%E9%97%AE%E6%B8%85%E5%8D%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -518,7 +942,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/02/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E7%94%B5%E6%BA%90%E9%94%AE%E5%88%B0%E5%90%AF%E5%8A%A8%E5%85%A8%E8%BF%87%E7%A8%8B%E6%B5%85%E6%9E%90/" class="post-title-link" itemprop="url">Linux内核系列：从按下开机到进入系统，到底经历了什么？</a>
+            <a href="/2021/09/14/%E8%87%AA%E9%97%AE%E6%B8%85%E5%8D%95/" class="post-title-link" itemprop="url">大总结</a>
         </h2>
 
         <div class="post-meta">
@@ -528,14 +952,14 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-11-24 19:24:32" itemprop="dateModified" datetime="2021-11-24T19:24:32+08:00">2021-11-24</time>
+                <time title="Modified: 2021-12-02 20:27:25" itemprop="dateModified" datetime="2021-12-02T20:27:25+08:00">2021-12-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -543,7 +967,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                  <a href="/categories/%E7%BB%BC%E5%90%88/" itemprop="url" rel="index"><span itemprop="name">综合</span></a>
                 </span>
             </span>
 
@@ -558,7 +982,135 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="开机全程"><a href="#开机全程" class="headerlink" title="开机全程"></a>开机全程</h3><p><a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2013/02/booting.html">参考阮一峰大佬的博客1</a>,<a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2013/08/linux_boot_process.html">博客2</a></p>
+          <p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/circle/discuss/XXGdoF/">终极总结</a></p>
+<h1 id="C-基础"><a href="#C-基础" class="headerlink" title="C++基础"></a>C++基础</h1><ol>
+<li><p>对const的理解？const指针和引用的区别？</p>
+</li>
+<li><p>#define和const的区别？</p>
+</li>
+<li><p>说说static关键字的用法？<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/ypshowm/article/details/89030194">https://blog.csdn.net/ypshowm/article/details/89030194</a></p>
+</li>
+<li><p>inline函数的使用？</p>
+</li>
+<li><p>知道#pragma pack(n)吗？怎么实现内存对齐的？</p>
+</li>
+<li><p>解释下”extern C”，在什么时候会用到？</p>
+</li>
+<li><p>用struct实现下继承？</p>
+</li>
+<li><p>解释下friend关键字？</p>
+</li>
+<li><p>多态的实现方式？</p>
+</li>
+<li><p>虚析构函数？虚构造函数？</p>
+</li>
+<li><p>说说虚表的内存布局？</p>
+</li>
+<li><p>纯虚函数？虚继承？</p>
+</li>
+<li><p>模板继承？模板特化/偏特化？</p>
+</li>
+<li><p>虚函数可以是内联函数吗？</p>
+</li>
+<li><p>构造函数能是虚函数吗，析构函数呢？</p>
+</li>
+<li><p>c++四大强制类型转换？</p>
+</li>
+<li><p>四大类型转换发生的时间？编译/执行</p>
+</li>
+<li><p>构造函数初始化列表和函数内部赋值的区别？</p>
+<h1 id="C-11"><a href="#C-11" class="headerlink" title="C++11"></a>C++11</h1></li>
+<li><p>decltype用过吗?</p>
+</li>
+<li><p>左值引用和右值引用是什么？</p>
+</li>
+<li><p>移动语义和完美转发说说？</p>
+</li>
+<li><p>智能指针有哪些？</p>
+</li>
+<li><p>说说每个的实现原理和应用场景？</p>
+</li>
+<li><h1 id="C-内存"><a href="#C-内存" class="headerlink" title="C++内存"></a>C++内存</h1></li>
+<li><p>new/delete 和malloc/free区别？</p>
+</li>
+<li><p>ralloc/alloca</p>
+</li>
+<li><p>双重free会发生什么？</p>
+</li>
+<li><p>如何定义一个只能在栈/堆上生成的对象？</p>
+</li>
+<li><p>讲下ptmalloc？</p>
+</li>
+<li><p>讲下tcmalloc？</p>
+</li>
+<li><p>讲下jemalloc？</p>
+</li>
+<li><p>知道哪些强制类型转换？（static_cast等)</p>
+</li>
+</ol>
+<h1 id="STL"><a href="#STL" class="headerlink" title="STL"></a>STL</h1><ol>
+<li>五大组成部分？</li>
+<li>有哪些容器？</li>
+<li>vector/map/哈希/deque底层实现？</li>
+<li>sort算法实现是什么？全都是快排吗？</li>
+</ol>
+<h1 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h1><ol>
+<li>TCP三次握手，四次挥手详细流程？</li>
+<li>三次握手两次行不行？</li>
+<li>sock函数和三次握手的对应？</li>
+<li>服务器大量TIME_WAIT怎么办？</li>
+<li>TCP粘包？</li>
+<li>TCP拥塞控制？</li>
+<li>http1.0/1.1/2.0区别？</li>
+<li>TLS/HTTPS握手过程？</li>
+<li>ARP协议？</li>
+<li>PING命令实现原理？</li>
+<li>Traceroute命令实现原理？</li>
+</ol>
+<h1 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h1><ol>
+<li>进程和线程？</li>
+<li>内核态和用户态？</li>
+<li>进程间通信方式每个详细说？优缺点？</li>
+<li>线程间通信方式详细说？</li>
+<li>进程线程拥有的资源集合？</li>
+<li>讲讲死锁？</li>
+<li>线程池实现一下？</li>
+<li>主机字节序和网络字节序？如何判断大端小端？写个程序。</li>
+<li>虚拟内存？</li>
+<li>页表工作原理，MMU底层原理？</li>
+<li>进程虚拟空间地址text段下面保留的128M空间是干嘛的，为什么不能是256M？<ul>
+<li>128M空间是保留的C语言库，至于为啥不是256M，目前未知（节省空间？）.<h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1></li>
+</ul>
+</li>
+<li>B树/B+树/红黑树有什么区别？</li>
+<li>红黑树旋转？</li>
+<li>排序算法复杂度？</li>
+</ol>
+<h1 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h1><ol>
+<li>MYSQL索引作用？索引失效？</li>
+<li>MYSQL引擎？</li>
+<li>MYSQL锁？</li>
+<li>MYSQL事务？</li>
+<li>实现一个堆？</li>
+</ol>
+<h1 id="中间件"><a href="#中间件" class="headerlink" title="中间件"></a>中间件</h1><ol>
+<li>redis基本数据结构？</li>
+<li>redis跳表？具体操作插入删除？</li>
+<li>redis的zset？</li>
+<li>redis缓存策略？</li>
+<li>redis淘汰策略？</li>
+<li>redis哨兵模式、集群模式？</li>
+<li>redis哨兵模式和集群模式优缺点？</li>
+<li>redis持久化？</li>
+<li>redis缓存和主库不一致？</li>
+</ol>
+<h1 id="场景设计"><a href="#场景设计" class="headerlink" title="场景设计"></a>场景设计</h1><h1 id="智力题"><a href="#智力题" class="headerlink" title="智力题"></a>智力题</h1><ol>
+<li>有十个机器，九个生产的金币是5g，只有一个生产是4g，给你一个称，怎么一次找出那个生产4g的机器。</li>
+</ol>
+<p>将机器从1开始编号到10，每个机器取对应编号个硬币，共计55个硬币。<br>假设每个机器生产的硬币都是5g，则这55个硬币总总量为275g；<br>与实际的重量做差值，即为生产4g硬币对应机器的编号。<br>（如果是1号机器，因为只取了1个硬币，重量比2</p>
+<ol start="2">
+<li>给一个硬币，要求生成1/5的概率。<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">g1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span> / <span class="built_in">random</span>() &gt; <span class="number">0.5</span> ? <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">ing <span class="title">getAns</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        res = (<span class="built_in">g1</span>() &lt;&lt; <span class="number">2</span>) + (<span class="built_in">g1</span>() &lt;&lt; <span class="number">1</span>) + <span class="built_in">g1</span>();</span><br><span class="line">    &#125; <span class="keyword">while</span> (res == <span class="number">7</span> || res == <span class="number">6</span> || res == <span class="number">5</span>);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
 
       
     </div>
@@ -578,7 +1130,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9AVariadic-Templates/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E8%99%9A%E6%8B%9F%E5%8C%96%EF%BC%9Adocker%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -592,7 +1144,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/02/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9AVariadic-Templates/" class="post-title-link" itemprop="url">c++11新特性：Variadic Templates</a>
+            <a href="/2021/09/14/%E8%99%9A%E6%8B%9F%E5%8C%96%EF%BC%9Adocker%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">Docker底层原理：CGroup & Namespace</a>
         </h2>
 
         <div class="post-meta">
@@ -602,14 +1154,14 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:08:54" itemprop="dateModified" datetime="2021-10-29T20:08:54+08:00">2021-10-29</time>
+                <time title="Modified: 2021-11-24 14:51:05" itemprop="dateModified" datetime="2021-11-24T14:51:05+08:00">2021-11-24</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -617,7 +1169,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                  <a href="/categories/%E5%AE%B9%E5%99%A8/" itemprop="url" rel="index"><span itemprop="name">容器</span></a>
                 </span>
             </span>
 
@@ -632,15 +1184,8 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="使用形式"><a href="#使用形式" class="headerlink" title="使用形式"></a>使用形式</h3><p>可变参数模板(variadic template)为一个接受可变数目参数的模板函数或模板类。<br>用class…或typename…指出接下来的参数表示零个或多个类型的列表。<br>一个类型名后面跟一个省略号表示零个或多个给定类型的非类型参数的列表(可以是一个函数的实参列表).</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9AVariadic-Templates/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <h3 id="docker"><a href="#docker" class="headerlink" title="docker"></a>docker</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zhonglinzhang/article/details/64905759">参考这篇文章</a></p>
+
       
     </div>
 
@@ -659,7 +1204,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Adeque/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%20&%20UDP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -673,7 +1218,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Adeque/" class="post-title-link" itemprop="url">c++STL系列：deque</a>
+            <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%20&%20UDP/" class="post-title-link" itemprop="url">网络复习：TCP & UDP</a>
         </h2>
 
         <div class="post-meta">
@@ -683,14 +1228,14 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:09:33" itemprop="dateModified" datetime="2021-10-29T20:09:33+08:00">2021-10-29</time>
+                <time title="Modified: 2021-11-18 10:08:54" itemprop="dateModified" datetime="2021-11-18T10:08:54+08:00">2021-11-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -698,7 +1243,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
                 </span>
             </span>
 
@@ -713,334 +1258,10 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p><img src="/images/deque-2.png"></p>
+          <h3 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h3><p>TCP/IP五层模型<br><img src="/images/tcp-1.png"></p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Adeque/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Alist/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Alist/" class="post-title-link" itemprop="url">c++STL系列：list</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:09:38" itemprop="dateModified" datetime="2021-10-29T20:09:38+08:00">2021-10-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="G2-9源码结构"><a href="#G2-9源码结构" class="headerlink" title="G2.9源码结构"></a>G2.9源码结构</h3><p><img src="/images/list-1.png"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Alist/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Amap/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Amap/" class="post-title-link" itemprop="url">c++STL系列：map & multimap</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:09:42" itemprop="dateModified" datetime="2021-10-29T20:09:42+08:00">2021-10-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p>map/multimap 也是以红黑树为底层结构。<br>红黑树的左旋右旋、性质在这里先不深究。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Amap/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Aset/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Aset/" class="post-title-link" itemprop="url">c++STL系列：set & multiset</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:09:45" itemprop="dateModified" datetime="2021-10-29T20:09:45+08:00">2021-10-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p>set/multiset以红黑树为底层结构，因此元素在插入过程中自动排序。<br><img src="/images/rbtree.png"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Aset/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Astack&&queue/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Astack&&queue/" class="post-title-link" itemprop="url">c++STL系列：stack&&queue</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:09:48" itemprop="dateModified" datetime="2021-10-29T20:09:48+08:00">2021-10-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="stack"><a href="#stack" class="headerlink" title="stack"></a>stack</h3><p><img src="/images/stack-1.png"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Astack&&queue/#more" rel="contents">
+              <a class="btn" href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%20&%20UDP/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -1063,7 +1284,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1131,20 +1352,20 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">100</span>
+          <span class="site-state-item-count">126</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

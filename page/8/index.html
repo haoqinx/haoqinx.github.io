@@ -163,7 +163,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E5%A4%A7%E6%80%BB%E7%BB%93/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Astack&&queue/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -177,7 +177,662 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E5%A4%A7%E6%80%BB%E7%BB%93/" class="post-title-link" itemprop="url">Linux内核系列：内存管理大总结-ptmalloc/tcmalloc/jemalloc</a>
+            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Astack&&queue/" class="post-title-link" itemprop="url">c++STL系列：stack&&queue</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-10-29 20:09:48" itemprop="dateModified" datetime="2021-10-29T20:09:48+08:00">2021-10-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="stack"><a href="#stack" class="headerlink" title="stack"></a>stack</h3><p><img src="/images/stack-1.png"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Astack&&queue/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Aunordered-set%E3%80%81map/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Aunordered-set%E3%80%81map/" class="post-title-link" itemprop="url">c++STL系列：unordered 容器</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-10-29 20:09:52" itemprop="dateModified" datetime="2021-10-29T20:09:52+08:00">2021-10-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="底层结构：hashtable"><a href="#底层结构：hashtable" class="headerlink" title="底层结构：hashtable"></a>底层结构：hashtable</h3><p>unordered set/map底层是以hashtable为数据结构，任何对象/类都可以折射成一个数值（类对象都是由数据构成，对数据进行一些操作然后hash就可以转化成一个数值）.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Aunordered-set%E3%80%81map/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Avector/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Avector/" class="post-title-link" itemprop="url">c++STL系列：vector</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-10-29 20:09:56" itemprop="dateModified" datetime="2021-10-29T20:09:56+08:00">2021-10-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="G2-9版本"><a href="#G2-9版本" class="headerlink" title="G2.9版本"></a>G2.9版本</h3><p><img src="/images/vec-1.png"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Avector/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">c++STL系列：常见问题</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-10-29 20:09:27" itemprop="dateModified" datetime="2021-10-29T20:09:27+08:00">2021-10-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="为什么set-map底层用红黑树而不用AVL树？"><a href="#为什么set-map底层用红黑树而不用AVL树？" class="headerlink" title="为什么set/map底层用红黑树而不用AVL树？"></a>为什么set/map底层用红黑树而不用AVL树？</h3><p>红黑树与AVL比较：</p>
+<ol>
+<li><p>AVL是严格平衡的，频繁的插入和删除，会引起频繁的rebalance，导致效率降低；红黑树是弱平衡的，算是一种折中，插入最多旋转2次，删除最多旋转3次。</p>
+</li>
+<li><p>红黑树在查找、插入删除的复杂度都是O(logn)，且性能稳定，所以STL里面很多结构包括map底层都是使用的红黑树。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9AG2.9%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9AG2.9%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" class="post-title-link" itemprop="url">c++内存管理系列：G2.9内存管理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-10-29 20:09:08" itemprop="dateModified" datetime="2021-10-29T20:09:08+08:00">2021-10-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="VC6-BC5-G2-9-std-allocator"><a href="#VC6-BC5-G2-9-std-allocator" class="headerlink" title="VC6/BC5/G2.9(std::allocator)"></a>VC6/BC5/G2.9(std::allocator)</h3><p><img src="/images/vc6.png"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9AG2.9%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9AVC6-malloc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9AVC6-malloc/" class="post-title-link" itemprop="url">c++内存管理系列：VC6-malloc</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-10-29 20:09:20" itemprop="dateModified" datetime="2021-10-29T20:09:20+08:00">2021-10-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="VC6-malloc"><a href="#VC6-malloc" class="headerlink" title="VC6 malloc"></a>VC6 malloc</h3><ul>
+<li>想要搞清malloc是怎么运作的，就必须直到malloc首次分配内存进行了哪些操作，进行了哪些初始化。</li>
+<li>很多人认为我们执行一个cpp文件是从main函数开始，但是实际上系统还会为我们进行一系列的环境准备，这些动作通常包含了环境变量的获取、堆的初始化等等一系列操作，在不同环境下可能略有不同。在cpp文件执行之后也存在很多善后操作，这个会在c++前世今生详细介绍。</li>
+<li>下面来看一下vc环境下会有哪些动作。
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9AVC6-malloc/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Abitmap-allocator/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Abitmap-allocator/" class="post-title-link" itemprop="url">c++内存管理系列：bitmap-allocator</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-10-29 20:09:05" itemprop="dateModified" datetime="2021-10-29T20:09:05+08:00">2021-10-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="allocate"><a href="#allocate" class="headerlink" title="allocate"></a>allocate</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Tp&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">bitmap_allocator</span>:</span> <span class="keyword">private</span> free_list&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function">pointer </span></span><br><span class="line"><span class="function">    <span class="title">allocate</span><span class="params">(size_type __n)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (__n &gt; <span class="keyword">this</span>-&gt;<span class="built_in">max_size</span>())</span><br><span class="line">            std::__throw_bad_alloc();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (__builtin_expect(__n == <span class="number">1</span>, <span class="literal">true</span>))<span class="comment">//如果数量为1个,则调用_M_allocate_single_object()</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>-&gt;_M_allocate_single_object();</span><br><span class="line">        <span class="keyword">else</span>	<span class="comment">//如果申请的数量大于1个,则直接调用operator new</span></span><br><span class="line">        &#123; </span><br><span class="line">            <span class="keyword">const</span> size_type __b = __n * <span class="built_in"><span class="keyword">sizeof</span></span>(value_type);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">reinterpret_cast</span>&lt;pointer&gt;(::<span class="keyword">operator</span> <span class="built_in"><span class="keyword">new</span></span>(__b));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Abitmap-allocator/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/02/c++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">c++设计模式：单例模式</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-11-30 17:31:47" itemprop="dateModified" datetime="2021-11-30T17:31:47+08:00">2021-11-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h3><p>参考<a target="_blank" rel="noopener" href="https://github.com/liu-jianhao/Cpp-Design-Patterns">github</a><br><a target="_blank" rel="noopener" href="https://refactoringguru.cn/design-patterns/">这个网站</a>也非常生动。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/02/c++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9AGDT%EF%BC%8CLDT/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9AGDT%EF%BC%8CLDT/" class="post-title-link" itemprop="url">Linux内核系列：GDT/LDT</a>
         </h2>
 
         <div class="post-meta">
@@ -194,7 +849,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:16:23" itemprop="dateModified" datetime="2021-10-29T20:16:23+08:00">2021-10-29</time>
+                <time title="Modified: 2021-11-29 11:45:25" itemprop="dateModified" datetime="2021-11-29T11:45:25+08:00">2021-11-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -217,11 +872,12 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="ptmalloc"><a href="#ptmalloc" class="headerlink" title="ptmalloc"></a>ptmalloc</h3><p>GNU Libc 的内存分配器(allocator)—ptmalloc，起源于Doug Lea的malloc。由Wolfram Gloger改进得到可以支持多线程。</p>
-<p>在Doug Lea实现的内存分配器中只有一个主分配区（main arena），每次分配内存都必须对主分配区加锁，分配完成后释放锁，在SMP多线程环境下，对主分配区的锁的争用很激烈，严重影响了malloc的分配效率。ptmalloc增加了动态分配区（dynamic arena），主分配区与动态分配区用环形链表进行管理。每一个分配区利用互斥锁（mutex）使线程对于该分配区的访问互斥。每个进程只有一个主分配区，但可能存在多个动态分配区，ptmalloc根据系统对分配区的争用情况动态增加动态分配区的数量，分配区的数量一旦增加，就不会再减少了。主分配区在二进制启动时调用sbrk从heap区域分配内存，Heap是由用户内存块组成的连续的内存域。而动态分配区每次使用mmap()向操作系统“批发”HEAP_MAX_SIZE大小的虚拟内存，如果内存耗尽，则会申请新的内存链到动态分配区heap data的“strcut malloc_state”。如果用户请求的大小超过HEAP_MAX_SIZE，动态分配区则会直接调用mmap()分配内存，并且当free的时候调用munmap()，该类型的内存块不会链接到任何heap data。用户向请求分配内存时，内存分配器将缓存的内存切割成小块“零售”出去。从用户空间分配内存，减少系统调用，是提高内存分配速度的好方法，毕竟前者要高效的多。</p>
+          <h3 id="GDT"><a href="#GDT" class="headerlink" title="GDT"></a>GDT</h3><p>现代的内存寻址方式一般采用保护模式。    </p>
+<p>Q:什么是保护模式？   </p>
+<p>A:保护模式是相对于实模式来说的，以前的内存寻址是直接由cpu段寄存器+偏移量去实存里面找物理地址，例如在8086的时候，也就是16位cpu的时候，CPU配备了4个16位段寄存器（CS代码段寄存器、DS数据段寄存器、SS堆栈段寄存器和ES附加寄存器），这种方式非常粗暴并且很容易出错，一旦用户修改段寄存的值，就可以随意访问所有内存，到了80296芯片，大家意识到直接访问实地址的危害，intel将寻址方式改为保护模式，保护模式下段寄存器不在指向一个真实地址，而是变成指向一个数据结构的指针，这个数据结构就是<font color = orange>Segment Descripter Table</font>，又根据这个段描述符表里存的是全局共同的，还是进程私有的，分成了全局段描述符表（GDT）和局部段描述符表（LDT）。  </p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E5%A4%A7%E6%80%BB%E7%BB%93/#more" rel="contents">
+              <a class="btn" href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9AGDT%EF%BC%8CLDT/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -245,7 +901,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/27/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E8%99%9A%E7%BB%A7%E6%89%BF%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Ammap%E5%8E%9F%E7%90%86%E6%B5%85%E8%B0%88/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -259,7 +915,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/08/27/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E8%99%9A%E7%BB%A7%E6%89%BF%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80/" class="post-title-link" itemprop="url">effective-c++系列：单继承、多继承、虚函数、虚继承内存布局</a>
+            <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Ammap%E5%8E%9F%E7%90%86%E6%B5%85%E8%B0%88/" class="post-title-link" itemprop="url">c++内存管理系列：mmap原理</a>
         </h2>
 
         <div class="post-meta">
@@ -269,14 +925,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-08-27 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-27T00:00:00+08:00">2021-08-27</time>
+              <time title="Created: 2021-08-29 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-29T00:00:00+08:00">2021-08-29</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-04-07 11:05:40" itemprop="dateModified" datetime="2022-04-07T11:05:40+08:00">2022-04-07</time>
+                <time title="Modified: 2021-10-29 20:16:36" itemprop="dateModified" datetime="2021-10-29T20:16:36+08:00">2021-10-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -284,7 +940,7 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
                 </span>
             </span>
 
@@ -299,674 +955,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="虚函数内存模型"><a href="#虚函数内存模型" class="headerlink" title="虚函数内存模型"></a>虚函数内存模型</h3><ul>
-<li>我们可以用基类型A的引用或者指针持有实际类型为派生类B的对象，这意味着，编译时我们无法通过其声明类型来确定其实际类型，也就无法确定应该调用哪个具体的虚函数。考虑到程序中的每个函数都在内存中有着唯一的地址，我们可以将具体函数的地址作为成员变量，存放在对象之中，这样就可以在运行时，通过访问这个成员变量，获取到实际类型虚函数的地址。
+          <h3 id="内存映射"><a href="#内存映射" class="headerlink" title="内存映射"></a>内存映射</h3><p>内存映射，简而言之就是将用户空间的一段内存区域映射到内核空间，映射成功后，用户对这段内存区域的修改可以直接反映到内核空间，同样，内核空间对这段区域的修改也直接反映用户空间。那么对于内核空间&lt;—-&gt;用户空间两者之间需要大量数据传输等操作的话效率是非常高的。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/08/27/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E8%99%9A%E7%BB%A7%E6%89%BF%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/25/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9Aprivate%E7%BB%A7%E6%89%BF%E5%92%8C%E5%A4%9A%E7%BB%A7%E6%89%BF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/08/25/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9Aprivate%E7%BB%A7%E6%89%BF%E5%92%8C%E5%A4%9A%E7%BB%A7%E6%89%BF/" class="post-title-link" itemprop="url">effective-c++系列：private继承和多继承</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-08-25 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-25T00:00:00+08:00">2021-08-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:10:26" itemprop="dateModified" datetime="2021-10-29T20:10:26+08:00">2021-10-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="private继承"><a href="#private继承" class="headerlink" title="private继承"></a>private继承</h3><ul>
-<li><p>如果class之间的继承关系是private，那么编译器不会自动将一个子类对象转换为父类对象。</p>
-</li>
-<li><p>使用private继承的所有父类成员，在子类中都是private类型的，即使成员在父类中是public或者protected的。</p>
-</li>
-<li><p>private意味着只有实现部分被继承，接口部分应略去。</p>
-</li>
-<li><p>private继承可以造成empty base最优化，如下代码
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/08/25/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9Aprivate%E7%BB%A7%E6%89%BF%E5%92%8C%E5%A4%9A%E7%BB%A7%E6%89%BF/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/23/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9Apublic%E7%BB%A7%E6%89%BF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/08/23/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9Apublic%E7%BB%A7%E6%89%BF/" class="post-title-link" itemprop="url">effective-c++系列：public继承注意事项</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-08-23 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-23T00:00:00+08:00">2021-08-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:10:30" itemprop="dateModified" datetime="2021-10-29T20:10:30+08:00">2021-10-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="public继承-is-a关系"><a href="#public继承-is-a关系" class="headerlink" title="public继承==is_a关系"></a>public继承==is_a关系</h3><ul>
-<li><p>如果<font color=green>class D </font>以public形式继承<font color=green>class B</font>，那么相当于告诉c++编译器，每一个类型为D的对象同时也是一个类型为B的对象，反之不成立。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/08/23/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9Apublic%E7%BB%A7%E6%89%BF/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/22/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E6%B7%B1%E5%85%A5%E6%8E%A2%E6%9E%90swap/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/08/22/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E6%B7%B1%E5%85%A5%E6%8E%A2%E6%9E%90swap/" class="post-title-link" itemprop="url">effective-c++系列：深入探析swap</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-08-22 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-22T00:00:00+08:00">2021-08-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:10:06" itemprop="dateModified" datetime="2021-10-29T20:10:06+08:00">2021-10-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="swap介绍"><a href="#swap介绍" class="headerlink" title="swap介绍"></a>swap介绍</h3><ul>
-<li><p>swap作为STL的一部分，在算法、容器、迭代器中被广泛使用。<br>c++为用户定义了算法的默认形式如下：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/08/22/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E6%B7%B1%E5%85%A5%E6%8E%A2%E6%9E%90swap/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/20/c++%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9%E6%B1%87%E6%80%BB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/08/20/c++%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9%E6%B1%87%E6%80%BB/" class="post-title-link" itemprop="url">c++小知识点汇总</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-08-20 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-20T00:00:00+08:00">2021-08-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:09:24" itemprop="dateModified" datetime="2021-10-29T20:09:24+08:00">2021-10-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="能不能使用struct代替模板的class-typename"><a href="#能不能使用struct代替模板的class-typename" class="headerlink" title="能不能使用struct代替模板的class/typename"></a>能不能使用struct代替模板的class/typename</h3><p>答： c++保留struct主要为了兼容c语言，但是在c语言中是不存在模板的，所有没有必要在模板中支持struct声明模板形参。</p>
-<h3 id="重复free会发生什么"><a href="#重复free会发生什么" class="headerlink" title="重复free会发生什么"></a>重复free会发生什么</h3><p>答：编译通过，运行时出错。由于free之后没有立即初始化，可能会被注入病毒。<a target="_blank" rel="noopener" href="http://d0m021ng.github.io/2017/02/24/PWN/Linux%E5%A0%86%E6%BC%8F%E6%B4%9E%E4%B9%8BDouble-free/">http://d0m021ng.github.io/2017/02/24/PWN/Linux%E5%A0%86%E6%BC%8F%E6%B4%9E%E4%B9%8BDouble-free/</a></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/08/20/c++%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9%E6%B1%87%E6%80%BB/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88/" class="post-title-link" itemprop="url">effective-c++系列：对象模型杂谈（1）</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-08-20 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-20T00:00:00+08:00">2021-08-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:09:59" itemprop="dateModified" datetime="2021-10-29T20:09:59+08:00">2021-10-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="编译器版本的默认构造-析构-赋值-拷贝构造函数"><a href="#编译器版本的默认构造-析构-赋值-拷贝构造函数" class="headerlink" title="编译器版本的默认构造/析构/赋值/拷贝构造函数"></a>编译器版本的默认构造/析构/赋值/拷贝构造函数</h3><ul>
-<li>当用户没有在类内声明上述三个函数时，如果程序中需要调用，编译器会为用户自动编写<font color=green>默认构造/析构/拷贝构造</font>这三个重要的函数，即所谓的Big Three，和拷贝构造函数，并且这些函数都是<font color=orange>inline</font>的。在c++ 11后编译器新增了move构造和move赋值两个函数：</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%BC%95%E7%94%A8%E6%B5%85%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%BC%95%E7%94%A8%E6%B5%85%E6%9E%90/" class="post-title-link" itemprop="url">effective-c++系列：引用浅析</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-08-20 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-20T00:00:00+08:00">2021-08-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:10:18" itemprop="dateModified" datetime="2021-10-29T20:10:18+08:00">2021-10-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><ul>
-<li>引用不是新定义一个变量，而是给一个已经存在的变量取了一个别名，编译器不会为引用变量开辟内存空间，它和它引用的变量共用同一块内存空间。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%BC%95%E7%94%A8%E6%B5%85%E6%9E%90/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88%EF%BC%882%EF%BC%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88%EF%BC%882%EF%BC%89/" class="post-title-link" itemprop="url">effective-c++系列：对象模型杂谈（2）</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-08-20 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-20T00:00:00+08:00">2021-08-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:10:03" itemprop="dateModified" datetime="2021-10-29T20:10:03+08:00">2021-10-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="在构造函数和析构函数中能调用虚函数吗？"><a href="#在构造函数和析构函数中能调用虚函数吗？" class="headerlink" title="在构造函数和析构函数中能调用虚函数吗？"></a>在构造函数和析构函数中能调用虚函数吗？</h3><ul>
-<li><p>严禁在构造函数中调用虚函数</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88%EF%BC%882%EF%BC%89/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/16/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9Aconst%E8%AF%A6%E8%A7%A3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/08/16/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9Aconst%E8%AF%A6%E8%A7%A3/" class="post-title-link" itemprop="url">effective c++系列：const详解</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-08-16 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-16T00:00:00+08:00">2021-08-16</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:10:22" itemprop="dateModified" datetime="2021-10-29T20:10:22+08:00">2021-10-29</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="const关键字"><a href="#const关键字" class="headerlink" title="const关键字"></a>const关键字</h3><ul>
-<li>const名叫常量限定符，用来限定特定变量，以通知编译器该变量是不可修改的。习惯性的使用const，可以避免在函数中对某些不应修改的变量造成可能的改动。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/08/16/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9Aconst%E8%AF%A6%E8%A7%A3/#more" rel="contents">
+              <a class="btn" href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Ammap%E5%8E%9F%E7%90%86%E6%B5%85%E8%B0%88/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -989,7 +981,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1057,20 +1049,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">100</span>
+          <span class="site-state-item-count">126</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

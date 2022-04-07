@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="MySQL体系结构 从上图可以看出，主要是这几个  连接池组件 管理服务和工具组件 SQL接口组件 查询分析器组件 优化器组件 缓冲组件 插件式存储引擎 物理文件  其中比较重要的就是这个插件式的存储引擎，这个引擎完全是基于表的，而不是基于整个数据库。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="InnoDB系列：体系结构">
+<meta property="og:url" content="http://haoqinx.github.io/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/index.html">
+<meta property="og:site_name" content="面向自由编程">
+<meta property="og:description" content="MySQL体系结构 从上图可以看出，主要是这几个  连接池组件 管理服务和工具组件 SQL接口组件 查询分析器组件 优化器组件 缓冲组件 插件式存储引擎 物理文件  其中比较重要的就是这个插件式的存储引擎，这个引擎完全是基于表的，而不是基于整个数据库。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-11-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-04-07T05:17:48.649Z">
+<meta property="article:author" content="hqin">
+<meta property="article:tag" content="MySQL">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://haoqinx.github.io/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>InnoDB系列：体系结构 | 面向自由编程</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">面向自由编程</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          InnoDB系列：体系结构
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-11-06 00:00:00" itemprop="dateCreated datePublished" datetime="2021-11-06T00:00:00+08:00">2021-11-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-04-07 13:17:48" itemprop="dateModified" datetime="2022-04-07T13:17:48+08:00">2022-04-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="MySQL体系结构"><a href="#MySQL体系结构" class="headerlink" title="MySQL体系结构"></a>MySQL体系结构</h2><p><a href="/images/mysql-1.png"></a></p>
+<p>从上图可以看出，主要是这几个</p>
+<ul>
+<li>连接池组件</li>
+<li>管理服务和工具组件</li>
+<li>SQL接口组件</li>
+<li>查询分析器组件</li>
+<li>优化器组件</li>
+<li>缓冲组件</li>
+<li>插件式存储引擎</li>
+<li>物理文件</li>
+</ul>
+<p>其中比较重要的就是这个插件式的存储引擎，这个引擎完全是基于表的，而不是基于整个数据库。</p>
+<span id="more"></span>
+<h2 id="InnoDB的优点"><a href="#InnoDB的优点" class="headerlink" title="InnoDB的优点"></a>InnoDB的优点</h2><ul>
+<li>插入缓冲：对于非聚集索引的插入或更新操作不是每次直接插入到索引页，先判断插入的非聚集索引页是否在缓冲池中，若在，直接插入，若不在，先放入插入缓冲对象中。再用一定的频率对插入缓冲和辅助索引页进行合并操作。</li>
+<li>MVCC高并发：支持行锁，每次删除不直接删除数据，而是去标记这个数据无效。</li>
+<li>next-key locking 避免幻读。</li>
+<li>支持事务，保证ACID。</li>
+<li>支持崩溃后的安全恢复。</li>
+</ul>
+<h2 id="InnoDB体系结构"><a href="#InnoDB体系结构" class="headerlink" title="InnoDB体系结构"></a>InnoDB体系结构</h2><p><a href="/images/mysql-2.png"></a></p>
+<p>一图胜千言，上面就是Innodb存储引擎的体系架构。</p>
+<ul>
+<li><p>后台线程</p>
+<ul>
+<li>刷新内存池中的数据，保证缓冲池中的内存缓冲是最近的数据。</li>
+</ul>
+</li>
+<li><p>内存池</p>
+<ul>
+<li>存储所有进程/线程需要访问的多个内部数据结构</li>
+<li>缓存磁盘上的数据，方便快速读取</li>
+<li>redo log的缓冲</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>后台线程</li>
+</ol>
+<ul>
+<li><p>Master Thread<br>主线程，用于将缓冲池中的数据异步刷新到磁盘，保证数据的一致性。</p>
+</li>
+<li><p>IO Thread  </p>
+</li>
+</ul>
+<p>使用大量Async IO来提高数据库性能。这些线程的主要工作就是负责IO请求的回调。1.0.x版本之后，分别有4个write和read，1个insert buffer和1个log thread。</p>
+<ul>
+<li><p>Purge Thread<br>事务提交之后其undolog可能不在需要，因此需要PurgeThread来回收已经使用并分配的undo页。</p>
+</li>
+<li><p>Page Cleaner Thread  </p>
+</li>
+</ul>
+<p>1.2版本引入，目的是减轻主线程的工作量。</p>
+<ol start="2">
+<li>内存池</li>
+</ol>
+<ul>
+<li>缓冲池<br>其实就是一块内存区域，按照页的方式进行管理。在数据库读取页的时候，首先判断此页是否在缓冲池中，若没有，则读取的时候顺便把它放到缓冲池中。而脏页的回写遵循checkpoint机制。<br>缓冲池中不光是数据和索引，更有自适应哈希索引，所信息，数据字典信息等等。</li>
+<li>LRU List/Free List/Flush List</li>
+</ul>
+<p>需要注意的是在进行LRU的时候，每次新的页不是直接插在表头，而是5/8的位置，为什么？因为某些SQL操作例如数据的扫描和索引等，需要访问表中的甚至全部页，而这些都不是热点数据，如果插在头部会淘汰热点数据。<br>还有一个问题，什么时候会认为这些数据是热点数据？mysql设置了一个参数，只要超过这个时间，就会被移到热端。  </p>
+<p>还有一点是脏页可同时存在于LRU list和Flush list中。</p>
+<ul>
+<li><p>redo log缓冲</p>
+</li>
+<li><p>额外的内存池<br>对一些数据和结构本身的存储，必要的时候需要设置大一点</p>
+</li>
+</ul>
+<ol start="3">
+<li>checkpoint技术</li>
+</ol>
+<p>设置这个技术的目的就是为了协调cpu和磁盘的速度，刷新频率不能太快，太快导致性能变差，并且如果从缓冲刷到磁盘宕机了，数据就丢失了。为了避免这个情况，使用Write Ahead Log策略，事务提交时，先写重做日志，再修改页，这样可以通过redo log来恢复。<strong>这也是事务ACID中D的要求。</strong><br>综合来看，checkpoint技术解决下面几个问题：</p>
+<ul>
+<li>缩短数据库恢复时间（只需redo 检查点之后的数据）。</li>
+<li>缓冲池不够时，将脏页刷新到磁盘。</li>
+<li>redo log不可用时，刷新脏页（redo log满了）。</li>
+</ul>
+<p>checkpoint分为sharp和fuzzy两种，第一种是把所有脏页刷回磁盘，第二种有下面好几种情况：</p>
+<ul>
+<li>主线程检查点：每秒或者没十秒从缓冲池刷一定比例的脏页回磁盘。</li>
+<li>Flush/LRU 检查点：保证列表有一定比例的空闲项。</li>
+<li>Async/Sync checkpoint：redo日志不可用时刷新。</li>
+</ul>
+<ol start="4">
+<li>主线程工作方式<br>主线程内部由几个循环组成</li>
+</ol>
+<ul>
+<li>主循环<ul>
+<li>每1s<ul>
+<li>日志缓冲刷新到磁盘</li>
+<li>合并插入缓冲</li>
+<li>至多100个脏页回写（后面版本改成以磁盘IO吞吐量来定）</li>
+<li>如果没有活动，切换到后台循环</li>
+</ul>
+</li>
+<li>每10s<ul>
+<li>刷新100个脏页</li>
+<li>合并5个插入缓冲</li>
+<li>日志缓冲回写</li>
+<li>删除无用undo页</li>
+<li>刷新100个或10个脏页</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>后台循环<ul>
+<li>删除无用undo</li>
+<li>合并20个插入缓冲</li>
+<li>跳回主循环</li>
+<li>不断刷新100个页，跳转刷新循环</li>
+</ul>
+</li>
+<li>刷新循环</li>
+<li>暂停循环</li>
+</ul>
+<ol start="5">
+<li>插入缓冲</li>
+</ol>
+<p>对于非聚集索引的插入或者更新，不是直接插入到索引页， 而是先放入插入缓冲对象中。再按照一定的频率对插入缓冲和非聚集索引节点进行合并操作。</p>
+<ol start="6">
+<li>两次写（double write）  </li>
+</ol>
+<p><a href="/images/mysql-3.png"></a><br>两次写由两个部分组成，一部分是内存中的doublewrite buffer（2MB）。另一部分是物理磁盘上共享表空间中连续的128页（2MB）。<br>对缓冲池脏页刷新时：</p>
+<ul>
+<li>不立马写磁盘，使用memcpy将脏页复制到buffer中</li>
+<li>分两次，每次先将buffer的1MB写入共享表空间，调用fsync函数同步磁盘</li>
+</ul>
+<ol start="7">
+<li>自适应哈希索引（AHI）<br>InnoDB会监控对表上索引页的查询，如果观察到简历哈希索引可以带来速度提升，会建立哈希索引。<br>建立哈希索引的条件是：</li>
+</ol>
+<ul>
+<li>通过某模式访问100次</li>
+<li>页通过该模式访问了（页中记录/16）次</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E7%B4%A2%E5%BC%95/" rel="prev" title="InnoDB系列：索引">
+      <i class="fa fa-chevron-left"></i> InnoDB系列：索引
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E4%BA%8B%E5%8A%A1/" rel="next" title="InnoDB系列：事务">
+      InnoDB系列：事务 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">MySQL体系结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InnoDB%E7%9A%84%E4%BC%98%E7%82%B9"><span class="nav-number">2.</span> <span class="nav-text">InnoDB的优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InnoDB%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="nav-number">3.</span> <span class="nav-text">InnoDB体系结构</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hqin"
+      src="/images/001.jpg">
+  <p class="site-author-name" itemprop="name">hqin</p>
+  <div class="site-description" itemprop="description">星海横流 岁月成碑</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hqin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
