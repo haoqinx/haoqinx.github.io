@@ -49,7 +49,7 @@
 <meta property="og:image" content="http://haoqinx.github.io/images/g4.9-13.png">
 <meta property="og:image" content="http://haoqinx.github.io/images/g4.9-14.png">
 <meta property="article:published_time" content="2021-09-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-10-29T12:09:08.587Z">
+<meta property="article:modified_time" content="2022-04-15T02:07:11.234Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="内存管理">
@@ -219,7 +219,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:09:08" itemprop="dateModified" datetime="2021-10-29T20:09:08+08:00">2021-10-29</time>
+                <time title="Modified: 2022-04-15 10:07:11" itemprop="dateModified" datetime="2022-04-15T10:07:11+08:00">2022-04-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -255,9 +255,8 @@
 <li>标记此块内存是否被占用，上图中00000041的1就是用来标记此后的0x40内存是被占用的，如果想在此继续申请就会被拒绝。</li>
 </ul>
 <p>其实malloc本身是一个内存池，我们申请是很快的，主要就是要避免cookie开销，试想一下，如果我们的对象中只有一个指针，那么cookie就占据了66%的空间，这是我们所不能容忍的。</p>
-<p>下面通过侯捷大佬的课件回忆一下内存池的整个分配过程。</p>
-<p><img src="/images/g4.9-1.png"><br>上图是总览，这个freelist总共有16个区块，每个区块负责不同大小的内存分配。区块之间的递增大小为8。<br><img src="/images/g4.9-1-1.png"><br>这里的freelist使用了嵌入式指针技术（embedding pointer）当区块没有被分配出去之前，结构体内存放的是指向下一区块的指针，分配时将指针值赋给下一个区块的指针，然后将对象信息直接覆盖掉指针。<br><img src="/images/g4.9-1-2.png"><br>这是对应代码中的定义。<br>下面来看一下具体的分配过程。在图中解释的十分清楚.<br><img src="/images/g4.9-2.png"><br><img src="/images/g4.9-3.png"><br><img src="/images/g4.9-4.png"><br><img src="/images/g4.9-5.png"><br><img src="/images/g4.9-6.png"><br><img src="/images/g4.9-7.png"><br><img src="/images/g4.9-8.png"><br><img src="/images/g4.9-9.png"><br><img src="/images/g4.9-10.png"><br><img src="/images/g4.9-11.png"><br><img src="/images/g4.9-12.png"><br><img src="/images/g4.9-13.png"><br><img src="/images/g4.9-14.png"></p>
-<p>G2.9d的内存管理通过自由链表构造一个内存池来控制，这样做会大量减少cookie的产生，但是也存在问题，比如最后一页，其实在我们的内存中还有大量剩余内存，但是对一个大区块，我们却无法合并区块来提供给用户，并且随着申请数量的加大，我们的累积量会越来愈大，严重情况下会影响其他进程合理的内存要求。<br>关于追加量为什么是累计量的4倍，一个可能的解释是编写此内存分配的程序员认为或者根据经验，内存申请会越来越多，我们提前准备好足够多的内存能避免这种情况。</p>
+<p>下面通过侯捷大佬的课件回忆一下内存池的整个分配过程。<br><img src="/images/g4.9-1.png"><br>上图是总览，这个freelist总共有16个区块，每个区块负责不同大小的内存分配。区块之间的递增大小为8。<br><img src="/images/g4.9-1-1.png"><br>这里的freelist使用了嵌入式指针技术（embedding pointer）当区块没有被分配出去之前，结构体内存放的是指向下一区块的指针，分配时将指针值赋给下一个区块的指针，然后将对象信息直接覆盖掉指针。<br><img src="/images/g4.9-1-2.png"><br>这是对应代码中的定义。<br>下面来看一下具体的分配过程。在图中解释的十分清楚.<br><img src="/images/g4.9-2.png"><br><img src="/images/g4.9-3.png"><br><img src="/images/g4.9-4.png"><br><img src="/images/g4.9-5.png"><br><img src="/images/g4.9-6.png"><br><img src="/images/g4.9-7.png"><br><img src="/images/g4.9-8.png"><br><img src="/images/g4.9-9.png"><br><img src="/images/g4.9-10.png"><br><img src="/images/g4.9-11.png"><br><img src="/images/g4.9-12.png"><br><img src="/images/g4.9-13.png"><br><img src="/images/g4.9-14.png"></p>
+<p>G2.9的内存管理通过自由链表构造一个内存池来控制，这样做会大量减少cookie的产生，但是也存在问题，比如最后一页，其实在我们的内存中还有大量剩余内存，但是对一个大区块，我们却无法合并区块来提供给用户，并且随着申请数量的加大，我们的累积量会越来愈大，严重情况下会影响其他进程合理的内存要求。<br>关于追加量为什么是累计量的4倍，一个可能的解释是编写此内存分配的程序员认为或者根据经验，内存申请会越来越多，我们提前准备好足够多的内存能避免这种情况。</p>
 
     </div>
 
@@ -277,12 +276,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Abitmap-allocator/" rel="prev" title="c++内存管理系列：bitmap-allocator">
-      <i class="fa fa-chevron-left"></i> c++内存管理系列：bitmap-allocator
+    <a href="/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9AVC6-malloc/" rel="prev" title="c++内存管理系列：VC6-malloc">
+      <i class="fa fa-chevron-left"></i> c++内存管理系列：VC6-malloc
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9AVC6-malloc/" rel="next" title="c++内存管理系列：VC6-malloc">
-      c++内存管理系列：VC6-malloc <i class="fa fa-chevron-right"></i>
+    <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Avector/" rel="next" title="c++STL系列：vector">
+      c++STL系列：vector <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>

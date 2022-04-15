@@ -925,7 +925,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2020/10/24/C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%EF%BC%9A%E6%9E%84%E9%80%A0%E3%80%81%E6%9E%90%E6%9E%84/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2020/10/24/C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%EF%BC%9A%E5%87%BD%E6%95%B0%E5%92%8C%E7%BB%A7%E6%89%BF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -939,7 +939,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/10/24/C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%EF%BC%9A%E6%9E%84%E9%80%A0%E3%80%81%E6%9E%90%E6%9E%84/" class="post-title-link" itemprop="url">C++对象模型：构造、析构</a>
+            <a href="/2020/10/24/C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%EF%BC%9A%E5%87%BD%E6%95%B0%E5%92%8C%E7%BB%A7%E6%89%BF/" class="post-title-link" itemprop="url">C++对象模型：函数和继承</a>
         </h2>
 
         <div class="post-meta">
@@ -956,7 +956,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-04-07 13:10:46" itemprop="dateModified" datetime="2022-04-07T13:10:46+08:00">2022-04-07</time>
+                <time title="Modified: 2022-04-15 10:07:03" itemprop="dateModified" datetime="2022-04-15T10:07:03+08:00">2022-04-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -979,16 +979,23 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h3><ol>
-<li>无继承</li>
+          <ol>
+<li>member function类型</li>
 </ol>
 <ul>
-<li><p>Plain Old Data(纯data)</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Point</span>&#123;</span></span><br><span class="line">    <span class="keyword">double</span> x;</span><br><span class="line">    <span class="keyword">double</span> y;</span><br><span class="line">&#125;Point;</span><br></pre></td></tr></table></figure>
-<p>直接逐bit拷贝，编译器甚至没有生成默认构造和析构函数。</p>
+<li><p>static member function</p>
+</li>
+<li><p>nonstatic member function</p>
+<p>  nonstatic member function 设计原则是和 nonmember效率相同，方法就是隐藏传入一个this指针，重写为外部函数时，函数签名带标识保证全局唯一。</p>
+</li>
+<li><p>virtual function</p>
+<p>  虚函数调用时会到虚表找到相关的函数地址，然后传入this指针。例如调用：</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ptr -&gt; <span class="built_in">func</span>();</span><br></pre></td></tr></table></figure>
+<p>  在编译器中会生成：</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(*ptr -&gt; vptr[<span class="number">1</span>])(ptr);</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2020/10/24/C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%EF%BC%9A%E6%9E%84%E9%80%A0%E3%80%81%E6%9E%90%E6%9E%84/#more" rel="contents">
+              <a class="btn" href="/2020/10/24/C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%EF%BC%9A%E5%87%BD%E6%95%B0%E5%92%8C%E7%BB%A7%E6%89%BF/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
