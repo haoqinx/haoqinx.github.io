@@ -163,94 +163,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Aptmalloc%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Aptmalloc%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">Linux内核系列：ptmalloc源码分析</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-08-29 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-29T00:00:00+08:00">2021-08-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-12-07 23:00:49" itemprop="dateModified" datetime="2021-12-07T23:00:49+08:00">2021-12-07</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="基本数据结构"><a href="#基本数据结构" class="headerlink" title="基本数据结构"></a>基本数据结构</h3><ol>
-<li>Main_arena</li>
-</ol>
-<p>在最开始实现的版本中只有一个main arena，每次分配内存都必须对主分配区加锁，分配完成后释放锁。 在多线程环境下由于锁的竞争效率低。<br>新版本增加了非主分配区。根据系统对分配区的争用情况非主分配区会增加，但不减少。</p>
-<ul>
-<li>主分配区访问heap和mmap区域（主分配区可以使用sbrk和mmap想操作系统申请虚拟内存），非主分配区只能访问mmap区域。</li>
-<li>主分配区每次mmap向操作系统刚申请HEAP_MAX_SIZE（32位1MB,64位64MB）大小的虚拟内存。</li>
-<li>当某一线程需要调用malloc()分配内存空间时，该线程先查看线程私有变量中是否已经存在一个分配区，如果存在，尝试对该分配区加锁，如果加锁成功，使用该分配区分配内存，如果失败，该线程搜索循环链表试图获得一个没有加锁的分配区。如果所有的分配区都已经加锁，那么malloc()会开辟一个新的分配区，把该分配区加入到全局分配区循环链表并加锁，然后使用该分配区进行分配内存操作。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Aptmalloc%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Ased%E5%92%8Cawk%E5%91%BD%E4%BB%A4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -316,6 +228,94 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Ased%E5%92%8Cawk%E5%91%BD%E4%BB%A4/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Aptmalloc%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Aptmalloc%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">Linux内核系列：ptmalloc源码分析</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-08-29 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-29T00:00:00+08:00">2021-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-12-07 23:00:49" itemprop="dateModified" datetime="2021-12-07T23:00:49+08:00">2021-12-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="基本数据结构"><a href="#基本数据结构" class="headerlink" title="基本数据结构"></a>基本数据结构</h3><ol>
+<li>Main_arena</li>
+</ol>
+<p>在最开始实现的版本中只有一个main arena，每次分配内存都必须对主分配区加锁，分配完成后释放锁。 在多线程环境下由于锁的竞争效率低。<br>新版本增加了非主分配区。根据系统对分配区的争用情况非主分配区会增加，但不减少。</p>
+<ul>
+<li>主分配区访问heap和mmap区域（主分配区可以使用sbrk和mmap想操作系统申请虚拟内存），非主分配区只能访问mmap区域。</li>
+<li>主分配区每次mmap向操作系统刚申请HEAP_MAX_SIZE（32位1MB,64位64MB）大小的虚拟内存。</li>
+<li>当某一线程需要调用malloc()分配内存空间时，该线程先查看线程私有变量中是否已经存在一个分配区，如果存在，尝试对该分配区加锁，如果加锁成功，使用该分配区分配内存，如果失败，该线程搜索循环链表试图获得一个没有加锁的分配区。如果所有的分配区都已经加锁，那么malloc()会开辟一个新的分配区，把该分配区加入到全局分配区循环链表并加锁，然后使用该分配区进行分配内存操作。
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Aptmalloc%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -690,7 +690,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-04-15 10:07:20" itemprop="dateModified" datetime="2022-04-15T10:07:20+08:00">2022-04-15</time>
+                <time title="Modified: 2022-04-16 09:31:40" itemprop="dateModified" datetime="2022-04-16T09:31:40+08:00">2022-04-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
