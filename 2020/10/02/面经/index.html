@@ -29,7 +29,7 @@
 <meta property="og:description" content="阿里云开放平台一面2.28：  实习、项目介绍 最有挑战的项目？难点、怎么解决的？ 内存泄漏（检测工具valgrind&#x2F;钩子函数、相关命令） 编程层面如何预防内存泄漏，除了智能指针？ linux网络编程和tcp连接对应关系 三次握手四次挥手，timewait、closewait leveldb原理（memtable&#x2F;immemtable&#x2F;sstable&#x2F;log&#x2F;manifast&#x2F;footer）">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-10-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-04-09T08:48:47.698Z">
+<meta property="article:modified_time" content="2022-04-26T14:00:53.414Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="面经">
 <meta name="twitter:card" content="summary">
@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-04-09 16:48:47" itemprop="dateModified" datetime="2022-04-09T16:48:47+08:00">2022-04-09</time>
+                <time title="Modified: 2022-04-26 22:00:53" itemprop="dateModified" datetime="2022-04-26T22:00:53+08:00">2022-04-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -231,7 +231,7 @@
 <li>三次握手四次挥手，timewait、closewait</li>
 <li>leveldb原理（memtable/immemtable/sstable/log/manifast/footer）</li>
 <li>vector底层实现、动态扩容</li>
-<li>竞态、举例（脑子突然卡壳，这里表现不好）</li>
+<li>竞态、临界区、举例</li>
 <li>ptmalloc底层实现</li>
 <li>tcmalloc、jemalloc底层实现，和ptmalloc对比</li>
 <li>伙伴系统、slab分配器、STL二级配置器（内存池）</li>
@@ -248,9 +248,8 @@
 <li>x86架构模型</li>
 <li>x86和arm在内存架构上的不同<br>算法：利用malloc和free实现自己的my_malloc和my_free，使之可以基于N字节对齐。</li>
 </ol>
-<p>hr面3.18：<br>聊天+谈职业规划</p>
-<p>周末等两天。。<br>周一3.21意向</p>
-<p>阿里云块存储<br>一面：<br>算法题：字符串转整数、公共子树</p>
+<p>hr面3.18：<br>聊天+谈职业规划<br>3.21意向</p>
+<p>阿里云块存储<br>一面3.1：<br>算法题：字符串转整数、公共子树</p>
 <ol>
 <li>介绍项目、实习</li>
 <li>leveldb原理</li>
@@ -261,17 +260,18 @@
 <li>多线程和多进程各自的优缺点</li>
 <li>最近在关注的技术（HTTP3.0）</li>
 <li>http3.0 为什么用udp</li>
+<li>3.0实现细节、TLS3.0</li>
 <li>反问</li>
 </ol>
-<p>这面问的都好简单，但是越简单记得就有点模糊，准备的redis、linux内核、协程、k8s、docker、内存管理都没有问，难受。</p>
-<p>腾讯wxg</p>
+<p>这面问的都好简单，但是越简单记得就有点模糊，准备的redis、linux内核、协程、k8s、docker、内存管理都没有问，难受。<br>3.2一面过 但系统已经填了开放平台 放弃后续面试</p>
+<p>腾讯wxg3.17</p>
 <ol>
 <li>代码：回文串、c++单利模式：懒汉、线程安全模式、最大字符串</li>
 <li>函数返回临时对象的问题</li>
 <li>sizeof为0</li>
 <li>移动构造使用场景</li>
-<li>new时内存不够，修改abort()报错要怎么做</li>
-<li>协程项目深挖</li>
+<li>new时内存不够，修改abort()报错要怎么做，(operator new修改回调函数)</li>
+<li>协程项目深挖（15min）</li>
 <li>协程堆上内存不够了会发生什么</li>
 <li>协程堆内存不够，申请两倍空间，拷贝过去会有什么问题</li>
 <li>第三方库调协程需要怎么做？</li>
@@ -291,9 +291,9 @@
 <li>进程间通信</li>
 <li>页表</li>
 <li>k8s（apiserver，etcd，node，kubelet） </li>
-<li>docker原理<br>算法题：二叉查找树第k小元素非递归实现</li>
+<li>docker原理<br>算法题：二叉查找树第k小元素非递归实现（没写出来）</li>
 </ol>
-<p>总结：问的都是不擅长的数据库，擅长的操作系统和网络问的都是八股，算法题拉了，思路对的但是做了40分钟没写出来，应该是凉透了。<br>更新：二十分钟后询问hr 一面过<br>os:算法题这么拉过了？估计到后面被挂..</p>
+<p>总结：问的都是不擅长的数据库，擅长的操作系统和网络问的都是八股，算法题拉了，思路对的但是做了40分钟没写出来，应该是凉透了。<br>更新：二十分钟后询问hr 一面过<br>os:算法题没做出来过了？</p>
 <p>二面：</p>
 <ol>
 <li>介绍</li>
@@ -302,8 +302,9 @@
 <li>内核自旋锁原理，读写锁</li>
 <li>NUMA、MESI</li>
 <li>对计算机网络的理解</li>
+<li>反问<br>算法：<br>面试官：一面算法下来写过了吗？答写了。<br>面试官：不能用辅助数据结构、空间复杂度O(1)。楼主心态爆炸，这里写了20min没写出来。<br>面试官放水：写下memcpy和strcpy？楼主已经懵逼，忘记怎么写的了，卒。<br>面试后了解到面试官应该想要实现Morris遍历。</li>
 </ol>
-<p>算法：一面算法（os:这不有手就行吗？）面试官：不能用stack、空间复杂度O(1)….蒙了,心态爆炸，导致后面memcpy和strcpy没写出来，面试官说编码能力不行..<br>面试后了解到面试官应该想要实现Mirrors遍历，字节面试还得好好刷算法。秋招再战！</p>
+<p>总结：算法未准备充分，字节面试还得好好刷算法。秋招再战！</p>
 
     </div>
 
