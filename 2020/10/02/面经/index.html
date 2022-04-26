@@ -29,7 +29,7 @@
 <meta property="og:description" content="阿里云开放平台一面2.28：  实习、项目介绍 最有挑战的项目？难点、怎么解决的？ 内存泄漏（检测工具valgrind&#x2F;钩子函数、相关命令） 编程层面如何预防内存泄漏，除了智能指针？ linux网络编程和tcp连接对应关系 三次握手四次挥手，timewait、closewait leveldb原理（memtable&#x2F;immemtable&#x2F;sstable&#x2F;log&#x2F;manifast&#x2F;footer）">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-10-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-04-26T14:00:53.414Z">
+<meta property="article:modified_time" content="2022-04-26T14:15:00.276Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="面经">
 <meta name="twitter:card" content="summary">
@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-04-26 22:00:53" itemprop="dateModified" datetime="2022-04-26T22:00:53+08:00">2022-04-26</time>
+                <time title="Modified: 2022-04-26 22:15:00" itemprop="dateModified" datetime="2022-04-26T22:15:00+08:00">2022-04-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -249,7 +249,7 @@
 <li>x86和arm在内存架构上的不同<br>算法：利用malloc和free实现自己的my_malloc和my_free，使之可以基于N字节对齐。</li>
 </ol>
 <p>hr面3.18：<br>聊天+谈职业规划<br>3.21意向</p>
-<p>阿里云块存储<br>一面3.1：<br>算法题：字符串转整数、公共子树</p>
+<p>阿里云块存储<br>一面2.26：<br>算法题：字符串转整数、公共子树</p>
 <ol>
 <li>介绍项目、实习</li>
 <li>leveldb原理</li>
@@ -263,10 +263,20 @@
 <li>3.0实现细节、TLS3.0</li>
 <li>反问</li>
 </ol>
-<p>这面问的都好简单，但是越简单记得就有点模糊，准备的redis、linux内核、协程、k8s、docker、内存管理都没有问，难受。<br>3.2一面过 但系统已经填了开放平台 放弃后续面试</p>
+<p>二面3.1</p>
+<ol>
+<li>介绍</li>
+<li>linux文件系统</li>
+<li>零拷贝</li>
+<li>c++文件编码执行整个过程20min（涉及 键盘io、中断、显示器、elf文件、编译、链接、加载、执行、物理内存、虚拟内存、进程管理等等细节）</li>
+<li>linux cfs进程调度底层原理</li>
+<li>磁盘缓存、布局</li>
+<li>linux io细节<br>算法题：组合总和</li>
+</ol>
+<p>3.2通知二面过 但已选择其他部门 放弃后续面试</p>
 <p>腾讯wxg3.17</p>
 <ol>
-<li>代码：回文串、c++单利模式：懒汉、线程安全模式、最大字符串</li>
+<li>代码：回文串、c++单例模式：懒汉、线程安全模式、最大字符串</li>
 <li>函数返回临时对象的问题</li>
 <li>sizeof为0</li>
 <li>移动构造使用场景</li>
@@ -274,10 +284,12 @@
 <li>协程项目深挖（15min）</li>
 <li>协程堆上内存不够了会发生什么</li>
 <li>协程堆内存不够，申请两倍空间，拷贝过去会有什么问题</li>
-<li>第三方库调协程需要怎么做？</li>
-<li>协程池？</li>
-<li>内核函数read、write在哪个链接器里？</li>
+<li>第三方库调你的协程库需要怎么做？</li>
+<li>协程池必要吗？和面试官产生分歧。</li>
+<li>内核函数read、write在哪个链接器里？？不知道想要问啥。</li>
 <li>内核自旋锁实现</li>
+<li>反问</li>
+<li>19 挂</li>
 </ol>
 <p>字节基架<br>一面：</p>
 <ol>
@@ -322,10 +334,13 @@
 
         
     <div class="post-nav">
-      <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/2020/10/02/%E8%AE%BE%E8%AE%A1rpc%E6%A1%86%E6%9E%B6%E9%9C%80%E8%A6%81%E8%80%83%E8%99%91%E4%BB%80%E4%B9%88%EF%BC%9F/" rel="next" title="设计一个rpc框架需要考虑什么？">
-      设计一个rpc框架需要考虑什么？ <i class="fa fa-chevron-right"></i>
+    <a href="/2020/10/02/%E8%AE%BE%E8%AE%A1rpc%E6%A1%86%E6%9E%B6%E9%9C%80%E8%A6%81%E8%80%83%E8%99%91%E4%BB%80%E4%B9%88%EF%BC%9F/" rel="prev" title="设计一个rpc框架需要考虑什么？">
+      <i class="fa fa-chevron-left"></i> 设计一个rpc框架需要考虑什么？
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/02/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%EF%BC%9Avscode%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95%E5%87%BA%E9%94%99/" rel="next" title="vscode远程登录不上（command '_workbench.downloadResource' failed" when connecting to a remote host via ssh）">
+      vscode远程登录不上（command '_workbench.downloadResource' failed" when connecting to a remote host via ssh） <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
