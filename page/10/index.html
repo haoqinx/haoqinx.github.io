@@ -163,7 +163,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E5%A4%A7%E6%80%BB%E7%BB%93/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Anew&&delete/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -177,7 +177,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E5%A4%A7%E6%80%BB%E7%BB%93/" class="post-title-link" itemprop="url">Linux内核系列：内存管理大总结-ptmalloc/tcmalloc/jemalloc</a>
+            <a href="/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Anew&&delete/" class="post-title-link" itemprop="url">c++内存管理系列：new/operator new/placement new</a>
         </h2>
 
         <div class="post-meta">
@@ -194,7 +194,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:16:23" itemprop="dateModified" datetime="2021-10-29T20:16:23+08:00">2021-10-29</time>
+                <time title="Modified: 2021-10-29 20:09:13" itemprop="dateModified" datetime="2021-10-29T20:09:13+08:00">2021-10-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -202,7 +202,7 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
                 </span>
             </span>
 
@@ -217,11 +217,47 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="ptmalloc"><a href="#ptmalloc" class="headerlink" title="ptmalloc"></a>ptmalloc</h3><p>GNU Libc 的内存分配器(allocator)—ptmalloc，起源于Doug Lea的malloc。由Wolfram Gloger改进得到可以支持多线程。</p>
-<p>在Doug Lea实现的内存分配器中只有一个主分配区（main arena），每次分配内存都必须对主分配区加锁，分配完成后释放锁，在SMP多线程环境下，对主分配区的锁的争用很激烈，严重影响了malloc的分配效率。ptmalloc增加了动态分配区（dynamic arena），主分配区与动态分配区用环形链表进行管理。每一个分配区利用互斥锁（mutex）使线程对于该分配区的访问互斥。每个进程只有一个主分配区，但可能存在多个动态分配区，ptmalloc根据系统对分配区的争用情况动态增加动态分配区的数量，分配区的数量一旦增加，就不会再减少了。主分配区在二进制启动时调用sbrk从heap区域分配内存，Heap是由用户内存块组成的连续的内存域。而动态分配区每次使用mmap()向操作系统“批发”HEAP_MAX_SIZE大小的虚拟内存，如果内存耗尽，则会申请新的内存链到动态分配区heap data的“strcut malloc_state”。如果用户请求的大小超过HEAP_MAX_SIZE，动态分配区则会直接调用mmap()分配内存，并且当free的时候调用munmap()，该类型的内存块不会链接到任何heap data。用户向请求分配内存时，内存分配器将缓存的内存切割成小块“零售”出去。从用户空间分配内存，减少系统调用，是提高内存分配速度的好方法，毕竟前者要高效的多。</p>
+          <h3 id="内存分配的层面"><a href="#内存分配的层面" class="headerlink" title="内存分配的层面"></a>内存分配的层面</h3><ul>
+<li><p>c++ 内存分配相相关函数如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th align="center">分配</th>
+<th align="center">释放</th>
+<th align="center">类属</th>
+<th align="center">可否重载</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">malloc()</td>
+<td align="center">free()</td>
+<td align="center">C函数</td>
+<td align="center">x</td>
+</tr>
+<tr>
+<td align="center">new</td>
+<td align="center">delete</td>
+<td align="center">C++表达式</td>
+<td align="center">x</td>
+</tr>
+<tr>
+<td align="center">::operator new()</td>
+<td align="center">::operator delete()</td>
+<td align="center">C++函数</td>
+<td align="center">√</td>
+</tr>
+<tr>
+<td align="center">allocator<T>::allocate()</td>
+<td align="center">allocator<T>::deallocate()</td>
+<td align="center">C++标准库</td>
+<td align="center">可自由设计并搭配任何容器</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E5%A4%A7%E6%80%BB%E7%BB%93/#more" rel="contents">
+              <a class="btn" href="/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Anew&&delete/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -245,7 +281,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Aptmalloc/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Atcmalloc/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -259,7 +295,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Aptmalloc/" class="post-title-link" itemprop="url">Linux内核系列：malloc底层原理(ptmalloc)</a>
+            <a href="/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Atcmalloc/" class="post-title-link" itemprop="url">c++内存管理系列：tcmalloc</a>
         </h2>
 
         <div class="post-meta">
@@ -276,7 +312,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-12-07 19:46:47" itemprop="dateModified" datetime="2021-12-07T19:46:47+08:00">2021-12-07</time>
+                <time title="Modified: 2021-10-29 20:09:17" itemprop="dateModified" datetime="2021-10-29T20:09:17+08:00">2021-10-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -284,7 +320,7 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
                 </span>
             </span>
 
@@ -299,10 +335,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="linux进程地址空间"><a href="#linux进程地址空间" class="headerlink" title="linux进程地址空间"></a>linux进程地址空间</h3><p><img src="/images/malloc-1.png"></p>
+          <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>参考tcmalloc <a target="_blank" rel="noopener" href="https://github.com/google/tcmalloc/blob/master/docs/design.md">github官方文档</a><br>TCMalloc 是一种内存分配器，旨在替代系统默认分配器，具有以下特点：</p>
+<ul>
+<li>可以实现大多数对象的快速、无竞争的分配和释放。 对象被缓存，具体取决于模式，每个线程或每个逻辑 CPU。 大多数分配不需要锁定，因此多线程应用程序争用少，扩展性好。</li>
+<li>灵活使用内存，因此释放的内存可以重新用于不同的对象大小，或返回给操作系统。</li>
+<li>通过分配相同大小的对象的“页面”来降低每个对象的内存开销。小对象的空间损耗很少。</li>
+<li>低开销采样，可以详细了解应用程序内存使用情况。<br>下面的框图显示了 TCMalloc 的粗略内部结构：
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Aptmalloc/#more" rel="contents">
+              <a class="btn" href="/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Atcmalloc/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
