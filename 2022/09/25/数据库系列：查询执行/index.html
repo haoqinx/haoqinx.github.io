@@ -28,11 +28,14 @@
 <meta property="og:site_name" content="面向自由编程">
 <meta property="og:description" content="并行处理模型 Process per DBMS Worker 使用一个进程处理一个请求 使用共享内存对全局数据进行共享，如buffer pool，不用将相同的page加载两次 单进程奔溃不会导致整个系统崩溃   Process Pool 使用进程池来处理请求 对cpu缓存不友好 减少了创建销毁进程开销   Thread per DBMS Worker 单进程多线程 线程崩溃导致进程崩溃 上下文切换">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://haoqinx.github.io/images/db-24.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/db-25.png">
 <meta property="article:published_time" content="2022-09-24T17:40:36.325Z">
-<meta property="article:modified_time" content="2022-09-24T17:45:18.976Z">
+<meta property="article:modified_time" content="2022-09-24T17:49:38.138Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="数据库">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://haoqinx.github.io/images/db-24.png">
 
 <link rel="canonical" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C/">
 
@@ -191,7 +194,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:45:18" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:49:38" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -243,10 +246,10 @@
 <li>Intra-Operator（Horizontal）：将完整的操作拆分成多个平行的操作，也就是说把我们要处理的数据分成几段，并行处理，在DBMS中有一个特殊的exchange操作符，将数据分段，分别处理数据，然后最后将数据组合起来。exchange有三种类型：<ul>
 <li>Gather：组合不同worker的数据合并成一个输出流传给上层操作符。</li>
 <li>Repartition：将不同worker的数据分成不同的流，如group by</li>
-<li>Distribute：将一个输入流转化成多个输出流<br>  <a href="/images/db-24.png"></a></li>
+<li>Distribute：将一个输入流转化成多个输出流<br>  <img src="/images/db-24.png"></li>
 </ul>
 </li>
-<li>Inter-Operator（Vertical）：不同线程同一时间执行不同的operator.<br>  <a href="/images/db-25.png"></a></li>
+<li>Inter-Operator（Vertical）：不同线程同一时间执行不同的operator.<br>  <img src="/images/db-25.png"></li>
 <li>Bushy</li>
 </ul>
 </li>

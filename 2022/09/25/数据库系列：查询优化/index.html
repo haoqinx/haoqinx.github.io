@@ -28,11 +28,17 @@
 <meta property="og:site_name" content="面向自由编程">
 <meta property="og:description" content="查询优化 Heuristics&#x2F;Rules 规则&#x2F;静态触发  当查询中的某些部分满足我们的规则或者条件，我们就重写这部分.这部分需要我们去检查catelog.  Cost-based Search  方法的思想是使用一个模型去评估一个查询的负载，然后使用多种不同的查询计划去替换这个查询，找出最小负载的方案。 下面是整个查询优化过程 Relational Algebra Equi">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://haoqinx.github.io/images/db-26.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/db-27.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/db-28.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/db-29.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/db-30.png">
 <meta property="article:published_time" content="2022-09-24T17:40:36.325Z">
-<meta property="article:modified_time" content="2022-09-24T17:45:01.738Z">
+<meta property="article:modified_time" content="2022-09-24T17:49:33.190Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="数据库">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://haoqinx.github.io/images/db-26.png">
 
 <link rel="canonical" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/">
 
@@ -191,7 +197,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:45:01" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:49:33" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -222,7 +228,7 @@
 <li>Cost-based Search</li>
 </ul>
 <p>方法的思想是使用一个模型去评估一个查询的负载，然后使用多种不同的查询计划去替换这个查询，找出最小负载的方案。</p>
-<p>下面是整个查询优化过程<br><a href="/images/db-26.png"></a></p>
+<p>下面是整个查询优化过程<br><img src="/images/db-26.png"></p>
 <h3 id="Relational-Algebra-Equivalences-等价关系代数"><a href="#Relational-Algebra-Equivalences-等价关系代数" class="headerlink" title="Relational Algebra Equivalences(等价关系代数)"></a>Relational Algebra Equivalences(等价关系代数)</h3><ul>
 <li>predicate pushdown:在join前尽量过滤数据。</li>
 <li>对过滤条件进行排序，让更具有分辨性的条件排在前面。</li>
@@ -241,7 +247,7 @@
 <li>V(A,R):属性A不同值的数量</li>
 <li>Selection Cardinality：$N_R$&#x2F;V(A,R)</li>
 <li>selectivity: 选择率，给定一个条件，计算table中符合条件的tuple数量</li>
-<li>Range Predicate：计算范围值的比例，有点像概率计算，因此可以引入概率论中的结论,但是为了计算方便，有下面三个前提：<br><a href="/images/db-27.png"></a></li>
+<li>Range Predicate：计算范围值的比例，有点像概率计算，因此可以引入概率论中的结论,但是为了计算方便，有下面三个前提：<br><img src="/images/db-27.png"></li>
 </ul>
 <h5 id="直方图法"><a href="#直方图法" class="headerlink" title="直方图法"></a>直方图法</h5><p>对于数据分布不均匀的关系，在一些高端数据库中会使用直方图来跟踪数据的分布。对于数据量极大或者属性值分布很广的情况，我们会使用相同宽度的<strong>bucket</strong>来记录值的分布，但是这种情况会导致某个桶内数据分布极不均匀的情况，我们可以使用<strong>分位数</strong>来解决这个问题，即累计一定比例的数据分桶，桶的宽度可变，但是总体占比大致相当。</p>
 <h5 id="采样法"><a href="#采样法" class="headerlink" title="采样法"></a>采样法</h5><p>对于直方图，其实是对表中数据的一种缩略表达，那么在大数据量的table中，我们可以直接采样来近似代表整个表的数据分布。当表进行大规模更新或者到达一个指定时间点，我们去更新这个采样表。</p>
@@ -251,11 +257,11 @@
 <li>索引遍历</li>
 </ul>
 <h5 id="多关系查询计划"><a href="#多关系查询计划" class="headerlink" title="多关系查询计划"></a>多关系查询计划</h5><ul>
-<li><p>left-deep join tree<br><a href="/images/db-28.png"></a><br>在上面三个查询树中，System R不考虑后面两个，只考虑第一种。为什么采用第一种？后面两种实现过程中会有大量结果溢出到磁盘，影响性能。</p>
+<li><p>left-deep join tree<br><img src="/images/db-28.png"><br>在上面三个查询树中，System R不考虑后面两个，只考虑第一种。为什么采用第一种？后面两种实现过程中会有大量结果溢出到磁盘，影响性能。</p>
 </li>
-<li><p>步骤（System R based）<br><a href="/images/db-29.png"></a></p>
+<li><p>步骤（System R based）<br><img src="/images/db-29.png"></p>
 </li>
-<li><p>步骤（遗传算法）<br><a href="/images/db-30.png"></a></p>
+<li><p>步骤（遗传算法）<br><img src="/images/db-30.png"></p>
 </li>
 </ul>
 <h3 id="Nested-Sub-queries"><a href="#Nested-Sub-queries" class="headerlink" title="Nested Sub-queries"></a>Nested Sub-queries</h3><p>通常情况下将where作为函数，穿入参数然后返回一组值，有两种方法进行查询优化：</p>

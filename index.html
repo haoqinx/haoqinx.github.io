@@ -188,7 +188,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:46:11" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:49:49" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -222,12 +222,12 @@
 </li>
 <li><p>No Steal + Force</p>
 <ul>
-<li>Shodow Paging<br><a href="/images/db-43.png"></a></li>
+<li>Shodow Paging<br><img src="/images/db-43.png"></li>
 </ul>
 </li>
 <li><p>Steal + No Force</p>
 <ul>
-<li>write-ahead log<br><a href="/images/db-44.png"></a><br> 什么时间提交这些日志条目？<ul>
+<li>write-ahead log<br><img src="/images/db-44.png"><br> 什么时间提交这些日志条目？<ul>
 <li>事务提交时</li>
 <li>组提交，这时会出现未提交事务的条目，但是不影响。</li>
 </ul>
@@ -238,7 +238,7 @@
 <ul>
 <li>Physical</li>
 <li>Logical</li>
-<li>Physiological<br><a href="images/db-45.png"></a></li>
+<li>Physiological<br><img src="/images/db-45.png"></li>
 </ul>
 </li>
 <li><p>CheckPoints<br>使用预写日志，为了避免恢复时间过长，在某个时间点将所有脏页面持久化到磁盘。写入一个Checkpoint条目。</p>
@@ -288,7 +288,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:44:52" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:49:24" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -330,7 +330,7 @@
 <h3 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h3><ul>
 <li>排序聚合</li>
 <li>非排序聚合<ul>
-<li>external hashing aggregate<br>  <a href="/images/db-7.png"></a></li>
+<li>external hashing aggregate<br>  <img src="/images/db-7.png"></li>
 </ul>
 </li>
 </ul>
@@ -341,36 +341,36 @@
 <li>另一种方法是指穿入我们所需的最小限度信息（join keys）.然后根据这些信息在后面的操作总从数据库中获取tuple的其他数据.这种方法叫做late materialization，对于列式存储比较友好，因为不用将其他列的信息粘合起来，这些信息通常位于不同的page中。现在这种优化很少，因为数据的获取（第一阶段）的代价通常很大。</li>
 </ul>
 </li>
-<li><p>Nested Loop Join<br>  <a href="/images/db-8.png"></a><br>  <a href="/images/db-9.png"></a><br>  这是一种非常暴力的方法，一种优化手段是block nested loop join，这种方法把outter table的tuple缓存，减少了对inner table的io次数。<br>  <a href="/images/db-10.png"></a><br>  <a href="/images/db-11.png"></a><br>  另一种优化手段是index nested loop join，在内循环中去查询索引，这样避免了遍历操作，是O（logn）的复杂度，但是如果要查询的索引不是聚簇索引，还需要一次回表操作。<br>  <a href="/images/db-12.png"></a></p>
+<li><p>Nested Loop Join<br>  <img src="/images/db-8.png"><br>  <img src="/images/db-9.png"><br>  这是一种非常暴力的方法，一种优化手段是block nested loop join，这种方法把outter table的tuple缓存，减少了对inner table的io次数。<br>  <img src="/images/db-10.png"><br>  <img src="/images/db-11.png"><br>  另一种优化手段是index nested loop join，在内循环中去查询索引，这样避免了遍历操作，是O（logn）的复杂度，但是如果要查询的索引不是聚簇索引，还需要一次回表操作。<br>  <img src="/images/db-12.png"></p>
 </li>
-<li><p>Sort-Merge Join<br>  首先是对需要join的key(s)进行排序，然后利用两个游标在两个有序表上进行匹配。<br>  <a href="/images/db-13.png"></a></p>
+<li><p>Sort-Merge Join<br>  首先是对需要join的key(s)进行排序，然后利用两个游标在两个有序表上进行匹配。<br>  <img src="/images/db-13.png"></p>
 </li>
-<li><p>Hash Join<br>  原理就是对两个表中需要join的那个值进行hash操作，那么相同的值肯定会映射到一个partition中，我们每次只需要在一个partition中进行比较就行了。<br>  <a href="/images/db-14.png"></a><br>  在分布式场景下，可能两个表存在不同的主机上，那么传递哈希表是一个非常消耗资源的事，一个优化手段是使用布隆过滤器，布隆过滤器通常只有几kb大小，非常容易在主机之间进行网络通信，在建立第一个表的哈希表的时候填充布隆过滤器，那么我们对第二个表进行哈希的时候，可以直接判断是否存在。<br>  哈希之后的数据量可能非常大，不能放在内存中，因此我们可以使用Grace Hash Join优化。<br>  <a href="/images/db-15.png1"></a><br>  也就是分别对两个表进行哈希，然后对每对bucket进行Nested Loop Join，如果bucket也不能完全放到内存中，那就再进行一次哈希，递归进行。<br>  <a href="/images/db-16.png"></a></p>
+<li><p>Hash Join<br>  原理就是对两个表中需要join的那个值进行hash操作，那么相同的值肯定会映射到一个partition中，我们每次只需要在一个partition中进行比较就行了。<br>  <img src="/images/db-14.png"><br>  在分布式场景下，可能两个表存在不同的主机上，那么传递哈希表是一个非常消耗资源的事，一个优化手段是使用布隆过滤器，布隆过滤器通常只有几kb大小，非常容易在主机之间进行网络通信，在建立第一个表的哈希表的时候填充布隆过滤器，那么我们对第二个表进行哈希的时候，可以直接判断是否存在。<br>  哈希之后的数据量可能非常大，不能放在内存中，因此我们可以使用Grace Hash Join优化。<br>  <img src="/images/db-15.png1"><br>  也就是分别对两个表进行哈希，然后对每对bucket进行Nested Loop Join，如果bucket也不能完全放到内存中，那就再进行一次哈希，递归进行。<br>  <img src="/images/db-16.png"></p>
 </li>
-<li><p>总结<br>  <a href="/images/db-17.png"></a></p>
+<li><p>总结<br>  <img src="/images/db-17.png"></p>
 </li>
 </ul>
 <h3 id="处理模型（processing-model）"><a href="#处理模型（processing-model）" class="headerlink" title="处理模型（processing model）"></a>处理模型（processing model）</h3><ul>
-<li><p>迭代模型（Iterator Model）<br>  <a href="/images/db-18.png"></a><br>  每一个查询操作符都实现一个Next函数，函数调用其子节点的Next函数。Next每次处理一个tuple数据，需要迭代所有tuple才能完成所有操作。<br>  一些操作符必须获得所有子节点的tuple，例如Joins，Subqueries，Order By</p>
+<li><p>迭代模型（Iterator Model）<br>  <img src="/images/db-18.png"><br>  每一个查询操作符都实现一个Next函数，函数调用其子节点的Next函数。Next每次处理一个tuple数据，需要迭代所有tuple才能完成所有操作。<br>  一些操作符必须获得所有子节点的tuple，例如Joins，Subqueries，Order By</p>
 </li>
-<li><p>Materialization Model<br>  不同于迭代模型，每次子节点都将整个结果传递给上层<br>  <a href="/images/db-19.png"></a><br>  在OLTP中进行点查询，这种方式比较高效，但是在OLAP中存在大量的中间结果，会产生锁延时，并且对于含有LIMIT的查询，如果数据量很大，每次传递给上层所有数据，这种资源消耗是不必要的。</p>
+<li><p>Materialization Model<br>  不同于迭代模型，每次子节点都将整个结果传递给上层<br>  <img src="/images/db-19.png"><br>  在OLTP中进行点查询，这种方式比较高效，但是在OLAP中存在大量的中间结果，会产生锁延时，并且对于含有LIMIT的查询，如果数据量很大，每次传递给上层所有数据，这种资源消耗是不必要的。</p>
 </li>
-<li><p>Vectorization Model<br>  对迭代模型的优化，每次不是产生一个tuple，而是产生一个batch的tuple.<br>  <a href="/images/db-20.png"></a><br>  这种方式能够使用SIMD技术对数据进行分析计算，对于OLAP非常友好</p>
+<li><p>Vectorization Model<br>  对迭代模型的优化，每次不是产生一个tuple，而是产生一个batch的tuple.<br>  <img src="/images/db-20.png"><br>  这种方式能够使用SIMD技术对数据进行分析计算，对于OLAP非常友好</p>
 </li>
 </ul>
 <h3 id="Access-Method"><a href="#Access-Method" class="headerlink" title="Access Method"></a>Access Method</h3><ul>
 <li>Sequential Scan<br>  普通遍历，对每页的tuple基于cursor做遍历，这通常效率非常低，有一些优化：预读，Buffer Pool Bypass，并行化，Zone Maps，Late Materialization，Heap CLustering<ul>
-<li>Zone Maps：预先对page中的数据做聚合计算，DBMS在访问page的时候先去检查这些字段，如果不需要访问就直接跳过这个page<br>  <a href="/images/db-21.png"></a></li>
+<li>Zone Maps：预先对page中的数据做聚合计算，DBMS在访问page的时候先去检查这些字段，如果不需要访问就直接跳过这个page<br>  <img src="/images/db-21.png"></li>
 <li>Late Materialization：在列式存储数据库中，由于数据被按列存储到不同的page中，那么在每次opertaor之后，不用将整个tuple传给上层，直接传tuple对应的offset值，然后到root节点再到不同page中获取每一列的值。</li>
 </ul>
 </li>
 <li>Index Scan<ul>
-<li>Multi-Index Scan：通过不同的索引进行多次查找，基于我们的判断在对结果进行合并<br>  <a href="/images/db-22.png"></a></li>
+<li>Multi-Index Scan：通过不同的索引进行多次查找，基于我们的判断在对结果进行合并<br>  <img src="/images/db-22.png"></li>
 <li>非聚簇索引的随机IO问题：对于非聚簇索引，我们可以不去一一随机IO，我们先将要访问的page id记录下来排序然后去一次访问page，拿到所有需要的tuple.</li>
 </ul>
 </li>
 </ul>
-<h3 id="表达式评估（Expression-Evaluation）"><a href="#表达式评估（Expression-Evaluation）" class="headerlink" title="表达式评估（Expression Evaluation）"></a>表达式评估（Expression Evaluation）</h3><p>DBMS将WHERE语句转化成一个expression tree<br><a href="/images/db-23.png"></a><br>每次遇到一个tuple，去匹配这个树，这样的话效率很低。</p>
+<h3 id="表达式评估（Expression-Evaluation）"><a href="#表达式评估（Expression-Evaluation）" class="headerlink" title="表达式评估（Expression Evaluation）"></a>表达式评估（Expression Evaluation）</h3><p>DBMS将WHERE语句转化成一个expression tree<br><img src="/images/db-23.png"><br>每次遇到一个tuple，去匹配这个树，这样的话效率很低。</p>
 
       
     </div>
@@ -415,7 +415,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:45:44" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:49:44" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -438,7 +438,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="存储层次"><a href="#存储层次" class="headerlink" title="存储层次"></a>存储层次</h2><p><a href="/images/db-1.png"></a></p>
+          <h2 id="存储层次"><a href="#存储层次" class="headerlink" title="存储层次"></a>存储层次</h2><p><img src="/images/db-1.png"></p>
 <ul>
 <li>tips：在数据库存储上尽量不要使用mmap，这会带来内存&#x2F;并发等一系列问题，会成为系统瓶颈。</li>
 </ul>
@@ -460,16 +460,16 @@
 </li>
 <li>页内tuple布局<ul>
 <li>长度固定方法：每个tuple固定长度</li>
-<li>slotted pages：如下图所示，为了支持可变长度的记录作出的妥协。<br> <a href="/images/db-2.png"></a></li>
+<li>slotted pages：如下图所示，为了支持可变长度的记录作出的妥协。<br> <img src="/images/db-2.png"></li>
 </ul>
 </li>
-<li>tuple布局<br> <a href="/images/db-3.png"></a><ul>
+<li>tuple布局<br> <img src="/images/db-3.png"><ul>
 <li>header：Visibility info（并发控制信息），Bit Map for NULL values.header并不需要存储数据的元数据，因为他们都是按顺序记录的。</li>
 <li>record数据按定义时顺序写入</li>
 </ul>
 </li>
 </ol>
-<h2 id="日志式文件布局"><a href="#日志式文件布局" class="headerlink" title="日志式文件布局"></a>日志式文件布局</h2><pre><code>[](/images/db-3.png)
+<h2 id="日志式文件布局"><a href="#日志式文件布局" class="headerlink" title="日志式文件布局"></a>日志式文件布局</h2><pre><code>![](/images/db-3.png)
 通过追加命令的方式记录信息，有点像redis的rdb模式
 比较出名的有leveldb，基于leveldb，移除其mmap的rocksdb等。
 </code></pre>
@@ -605,7 +605,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:45:01" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:49:33" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -636,7 +636,7 @@
 <li>Cost-based Search</li>
 </ul>
 <p>方法的思想是使用一个模型去评估一个查询的负载，然后使用多种不同的查询计划去替换这个查询，找出最小负载的方案。</p>
-<p>下面是整个查询优化过程<br><a href="/images/db-26.png"></a></p>
+<p>下面是整个查询优化过程<br><img src="/images/db-26.png"></p>
 <h3 id="Relational-Algebra-Equivalences-等价关系代数"><a href="#Relational-Algebra-Equivalences-等价关系代数" class="headerlink" title="Relational Algebra Equivalences(等价关系代数)"></a>Relational Algebra Equivalences(等价关系代数)</h3><ul>
 <li>predicate pushdown:在join前尽量过滤数据。</li>
 <li>对过滤条件进行排序，让更具有分辨性的条件排在前面。</li>
@@ -655,7 +655,7 @@
 <li>V(A,R):属性A不同值的数量</li>
 <li>Selection Cardinality：$N_R$&#x2F;V(A,R)</li>
 <li>selectivity: 选择率，给定一个条件，计算table中符合条件的tuple数量</li>
-<li>Range Predicate：计算范围值的比例，有点像概率计算，因此可以引入概率论中的结论,但是为了计算方便，有下面三个前提：<br><a href="/images/db-27.png"></a></li>
+<li>Range Predicate：计算范围值的比例，有点像概率计算，因此可以引入概率论中的结论,但是为了计算方便，有下面三个前提：<br><img src="/images/db-27.png"></li>
 </ul>
 <h5 id="直方图法"><a href="#直方图法" class="headerlink" title="直方图法"></a>直方图法</h5><p>对于数据分布不均匀的关系，在一些高端数据库中会使用直方图来跟踪数据的分布。对于数据量极大或者属性值分布很广的情况，我们会使用相同宽度的<strong>bucket</strong>来记录值的分布，但是这种情况会导致某个桶内数据分布极不均匀的情况，我们可以使用<strong>分位数</strong>来解决这个问题，即累计一定比例的数据分桶，桶的宽度可变，但是总体占比大致相当。</p>
 <h5 id="采样法"><a href="#采样法" class="headerlink" title="采样法"></a>采样法</h5><p>对于直方图，其实是对表中数据的一种缩略表达，那么在大数据量的table中，我们可以直接采样来近似代表整个表的数据分布。当表进行大规模更新或者到达一个指定时间点，我们去更新这个采样表。</p>
@@ -665,11 +665,11 @@
 <li>索引遍历</li>
 </ul>
 <h5 id="多关系查询计划"><a href="#多关系查询计划" class="headerlink" title="多关系查询计划"></a>多关系查询计划</h5><ul>
-<li><p>left-deep join tree<br><a href="/images/db-28.png"></a><br>在上面三个查询树中，System R不考虑后面两个，只考虑第一种。为什么采用第一种？后面两种实现过程中会有大量结果溢出到磁盘，影响性能。</p>
+<li><p>left-deep join tree<br><img src="/images/db-28.png"><br>在上面三个查询树中，System R不考虑后面两个，只考虑第一种。为什么采用第一种？后面两种实现过程中会有大量结果溢出到磁盘，影响性能。</p>
 </li>
-<li><p>步骤（System R based）<br><a href="/images/db-29.png"></a></p>
+<li><p>步骤（System R based）<br><img src="/images/db-29.png"></p>
 </li>
-<li><p>步骤（遗传算法）<br><a href="/images/db-30.png"></a></p>
+<li><p>步骤（遗传算法）<br><img src="/images/db-30.png"></p>
 </li>
 </ul>
 <h3 id="Nested-Sub-queries"><a href="#Nested-Sub-queries" class="headerlink" title="Nested Sub-queries"></a>Nested Sub-queries</h3><p>通常情况下将where作为函数，穿入参数然后返回一组值，有两种方法进行查询优化：</p>
@@ -722,7 +722,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:45:18" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:49:38" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -774,10 +774,10 @@
 <li>Intra-Operator（Horizontal）：将完整的操作拆分成多个平行的操作，也就是说把我们要处理的数据分成几段，并行处理，在DBMS中有一个特殊的exchange操作符，将数据分段，分别处理数据，然后最后将数据组合起来。exchange有三种类型：<ul>
 <li>Gather：组合不同worker的数据合并成一个输出流传给上层操作符。</li>
 <li>Repartition：将不同worker的数据分成不同的流，如group by</li>
-<li>Distribute：将一个输入流转化成多个输出流<br>  <a href="/images/db-24.png"></a></li>
+<li>Distribute：将一个输入流转化成多个输出流<br>  <img src="/images/db-24.png"></li>
 </ul>
 </li>
-<li>Inter-Operator（Vertical）：不同线程同一时间执行不同的operator.<br>  <a href="/images/db-25.png"></a></li>
+<li>Inter-Operator（Vertical）：不同线程同一时间执行不同的operator.<br>  <img src="/images/db-25.png"></li>
 <li>Bushy</li>
 </ul>
 </li>
@@ -834,7 +834,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:44:27" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:48:55" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -857,7 +857,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="latch和lock"><a href="#latch和lock" class="headerlink" title="latch和lock"></a>latch和lock</h3><p><a href="/images/db-4.png"></a></p>
+          <h3 id="latch和lock"><a href="#latch和lock" class="headerlink" title="latch和lock"></a>latch和lock</h3><p><img src="/images/db-4.png"></p>
 <h3 id="latch"><a href="#latch" class="headerlink" title="latch"></a>latch</h3><ul>
 <li>种类<ul>
 <li>Test-and-Set Spin Latch(TAS)</li>
@@ -918,7 +918,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:44:40" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:49:16" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -959,7 +959,7 @@
 <ul>
 <li>不可重复读</li>
 <li>脏读</li>
-<li>Overwriting Uncommited Data<br><a href="/images/db-31.png"></a></li>
+<li>Overwriting Uncommited Data<br><img src="/images/db-31.png"></li>
 </ul>
 <p>如何判断两个事务存在冲突？</p>
 <ul>
@@ -973,10 +973,10 @@
 </li>
 <li>锁控制协议：两阶段锁<ul>
 <li>Growing（增长阶段）<br>每个事务被允许从锁管理器中获得锁。</li>
-<li>Shrinking（收缩阶段）<br>事务只被允许释放前面获得的锁，不能申请新的锁。<br>两阶段锁可以消除序列化矛盾，但是会存在级联终止问题。如下图<br><a href="/images/db-32.png"></a><br>要解决上面这个问题，需要使用强严格两阶段锁，也就是说我们必须在事务提交的时候才能释放之前获得的锁，这样就能避main脏读和级联终止。<br>两阶段锁也会导致死锁，如下图：<br><a href="/images/db-33.png"></a><br>有两种方法解决死锁问题</li>
+<li>Shrinking（收缩阶段）<br>事务只被允许释放前面获得的锁，不能申请新的锁。<br>两阶段锁可以消除序列化矛盾，但是会存在级联终止问题。如下图<br><img src="/images/db-32.png"><br>要解决上面这个问题，需要使用强严格两阶段锁，也就是说我们必须在事务提交的时候才能释放之前获得的锁，这样就能避main脏读和级联终止。<br>两阶段锁也会导致死锁，如下图：<br><img src="/images/db-33.png"><br>有两种方法解决死锁问题</li>
 </ul>
 </li>
-<li>检测<br>锁管理器维护一个waits-for图，用来追踪每个事务等待要获取的锁，每个节点是一个事务，如果事务A正在等待事务B的锁，他们之间就有一个箭头，当存在环形结构就说明存在死锁。<br><a href="/images/db-34.png"></a><br>检测周期可以设置一个可容忍的系统值。</li>
+<li>检测<br>锁管理器维护一个waits-for图，用来追踪每个事务等待要获取的锁，每个节点是一个事务，如果事务A正在等待事务B的锁，他们之间就有一个箭头，当存在环形结构就说明存在死锁。<br><img src="/images/db-34.png"><br>检测周期可以设置一个可容忍的系统值。</li>
 <li>处理<br>选择一个事务，回滚，选择的标准可以是：<ul>
 <li>时间戳</li>
 <li>查询数</li>
@@ -986,16 +986,16 @@
 </li>
 <li>预防<br>根据时间来确定优先级<ul>
 <li>Wait-Die<br>如果请求锁的事务优先级高于持有锁的事务，那么等待持有锁的事务，否则终止。</li>
-<li>Wound-Wait<br>如果请求锁的事务优先级高于持有锁的事务，那么持有锁的事务终止并且释放锁，否则请求锁的事务等待。<br><a href="/images/db-35.png"></a><br>当事务重启之后，其优先级（也就是时间戳）是它原本的时间戳，这有助于避免此事务饥饿。</li>
+<li>Wound-Wait<br>如果请求锁的事务优先级高于持有锁的事务，那么持有锁的事务终止并且释放锁，否则请求锁的事务等待。<br><img src="/images/db-35.png"><br>当事务重启之后，其优先级（也就是时间戳）是它原本的时间戳，这有助于避免此事务饥饿。</li>
 </ul>
 </li>
-<li>锁的层次<br><a href="/images/db-36.png"></a><br>数据库中有成千上万个tuple，我们不能直接管理这些，因此我们需要一些更高层次的抽象锁，让我们同一时间管理更少的锁。<ul>
+<li>锁的层次<br><img src="/images/db-36.png"><br>数据库中有成千上万个tuple，我们不能直接管理这些，因此我们需要一些更高层次的抽象锁，让我们同一时间管理更少的锁。<ul>
 <li>意向锁<ul>
 <li>意向共享锁（IS）</li>
 <li>意向排他锁（IX）</li>
 <li>共享锁（S）</li>
 <li>排他锁（X）</li>
-<li>共享意向排他锁（SIX）<br><a href="/images/db-37.png"></a></li>
+<li>共享意向排他锁（SIX）<br><img src="/images/db-37.png"></li>
 </ul>
 </li>
 </ul>
@@ -1004,7 +1004,7 @@
 <h3 id="基于时间戳顺序的控制"><a href="#基于时间戳顺序的控制" class="headerlink" title="基于时间戳顺序的控制"></a>基于时间戳顺序的控制</h3><p>基于两阶段锁是一种悲观锁，基于时间戳顺序是一种乐观锁。<br>我们需要向每个tuple添加两个时间戳：</p>
 <ul>
 <li>写时间戳：最近对tuple写的事务的时间戳</li>
-<li>读时间戳：最近对tuple读的事务的时间戳<br>在读阶段，确保自己的时间戳不小于tuple的写时间戳，在写阶段，要确保事务的时间戳小于tuple的写时间戳和读时间戳。有一种优化叫做托马斯写入规则：<br><a href="/images/db-38.png"></a></li>
+<li>读时间戳：最近对tuple读的事务的时间戳<br>在读阶段，确保自己的时间戳不小于tuple的写时间戳，在写阶段，要确保事务的时间戳小于tuple的写时间戳和读时间戳。有一种优化叫做托马斯写入规则：<br><img src="/images/db-38.png"></li>
 </ul>
 <p>基于时间戳的并发控制是不可恢复的。如果事务大多时间很短并且不会发生冲突，那么可以考虑这种病发控制协议。</p>
 <ul>
@@ -1018,14 +1018,14 @@
 </ul>
 </li>
 <li>版本存储<br>通过版本链（version chain）存储，索引指向链表头，有三种方法：<ul>
-<li>Append-Only<br><a href="/images/db-39.png"></a><br>每更新一次，作为一个新的tuple插入到表中，并更新链表指针。</li>
-<li>Time-Traval<br><a href="/images/db-40.png"></a><br>每次更新将旧数据拷贝到time-travel表中，并更新指针。</li>
-<li>Delta Storage<br><a href="/images/db-41.png"></a><br>每次更新不用将整个tuple拷贝，只需要拷贝delta值即可</li>
+<li>Append-Only<br><img src="/images/db-39.png"><br>每更新一次，作为一个新的tuple插入到表中，并更新链表指针。</li>
+<li>Time-Traval<br><img src="/images/db-40.png"><br>每次更新将旧数据拷贝到time-travel表中，并更新指针。</li>
+<li>Delta Storage<br><img src="/images/db-41.png"><br>每次更新不用将整个tuple拷贝，只需要拷贝delta值即可</li>
 </ul>
 </li>
 <li>垃圾回收<ul>
 <li>tuple级别的回收<ul>
-<li>后台处理：后台线程对表进行定期扫描，查看开始时间戳和结束时间戳，不在活跃线程范围内就可以清除,一个优化是设置脏页面bitmap<br><a href="images/db-42.png"></a></li>
+<li>后台处理：后台线程对表进行定期扫描，查看开始时间戳和结束时间戳，不在活跃线程范围内就可以清除,一个优化是设置脏页面bitmap<br><img src="/images/db-42.png"></li>
 <li>合作清理：当执行事务的线程在扫表的时候判断历史数据，只适用于从旧到新的版本数据存储方式</li>
 </ul>
 </li>
