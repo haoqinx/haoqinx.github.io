@@ -29,7 +29,7 @@
 <meta property="og:description" content="编译器何时生成默认构造函数？编译器生成的构造函数只适用于编译器的正确性，类内的数据初始化不由编译器负责!  如果一个class内部含有一个成员对象，并且这个对象有默认构造函数，那么编译器就会为这个class生成默认构造函数。 此class继承自一个含有默认构造函数的基类。 带有virtual function的Class或者继承了一个含有virtual fuction的父类。 使用了虚继承的类。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-10-25T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-09-24T17:34:19.107Z">
+<meta property="article:modified_time" content="2022-09-24T17:55:20.342Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="C++">
 <meta name="twitter:card" content="summary">
@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:55:20" itemprop="dateModified" datetime="2022-09-25T01:55:20+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -220,13 +220,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="编译器何时生成默认构造函数？"><a href="#编译器何时生成默认构造函数？" class="headerlink" title="编译器何时生成默认构造函数？"></a>编译器何时生成默认构造函数？</h3><p><font color = orange>编译器生成的构造函数只适用于编译器的正确性，类内的数据初始化不由编译器负责!</font></p>
+        <span id="more"></span>
+<h3 id="编译器何时生成默认构造函数？"><a href="#编译器何时生成默认构造函数？" class="headerlink" title="编译器何时生成默认构造函数？"></a>编译器何时生成默认构造函数？</h3><p><font color = orange>编译器生成的构造函数只适用于编译器的正确性，类内的数据初始化不由编译器负责!</font></p>
 <ol>
 <li>如果一个class内部含有一个成员对象，并且这个对象有默认构造函数，那么编译器就会为这个class生成默认构造函数。</li>
 <li>此class继承自一个含有默认构造函数的基类。</li>
 <li>带有virtual function的Class或者继承了一个含有virtual fuction的父类。</li>
-<li>使用了虚继承的类。  <span id="more"></span>
-存在两个误解：  </li>
+<li>使用了虚继承的类。<br>存在两个误解：  </li>
 <li>任何class如果没有定义默认构造，编译器会生成。（错，编译器只会在需要的时候生成）</li>
 <li>编译器生成的默认构造会明确初始化。（错，编译器不会初始化成员变量，这是程序设计者的活！)</li>
 </ol>
@@ -365,7 +365,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-count">137</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

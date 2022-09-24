@@ -21,19 +21,19 @@
     var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="结构">
+  <meta name="description" content="结构 STL中使用分段数组串接起来一个双向队列。我们使用buffer来描述这些分段数组。deque使用一个map数组来管理这些buffer，里面存放指向这些buffer头的指针，如果deque需要向前或者扩充，就在map数组中填充指针。图中的start和finish迭代器用来管理deque的扩充。总的来说，deque的存储模式是分段连续的。deque的控制中心行为模式类似vector，开始的时候">
 <meta property="og:type" content="article">
 <meta property="og:title" content="c++STL系列：deque">
 <meta property="og:url" content="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Adeque/index.html">
 <meta property="og:site_name" content="面向自由编程">
-<meta property="og:description" content="结构">
+<meta property="og:description" content="结构 STL中使用分段数组串接起来一个双向队列。我们使用buffer来描述这些分段数组。deque使用一个map数组来管理这些buffer，里面存放指向这些buffer头的指针，如果deque需要向前或者扩充，就在map数组中填充指针。图中的start和finish迭代器用来管理deque的扩充。总的来说，deque的存储模式是分段连续的。deque的控制中心行为模式类似vector，开始的时候">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://haoqinx.github.io/images/deque-2.png">
 <meta property="og:image" content="http://haoqinx.github.io/images/deque-1.png">
 <meta property="og:image" content="http://haoqinx.github.io/images/deque-3.png">
 <meta property="og:image" content="http://haoqinx.github.io/images/deque-5.png">
 <meta property="article:published_time" content="2021-09-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-09-24T17:34:19.123Z">
+<meta property="article:modified_time" content="2022-09-24T17:56:29.008Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="STL">
@@ -203,7 +203,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:56:29" itemprop="dateModified" datetime="2022-09-25T01:56:29+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -226,8 +226,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p><img src="/images/deque-2.png"></p>
-<span id="more"></span>
+        <span id="more"></span>
+<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p><img src="/images/deque-2.png"></p>
 <p><img src="/images/deque-1.png"><br>STL中使用分段数组串接起来一个双向队列。我们使用buffer来描述这些分段数组。<br>deque使用一个map数组来管理这些buffer，里面存放指向这些buffer头的指针，如果deque需要向前或者扩充，就在map数组中填充指针。图中的start和finish迭代器用来管理deque的扩充。<br><font color=orange>总的来说，deque的存储模式是分段连续的。deque的控制中心行为模式类似vector，开始的时候在中心分配buffer指针，如果空间不足，就两倍增长。</font></p>
 <h3 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h3><p>deque的迭代器主要包含四个数据。</p>
 <ul>
@@ -339,7 +339,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-count">137</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

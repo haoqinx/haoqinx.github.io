@@ -21,15 +21,15 @@
     var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="瓶颈 cpu测试的时候cpu占用率70% 多核情况下占用60%">
+  <meta name="description" content="瓶颈 cpu测试的时候cpu占用率70% 多核情况下占用60%  带宽网络占用率  磁盘   如果存在LOG日志写磁盘或者从磁盘映射文件，可能会存在瓶颈  处理流程  epoll ET&#x2F;LT模式  进程能打开最大文件描述符数  同时能打开65535个文件，但是一般情况下不可能并行打开这么多  数据库连接等等软件层面的限制  解决 cpu尽量利用多核优势，或者利用分布式进行负载均衡  带">
 <meta property="og:type" content="article">
 <meta property="og:title" content="服务器瓶颈">
 <meta property="og:url" content="http://haoqinx.github.io/2022/02/01/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%93%B6%E9%A2%88%E5%9C%A8%E5%93%AA%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3/index.html">
 <meta property="og:site_name" content="面向自由编程">
-<meta property="og:description" content="瓶颈 cpu测试的时候cpu占用率70% 多核情况下占用60%">
+<meta property="og:description" content="瓶颈 cpu测试的时候cpu占用率70% 多核情况下占用60%  带宽网络占用率  磁盘   如果存在LOG日志写磁盘或者从磁盘映射文件，可能会存在瓶颈  处理流程  epoll ET&#x2F;LT模式  进程能打开最大文件描述符数  同时能打开65535个文件，但是一般情况下不可能并行打开这么多  数据库连接等等软件层面的限制  解决 cpu尽量利用多核优势，或者利用分布式进行负载均衡  带">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-01-31T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-09-24T17:34:19.118Z">
+<meta property="article:modified_time" content="2022-09-24T17:51:39.251Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="场景设计">
 <meta name="twitter:card" content="summary">
@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:51:39" itemprop="dateModified" datetime="2022-09-25T01:51:39+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -220,9 +220,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="瓶颈"><a href="#瓶颈" class="headerlink" title="瓶颈"></a>瓶颈</h3><ol>
+        <span id="more"></span>
+<h3 id="瓶颈"><a href="#瓶颈" class="headerlink" title="瓶颈"></a>瓶颈</h3><ol>
 <li><p>cpu<br>测试的时候cpu占用率70% 多核情况下占用60%</p>
-<span id="more"></span></li>
+</li>
 <li><p>带宽<br>网络占用率</p>
 </li>
 <li><p>磁盘</p>
@@ -352,7 +353,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-count">137</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

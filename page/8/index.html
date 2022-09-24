@@ -163,79 +163,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/Go%E8%AF%AD%E8%A8%80%E7%B3%BB%E5%88%97%EF%BC%9AGC%E7%AE%97%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/02/Go%E8%AF%AD%E8%A8%80%E7%B3%BB%E5%88%97%EF%BC%9AGC%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">Go语言系列：GC算法</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/Go%E8%AF%AD%E8%A8%80%E7%B3%BB%E5%88%97%EF%BC%9A%E7%AE%A1%E9%81%93%E3%80%81%E9%80%9A%E4%BF%A1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -267,7 +194,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:57:33" itemprop="dateModified" datetime="2022-09-25T01:57:33+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -290,7 +217,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          
+          <span id="more"></span>
       
     </div>
 
@@ -340,7 +267,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:58:32" itemprop="dateModified" datetime="2022-09-25T01:58:32+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -363,7 +290,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>在实习过程中遇到使用leveldb的场景，在大量写少量读的场景下leveldb算是不二之选，但是其原理如何？下面列举看过的资料，受益颇深。</p>
+          <span id="more"></span>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>在实习过程中遇到使用leveldb的场景，在大量写少量读的场景下leveldb算是不二之选，但是其原理如何？下面列举看过的资料，受益颇深。</p>
 <p><a target="_blank" rel="noopener" href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.44.2782&rep=rep1&type=pdf">LSM tree 论文</a><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/zhihaowu/p/7884424.html">十个levelDB技术内幕</a></p>
 
       
@@ -415,7 +343,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:58:41" itemprop="dateModified" datetime="2022-09-25T01:58:41+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -438,16 +366,51 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h3><h4 id="一个普遍的定义"><a href="#一个普遍的定义" class="headerlink" title="一个普遍的定义"></a>一个普遍的定义</h4><ul>
-<li>进程是计算机中的程序关于某数据集合上的一次运行活动，是系统进行资源分配和调度的基本单位，是操作系统结构的基础。<br>上面的定义应该是比较广泛的一种定义，但是定义地非常模糊，也不好理解究竟在操作系统中进程是什么。下面以Linux操作系统为例，说明究竟在操作系统中进程以什么方式存在。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/02/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%88%B0%E5%BA%95%E4%BB%80%E4%B9%88%E6%98%AF%E8%BF%9B%E7%A8%8B%EF%BC%8C%E7%BA%BF%E7%A8%8B/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <span id="more"></span>
+<h3 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h3><h4 id="一个普遍的定义"><a href="#一个普遍的定义" class="headerlink" title="一个普遍的定义"></a>一个普遍的定义</h4><ul>
+<li>进程是计算机中的程序关于某数据集合上的一次运行活动，是系统进行资源分配和调度的基本单位，是操作系统结构的基础。<br>上面的定义应该是比较广泛的一种定义，但是定义地非常模糊，也不好理解究竟在操作系统中进程是什么。下面以Linux操作系统为例，说明究竟在操作系统中进程以什么方式存在。</li>
+</ul>
+<h4 id="进程资源集合"><a href="#进程资源集合" class="headerlink" title="进程资源集合"></a>进程资源集合</h4><p>进程由什么资源组成？在Linux下大概有下面这些：</p>
+<ul>
+<li>可执行程序代码</li>
+<li>打开的文件</li>
+<li>挂起的信号</li>
+<li>内核内部数据</li>
+<li>处理器状态</li>
+<li>一个或者多个具有内存映射的内存地址空间</li>
+<li>一个或多个执行线程</li>
+<li>存放全局变量的数据段</li>
+</ul>
+<h4 id="进程描述符"><a href="#进程描述符" class="headerlink" title="进程描述符"></a>进程描述符</h4><p>在Linux系统中内核把进程的列表存放在叫做任务队列（个人理解就是一个不同优先级的双向循环链表）的结构中，每一项类型为task_struct，称为进程描述符。进程描述符通过slab分配器分配。  </p>
+<p>Q:什么是slab？<br>A：  </p>
+<ol>
+<li>使用传统分配的缺点：传统的内存分配算法通过伙伴系统分配，伙伴系统使用的是多级链表来实现，分配策略就是从小到大找最适合的链表，这种分配很容易造成内部碎片，特别是task_struct这种小对象。</li>
+<li>分配流程：当用户进程或者系统进程向SLAB申请了专门存放某一类对象的内存空间，但此时SLAB中没有足够的空间来专门存放此类对象，于是SLAB就像伙伴系统申请2的幂次方个连续的物理页框，SLAB的申请得到伙伴系统满足之后，SLAB就对这一块内存进行管理，用以存放多个上文中提到的某一类对象。对象实际上指的是某一种数据类型。一个SLAB只针对一种数据类型（对象）。为了提升对对象的访问效率，SLAB可能会对对象进行对齐。为了提升效率，SLAB分配器为每一个CPU都提供了每CPU数据结构struct array_cache，该结构指向被释放的对象。当CPU需要使用申请某一个对象的内存空间时，会先检查array_cache中是否有空闲的对象，如果有的话就直接使用。如果没有空闲对象，就像SLAB分配器进行申请。  </li>
+<li>说明：上面说明的缓存指的并不是真正的缓存，真正的缓存指的是硬件缓存，也就是我们通常所说的L1 cache、L2 cache、L3 cache，硬件缓存是为了解决快速的CPU和速度较慢的内存之间速度不匹配的问题，CPU访问cache的速度要快于内存，如果将常用的数据放到硬件缓存中，使用时CPU直接访问cache而不用再访问内存，从而提升系统速度。下文中的缓存实际上是用软件在内存中预先开辟一块空间，使用时直接从这一块空间中去取，是SLAB分配器为了便于对小块内存的管理而建立的。</li>
+</ol>
+<p>分配的进程结构体如下图所示：<br><img src="/images/pt-1.png"><br>每个任务的thread_info结构在内核栈的尾端分配，结构中task域存放的是指向任务的实际的task_struct指针。</p>
+<p>内核通过进程描述符pid在标识进程，最大默认32768（为了兼容旧版本），在X86系统中通过栈指针屏蔽来计算thread_info偏移，汇编如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">movl $-8192, %eax</span><br><span class="line">andl %esp, %eax</span><br></pre></td></tr></table></figure>
+<p>附X86常用寄存器表。<br><img src="/images/x86-1.png"></p>
+<h4 id="进程状态"><a href="#进程状态" class="headerlink" title="进程状态"></a>进程状态</h4><p>一图胜千言：<br><img src="/images/pt-2.png"></p>
+<h4 id="进程上下文"><a href="#进程上下文" class="headerlink" title="进程上下文"></a>进程上下文</h4><p>进程上下文是进程执行活动全过程的静态描述。我们把已执行过的进程指令和数据在相关寄存器与堆栈中的内容称为进程上文，把正在执行的指令和数据在寄存器与堆栈中的内容称为进程正文，把待执行的指令和数据在寄存器与堆栈中的内容称为进程下文。</p>
+<p>实际上linux内核中，进程上下文包括进程的虚拟地址空间和硬件上下文。</p>
+<ol>
+<li>虚拟地址上下文切换<br>在进程描述符中有mm_struct结构体来描述进程地址空间，这个结构体中有一个成员pgd，保存的是进程的页的全局目录的虚拟地址，是在fork()的时候（此处应该是写时复制是赋值的，直接fork会共用父进程的地址）设置的。<br>代码trace如下：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">context_switch  <span class="comment">// kernel/sched/core.c</span></span><br><span class="line">-&gt;switch_mm_irqs_off</span><br><span class="line">  -&gt;switch_mm</span><br><span class="line">  -&gt;__switch_mm</span><br><span class="line">    -&gt;check_and_switch_context</span><br><span class="line">    -&gt;cpu_switch_mm</span><br><span class="line">      -&gt;cpu_do_switch_mm(virt_to_phys(pgd),mm) <span class="comment">//arch/arm64/include/asm/mmu_context.h</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">arch/arm64/mm/proc.S</span><br><span class="line"><span class="number">158</span> <span class="comment">/*</span></span><br><span class="line"><span class="comment">159  *      cpu_do_switch_mm(pgd_phys, tsk)</span></span><br><span class="line"><span class="comment">160  *</span></span><br><span class="line"><span class="comment">161  *      Set the translation table base pointer to be pgd_phys.</span></span><br><span class="line"><span class="comment">162  *</span></span><br><span class="line"><span class="comment">163  *      - pgd_phys - physical address of new TTB</span></span><br><span class="line"><span class="comment">164  */</span></span><br><span class="line"><span class="number">165</span> ENTRY(cpu_do_switch_mm)</span><br><span class="line"><span class="number">166</span>         mrs     x2, ttbr1_el1</span><br><span class="line"><span class="number">167</span>         mmid    x1, x1                          <span class="comment">// get mm-&gt;context.id</span></span><br><span class="line"><span class="number">168</span>         phys_to_ttbr x3, x0</span><br><span class="line"><span class="number">169</span></span><br><span class="line"><span class="number">170</span> alternative_if ARM64_HAS_CNP</span><br><span class="line"><span class="number">171</span>         cbz     x1, <span class="number">1f</span>                          <span class="comment">// skip CNP for reserved ASID</span></span><br><span class="line"><span class="number">172</span>         orr     x3, x3, #TTBR_CNP_BIT</span><br><span class="line"><span class="number">173</span> <span class="number">1</span>:</span><br><span class="line"><span class="number">174</span> alternative_else_nop_endif</span><br><span class="line"><span class="number">175</span> <span class="meta">#<span class="keyword">ifdef</span> CONFIG_ARM64_SW_TTBR0_PAN</span></span><br><span class="line"><span class="number">176</span>         bfi     x3, x1, #<span class="number">48</span>, #<span class="number">16</span>                <span class="comment">// set the ASID field in TTBR0</span></span><br><span class="line"><span class="number">177</span> <span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="number">178</span>         bfi     x2, x1, #<span class="number">48</span>, #<span class="number">16</span>                <span class="comment">// set the ASID</span></span><br><span class="line"><span class="number">179</span>         msr     ttbr1_el1, x2                   <span class="comment">// in TTBR1 (since TCR.A1 is set)</span></span><br><span class="line"><span class="number">180</span>         isb</span><br><span class="line"><span class="number">181</span>         msr     ttbr0_el1, x3                   <span class="comment">// now update TTBR0</span></span><br><span class="line"><span class="number">182</span>         isb</span><br><span class="line"><span class="number">183</span>         b       post_ttbr_update_workaround     <span class="comment">// Back to C code...</span></span><br><span class="line"><span class="number">184</span> ENDPROC(cpu_do_switch_mm)</span><br></pre></td></tr></table></figure>
+代码中最核心的为181行，最终将进程的pgd虚拟地址转化为物理地址存放在ttbr0_el1中，这是用户空间的页表基址寄存器，当访问用户空间地址的时候mmu会通过这个寄存器来做遍历页表获得物理地址（ttbr1_el1是内核空间的页表基址寄存器，访问内核空间地址时使用，所有进程共享，不需要切换）。完成了这一步，也就完成了进程的地址空间切换，确切的说是进程的虚拟地址空间切换。</li>
+<li>硬件上下文切换<br>将结构中的cpu寄存器信息重新设置给当前cpu即可。<br><img src="/images/pt-3.png"></li>
+</ol>
+<h3 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h3><p>线程拥有独立的程序计数器，进程栈和一组进程寄存器。内核调度的对象是线程，而不是进程。一个进程可以包含多个线程，最少有一个线程。</p>
+<h4 id="为啥要线程"><a href="#为啥要线程" class="headerlink" title="为啥要线程"></a>为啥要线程</h4><p>一句话来说，就是避免进程间切换的上下文转换开销。进程上下文需要虚拟空间转换，硬件寄存器上下文转换，但是在同一个进程中的线程的资源基本上是共享的，切换的开销基本可以忽略不计，因此有更高的效率。</p>
+<h4 id="Linux中的线程"><a href="#Linux中的线程" class="headerlink" title="Linux中的线程"></a>Linux中的线程</h4><p><font color = orange>在内核角度，没有线程这个概念，线程是由进程实现的。</font>线程仅仅是和其他进城共享某些资源的进程。</p>
+<p>创建线程  </p>
+<p>在Linux中创建线程和进程最终都是调用clone()系统调用，不过进程是：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clone(SIGCHLD, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<p>而线程需要共享地址空间，文件系统资源，文件描述符和信号处理程序。如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clone(CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+
       
     </div>
 
@@ -497,7 +460,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:58:46" itemprop="dateModified" datetime="2022-09-25T01:58:46+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -520,7 +483,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="线程间通信"><a href="#线程间通信" class="headerlink" title="线程间通信"></a>线程间通信</h3><ol>
+          <span id="more"></span>
+<h3 id="线程间通信"><a href="#线程间通信" class="headerlink" title="线程间通信"></a>线程间通信</h3><ol>
 <li>不同进程的线程之间通信，等同于进程间通信。</li>
 <li>相同进程中不同线程之间通信，主要是线程同步，避免对临界区资源的破坏。</li>
 </ol>
@@ -639,7 +603,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:58:44" itemprop="dateModified" datetime="2022-09-25T01:58:44+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -662,7 +626,8 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="开机全程"><a href="#开机全程" class="headerlink" title="开机全程"></a>开机全程</h3><p><a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2013/02/booting.html">参考阮一峰大佬的博客1</a>,<a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2013/08/linux_boot_process.html">博客2</a></p>
+          <span id="more"></span>
+<h3 id="开机全程"><a href="#开机全程" class="headerlink" title="开机全程"></a>开机全程</h3><p><a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2013/02/booting.html">参考阮一峰大佬的博客1</a>,<a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2013/08/linux_boot_process.html">博客2</a></p>
 
       
     </div>
@@ -713,7 +678,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:58:35" itemprop="dateModified" datetime="2022-09-25T01:58:35+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -736,7 +701,8 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="预编译"><a href="#预编译" class="headerlink" title="预编译"></a>预编译</h3><p>第一步预编译的过程个相当于如下命令</p>
+          <span id="more"></span>
+<h3 id="预编译"><a href="#预编译" class="headerlink" title="预编译"></a>预编译</h3><p>第一步预编译的过程个相当于如下命令</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">gcc -E hello.c -o hello.i</span></span><br></pre></td></tr></table></figure>
 <p>预编译主要处理源文件中以#开始的预编译命令</p>
 <ul>
@@ -830,7 +796,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:55:09" itemprop="dateModified" datetime="2022-09-25T01:55:09+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -853,15 +819,15 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="使用形式"><a href="#使用形式" class="headerlink" title="使用形式"></a>使用形式</h3><p>可变参数模板(variadic template)为一个接受可变数目参数的模板函数或模板类。<br>用class…或typename…指出接下来的参数表示零个或多个类型的列表。<br>一个类型名后面跟一个省略号表示零个或多个给定类型的非类型参数的列表(可以是一个函数的实参列表).</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9AVariadic-Templates/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <span id="more"></span>
+<h3 id="使用形式"><a href="#使用形式" class="headerlink" title="使用形式"></a>使用形式</h3><p>可变参数模板(variadic template)为一个接受可变数目参数的模板函数或模板类。<br>用class…或typename…指出接下来的参数表示零个或多个类型的列表。<br>一个类型名后面跟一个省略号表示零个或多个给定类型的非类型参数的列表(可以是一个函数的实参列表).</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span></span>&#123;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;empty&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Types&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">(<span class="type">const</span> T&amp; firstArg, <span class="type">const</span> Types&amp;... args)</span></span>&#123;</span><br><span class="line">    cout &lt;&lt; firstArg;</span><br><span class="line">    <span class="built_in">print</span>(args...);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意在上面例子中,在函数形参输入是Types&amp;… args，省略在前，而在函数内则是args…，省略在后。<br>上例会输出每一个参数，直到为空时输出empty。展开参数包的函数有两个，一个是递归函数，另外一个是递归终止函数，参数包args…在展开的过程中递归调用自己，每调用一次参数包中的参数就会少一个，直到所有的参数都展开为止，当没有参数时，则调用非模板函数print终止递归过程。<br>编译器从函数实参推断模板参数类型.对可变参数模板,编译器还会推断包中的参数数目.用sizeof…()可以获取模板参数包的参数个数和函数参数包的参数个数.</p>
+<h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><p>可以方便使用递归调用</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;functional&gt;</span></span></span><br><span class="line"><span class="comment">//4</span></span><br><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">hash_combine</span><span class="params">(<span class="type">size_t</span>&amp; seed, <span class="type">const</span> T&amp;val)</span></span>&#123;</span><br><span class="line">    seed ^= std::<span class="built_in">hash</span>&lt;T&gt;()(val) + <span class="number">0x9e3779b9</span></span><br><span class="line">            + (seed &lt;&lt; <span class="number">6</span>) +(seed &gt;&gt; <span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//3</span></span><br><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">hash_val</span><span class="params">(<span class="type">size_t</span>&amp; seed, <span class="type">const</span> T&amp;val)</span></span>&#123;</span><br><span class="line">    <span class="built_in">hash_combine</span>(seed, val);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//2</span></span><br><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>...Types&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">hash_val</span><span class="params">(<span class="type">size_t</span>&amp; seed, <span class="type">const</span> T&amp;val, <span class="type">const</span> Types&amp;...args)</span></span>&#123;</span><br><span class="line">    <span class="built_in">hash_combine</span>(seed, val);</span><br><span class="line">    <span class="built_in">hash_val</span>(seed,args...);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//1</span></span><br><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Types&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">size_t</span> <span class="title">hash_val</span><span class="params">(<span class="type">const</span> Types&amp;...args)</span></span>&#123;</span><br><span class="line">    <span class="type">size_t</span> seed = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">hash_val</span>(seed, args...);</span><br><span class="line">    <span class="keyword">return</span> seed;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;   </span><br><span class="line">    <span class="type">size_t</span> res = <span class="built_in">hash_val</span>(<span class="number">1</span>,<span class="number">3</span>,<span class="number">3182UL</span>);</span><br><span class="line">    cout &lt;&lt; res;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面这段函数的调用顺序是1 -&gt; 2 -&gt; 3 -&gt; 4。<br>下面还有一个经典的tuple例子：<br><img src="/images/vt-1.png"></p>
+<p>对于递归继承，也可以使用可变模板参数实现。例如STL中的tuple：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span>... values&gt;<span class="keyword">class</span> <span class="title class_">tuple</span>;</span><br><span class="line"><span class="keyword">template</span>&lt;&gt;<span class="keyword">class</span> <span class="title class_">tuple</span>&lt;&gt;&#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Head, <span class="keyword">typename</span>... Tail&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">tuple</span>&lt;Head, Tail...&gt;:<span class="keyword">private</span> tuple&lt;Tail...&gt;&#123;</span><br><span class="line">    <span class="keyword">typedef</span> tuple&lt;Tail...&gt; inherited;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">tuple</span>()&#123;&#125;</span><br><span class="line">    <span class="built_in">tuple</span>(Head v, Tail... vtail):</span><br><span class="line">    <span class="built_in">m_head</span>(v),<span class="built_in">inherited</span>(vtail...)&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">Head <span class="title">head</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> m_head;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">inherited&amp; <span class="title">tail</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">protected</span>:</span><br><span class="line">    Head m_head;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
 
@@ -911,7 +877,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:56:29" itemprop="dateModified" datetime="2022-09-25T01:56:29+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -934,15 +900,20 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p><img src="/images/deque-2.png"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Adeque/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <span id="more"></span>
+<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p><img src="/images/deque-2.png"></p>
+<p><img src="/images/deque-1.png"><br>STL中使用分段数组串接起来一个双向队列。我们使用buffer来描述这些分段数组。<br>deque使用一个map数组来管理这些buffer，里面存放指向这些buffer头的指针，如果deque需要向前或者扩充，就在map数组中填充指针。图中的start和finish迭代器用来管理deque的扩充。<br><font color=orange>总的来说，deque的存储模式是分段连续的。deque的控制中心行为模式类似vector，开始的时候在中心分配buffer指针，如果空间不足，就两倍增长。</font></p>
+<h3 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h3><p>deque的迭代器主要包含四个数据。</p>
+<ul>
+<li>cur：指向当前迭代器迭代的元素位置。</li>
+<li>first：指向当前buffer首地址。</li>
+<li>last：指向当前buffer末地址的下一个位置（主要遵循iterator的前闭后开原则）。</li>
+<li>node：指向当前buffer在map数组中的位置。<br><img src="/images/deque-3.png"></li>
+</ul>
+<p>如何保持buffer在使用中的连续性？通过操作符重载和其他操作，调度指针。</p>
+<h3 id="G4-9版本"><a href="#G4-9版本" class="headerlink" title="G4.9版本"></a>G4.9版本</h3><p><img src="/images/deque-5.png"></p>
+<p>和其他容器一样，为了遵循面向对象，定义和实现分离的原则，重构了数据结构，但是基本原理没有变。</p>
+
       
     </div>
 
@@ -992,7 +963,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:56:38" itemprop="dateModified" datetime="2022-09-25T01:56:38+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1015,15 +986,182 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p>map&#x2F;multimap 也是以红黑树为底层结构。<br>红黑树的左旋右旋、性质在这里先不深究。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Amap/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <span id="more"></span>
+<h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p>map&#x2F;multimap 也是以红黑树为底层结构。<br>红黑树的左旋右旋、性质在这里先不深究。</p>
+<h3 id="map-x2F-multimap"><a href="#map-x2F-multimap" class="headerlink" title="map&#x2F;multimap"></a>map&#x2F;multimap</h3><p>和set不同的是map&#x2F;multimap是以pair的key为排序对象，在G2.9的实现截图如下：<br><img src="/images/map-2.png"></p>
+<p>map&#x2F;multimap给定的默认仿函数为less&lt;_Ty&gt;，默认的取值仿函数是select1st&lt;pair&lt;const int, string&gt;&gt;。<br>map也提供<font color=orange>[]</font>的操作符重载：<br><img src="/images/map-1.png"></p>
+<p>需要注意的是如果存在要查找的值就返回，否则返回要查找的值应该出现的位置。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Alist/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Alist/" class="post-title-link" itemprop="url">c++STL系列：list</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:56:33" itemprop="dateModified" datetime="2022-09-25T01:56:33+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="G2-9源码结构"><a href="#G2-9源码结构" class="headerlink" title="G2.9源码结构"></a>G2.9源码结构</h3><p><img src="/images/list-1.png"></p>
+<p>在低版本下list的结构比较简单，就是一个list模板类和一个node模板类。总体的数据结构事宜个环形双向链表。<br>begin()指向头结点，end()指向尾节点。</p>
+<ul>
+<li>迭代器<br><img src="/images/list-2.png"></li>
+</ul>
+<p>源码中迭代器的结构如下，迭代器重载了前++,后++，-&gt;,*等一系列操作符，为了达到指针的效果。<br>这里需要注意的第一个是++这个操作符重载，形如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self <span class="keyword">operator</span>++(<span class="type">int</span>)&#123;....&#125;</span><br></pre></td></tr></table></figure>
+<p>的为后置++，而前置++ 不需要形参:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self&amp; <span class="keyword">operator</span>++()&#123;...&#125;</span><br></pre></td></tr></table></figure>
+<p>为什么后置++返回self，而后置返回一个引用呢？<font color=orange>是为了阻止后置++连续使用，也就是下面这种形式:</font></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">i++++;<span class="comment">//错误 self类型不能++</span></span><br><span class="line">++++i;<span class="comment">//正确 </span></span><br></pre></td></tr></table></figure>
+
+<p>另外需要注意的是-&gt;这个操作符重载,下面这个图阐述的很清楚:<br><img src="/images/list-3.png"></p>
+<h3 id="G4-9版本"><a href="#G4-9版本" class="headerlink" title="G4.9版本"></a>G4.9版本</h3><p><img src="/images/list-4.png"></p>
+<p>相对于G2.9版本，4.9版本的list充分利用了面向对象的设计方法，将实现类与基础类分割开，这符合effective c++的设计条款，但是对于源码阅读来说就不是很友好了。但是很庆幸，在基础的设计上新版本并没有特别多的改动，基本思想和原版本一致。<br>list的原理十分简单，下面简单总结一下list的使用。</p>
+<center>
+
+<table>
+<thead>
+<tr>
+<th align="center">方法</th>
+<th align="center">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">erase()</td>
+<td align="center">删除一个元素</td>
+</tr>
+<tr>
+<td align="center">front()</td>
+<td align="center">返回第一个元素</td>
+</tr>
+<tr>
+<td align="center">get_allocator()</td>
+<td align="center">返回list的配置器</td>
+</tr>
+<tr>
+<td align="center">insert()</td>
+<td align="center">插入一个元素到list中</td>
+</tr>
+<tr>
+<td align="center">max_size()</td>
+<td align="center">返回list能容纳的最大元素数量</td>
+</tr>
+<tr>
+<td align="center">merge()</td>
+<td align="center">合并两个list</td>
+</tr>
+<tr>
+<td align="center">pop_back()</td>
+<td align="center">删除最后一个元素</td>
+</tr>
+<tr>
+<td align="center">pop_front()</td>
+<td align="center">删除第一个元素</td>
+</tr>
+<tr>
+<td align="center">push_back()</td>
+<td align="center">在list的末尾添加一个元素</td>
+</tr>
+<tr>
+<td align="center">push_front()</td>
+<td align="center">在list的头部添加一个元素</td>
+</tr>
+<tr>
+<td align="center">remove()</td>
+<td align="center">从list删除元素</td>
+</tr>
+<tr>
+<td align="center">remove_if()</td>
+<td align="center">按指定条件删除元素</td>
+</tr>
+<tr>
+<td align="center">resize()</td>
+<td align="center">改变list的大小</td>
+</tr>
+<tr>
+<td align="center">reverse()</td>
+<td align="center">把list的元素倒转</td>
+</tr>
+<tr>
+<td align="center">sort()</td>
+<td align="center">给list排序</td>
+</tr>
+<tr>
+<td align="center">unique()</td>
+<td align="center">删除list中重复的元素</td>
+</tr>
+<tr>
+<td align="center">splice()</td>
+<td align="center">合并两个list</td>
+</tr>
+</tbody></table>
+</center>
+
+
+
       
     </div>
 
@@ -1109,7 +1247,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-count">137</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

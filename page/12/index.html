@@ -163,88 +163,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88%EF%BC%882%EF%BC%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88%EF%BC%882%EF%BC%89/" class="post-title-link" itemprop="url">effective-c++系列：对象模型杂谈（2）</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-08-20 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-20T00:00:00+08:00">2021-08-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="在构造函数和析构函数中能调用虚函数吗？"><a href="#在构造函数和析构函数中能调用虚函数吗？" class="headerlink" title="在构造函数和析构函数中能调用虚函数吗？"></a>在构造函数和析构函数中能调用虚函数吗？</h3><ul>
-<li><p>严禁在构造函数中调用虚函数</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88%EF%BC%882%EF%BC%89/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%BC%95%E7%94%A8%E6%B5%85%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -276,7 +194,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:57:13" itemprop="dateModified" datetime="2022-09-25T01:57:13+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -299,16 +217,61 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><ul>
-<li>引用不是新定义一个变量，而是给一个已经存在的变量取了一个别名，编译器不会为引用变量开辟内存空间，它和它引用的变量共用同一块内存空间。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%BC%95%E7%94%A8%E6%B5%85%E6%9E%90/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <span id="more"></span>
+<h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><ul>
+<li>引用不是新定义一个变量，而是给一个已经存在的变量取了一个别名，编译器不会为引用变量开辟内存空间，它和它引用的变量共用同一块内存空间。</li>
+</ul>
+<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><ul>
+<li>引用变量</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> data = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span>&amp; ref = data; <span class="comment">//可读可写</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>常引用变量</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> data = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> <span class="type">const</span>&amp; ref = data;<span class="comment">//只读</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>常引用常量</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">int</span> data = <span class="number">0</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span>&amp; ref = data;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>指针引用</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> data = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> *p = &amp;data;</span><br><span class="line"><span class="type">int</span>* &amp;ref = p;</span><br><span class="line">cout &lt;&lt; data &lt;&lt; endl; <span class="comment">//0</span></span><br><span class="line">cout &lt;&lt; *p &lt;&lt; endl; <span class="comment">//0</span></span><br><span class="line">cout &lt;&lt; *ref &lt;&lt; endl; <span class="comment">//0</span></span><br><span class="line">cout &lt;&lt; p &lt;&lt; endl;<span class="comment">//0x61fe14</span></span><br><span class="line">cout &lt;&lt; ref &lt;&lt; endl;<span class="comment">//0x61fe14</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>引用变量的类型必须与它的实体类型一致（因为取别名要符合引用实体的身份，如果类型不一致则会报错）</p>
+</li>
+<li><p>引用变量使用必须要进行初始化（不然没有实体都不知道给谁取别名）</p>
+</li>
+<li><p>一个变量可以有多个引用（就相当于一个变量有好几个别名，这是可以的）</p>
+</li>
+</ul>
+<h3 id="以pass-by-reference-to-const替换pass-by-value"><a href="#以pass-by-reference-to-const替换pass-by-value" class="headerlink" title="以pass-by-reference-to-const替换pass-by-value"></a>以pass-by-reference-to-const替换pass-by-value</h3><ul>
+<li>通常情况下c++使用值传递，传递对象都是由拷贝构造函数产生，这样做会产生非常昂贵的成本。每对一个对象进行值传递，就会进行一次拷贝构造函数和析构函数。</li>
+<li>考虑上述情况，可以使用<font color=orange>引用传递</font>来避免不必要的运行和内存开销。同时，如果希望在函数中不对对象进行任何改变，可以使用const关键字避免。</li>
+<li><font color=orange>在c++底层，引用是通过指针实现的</font>，因此对于内置类型如int,double,float等使用值传递会有更高的效率。</li>
+</ul>
+<h3 id="必须返回对象时，不要使用引用"><a href="#必须返回对象时，不要使用引用" class="headerlink" title="必须返回对象时，不要使用引用"></a>必须返回对象时，不要使用引用</h3><ul>
+<li><p>考虑如下的例子，考虑在函数内生成一个对象</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="type">int</span> val;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="title">A</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="title">A</span><span class="params">(<span class="type">int</span> x)</span>:val(x)&#123;</span>&#125;;</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="type">int</span> <span class="title">getVal</span><span class="params">()</span><span class="type">const</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> val;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="type">const</span> A&amp; <span class="keyword">operator</span>*(<span class="type">const</span> A&amp; lhs, <span class="type">const</span> A&amp; rhs)&#123;</span><br><span class="line">    A* res = <span class="keyword">new</span> <span class="built_in">A</span>(lhs.<span class="built_in">getVal</span>() * rhs.<span class="built_in">getVal</span>());</span><br><span class="line">    <span class="keyword">return</span> *res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>  operator*函数内生成了一个对象，并在heap上分配了内存，那么这块内存永远不会再外部释放，因为离开函数作用域这个指针将自动销毁。<br>  那么使用下面这个函数生成临时对象也一样不可取，因为离开函数作用域，这个对象将被销毁。</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> A&amp; <span class="keyword">operator</span>*(<span class="type">const</span> A&amp; lhs, <span class="type">const</span> A&amp; rhs)&#123;</span><br><span class="line">    <span class="function">A <span class="title">res</span><span class="params">(lhs.getVal() * rhs.getVal())</span></span>;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  能不能像下面这样声明一个静态对象来保存结果呢？</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> A&amp; <span class="keyword">operator</span>*(<span class="type">const</span> A&amp; lhs, <span class="type">const</span> A&amp; rhs)&#123;</span><br><span class="line">    <span class="type">static</span> A res;</span><br><span class="line">    res = <span class="built_in">A</span>(lhs.<span class="built_in">getVal</span>() * rhs.<span class="built_in">getVal</span>());</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  表面上看没有太大问题，但是在使用中我们常常会像一下这样来使用：</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">bool</span> <span class="keyword">operator</span>==(<span class="type">const</span> A&amp; lhs, <span class="type">const</span> A&amp; rhs);</span><br><span class="line">A r, s, t, x;</span><br><span class="line"><span class="keyword">if</span>((r * s) == (t * x))&#123;</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  如果保存的是静态对象，那么这个表达式永远为真。表达式展开的结果是</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">operator</span>==(<span class="keyword">operator</span>*(r, s), <span class="keyword">operator</span>*(t, x)))&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  在比较时永远比较的是静态对象值，不管执行顺序是什么，对象自身永远相等。</p>
+</li>
+<li><p>正确的做法</p>
+<ul>
+<li>让函数返回一个新对象</li>
+</ul>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="type">const</span> A <span class="keyword">operator</span>*(<span class="type">const</span> A&amp; lhs, <span class="type">const</span> A&amp; rhs)&#123;</span><br><span class="line">    <span class="function">A <span class="title">res</span><span class="params">(lhs.getVal() * rhs.getVal())</span></span>;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+
       
     </div>
 
@@ -358,7 +321,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:57:17" itemprop="dateModified" datetime="2022-09-25T01:57:17+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -381,16 +344,138 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="const关键字"><a href="#const关键字" class="headerlink" title="const关键字"></a>const关键字</h3><ul>
-<li>const名叫常量限定符，用来限定特定变量，以通知编译器该变量是不可修改的。习惯性的使用const，可以避免在函数中对某些不应修改的变量造成可能的改动。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/08/16/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9Aconst%E8%AF%A6%E8%A7%A3/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <span id="more"></span>
+<h3 id="const关键字"><a href="#const关键字" class="headerlink" title="const关键字"></a>const关键字</h3><ul>
+<li>const名叫常量限定符，用来限定特定变量，以通知编译器该变量是不可修改的。习惯性的使用const，可以避免在函数中对某些不应修改的变量造成可能的改动。</li>
+</ul>
+<h3 id="const和-define的区别"><a href="#const和-define的区别" class="headerlink" title="const和#define的区别"></a>const和#define的区别</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">int</span> a = <span class="number">0</span>; </span><br><span class="line"><span class="meta">#<span class="keyword">define</span> b 200</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>编译器处理方式不同<ul>
+<li>#define在预处理阶段展开。<br>const在编译期间使用。</li>
+</ul>
+</li>
+<li>类型和安全检查方式不同<ul>
+<li>#define宏没有类型，不做任何类型检查，仅仅是展开。<br>  const常量有具体的类型，在编译阶段会执行类型检查。</li>
+</ul>
+</li>
+<li>存储方式不同<ul>
+<li>define宏仅仅是展开，有多少地方使用，就展开多少次，不会分配内存。<br>  const常量会在内存中分配(可以是堆中也可以是栈中)。</li>
+</ul>
+</li>
+<li>作用域<ul>
+<li>#define只能定义全局变量 const可以定义类内专属常量。  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> a = <span class="number">9</span>;</span><br><span class="line">&#125;;</span><br><span class="line">A obj;</span><br><span class="line">cout &lt;&lt; obj.a &lt;&lt; endl;<span class="comment">//ok</span></span><br><span class="line">cout &lt;&lt; a &lt;&lt; endl;<span class="comment">//error！only visible in class</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>const的几个优点<ul>
+<li>编译器可以检查const类型 #define只是进行替换。</li>
+<li>调试器可以对const进行调试，但不能对宏变量进行调试。</li>
+</ul>
+</li>
+<li><font color=orange>对于常量，尽量使用const、enum代替#define</font></li>
+<li><font color=orange>对于函数宏定义，尽量使用inline函数代替#define</font></li>
+</ul>
+<h3 id="const的内存分配"><a href="#const的内存分配" class="headerlink" title="const的内存分配"></a>const的内存分配</h3><ul>
+<li>对于基础类型（整数，浮点数，字符） 系统不会给const变量开辟空间，会将其放到符号表中。  </li>
+<li>对const变量取地址的时候 系统就会给它开辟空间。</li>
+<li>当用变量给const变量赋值时，系统直接为其开辟空间而不会把它放入符号表中。  </li>
+<li>const 自定义数据类型(结构体、对象) 和数组系统会分配空间。</li>
+</ul>
+<h3 id="主要功能和用法"><a href="#主要功能和用法" class="headerlink" title="主要功能和用法"></a>主要功能和用法</h3><ul>
+<li>在class外部修饰全局变量  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">int</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">extern</span> <span class="type">const</span> <span class="type">int</span> a;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> *p = (<span class="type">int</span> *)(&amp;a);</span><br><span class="line">    *p = <span class="number">8</span>;<span class="comment">//error!Exception has occurred.Segmentation fault</span></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;a=&quot;</span> &lt;&lt; a &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;*p=&quot;</span> &lt;&lt; *p;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>修饰namespace作用域中的常量  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">namespace</span> hqin&#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> a = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">&#125; <span class="comment">// namespace hqin</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    hqin::a = <span class="number">1</span>; <span class="comment">//error: assignment of read-only variabl &#x27;hqin::a&#x27;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>修饰文件、函数或者作用域中被声明为static的对象<ul>
+<li>不希望改变static变量时使用。</li>
+</ul>
+</li>
+<li>通常情况下如果不希望改变文件指针、函数内部等更改数据，就命名为const类型  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">//不希望改变x,y，函数内部也不希望改变data</span></span><br><span class="line">    <span class="function"><span class="keyword">inline</span> T <span class="title">sum</span> <span class="params">(<span class="type">const</span> T&amp; x, <span class="type">const</span> T&amp; y)</span> <span class="type">const</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> x + y;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">A&lt;complex&lt;<span class="type">int</span>&gt;&gt; test = A&lt;complex&lt;<span class="type">int</span>&gt;&gt;();</span><br><span class="line"><span class="function">complex&lt;<span class="type">int</span>&gt; <span class="title">a</span><span class="params">(<span class="number">1</span>,<span class="number">1</span>)</span></span>;</span><br><span class="line"><span class="function">complex&lt;<span class="type">int</span>&gt; <span class="title">b</span><span class="params">(<span class="number">1</span>,<span class="number">1</span>)</span></span>;</span><br><span class="line">cout &lt;&lt; test.<span class="built_in">sum</span>(a,b);</span><br></pre></td></tr></table></figure></li>
+<li>修饰class内部的static和non-static成员变量  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> x = <span class="number">0</span>;</span><br><span class="line">    <span class="type">const</span> <span class="type">static</span> <span class="type">int</span> y = <span class="number">0</span>;</span><br><span class="line">&#125;;  </span><br></pre></td></tr></table></figure></li>
+<li>修饰指针、指针所指物  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> * <span class="type">const</span> p1; <span class="comment">// p1:只读  *p1:变量</span></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> *p2; <span class="comment">// p2:变量 *p2:只读</span></span><br><span class="line"><span class="type">int</span> <span class="type">const</span> *p3; <span class="comment">// p3:变量 *p3:只读</span></span><br><span class="line"><span class="type">int</span> <span class="type">const</span> * <span class="type">const</span> p4; <span class="comment">// p4:只读 *p4:只读</span></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> * <span class="type">const</span> p5; <span class="comment">// p5:只读 *p5:只读</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="const初始化"><a href="#const初始化" class="headerlink" title="const初始化"></a>const初始化</h3><ul>
+<li><p>在c++ 11 之前，普通变量、常量（const）、静态（static）、静态常量（static const)的初始化和声明如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th align="center">type</th>
+<th align="center">声明时初始化</th>
+<th align="center">初始化列表初始化</th>
+<th align="center">构造函数内初始化</th>
+<th align="center">类外初始化</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">普通变量</td>
+<td align="center">x</td>
+<td align="center">√</td>
+<td align="center">√</td>
+<td align="center">x <font color=green>(整型除外)</font></td>
+</tr>
+<tr>
+<td align="center">const</td>
+<td align="center">x</td>
+<td align="center">√</td>
+<td align="center">x</td>
+<td align="center">x</td>
+</tr>
+<tr>
+<td align="center">static</td>
+<td align="center">x</td>
+<td align="center">x</td>
+<td align="center">x</td>
+<td align="center">√</td>
+</tr>
+<tr>
+<td align="center">static const</td>
+<td align="center">x</td>
+<td align="center">x</td>
+<td align="center">x</td>
+<td align="center">√</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>c++ 11之后，如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th align="center">type</th>
+<th align="center">声明时初始化</th>
+<th align="center">初始化列表初始化</th>
+<th align="center">构造函数内初始化</th>
+<th align="center">类外初始化</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">普通变量</td>
+<td align="center"><font color=orange>√</font></td>
+<td align="center">√</td>
+<td align="center">√</td>
+<td align="center">x <font color=green>(整型除外)</font></td>
+</tr>
+<tr>
+<td align="center">const</td>
+<td align="center">x</td>
+<td align="center">√</td>
+<td align="center">x</td>
+<td align="center">x</td>
+</tr>
+<tr>
+<td align="center">static</td>
+<td align="center">x</td>
+<td align="center">x</td>
+<td align="center">x</td>
+<td align="center">√</td>
+</tr>
+<tr>
+<td align="center">static const</td>
+<td align="center">x</td>
+<td align="center">x</td>
+<td align="center">x</td>
+<td align="center">√</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+
       
     </div>
 
@@ -440,7 +525,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:58:53" itemprop="dateModified" datetime="2022-09-25T01:58:53+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -463,19 +548,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="内存不够怎么办"><a href="#内存不够怎么办" class="headerlink" title="内存不够怎么办"></a>内存不够怎么办</h3><p>在早起的计算机上，程序是运行在物理内存上的，也就是说，程序在运行时所访问的地址都是物理地址，那么在多个进城同时运行的过程中，如何将计算机上有限的物理内存分配给多个程序使用是一个值得思考的问题。<br>一个比较直接的做法是在物理内存上直接进行分配，例如我们计算机有128M的内存，程序A运行需要10M，程序B需要100M，程序C需要20M，如果我们同时运行A和B，就将内存前10M给A，10~110M给B，但是这种方法存在的隐患却是很大的：  </p>
+          <span id="more"></span>
+<h3 id="内存不够怎么办"><a href="#内存不够怎么办" class="headerlink" title="内存不够怎么办"></a>内存不够怎么办</h3><p>在早起的计算机上，程序是运行在物理内存上的，也就是说，程序在运行时所访问的地址都是物理地址，那么在多个进城同时运行的过程中，如何将计算机上有限的物理内存分配给多个程序使用是一个值得思考的问题。<br>一个比较直接的做法是在物理内存上直接进行分配，例如我们计算机有128M的内存，程序A运行需要10M，程序B需要100M，程序C需要20M，如果我们同时运行A和B，就将内存前10M给A，10~110M给B，但是这种方法存在的隐患却是很大的：  </p>
 <ol>
 <li>地址空间不隔离：任何程序都可以直接访问物理地址，那么恶意的程序很容易修改其他程序的内存数据。</li>
 <li>内存使用率低：没有有效的内存管理机制，需要一个程序执行时，监控程序就将整个程序装入内存中然后开始执行。如果我们忽然需要运行一个程序C，这时候内存空间不够了，我们只释放A的内存空间是不够的，因此需要将B移到磁盘，这中间有大量的数据换入患处，导致效率十分低下。</li>
-<li>程序运行的地址不确定：程序每次需要装入运行时，我们都需要给它在内存中分配一块足够大的空闲区域，每个空闲区域的位置是不确定的，给程序的编写造成了一定的麻烦。因为程序在编写时，访问数据和指令跳转的目标地址都是固定的，这设计到了程序的重定位问题。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/08/12/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%88%86%E6%AE%B5%E5%88%86%E9%A1%B5/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+<li>程序运行的地址不确定：程序每次需要装入运行时，我们都需要给它在内存中分配一块足够大的空闲区域，每个空闲区域的位置是不确定的，给程序的编写造成了一定的麻烦。因为程序在编写时，访问数据和指令跳转的目标地址都是固定的，这设计到了程序的重定位问题。</li>
+</ol>
+<h3 id="分段"><a href="#分段" class="headerlink" title="分段"></a>分段</h3><p>最开始解决上面这个问题使用的是分段的方法，基本思路是把一段与程序所需要的内存空间大小的虚拟空间映射到某个地址空间。如A需要10M，那我们就假设有个地址从0x00000000到0x00A00000大小的假想的空间。然后从实际的物理内存中分配一个相同大小的空间例如0x00100000到0x00B00000.然后把两个空间做一一映射。这个映射过程由软件来设置，比如操作系统来设置，实际的地址转换由硬件来完成。<br><img src="/images/seg-1.png"></p>
+<p>分段解决了前面提到的问题中的1~3，首先做到了地址隔离，如果A访问B的地址，软件会检测访问越界。并且由于虚拟地址，程序不需要关心物理地址的变化，因此程序也不需要重定位。不过这种方法对内存的使用效率依然很低，因为每次内存的换入换出依然是这个程序。</p>
+<h3 id="分页"><a href="#分页" class="headerlink" title="分页"></a>分页</h3><p>分页的基本思想是将地址空间划为固定大小的页。每一页的大小由硬件支持。<br>现在我们进程的虚拟空间按页分割，常用的数据和代码页装载到内存，不常用的代码和数据保存在磁盘里。在这里，我们把虚拟空间的页叫做虚拟页，物理内存中的页叫做物理页，把磁盘中的页叫做磁盘页。从下图可以看到映射关系，我们可以发现，虚拟空间的有些页被映射到同一个物理页，这样就可以实现内存共享。<br><img src="/images/seg-2.png"></p>
+<p>当进程需要两个页时，硬件会捕获这个消息，也就是产生缺页中断，操作系统会接管进程，将缺页从磁盘中读出来并且装入内存中。虚拟存储实现需要依靠硬件的支持，如下图所示，一般使用MMU单元进行页映射。<br><img src="/images/seg-3.png"></p>
+<p>同时保护也是页映射的目的之一，简单来说就是每个页可以设置权限属性，谁可以修改，谁可以访问等等，只有操作系统有权限修改这些属性。</p>
+
       
     </div>
 
@@ -525,7 +610,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:58:57" itemprop="dateModified" datetime="2022-09-25T01:58:57+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -548,18 +633,37 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="乐观锁和悲观锁"><a href="#乐观锁和悲观锁" class="headerlink" title="乐观锁和悲观锁"></a>乐观锁和悲观锁</h3><ol>
-<li>定义<ul>
+          <span id="more"></span>
+<h3 id="乐观锁和悲观锁"><a href="#乐观锁和悲观锁" class="headerlink" title="乐观锁和悲观锁"></a>乐观锁和悲观锁</h3><ol>
+<li><p>定义</p>
+<ul>
 <li>乐观锁：每次获取数据的时候，都不会担心数据被修改，所以每次获取数据的时候都不会进行加锁，但是在更新数据的时候需要判断该数据是否被别人修改过。如果数据被其他线程修改，则不进行数据更新，如果数据没有被其他线程修改，则进行数据更新。由于数据没有进行加锁，期间该数据可以被其他线程进行读写操作。</li>
-<li>悲观锁：每次获取数据的时候，都会担心数据被修改，所以每次获取数据的时候都会进行加锁，确保在自己使用的过程中数据不会被别人修改，使用完成后进行数据解锁。由于数据进行加锁，期间对该数据进行读写的其他线程都会进行等待。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/08/12/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%90%84%E7%A7%8D%E9%94%81%E5%A4%A7%E6%80%BB%E7%BB%93/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+<li>悲观锁：每次获取数据的时候，都会担心数据被修改，所以每次获取数据的时候都会进行加锁，确保在自己使用的过程中数据不会被别人修改，使用完成后进行数据解锁。由于数据进行加锁，期间对该数据进行读写的其他线程都会进行等待。</li>
+</ul>
+</li>
+<li><p>使用场景：</p>
+<ul>
+<li>乐观锁：比较适合<font color = red>读取</font>操作比较频繁的场景，如果出现大量的写入操作，数据发生冲突的可能性就会增大，为了保证数据的一致性，应用层需要不断的重新获取数据，这样会增加大量的查询操作，降低了系统的吞吐量。<font color = orange> 例如版本号控制，时间戳控制。</font></li>
+<li>悲观锁：比较适合<font color = red>写入</font>操作比较频繁的场景，如果出现大量的读取操作，每次读取的时候都会进行加锁，这样会增加大量的锁的开销，降低了系统的吞吐量。<font color = orange>例如数据库的行锁。</font></li>
+</ul>
+</li>
+</ol>
+<h3 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h3><ol>
+<li>定义：当一个线程尝试去获取某一把锁的时候，如果这个锁此时已经被别人获取(占用)，那么此线程就无法获取到这把锁，该线程将会等待，间隔一段时间后会再次尝试获取。这种采用循环加锁 -&gt; 等待的机制被称为自旋锁。</li>
+<li>优点：<ul>
+<li>非自旋锁在获取不到锁的时候会进入阻塞状态，从而进入内核态，当获取到锁的时候需要从内核态恢复，需要线程上下文切换。 （线程被阻塞后便进入内核（Linux）调度状态，这个会导致系统在用户态与内核态之间来回切换，严重影响锁的性能）</li>
+</ul>
+</li>
+<li>应用场景：<br> 在线程持有锁时间较短的情况下可以使用自旋锁节省上下文切换开销，但是对于长时间持有的锁不适宜设计为自旋，因为自选时CPU忙等，耗费大量算力。</li>
+<li>变种：自适应自旋锁，可以根据上一次线程持有锁的时间来确定自旋一段时间或者直接阻塞。</li>
+</ol>
+<h3 id="互斥锁和条件锁（条件变量）"><a href="#互斥锁和条件锁（条件变量）" class="headerlink" title="互斥锁和条件锁（条件变量）"></a>互斥锁和条件锁（条件变量）</h3><p>可以参考<a href="https://haoqinx.github.io/2021/09/02/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%9A%E7%BA%BF%E7%A8%8B/">线程同步</a>。</p>
+<h3 id="其他锁"><a href="#其他锁" class="headerlink" title="其他锁"></a>其他锁</h3><ul>
+<li>可重入锁和不可冲入锁：一个线程中多个流程能不能获取同一把锁，或者在递归情况下能不能避免死锁。</li>
+<li>多个线程竞争时要不要排队？排队称为公平锁，先尝试插队，若失败再排队称为非公平锁。</li>
+<li>轻量级锁和重量级锁（待研究）</li>
+</ul>
+
       
     </div>
 
@@ -609,7 +713,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 02:00:34" itemprop="dateModified" datetime="2022-09-25T02:00:34+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -632,21 +736,51 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <ol>
+          <span id="more"></span>
+<ol>
 <li><p>BIOS启动</p>
 <ul>
 <li>上电自检，对设备的硬件进行一系列测试。</li>
 <li>初始化硬件设备。</li>
 <li>搜索一个操作系统来启动。</li>
-<li>找到一个有效的设备，就把第一个扇区的内容拷贝到RAM中，从物理地址0x00007c00开始的位置，跳转到这个地址上，开始执行刚才装载的代码。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/07/03/linux%E7%B3%BB%E7%BB%9F%E5%90%AF%E5%8A%A8%E5%85%A8%E8%BF%87%E7%A8%8B/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+<li>找到一个有效的设备，就把第一个扇区的内容拷贝到RAM中，从物理地址0x00007c00开始的位置，跳转到这个地址上，开始执行刚才装载的代码。</li>
+</ul>
+</li>
+<li><p>从磁盘启动linux</p>
+<ul>
+<li>引导装入程序叫做linux loader（LILO），调用BIOS过程显示loading信息。</li>
+<li>调用BIOS过程从磁盘装入内核映像的初始部分，即将内核映像的第一个512字节从地址0x00090000开始装入RAM，将setup代码从0x00092000装入RAM</li>
+<li>调用BIOS过程从磁盘装载其余的内核映像。</li>
+<li>调转到setup代码</li>
+</ul>
+</li>
+<li><p>执行setup函数</p>
+<ul>
+<li>初始化物理内存分布表</li>
+<li>初始化各种硬件设备</li>
+<li>建立IDT和GDT</li>
+<li>重新编写可编程中断控制器</li>
+<li>跳转到startup_32 汇编函数</li>
+</ul>
+</li>
+<li><p>startup_32函数</p>
+<ul>
+<li>初始化段寄存器和一个临时堆栈</li>
+<li>解压内核映像</li>
+<li>初始化内核页表</li>
+<li>为进程0创建内核态堆栈，把从BIOS获得的系统参数和从做系统的参数放入第一个页框中。</li>
+<li>填充GDTr和IDTr寄存器。</li>
+<li>跳转到start_kernel</li>
+</ul>
+</li>
+<li><p>start_kernel函数</p>
+<ul>
+<li>各种初始化（调度程序，内存管理，伙伴系统，软中断，系统日期和时间，slab分配器，CPU时钟速度）</li>
+<li>为进程1创建内核线程。</li>
+</ul>
+</li>
+</ol>
+
       
     </div>
 
@@ -696,7 +830,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:54:07" itemprop="dateModified" datetime="2022-09-25T01:54:07+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -719,7 +853,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="redis选择什么存储方式存储时间序列？"><a href="#redis选择什么存储方式存储时间序列？" class="headerlink" title="redis选择什么存储方式存储时间序列？"></a>redis选择什么存储方式存储时间序列？</h2><ul>
+          <span id="more"></span>
+<h2 id="redis选择什么存储方式存储时间序列？"><a href="#redis选择什么存储方式存储时间序列？" class="headerlink" title="redis选择什么存储方式存储时间序列？"></a>redis选择什么存储方式存储时间序列？</h2><ul>
 <li>使用场景：高并发写，低频率读。因此需要插入数据快，不能阻塞。</li>
 <li>Redis适用的结构：Hash、Sorted Set以及基于RedisTimesSeries的模块实现。</li>
 </ul>
@@ -788,7 +923,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:51:43" itemprop="dateModified" datetime="2022-09-25T01:51:43+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -811,7 +946,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <ol>
+          <span id="more"></span>
+<ol>
 <li>关于C++默认构造函数的一些误解</li>
 </ol>
 <ul>
@@ -886,7 +1022,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:51:29" itemprop="dateModified" datetime="2022-09-25T01:51:29+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -909,7 +1045,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/363775637">知乎</a></p>
+          <span id="more"></span>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/363775637">知乎</a></p>
 
       
     </div>
@@ -960,7 +1097,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:51:26" itemprop="dateModified" datetime="2022-09-25T01:51:26+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -983,8 +1120,128 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="尾递归"><a href="#尾递归" class="headerlink" title="尾递归"></a>尾递归</h3><p>什么是尾递归？<br><a href="">stackoverflow</a>上有一段很好的解释</p>
+          <span id="more"></span>
+<h3 id="尾递归"><a href="#尾递归" class="headerlink" title="尾递归"></a>尾递归</h3><p>什么是尾递归？<br><a href="">stackoverflow</a>上有一段很好的解释</p>
 <h3 id="编译器优化"><a href="#编译器优化" class="headerlink" title="编译器优化"></a>编译器优化</h3>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2020/10/26/C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%EF%BC%9A%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/10/26/C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%EF%BC%9A%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/" class="post-title-link" itemprop="url">C++对象模型：构造函数</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-26 00:00:00" itemprop="dateCreated datePublished" datetime="2020-10-26T00:00:00+08:00">2020-10-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:55:20" itemprop="dateModified" datetime="2022-09-25T01:55:20+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="编译器何时生成默认构造函数？"><a href="#编译器何时生成默认构造函数？" class="headerlink" title="编译器何时生成默认构造函数？"></a>编译器何时生成默认构造函数？</h3><p><font color = orange>编译器生成的构造函数只适用于编译器的正确性，类内的数据初始化不由编译器负责!</font></p>
+<ol>
+<li>如果一个class内部含有一个成员对象，并且这个对象有默认构造函数，那么编译器就会为这个class生成默认构造函数。</li>
+<li>此class继承自一个含有默认构造函数的基类。</li>
+<li>带有virtual function的Class或者继承了一个含有virtual fuction的父类。</li>
+<li>使用了虚继承的类。<br>存在两个误解：  </li>
+<li>任何class如果没有定义默认构造，编译器会生成。（错，编译器只会在需要的时候生成）</li>
+<li>编译器生成的默认构造会明确初始化。（错，编译器不会初始化成员变量，这是程序设计者的活！)</li>
+</ol>
+<h3 id="拷贝构造函数"><a href="#拷贝构造函数" class="headerlink" title="拷贝构造函数"></a>拷贝构造函数</h3><ol>
+<li><p>何时会用到拷贝构造？</p>
+<ul>
+<li>明确初始化</li>
+</ul>
+ <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">X</span>&#123;&#125;;</span><br><span class="line">X xx;</span><br><span class="line">X xxx = xx; <span class="comment">// 拷贝构造</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>函数值传递</li>
+</ul>
+ <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">X xx;</span><br><span class="line"><span class="built_in">func</span>(xx); <span class="comment">// 函数内部拷贝副本</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>函数内对象返回(此处在g++7.5版本中没有调用拷贝构造，直接返回了对象，属于编译优化)</li>
+</ul>
+ <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">X</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">X</span>()&#123;&#125;</span><br><span class="line">    <span class="built_in">X</span>(<span class="type">const</span> X&amp; x)&#123;</span><br><span class="line">        i = x.i;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;copy&quot;</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">X <span class="title">func</span><span class="params">()</span></span>&#123;</span><br><span class="line">    X xx;</span><br><span class="line">    xx.i = <span class="number">10</span>;</span><br><span class="line">    cout &lt;&lt; (<span class="type">int</span> *)&amp;xx &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> xx;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    X x = <span class="built_in">func</span>();</span><br><span class="line">    cout &lt;&lt; (<span class="type">int</span> *)&amp;x;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//0x7ffffe3b1284</span></span><br><span class="line"><span class="comment">//0x7ffffe3b1284</span></span><br></pre></td></tr></table></figure></li>
+<li><p>编译器什么时候为我们生成拷贝构造？<br><font color = orange> 决定一个拷贝构造是否被合成取决于class是否展现 bitwise copy semantics. 当展现了bitwise copy semantics，编译器不会合成默认拷贝构造。</font></p>
+</li>
+</ol>
+<ul>
+<li><p>什么时候不展现所谓逐位拷贝？</p>
+<ul>
+<li>class内部的member object有拷贝构造。</li>
+<li>class继承自一个具有拷贝构造的父类。</li>
+<li>class含有虚函数。</li>
+<li>class的继承链上有基类含有虚函数。</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>初始化列表</li>
+</ol>
+<ul>
+<li>使用初始化列表可以避免一次不必要的赋值拷贝</li>
+<li>记住初始化列表的初始化顺序是按照类内声明顺序就可以了，在初始化列表里如果某变量初始化依赖其他变量，在定义的时候记得调整先后顺序。</li>
+</ul>
+
       
     </div>
 
@@ -1070,7 +1327,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-count">137</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

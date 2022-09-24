@@ -188,7 +188,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:46:23" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:53:16" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -211,7 +211,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="buffer-pool-manager"><a href="#buffer-pool-manager" class="headerlink" title="buffer pool manager"></a>buffer pool manager</h2><pre><code>- buffer池组成
+          <span id="more"></span>
+<h2 id="buffer-pool-manager"><a href="#buffer-pool-manager" class="headerlink" title="buffer pool manager"></a>buffer pool manager</h2><pre><code>- buffer池组成
     - frame：缓冲池由frame组成，每次我们需要一个page，就吧这个page替换进frame
     - page table：用来记录page到buffer pool的映射关系
     - 其他元信息：脏页面（页面是否被修改），引用计数（页面被线程正在访问的计数）
@@ -238,72 +239,6 @@
 <h2 id="脏页面"><a href="#脏页面" class="headerlink" title="脏页面"></a>脏页面</h2><pre><code>- 页面有一个标识位，记录某次查询是否更改页面记录
 - 后台写入（background writing）：定时将脏页面写回，避免缓存池中大量脏页面
 </code></pre>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E4%BA%91%E8%AE%A1%E7%AE%97ACP/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/09/25/%E4%BA%91%E8%AE%A1%E7%AE%97ACP/" class="post-title-link" itemprop="url">Untitled</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-09-25 01:40:36" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <ul>
-<li>域名解析记录<ul>
-<li>A 记录：设置域名到 IP 的映射</li>
-<li>CNAME 记录：设置域名到域名的映射</li>
-<li>MX 记录：设置邮件服务器的映射</li>
-<li>NS 记录：设置子域名 DNS 服务器的映射</li>
-</ul>
-</li>
-</ul>
 
       
     </div>
@@ -354,7 +289,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:58:29" itemprop="dateModified" datetime="2022-09-25T01:58:29+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -377,7 +312,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h3><ul>
+          <span id="more"></span>
+<h3 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h3><ul>
 <li>概念：多个docker的集合，有一个pause容器，其他容器共享这个容器的网络栈和存储，这样多个应用可以实现本地访问其他应用。</li>
 <li>分类<ul>
 <li>自主式pod（不是被控制器管理的pod）</li>
@@ -385,14 +321,43 @@
 </ul>
 </li>
 </ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9Apod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E5%92%8C%E6%8E%A7%E5%88%B6%E5%99%A8/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+<h3 id="Pod控制器"><a href="#Pod控制器" class="headerlink" title="Pod控制器"></a>Pod控制器</h3><ul>
+<li>Replication Controller&#x2F; ReplicaSet &#x2F; Deployment</li>
+</ul>
+<p>RC保证容器应用的副本始终保持在用户定义的副本数，如果容器异常，自动创建新的pod替代，异常多出来的容器也会自动回收。  </p>
+<p>RS相比RC多了集合式的selector。  </p>
+<p>Deployment支持滚动更新。</p>
+<ul>
+<li>StatefullSet<br><a href="/images/k8s-5.png"></a></li>
+<li>DaemonSet<br><a href="/images/k8s-6.png"></a></li>
+</ul>
+<h3 id="pod网络通讯模式"><a href="#pod网络通讯模式" class="headerlink" title="pod网络通讯模式"></a>pod网络通讯模式</h3><ul>
+<li>同个pod多个容器之间：同过共享pause容器，使用lo回环网卡即可。</li>
+<li>pod之间：overlay network。</li>
+<li>pod与service之间：节点之间的iptable规则。</li>
+</ul>
+<p>下图展示了利用flann eld组件进行转发的原理图，flanneld可以使整个网络扁平化：<br><a href="/images/k8s-7.png"></a></p>
+<ol>
+<li>假如webapp2想要访问backend，怎么同过内网ip进行通信？</li>
+</ol>
+<ul>
+<li>首先webApp2发送数据到docker0</li>
+<li>docker0数据经过flannel0网桥转发</li>
+<li>flanneld存放有etcd的数据信息，会对数据包进行封装，如右图所示，首先写入目标主机mac地址，然后写入目标主机和本机的内网ip，通过udp协议传输到目标主机。</li>
+<li>目标flanneld接受到数据包，进行逆向解封</li>
+</ul>
+<p>Q：etcd想flannel提供了什么数据？<br>A：1.存储管理flannel可分配的ip地址段资源。2.flannel监控每个pod的实际地址，在内存中建立维护pod节点路由表。</p>
+<ol start="2">
+<li><p>pod到Service的网络<br>目前基于性能考虑。全部为LVS维护和转发。</p>
+</li>
+<li><p>pod到外网</p>
+</li>
+</ol>
+<p>pod向外网发送请求，查找路由表，转发数据包到宿主机网卡，宿主机网卡完成路由选择后，iptables执行masquerade，把源ip更改为宿主网卡的ip，然后向往往服务器发送请求。</p>
+<ol start="4">
+<li>外网访问pod：通过Service</li>
+</ol>
+
       
     </div>
 
@@ -442,7 +407,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:58:18" itemprop="dateModified" datetime="2022-09-25T01:58:18+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -465,7 +430,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="borg系统"><a href="#borg系统" class="headerlink" title="borg系统"></a>borg系统</h3><p><a href="/images/k8s-1.png"></a></p>
+          <span id="more"></span>
+<h3 id="borg系统"><a href="#borg系统" class="headerlink" title="borg系统"></a>borg系统</h3><p><a href="/images/k8s-1.png"></a></p>
 <p>Master节点为奇数，scheduler向paxos写入数据，然后borglet监听到右自己的消息，就会执行命令。</p>
 <h3 id="k8s架构"><a href="#k8s架构" class="headerlink" title="k8s架构"></a>k8s架构</h3><p><a href="/images/k8s-2.png"></a></p>
 <p>和borg一样，但是中间加了一个apiserver层，etcd约等于paxos。</p>
@@ -538,7 +504,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:58:24" itemprop="dateModified" datetime="2022-09-25T01:58:24+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -561,7 +527,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="集群资源分类"><a href="#集群资源分类" class="headerlink" title="集群资源分类"></a>集群资源分类</h3><ol>
+          <span id="more"></span>
+<h3 id="集群资源分类"><a href="#集群资源分类" class="headerlink" title="集群资源分类"></a>集群资源分类</h3><ol>
 <li>名称空间级别：默认为default</li>
 <li>集群级别：role</li>
 <li>元数据</li>
@@ -628,7 +595,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:51:49" itemprop="dateModified" datetime="2022-09-25T01:51:49+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -651,21 +618,103 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="海量日志找出现次数最多的记录"><a href="#海量日志找出现次数最多的记录" class="headerlink" title="海量日志找出现次数最多的记录"></a>海量日志找出现次数最多的记录</h2><ul>
+          <span id="more"></span>
+<h2 id="海量日志找出现次数最多的记录"><a href="#海量日志找出现次数最多的记录" class="headerlink" title="海量日志找出现次数最多的记录"></a>海量日志找出现次数最多的记录</h2><ul>
 <li>问题主要是记录不能全部载入到内存</li>
 </ul>
 <ol>
 <li>先把整个文件分割成若干个小文件，比如1000个小文件</li>
 <li>找出每个文件中出现次数最多的记录（输出1000个记录+频次）</li>
-<li>从每个文件出现最多的记录找出全局出现次数最多的记录（合并记录，找出最多的频次）
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/02/03/%E6%B5%B7%E9%87%8F%E6%95%B0%E6%8D%AE%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+<li>从每个文件出现最多的记录找出全局出现次数最多的记录（合并记录，找出最多的频次）</li>
+</ol>
+<h2 id="统计topk个热门记录"><a href="#统计topk个热门记录" class="headerlink" title="统计topk个热门记录"></a>统计topk个热门记录</h2><ol>
+<li>依次遍历这些文件，通过hash映射，将每个文件的每条数据映射到新构造的多个小文件中（设生成了nn个小文件）；</li>
+<li>依次统计每个小文件中出现次数最多的kk条数据，构成hash表，hash表中每个键值对的形式为 dataItem: count；</li>
+<li>利用堆排序，依次遍历这些hash表，在n∗kn∗k条数据中，找出count值最大的kk个；</li>
+</ol>
+<h2 id="海量数据查重"><a href="#海量数据查重" class="headerlink" title="海量数据查重"></a>海量数据查重</h2><ol>
+<li>遍历A中的所有数据，通过hash映射将他们分布存储在n个小文件中，记为{a1,a2,…,an}；</li>
+<li>遍历B中的所有数据，通过hash映射将他们分布存储在n个小文件中，记为{b1,b2,…,bn}；</li>
+<li>根据hash函数性质可知，A和B中的相同数据一定被映射到序号相同的小文件，所以我们依次比较{ai,bi}即可；</li>
+<li>如果问题更进一步，要求返回重复次数最多的k条数据，则可以将对比小文件找到的数据存入hash表，键为数据，值为该数据出现的次数。再用大小为k的堆，排序找出即可。</li>
+</ol>
+<h2 id="海量数据频率排序"><a href="#海量数据频率排序" class="headerlink" title="海量数据频率排序"></a>海量数据频率排序</h2><ol>
+<li>顺序读文件，利用hash将相同的记录输出到相同的文件里。</li>
+<li>每个小文件统计频率， 排序</li>
+<li>归并排序(外部排序)<br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/codeMedita/p/7425291.html">外部排序参考</a></li>
+</ol>
+<h2 id="int数字重复数据查找（BitMap）"><a href="#int数字重复数据查找（BitMap）" class="headerlink" title="int数字重复数据查找（BitMap）"></a>int数字重复数据查找（BitMap）</h2><ul>
+<li>例如：在2.5亿个整数里找不重复的整数</li>
+</ul>
+<ol>
+<li>使用2bitmap算法， 00 代表没有出现，01表示出现一次，10表示出现多次。</li>
+<li>计算下：整数4B，最多表示2^32个数，每个数用2个bit表示，就是2^32 * 2 &#x2F; 2^30 &#x2F; 8 &#x3D; 1G，注意那个8是B转bit。</li>
+<li>然后扫描这2.5亿个整数，查看Bitmap中相对应位，如果是00变01，01变10，10保持不变。所描完事后，查看bitmap，把对应位是01的整数输出即可。</li>
+</ol>
+<ul>
+<li>再例如：给40亿个不重复的unsigned int的整数，没排过序的，然后再给一个数，如何快速判断这个数是否在那40亿个数当中？<br>原理和上面一样，使用1bitmap就可以了</li>
+</ul>
+<h2 id="超大文件求交集"><a href="#超大文件求交集" class="headerlink" title="超大文件求交集"></a>超大文件求交集</h2><ul>
+<li>现有两个各有20亿行的文件，每一行都只有一个数字，求这两个文件的交集。</li>
+</ul>
+<ol>
+<li>开辟128M的int数组。<ul>
+<li>int最大表示4G，也就是需要2^32bit位， 一个int是4B，也就是32bit，因此需要2^32&#x2F;2^5&#x3D;2^27bit。</li>
+</ul>
+</li>
+<li>对于每个数，先 &#x2F;32，确定在数组哪个位置，然后%32，确定在该int的哪一位，然后对这个数组取并集即可统计</li>
+<li>如果存在正负数的话，设置正负两个bitmap然后分别求交集即可</li>
+</ol>
+<h2 id="超大文件字符串重复"><a href="#超大文件字符串重复" class="headerlink" title="超大文件字符串重复"></a>超大文件字符串重复</h2><ul>
+<li>给定a、b两个文件，各存放50亿个url，每个url各占64字节，内存限制是4G，让你找出a、b文件共同的url</li>
+</ul>
+<ol>
+<li><p>分文件： </p>
+<ul>
+<li><p>遍历文件a，对每个url求取hash(url)%1000，然后根据所取得的值将url分别存储到1000个小文件（记为a0,a1,…,a999）中。这样每个小文件的大约为300M。 </p>
+</li>
+<li><p>遍历文件b，采取和a相同的方式将url分别存储到1000小文件（记为b0,b1,…,b999）。这样处理后，所有可能相同的url都在对应的小文件（a0vsb0,a1vsb1,…,a999vsb999）中，不对应的小文件不可能有相同的url。然后我们只要求出1000对小文件中相同的url即可。</p>
+</li>
+</ul>
+</li>
+<li><p>逐个找重复：</p>
+</li>
+</ol>
+<ul>
+<li>求每对小文件中相同的url： 把其中一个小文件的url存储到hash_set中，然后遍历另一个小文件的每个url，看其是否在刚才构建的hash_set中，如果是，那么就是共同的url，存到文件里面就可以了。</li>
+</ul>
+<h2 id="海量数据中位数（计数排序）"><a href="#海量数据中位数（计数排序）" class="headerlink" title="海量数据中位数（计数排序）"></a>海量数据中位数（计数排序）</h2><ul>
+<li><p>只有2G内存的pc机，在一个存有10G个整数的文件，从中找到中位数，写一个算法。</p>
+</li>
+<li><p>分析：<br>  明显是一道工程性很强的题目，和一般的查找中位数的题目有几点不同。</p>
+</li>
+</ul>
+<ol>
+<li><p>原数据不能读进内存，不然可以用快速选择，如果数的范围合适的话还可以考虑桶排序或者计数排序，但这里假设是32位整数，仍有4G种取值，需要一个16G大小的数组来计数。</p>
+</li>
+<li><p>若看成从N个数中找出第K大的数，如果K个数可以读进内存，可以利用最小或最大堆，但这里K&#x3D;N&#x2F;2,有5G个数，仍然不能读进内存。</p>
+</li>
+</ol>
+<ul>
+<li>解法一：桶排序</li>
+</ul>
+<ol>
+<li><p>读一遍10G个整数，把整数映射到256M个区段中，用一个64位无符号整数给每个相应区段记数。</p>
+</li>
+<li><p>从前到后对每一段的计数累加，当累加的和超过5G时停止，找出这个区段（即累加停止时达到的区段，也是中位数所在的区段）的数值范围，设为[a，a+15]，同时记录累加到前一个区段的总数，设为m。然后，释放除这个区段占用的内存。</p>
+</li>
+<li><p>再读一遍10G个整数，把在[a，a+15]内的每个值计数，即有16个计数。</p>
+</li>
+<li><p>对新的计数依次累加，每次的和设为n，当m+n的值超过5G时停止，此时的这个计数所对应的数就是中位数。</p>
+</li>
+</ol>
+<ul>
+<li><p>解法二：二进制分文件</p>
+<p>  假设10亿个数字保存在一个大文件中，依次读一部分文件到内存(不超过内存的限制：1GB)，将每个数字用二进制表示，比较二进制的最高位(第32位)，如果数字的最高位为0，则将这个数字写入 file_0文件中；如果最高位为 1，则将该数字写入file_1文件中。【这里的最高位类似于快速排序中的枢轴元素】</p>
+<p>  从而将10亿个数字分成了两个文件（几乎是二分的），假设 file_0文件中有 6亿 个数字，file_1文件中有 4亿 个数字。那么中位数就在 file_0 文件中，并且是 file_0 文件中所有数字排序之后的第 1亿 个数字。</p>
+</li>
+</ul>
+
       
     </div>
 
@@ -715,7 +764,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:51:39" itemprop="dateModified" datetime="2022-09-25T01:51:39+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -738,16 +787,41 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="瓶颈"><a href="#瓶颈" class="headerlink" title="瓶颈"></a>瓶颈</h3><ol>
+          <span id="more"></span>
+<h3 id="瓶颈"><a href="#瓶颈" class="headerlink" title="瓶颈"></a>瓶颈</h3><ol>
 <li><p>cpu<br>测试的时候cpu占用率70% 多核情况下占用60%</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/02/01/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%93%B6%E9%A2%88%E5%9C%A8%E5%93%AA%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+</li>
+<li><p>带宽<br>网络占用率</p>
+</li>
+<li><p>磁盘</p>
+</li>
+</ol>
+<p>如果存在LOG日志写磁盘或者从磁盘映射文件，可能会存在瓶颈</p>
+<ol start="4">
+<li>处理流程</li>
+</ol>
+<p>epoll ET&#x2F;LT模式</p>
+<ol start="5">
+<li>进程能打开最大文件描述符数</li>
+</ol>
+<p>同时能打开65535个文件，但是一般情况下不可能并行打开这么多</p>
+<ol start="6">
+<li>数据库连接等等软件层面的限制</li>
+</ol>
+<h3 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h3><ol>
+<li><p>cpu<br>尽量利用多核优势，或者利用分布式进行负载均衡</p>
+</li>
+<li><p>带宽<br>增加网络带宽</p>
+</li>
+<li><p>磁盘<br>使用SSD，尽量减少磁盘IO次数</p>
+</li>
+<li><p>处理流程<br>各有优势，使用LT不容易犯错，使用ET模式更高效</p>
+</li>
+<li><p>进程能打开最大文件描述符</p>
+</li>
+</ol>
+<p>这个一般不是瓶颈，在长链接情况下可能会成为瓶颈。</p>
+
       
     </div>
 
@@ -797,7 +871,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:51:21" itemprop="dateModified" datetime="2022-09-25T01:51:21+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -820,7 +894,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="输入一个url后到出现页面发生什么？"><a href="#输入一个url后到出现页面发生什么？" class="headerlink" title="输入一个url后到出现页面发生什么？"></a>输入一个url后到出现页面发生什么？</h2><ol>
+          <span id="more"></span>
+<h2 id="输入一个url后到出现页面发生什么？"><a href="#输入一个url后到出现页面发生什么？" class="headerlink" title="输入一个url后到出现页面发生什么？"></a>输入一个url后到出现页面发生什么？</h2><ol>
 <li><p>DNS解析</p>
 <ul>
 <li>查询浏览器缓存</li>
@@ -922,7 +997,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:54:11" itemprop="dateModified" datetime="2022-09-25T01:54:11+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -945,7 +1020,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="网络编程中协程的作用"><a href="#网络编程中协程的作用" class="headerlink" title="网络编程中协程的作用"></a>网络编程中协程的作用</h3><p>记住一句话即可:协程可以实现同步的编程方式，性能和多线程异步回调相似。</p>
+          <span id="more"></span>
+<h3 id="网络编程中协程的作用"><a href="#网络编程中协程的作用" class="headerlink" title="网络编程中协程的作用"></a>网络编程中协程的作用</h3><p>记住一句话即可:协程可以实现同步的编程方式，性能和多线程异步回调相似。</p>
 <h3 id="实现上下文切换的方式"><a href="#实现上下文切换的方式" class="headerlink" title="实现上下文切换的方式"></a>实现上下文切换的方式</h3><ol>
 <li>setjump&#x2F;long jump</li>
 <li>ucontext</li>
@@ -1019,7 +1095,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 02:00:42" itemprop="dateModified" datetime="2022-09-25T02:00:42+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1042,7 +1118,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="整体原理"><a href="#整体原理" class="headerlink" title="整体原理"></a>整体原理</h2><ol>
+          <span id="more"></span>
+<h2 id="整体原理"><a href="#整体原理" class="headerlink" title="整体原理"></a>整体原理</h2><ol>
 <li>整体框架</li>
 </ol>
 <ul>
@@ -1062,6 +1139,81 @@
 <li>内存使用：内存主要用于ndpi的配置和字符串的自动匹配，无自定义配置的情况下，使用210K内存，使用自定义配置时，会上升25KB。</li>
 <li>记录每个流的信息，每个流大约占用1KB。</li>
 </ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/01/12/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/01/12/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/" class="post-title-link" itemprop="url">文件描述符</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-01-12 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-12T00:00:00+08:00">2022-01-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:53:59" itemprop="dateModified" datetime="2022-09-25T01:53:59+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq327767852/article/details/50830192"></a><br>主要搞清文件描述符和系统级文件表和inode的对应关系</p>
 
       
     </div>
@@ -1148,7 +1300,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-count">137</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

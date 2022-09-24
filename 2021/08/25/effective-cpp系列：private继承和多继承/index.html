@@ -21,16 +21,16 @@
     var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="private继承 如果class之间的继承关系是private，那么编译器不会自动将一个子类对象转换为父类对象。  使用private继承的所有父类成员，在子类中都是private类型的，即使成员在父类中是public或者protected的。  private意味着只有实现部分被继承，接口部分应略去。  private继承可以造成empty base最优化，如下代码">
+  <meta name="description" content="private继承 如果class之间的继承关系是private，那么编译器不会自动将一个子类对象转换为父类对象。  使用private继承的所有父类成员，在子类中都是private类型的，即使成员在父类中是public或者protected的。  private意味着只有实现部分被继承，接口部分应略去。  private继承可以造成empty base最优化，如下代码     12345678">
 <meta property="og:type" content="article">
 <meta property="og:title" content="effective-c++系列：private继承和多继承">
 <meta property="og:url" content="http://haoqinx.github.io/2021/08/25/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9Aprivate%E7%BB%A7%E6%89%BF%E5%92%8C%E5%A4%9A%E7%BB%A7%E6%89%BF/index.html">
 <meta property="og:site_name" content="面向自由编程">
-<meta property="og:description" content="private继承 如果class之间的继承关系是private，那么编译器不会自动将一个子类对象转换为父类对象。  使用private继承的所有父类成员，在子类中都是private类型的，即使成员在父类中是public或者protected的。  private意味着只有实现部分被继承，接口部分应略去。  private继承可以造成empty base最优化，如下代码">
+<meta property="og:description" content="private继承 如果class之间的继承关系是private，那么编译器不会自动将一个子类对象转换为父类对象。  使用private继承的所有父类成员，在子类中都是private类型的，即使成员在父类中是public或者protected的。  private意味着只有实现部分被继承，接口部分应略去。  private继承可以造成empty base最优化，如下代码     12345678">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://haoqinx.github.io/images/002.png">
 <meta property="article:published_time" content="2021-08-24T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-09-24T17:34:19.108Z">
+<meta property="article:modified_time" content="2022-09-24T17:57:21.606Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="effective c++">
@@ -200,7 +200,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:57:21" itemprop="dateModified" datetime="2022-09-25T01:57:21+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -223,14 +223,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="private继承"><a href="#private继承" class="headerlink" title="private继承"></a>private继承</h3><ul>
+        <span id="more"></span>
+<h3 id="private继承"><a href="#private继承" class="headerlink" title="private继承"></a>private继承</h3><ul>
 <li><p>如果class之间的继承关系是private，那么编译器不会自动将一个子类对象转换为父类对象。</p>
 </li>
 <li><p>使用private继承的所有父类成员，在子类中都是private类型的，即使成员在父类中是public或者protected的。</p>
 </li>
 <li><p>private意味着只有实现部分被继承，接口部分应略去。</p>
 </li>
-<li><p>private继承可以造成empty base最优化，如下代码<span id="more"></span>  </p>
+<li><p>private继承可以造成empty base最优化，如下代码  </p>
   <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Empty</span>&#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">    <span class="type">int</span> x;</span><br><span class="line">    Empty e;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">cout &lt;&lt; <span class="built_in">sizeof</span>(A);<span class="comment">//8</span></span><br><span class="line">cout &lt;&lt; <span class="built_in">sizeof</span>(<span class="type">int</span>);<span class="comment">//4</span></span><br><span class="line">```  </span><br><span class="line">使用私有继承可以避免</span><br><span class="line">```cpp</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> : <span class="keyword">private</span> Empty&#123;</span><br><span class="line">    <span class="type">int</span> x;</span><br><span class="line">&#125;</span><br><span class="line">cout &lt;&lt; <span class="built_in">sizeof</span>(A);<span class="comment">//4</span></span><br><span class="line">cout &lt;&lt; <span class="built_in">sizeof</span>(<span class="type">int</span>);<span class="comment">//4</span></span><br></pre></td></tr></table></figure></li>
 </ul>
 <h3 id="多重继承"><a href="#多重继承" class="headerlink" title="多重继承"></a>多重继承</h3><ul>
@@ -353,7 +354,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-count">137</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

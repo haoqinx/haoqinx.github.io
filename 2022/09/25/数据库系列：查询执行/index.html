@@ -21,17 +21,17 @@
     var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="并行处理模型 Process per DBMS Worker 使用一个进程处理一个请求 使用共享内存对全局数据进行共享，如buffer pool，不用将相同的page加载两次 单进程奔溃不会导致整个系统崩溃   Process Pool 使用进程池来处理请求 对cpu缓存不友好 减少了创建销毁进程开销   Thread per DBMS Worker 单进程多线程 线程崩溃导致进程崩溃 上下文切换">
+  <meta name="description" content="并行处理模型 Process per DBMS Worker 使用一个进程处理一个请求 使用共享内存对全局数据进行共享，如buffer pool，不用将相同的page加载两次 单进程奔溃不会导致整个系统崩溃   Process Pool 使用进程池来处理请求 对cpu缓存不友好 减少了创建销毁进程开销   Thread per DBMS Worker 单进程多线程 线程崩溃导致进程崩溃 上下文切">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CMU-cs445:查询执行">
 <meta property="og:url" content="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C/index.html">
 <meta property="og:site_name" content="面向自由编程">
-<meta property="og:description" content="并行处理模型 Process per DBMS Worker 使用一个进程处理一个请求 使用共享内存对全局数据进行共享，如buffer pool，不用将相同的page加载两次 单进程奔溃不会导致整个系统崩溃   Process Pool 使用进程池来处理请求 对cpu缓存不友好 减少了创建销毁进程开销   Thread per DBMS Worker 单进程多线程 线程崩溃导致进程崩溃 上下文切换">
+<meta property="og:description" content="并行处理模型 Process per DBMS Worker 使用一个进程处理一个请求 使用共享内存对全局数据进行共享，如buffer pool，不用将相同的page加载两次 单进程奔溃不会导致整个系统崩溃   Process Pool 使用进程池来处理请求 对cpu缓存不友好 减少了创建销毁进程开销   Thread per DBMS Worker 单进程多线程 线程崩溃导致进程崩溃 上下文切">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://haoqinx.github.io/images/db-24.png">
 <meta property="og:image" content="http://haoqinx.github.io/images/db-25.png">
 <meta property="article:published_time" content="2022-09-24T17:40:36.325Z">
-<meta property="article:modified_time" content="2022-09-24T17:49:38.138Z">
+<meta property="article:modified_time" content="2022-09-24T17:53:01.932Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="数据库">
 <meta name="twitter:card" content="summary">
@@ -194,7 +194,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:49:38" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:53:01" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -217,7 +217,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="并行处理模型"><a href="#并行处理模型" class="headerlink" title="并行处理模型"></a>并行处理模型</h3><ul>
+        <span id="more"></span>
+<h3 id="并行处理模型"><a href="#并行处理模型" class="headerlink" title="并行处理模型"></a>并行处理模型</h3><ul>
 <li>Process per DBMS Worker<ul>
 <li>使用一个进程处理一个请求</li>
 <li>使用共享内存对全局数据进行共享，如buffer pool，不用将相同的page加载两次</li>
@@ -361,7 +362,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-count">137</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

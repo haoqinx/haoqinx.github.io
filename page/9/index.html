@@ -163,87 +163,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Alist/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Alist/" class="post-title-link" itemprop="url">c++STL系列：list</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="G2-9源码结构"><a href="#G2-9源码结构" class="headerlink" title="G2.9源码结构"></a>G2.9源码结构</h3><p><img src="/images/list-1.png"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Alist/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Aset/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -275,7 +194,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:56:41" itemprop="dateModified" datetime="2022-09-25T01:56:41+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -298,15 +217,18 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p>set&#x2F;multiset以红黑树为底层结构，因此元素在插入过程中自动排序。<br><img src="/images/rbtree.png"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Aset/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <span id="more"></span>
+<h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p>set&#x2F;multiset以红黑树为底层结构，因此元素在插入过程中自动排序。<br><img src="/images/rbtree.png"></p>
+<p><img src="/images/rbtree-2.png"></p>
+<p>STL中的红黑树为了方便实现，创建了一个假的header，并使用指针指向真正的红黑树根节点。<br>红黑树使用三个数据记录树结构：</p>
+<ul>
+<li>node_count:节点的个数。</li>
+<li>header：指向真正的根节点。</li>
+<li>key_compare:仿函数，如果节点中存储的是一个类&#x2F;对象，使用仿函数来比较元素大小。</li>
+</ul>
+<p>红黑树提供遍历操作和iterator。遍历得到的是元素排列的中序遍历，也就是从大到小或者从小到大的顺序。</p>
+<h3 id="set-x2F-multiset"><a href="#set-x2F-multiset" class="headerlink" title="set&#x2F;multiset"></a>set&#x2F;multiset</h3><p>set的迭代器无法改变元素值（因为需要保持红黑树的性质），实现的技巧是使用const迭代器。</p>
+
       
     </div>
 
@@ -356,7 +278,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:56:50" itemprop="dateModified" datetime="2022-09-25T01:56:50+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -379,15 +301,39 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="底层结构：hashtable"><a href="#底层结构：hashtable" class="headerlink" title="底层结构：hashtable"></a>底层结构：hashtable</h3><p>unordered set&#x2F;map底层是以hashtable为数据结构，任何对象&#x2F;类都可以折射成一个数值（类对象都是由数据构成，对数据进行一些操作然后hash就可以转化成一个数值）.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Aunordered-set%E3%80%81map/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <span id="more"></span>
+<h3 id="底层结构：hashtable"><a href="#底层结构：hashtable" class="headerlink" title="底层结构：hashtable"></a>底层结构：hashtable</h3><p>unordered set&#x2F;map底层是以hashtable为数据结构，任何对象&#x2F;类都可以折射成一个数值（类对象都是由数据构成，对数据进行一些操作然后hash就可以转化成一个数值）.</p>
+<p><img src="/images/hashtable-1.png"></p>
+<p>在空间充足的情况下如果hashtable足够长，那么冲突可以大大降低，但是现实中常常采用的是hashtable长度为M，N为数据量，只要M&gt;N即可。<br>常见的hashtable解决碰撞的方法：<br>例如，已知哈希表长度m&#x3D;11，哈希函数为：H（key）&#x3D; key % 11，则H（47）&#x3D;3，H（26）&#x3D;4，H（60）&#x3D;5，假设下一个关键字为69，则H（69）&#x3D;3，与47冲突。</p>
+<ul>
+<li><p>线性探测再散列<br>  dii&#x3D;1，2，3，…，m-1<br>  这种方法的特点是：冲突发生时，顺序查看表中下一单元，直到找出一个空单元或查遍全表。  </p>
+<p>  如果用线性探测再散列处理冲突，下一个哈希地址为H1&#x3D;（3 + 1）% 11 &#x3D; 4，仍然冲突，再找下一个哈希地址为H2&#x3D;（3 + 2）% 11 &#x3D; 5，还是冲突，继续找下一个哈希地址为H3&#x3D;（3 + 3）% 11 &#x3D; 6，此时不再冲突，将69填入5号单元。</p>
+</li>
+<li><p>二次探测再散列</p>
+<p>  di&#x3D;12，-12，22，-22，…，k2，-k2 ( k&lt;&#x3D;m&#x2F;2 )</p>
+<p>  这种方法的特点是：冲突发生时，在表的左右进行跳跃式探测，比较灵活。  </p>
+<p>  如果用二次探测再散列处理冲突，下一个哈希地址为H1&#x3D;（3 + 12）% 11 &#x3D; 4，仍然冲突，再找下一个哈希地址为H2&#x3D;（3 - 12）% 11 &#x3D; 2，此时不再冲突，将69填入2号单元。</p>
+</li>
+<li><p>伪随机探测再散列</p>
+<p>  di&#x3D;伪随机数序列。</p>
+<p>  具体实现时，应建立一个伪随机数发生器，（如i&#x3D;(i+p) % m），并给定一个随机数做起点。</p>
+<p>  如果用伪随机探测再散列处理冲突，且伪随机数序列为：2，5，9，……..，则下一个哈希地址为H1&#x3D;（3 + 2）% 11 &#x3D; 5，仍然冲突，再找下一个哈希地址为H2&#x3D;（3 + 5）% 11 &#x3D; 8，此时不再冲突，将69填入8号单元。</p>
+</li>
+<li><p>再hash<br>  这种方法是同时构造多个不同的哈希函数：</p>
+<p>  Hi&#x3D;RH1（key） i&#x3D;1，2，…，k</p>
+<p>  当哈希地址Hi&#x3D;RH1（key）发生冲突时，再计算Hi&#x3D;RH2（key）……，直到冲突不再产生。这种方法不易产生聚集，但增加了计算时间。</p>
+</li>
+<li><p>链地址法<br>  这种方法的基本思想是将所有哈希地址为i的元素构成一个称为同义词链的单链表，并将单链表的头指针存在哈希表的第i个单元中，因而查找、插入和删除主要在同义词链中进行。链地址法适用于经常进行插入和删除的情况。</p>
+</li>
+<li><p>建立公共溢出区<br>  这种方法的基本思想是：将哈希表分为基本表和溢出表两部分，凡是和基本表发生冲突的元素，一律填入溢出表。</p>
+</li>
+</ul>
+<p>STL的hashtable使用链表法，<font color=orange>hashtable的容量大小预先定义好，是一串素数串。当数据量超过hashtable容量之后，会进行rehashing操作，将所有数据再次进行hash操作，放入新的hashtable。</font></p>
+<h3 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h3><p>hashtable的迭代器也是利用指针，来模拟顺序的遍历操作。<br><img src="/images/hashtable-2.png"></p>
+<p>迭代器中存储的是当前node的指针和当前hash bucket的编号。</p>
+<h3 id="hash操作"><a href="#hash操作" class="headerlink" title="hash操作"></a>hash操作</h3><p>STL中使用模板的特化和泛化来hash。STL对内置类型进行了特化，如果需要对自定义类型进行hash，需要写对应的模板函数特化版本。<br><img src="/images/hash-3.png"></p>
+<p><img src="/images/hash-4.png"></p>
+
       
     </div>
 
@@ -437,7 +383,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:56:45" itemprop="dateModified" datetime="2022-09-25T01:56:45+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -460,15 +406,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="stack"><a href="#stack" class="headerlink" title="stack"></a>stack</h3><p><img src="/images/stack-1.png"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Astack&&queue/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <span id="more"></span>
+<h3 id="stack"><a href="#stack" class="headerlink" title="stack"></a>stack</h3><p><img src="/images/stack-1.png"></p>
+<p>通过模板、has-a方式使用deque，按照栈的特点封装deque的方法。</p>
+<h3 id="queue"><a href="#queue" class="headerlink" title="queue"></a>queue</h3><p><img src="/images/queue-1.png"></p>
+<p>和stack一样，通过模板、has-a方式使用deque，按照队列的特点封装deque的方法。</p>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><p><img src="/images/stack-2.png"></p>
+<p><img src="/images/stack-3.png"></p>
+
       
     </div>
 
@@ -518,7 +463,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:56:23" itemprop="dateModified" datetime="2022-09-25T01:56:23+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -541,19 +486,25 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="为什么set-x2F-map底层用红黑树而不用AVL树？"><a href="#为什么set-x2F-map底层用红黑树而不用AVL树？" class="headerlink" title="为什么set&#x2F;map底层用红黑树而不用AVL树？"></a>为什么set&#x2F;map底层用红黑树而不用AVL树？</h3><p>红黑树与AVL比较：</p>
+          <span id="more"></span>
+<h3 id="为什么set-x2F-map底层用红黑树而不用AVL树？"><a href="#为什么set-x2F-map底层用红黑树而不用AVL树？" class="headerlink" title="为什么set&#x2F;map底层用红黑树而不用AVL树？"></a>为什么set&#x2F;map底层用红黑树而不用AVL树？</h3><p>红黑树与AVL比较：</p>
 <ol>
 <li><p>AVL是严格平衡的，频繁的插入和删除，会引起频繁的rebalance，导致效率降低；红黑树是弱平衡的，算是一种折中，插入最多旋转2次，删除最多旋转3次。</p>
 </li>
 <li><p>红黑树在查找、插入删除的复杂度都是O(logn)，且性能稳定，所以STL里面很多结构包括map底层都是使用的红黑树。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+</li>
+</ol>
+<h3 id="STL的sort内部使用什么排序算法？"><a href="#STL的sort内部使用什么排序算法？" class="headerlink" title="STL的sort内部使用什么排序算法？"></a>STL的sort内部使用什么排序算法？</h3><p>直接上源码</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">_RanIt</span>, <span class="keyword">class</span> <span class="title class_">_Pr</span>&gt;</span><br><span class="line"><span class="function">_CONSTEXPR20 <span class="type">void</span> <span class="title">sort</span><span class="params">(<span class="type">const</span> _RanIt _First, <span class="type">const</span> _RanIt _Last, _Pr _Pred)</span> </span>&#123; <span class="comment">// order [_First, _Last), using _Pred</span></span><br><span class="line">    _Adl_verify_range(_First, _Last);</span><br><span class="line">    <span class="type">const</span> <span class="keyword">auto</span> _UFirst = _Get_unwrapped(_First);</span><br><span class="line">    <span class="type">const</span> <span class="keyword">auto</span> _ULast  = _Get_unwrapped(_Last);</span><br><span class="line">    _Sort_unchecked(_UFirst, _ULast, _ULast - _UFirst, _Pass_fn(_Pred));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这是一个入口函数，先检查迭代器的区间是不是合法的，然后进入主要的排序函数,下面看排序函数是怎么工作的。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">_RanIt</span>, <span class="keyword">class</span> <span class="title class_">_Pr</span>&gt;</span><br><span class="line">_CONSTEXPR20 <span class="type">void</span> _Sort_unchecked(_RanIt _First, _RanIt _Last, _Iter_diff_t&lt;_RanIt&gt; _Ideal, _Pr _Pred) &#123;</span><br><span class="line">    <span class="comment">// order [_First, _Last), using _Pred</span></span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="keyword">if</span> (_Last - _First &lt;= _ISORT_MAX) &#123; <span class="comment">// small</span></span><br><span class="line">            _Insertion_sort_unchecked(_First, _Last, _Pred);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (_Ideal &lt;= <span class="number">0</span>) &#123; <span class="comment">// heap sort if too many divisions</span></span><br><span class="line">            _Make_heap_unchecked(_First, _Last, _Pred);</span><br><span class="line">            _Sort_heap_unchecked(_First, _Last, _Pred);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// divide and conquer by quicksort</span></span><br><span class="line">        <span class="keyword">auto</span> _Mid = _Partition_by_median_guess_unchecked(_First, _Last, _Pred);</span><br><span class="line"></span><br><span class="line">        _Ideal = (_Ideal &gt;&gt; <span class="number">1</span>) + (_Ideal &gt;&gt; <span class="number">2</span>); <span class="comment">// allow 1.5 log2(N) divisions</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (_Mid.first - _First &lt; _Last - _Mid.second) &#123; <span class="comment">// loop on second half</span></span><br><span class="line">            _Sort_unchecked(_First, _Mid.first, _Ideal, _Pred);</span><br><span class="line">            _First = _Mid.second;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; <span class="comment">// loop on first half</span></span><br><span class="line">            _Sort_unchecked(_Mid.second, _Last, _Ideal, _Pred);</span><br><span class="line">            _Last = _Mid.first;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这是一个递归函数，注释可以说是非常清晰了。</p>
+<ol>
+<li>首先检查要排序的长度，如果长度小于_ISORT_MAX &#x3D; 32，那么直接进行插入排序。主要的想法是<br>在32这么一个量级上序列基本上已经有序，使用插入排序效率已经相对较高。</li>
+<li>然后检查递归深度，没进行一次递归，就对_Ideal进行 _Ideal &#x3D; (_Ideal &gt;&gt; 1) + (_Ideal &gt;&gt; 2)操作，<br>主要的作用是防止快排递归深度过深导致爆栈。</li>
+<li>如果深度可以接受，进行快排。</li>
+</ol>
+
       
     </div>
 
@@ -603,7 +554,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:55:38" itemprop="dateModified" datetime="2022-09-25T01:55:38+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -626,15 +577,21 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="VC6-x2F-BC5-x2F-G2-9-std-allocator"><a href="#VC6-x2F-BC5-x2F-G2-9-std-allocator" class="headerlink" title="VC6&#x2F;BC5&#x2F;G2.9(std::allocator)"></a>VC6&#x2F;BC5&#x2F;G2.9(std::allocator)</h3><p><img src="/images/vc6.png"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9AG2.9%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <span id="more"></span>
+<h3 id="VC6-x2F-BC5-x2F-G2-9-std-allocator"><a href="#VC6-x2F-BC5-x2F-G2-9-std-allocator" class="headerlink" title="VC6&#x2F;BC5&#x2F;G2.9(std::allocator)"></a>VC6&#x2F;BC5&#x2F;G2.9(std::allocator)</h3><p><img src="/images/vc6.png"><br><img src="/images/bc5.png"></p>
+<p><img src="/images/g2.9.png"></p>
+<p>上面这三个分配器都是基于::operator new和::operator delete实现的，并没有特殊优化.</p>
+<h3 id="G2-9-pool-alloc"><a href="#G2-9-pool-alloc" class="headerlink" title="G2.9 __pool_alloc"></a>G2.9 __pool_alloc</h3><p>G2.9版本实现了一个内存池，用来减小malloc开销和cookie。先说一下cookie：</p>
+<p><img src="/images/cookie.png"></p>
+<p>当我们每次向系统申请一块内存（堆）时，系统会在我们申请的内存两头放两个cookie，32位机器是4字节，64位机器是8个字节。<br>cookie的主要用途是：</p>
+<ul>
+<li>标记申请内存块的大小，如果能想起来我们在delete的时候并没有给定指针的大小，那么系统是怎么知道那块内存有多大呢？通过指针前移4&#x2F;8个字节，读取内存里的结果就可以。</li>
+<li>标记此块内存是否被占用，上图中00000041的1就是用来标记此后的0x40内存是被占用的，如果想在此继续申请就会被拒绝。</li>
+</ul>
+<p>其实malloc本身是一个内存池，我们申请是很快的，主要就是要避免cookie开销，试想一下，如果我们的对象中只有一个指针，那么cookie就占据了66%的空间，这是我们所不能容忍的。</p>
+<p>下面通过侯捷大佬的课件回忆一下内存池的整个分配过程。<br><img src="/images/g4.9-1.png"><br>上图是总览，这个freelist总共有16个区块，每个区块负责不同大小的内存分配。区块之间的递增大小为8。<br><img src="/images/g4.9-1-1.png"><br>这里的freelist使用了嵌入式指针技术（embedding pointer）当区块没有被分配出去之前，结构体内存放的是指向下一区块的指针，分配时将指针值赋给下一个区块的指针，然后将对象信息直接覆盖掉指针。<br><img src="/images/g4.9-1-2.png"><br>这是对应代码中的定义。<br>下面来看一下具体的分配过程。在图中解释的十分清楚.<br><img src="/images/g4.9-2.png"><br><img src="/images/g4.9-3.png"><br><img src="/images/g4.9-4.png"><br><img src="/images/g4.9-5.png"><br><img src="/images/g4.9-6.png"><br><img src="/images/g4.9-7.png"><br><img src="/images/g4.9-8.png"><br><img src="/images/g4.9-9.png"><br><img src="/images/g4.9-10.png"><br><img src="/images/g4.9-11.png"><br><img src="/images/g4.9-12.png"><br><img src="/images/g4.9-13.png"><br><img src="/images/g4.9-14.png"></p>
+<p>G2.9的内存管理通过自由链表构造一个内存池来控制，这样做会大量减少cookie的产生，但是也存在问题，比如最后一页，其实在我们的内存中还有大量剩余内存，但是对一个大区块，我们却无法合并区块来提供给用户，并且随着申请数量的加大，我们的累积量会越来愈大，严重情况下会影响其他进程合理的内存要求。<br>关于追加量为什么是累计量的4倍，一个可能的解释是编写此内存分配的程序员认为或者根据经验，内存申请会越来越多，我们提前准备好足够多的内存能避免这种情况。</p>
+
       
     </div>
 
@@ -684,7 +641,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:56:53" itemprop="dateModified" datetime="2022-09-25T01:56:53+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -707,15 +664,12 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="G2-9版本"><a href="#G2-9版本" class="headerlink" title="G2.9版本"></a>G2.9版本</h3><p><img src="/images/vec-1.png"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Avector/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <span id="more"></span>
+<h3 id="G2-9版本"><a href="#G2-9版本" class="headerlink" title="G2.9版本"></a>G2.9版本</h3><p><img src="/images/vec-1.png"></p>
+<p>上图展示了vector的底层结构和G2.9版本的源码。<br>vector实际上是一个数组，在vector中有一些变量记录了数组的信息，start记录了起始位置，finish记录数据结束位置。<br><font color=orange>当vector用完capacity的空间，vector会两倍增长,增长的方式是寻找一个两倍大小的空间，然后将所有元素拷贝过去。</font><br>对中间和开始处进行添加删除元素操作需要移动内存,如果你的元素是结构或是类,那么移动的同时还会进行拷贝构造和析构操作，所以性能不高 （最好将结构或类的指针放入vector中，而不是结构或类本身，这样可以避免移动时的构造与析构)。</p>
+<h3 id="G4-9版本"><a href="#G4-9版本" class="headerlink" title="G4.9版本"></a>G4.9版本</h3><p><img src="/images/vec-2.png"></p>
+<p>和list一样，G4.9定义和实现分离，遵循面向对象的设计方式。其他并无特别之处。</p>
+
       
     </div>
 
@@ -765,7 +719,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:55:56" itemprop="dateModified" datetime="2022-09-25T01:55:56+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -788,18 +742,50 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="VC6-malloc"><a href="#VC6-malloc" class="headerlink" title="VC6 malloc"></a>VC6 malloc</h3><ul>
+          <span id="more"></span>
+<h3 id="VC6-malloc"><a href="#VC6-malloc" class="headerlink" title="VC6 malloc"></a>VC6 malloc</h3><ul>
 <li>想要搞清malloc是怎么运作的，就必须直到malloc首次分配内存进行了哪些操作，进行了哪些初始化。</li>
 <li>很多人认为我们执行一个cpp文件是从main函数开始，但是实际上系统还会为我们进行一系列的环境准备，这些动作通常包含了环境变量的获取、堆的初始化等等一系列操作，在不同环境下可能略有不同。在cpp文件执行之后也存在很多善后操作，这个会在c++前世今生详细介绍。</li>
-<li>下面来看一下vc环境下会有哪些动作。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9AVC6-malloc/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+<li>下面来看一下vc环境下会有哪些动作.</li>
+</ul>
+<p><img src="/images/vcinit.png"></p>
+<ul>
+<li>这是c++执行程序的函数栈信息，main函数竟然只排在第8步。我们需要重点关注的函数是_heap_alloc_dbg()，这是真正要分配内存的函数，在这之前，我们先来看看需要分配的内存内容和大小是什么吧。</li>
+</ul>
+<p><img src="/images/vc6-sbh.png"></p>
+<p>上述这个结构体用来做内存分配中表头的信息，包含了一个32bit的高位，32bits的低位，32bits的commit信息，一个指针和一个tagRegion结构体指针。<br><img src="/images/vc6-all.png"><br>ioinit函数调用malloc_crt函数，这个函数是一个宏定义，在debug模式最终调用_malloc_dbg函数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_malloc_dbg(s,_CRT_BLOCK,_THISFILE,__LINE__);</span><br></pre></td></tr></table></figure>
+<p><img src="/images/vc6-mbh.png"></p>
+<p>上图展示了首次分配内存的大小和初始化情况。在第一次内存分配中，我们首先将nSize作为函数参数传入（256 bytes），_CrtMemBlockHeader是debug模式下要附加到数据上的内容。总的来看数据前面加上了调试信息，对应_CrtMemBlockHeader的每一个字段，数据后面添加了nNoManLandSize &#x3D; 4B，然后经过对齐之后，我们需要blocksize大小的内存。最后调用heap_alloc_base这个函数申请内存。</p>
+<p><img src="/images/vc6-mbh-2.png"></p>
+<p>在_heap_alloc_dbg()这个函数中，申请完了内存，我们就对它进行初始化，最后返回数据。注意到这是一个双向链表，有指向下一个区块和前一个区块的指针。在debug模式下，数据块两端附着了很多信息，用于变量的跟踪和调试。数据块两端填充的值在图中可以看出，是规定好的值。</p>
+<p><img src="/images/vc6-1.png"><br>获得内存大小之后，判断需要的内存大小是否比阈值小，如果是，就使用sbh处理，否则向操作系统申请Heap内存。为什么阈值是3F8(1016字节)?因为1016+上下两个cookie之后是1024。</p>
+<p><img src="/images/vc6-3.png"><br>在_heap_alloc_base内接下来进行内存对齐。</p>
+<p><img src="/images/vc6-4.png"><br>上面展示了管理1MB内存的数据结构。还记得开始的时候Head的设计吗，它有两个指针，其中一个就是tagRegion指针，这个结构体的内容如右图所示，首先是一个整数，接下来是一个64位char数组，接下来是32个32bits的高位数组和低位数组共32组64bits，用来管理这块内存中某个区块有或没有。最后是32个<br>tagGroup结构体。<br>group结构体里面首先是一个整数，接下来有64个listhead，而listhead里面存放双向指针。<br><img src="/images/vc6-5.png"></p>
+<p>然后我们尝试从整体把握。我们要用一个group管理1MB的空间，然后需要new出来这么多结构管理，这些结构本身占16K左右空间。我们的想法是用这32个group来管理1MB的32个片段(32K)。32K对应8页。SBH将这8个page使用双向链表串联起来，然后挂在最后一个listhead上。<br>我们并不是在一开始就申请1MB的空间，而是申请32K，如果用完了再申请，因此开始时我们拥有的是虚地址。</p>
+<p><img src="/images/vc6-6.png"><br>接下来详细看这个结构，在每个page都有一段保留空间（字节对齐），保留空间下面和最下面都有一段0xffffffff（-1）用来做空间合并，即page内合并不影响page之间的合并。4080记录空间空间的大小。<br><img src="/images/vc6-7.png"></p>
+<p>下面我们来整理一下之前的所有动作。如上图所示：</p>
+<ul>
+<li>首先在crt的ioinit.c函数的81行申请了100h大小的内存，经过debug header，内存对齐之后大小为130h。</li>
+<li>初始化64个header，每个header用来管理1MB的内存，此时调用的是VirtualAlloc函数，注意MEM_RESERVE表示保留这些内存（现在是虚地址）。</li>
+<li>然后初始化region，每个region有32个group，每个group有64个双向指针，这些指针用来管理不同大小的block。</li>
+<li>然后真正向操作系统申请32k的内存，注意此时的参数是MEM_COMMIT，然后将此块内存分为8个page，使用双向链表连接在一起，挂在group 0 的最后一个双向指针上（group的64个指针管理不同大小区块，从8B到1024B，如果大于1024B就挂在最后一个链表上，由于8K&gt;1K,因此挂在最后）。</li>
+<li>更改region的32 x 64bits数组的第0号链表的最后一位为1，表示已经有内存块挂载。</li>
+<li>然后在page1切割内存，4080-130, 改变cookie大小（ec0），下面表示切割的内存，cookie为131,1表示被占用，130表示大小。</li>
+</ul>
+<p>回头我们来看一下region的32 x 64bits数组有什么用，哈哈，现在理解了，用来表示32个group的64个链表是否被占用，可以用来快速查询。<br>那group的int有什么用呢？用来记录分配的次数，如果分配一次就加一，回收一次就减一，便于记录是否回收完备。</p>
+<p>当我们第二次分配的时候，先在region里面查找最近的大于目标大小的group的list，然后在上面切割即可。</p>
+<h3 id="VC6-free"><a href="#VC6-free" class="headerlink" title="VC6 free"></a>VC6 free</h3><p>归还的时候会发生什么呢？请看下图。</p>
+<p><img src="/images/vc6-8.png"></p>
+<p>假如我们在第15次需要归还240h大小的内存。我们需要做的是：</p>
+<ul>
+<li>更改group 的count值：14-&gt;13.</li>
+<li>先计算240h&#x2F;16 &#x3D; 36，我们应该将这块内存归还到第36（index &#x3D; 35）链表中。</li>
+<li>然后利用嵌入式指针技术，将35号链表的指针和这块内存的指针构成一个链表。</li>
+</ul>
+<p>那么当有相邻的内存被释放，应该怎么合并呢，请看：<br><img src="/images/vc6-9.png"></p>
+<p>这里就凸显了上下cookie的作用，在free 300这块空间，首先往下看（指针+*指针+4）看下方是否为空，再往上看（指针 - 4）是否为空，如果为空，合并成一个大区间。</p>
+
       
     </div>
 
@@ -849,7 +835,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:55:33" itemprop="dateModified" datetime="2022-09-25T01:55:33+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -872,15 +858,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="allocate"><a href="#allocate" class="headerlink" title="allocate"></a>allocate</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Tp&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">bitmap_allocator</span>: <span class="keyword">private</span> free_list&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function">pointer </span></span><br><span class="line"><span class="function">    <span class="title">allocate</span><span class="params">(size_type __n)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (__n &gt; <span class="keyword">this</span>-&gt;<span class="built_in">max_size</span>())</span><br><span class="line">            std::__throw_bad_alloc();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (__builtin_expect(__n == <span class="number">1</span>, <span class="literal">true</span>))<span class="comment">//如果数量为1个,则调用_M_allocate_single_object()</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>-&gt;_M_allocate_single_object();</span><br><span class="line">        <span class="keyword">else</span>	<span class="comment">//如果申请的数量大于1个,则直接调用operator new</span></span><br><span class="line">        &#123; </span><br><span class="line">            <span class="type">const</span> size_type __b = __n * <span class="built_in">sizeof</span>(value_type);</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">reinterpret_cast</span>&lt;pointer&gt;(::<span class="keyword">operator</span> <span class="built_in">new</span>(__b));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Abitmap-allocator/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <span id="more"></span>
+<h3 id="allocate"><a href="#allocate" class="headerlink" title="allocate"></a>allocate</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Tp&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">bitmap_allocator</span>: <span class="keyword">private</span> free_list&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function">pointer </span></span><br><span class="line"><span class="function">    <span class="title">allocate</span><span class="params">(size_type __n)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (__n &gt; <span class="keyword">this</span>-&gt;<span class="built_in">max_size</span>())</span><br><span class="line">            std::__throw_bad_alloc();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (__builtin_expect(__n == <span class="number">1</span>, <span class="literal">true</span>))<span class="comment">//如果数量为1个,则调用_M_allocate_single_object()</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>-&gt;_M_allocate_single_object();</span><br><span class="line">        <span class="keyword">else</span>	<span class="comment">//如果申请的数量大于1个,则直接调用operator new</span></span><br><span class="line">        &#123; </span><br><span class="line">            <span class="type">const</span> size_type __b = __n * <span class="built_in">sizeof</span>(value_type);</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">reinterpret_cast</span>&lt;pointer&gt;(::<span class="keyword">operator</span> <span class="built_in">new</span>(__b));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>图解形式：</p>
+<p><img src="/images/bitmap-1.png"></p>
+<p>首先是64个blocks，每一个对象占用1个block，64个blocks加上bitmap[1]和bitmap[0]再加上use count形成一个super block。即super block &#x3D; 64<em>block + bitmap[1] + bitmap[0];<br>use count表示64个block已经用了几个，如果某一个block被使用了，那么bitmap[1]和bitmap[0]相应bit的数字变为0，bitmap[1]和bitmap[0]均为unsigned int，所以两个加起来共有64比特，也就可以表示64个block的使用情况。<br>在最前面还有一个数字，表示super block的大小，上图中的大小为：4(use count)+4 * 2(bitmap)+64</em>8(单个对象大小)&#x3D;524字节。单个对象的大小只能是8的倍数。</p>
+<p>多个super block是通过__mini_vector管理的，__mini_vector是一个vector，但不是标准库的vector，而是自己写的一个vector，但它与标准库中的vector拥有同样的特性——两倍增长。也就是说，如果64个block用光了，下次会分配128个block。<br>__mini_vector有3个用来管理内存的成员变量。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span>:</span><br><span class="line">pointer _M_start;</span><br><span class="line">pointer _M_finish;</span><br><span class="line">pointer _M_end_of_storage;</span><br></pre></td></tr></table></figure>
+<p>当64个block用光时，会再申请128个，然后bitmap变为4个。和vector的成长一样，会申请另一块内存然后将现在的搬过去：</p>
+<p><img src="/images/bitmap-2.png"><br><img src="/images/bitmap-3.png"><br>每次都这样成长两倍，2的幂次方级别地成长。</p>
+<h3 id="deallocate"><a href="#deallocate" class="headerlink" title="deallocate"></a>deallocate</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Tp&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">bitmap_allocator</span>: <span class="keyword">private</span> free_list&#123;</span><br><span class="line">    <span class="function"><span class="type">void</span> </span></span><br><span class="line"><span class="function">    <span class="title">deallocate</span><span class="params">(pointer __p, size_type __n)</span> <span class="title">throw</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (__builtin_expect(__p != <span class="number">0</span>, <span class="literal">true</span>))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (__builtin_expect(__n == <span class="number">1</span>, <span class="literal">true</span>))<span class="comment">//如果数量为1,则调用_M_deallocate_single_object()释放</span></span><br><span class="line">                <span class="keyword">this</span>-&gt;_M_deallocate_single_object(__p);</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                ::<span class="keyword">operator</span> <span class="built_in">delete</span>(__p);<span class="comment">//数量大于1使用operator delete释放</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/bitmap-4.png"><br><img src="/images/bitmap-6.png"></p>
+
       
     </div>
 
@@ -930,7 +920,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:56:04" itemprop="dateModified" datetime="2022-09-25T01:56:04+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -953,15 +943,124 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h3><p>参考<a target="_blank" rel="noopener" href="https://github.com/liu-jianhao/Cpp-Design-Patterns">github</a><br><a target="_blank" rel="noopener" href="https://refactoringguru.cn/design-patterns/">这个网站</a>也非常生动。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <span id="more"></span>
+<h3 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h3><p>参考<a target="_blank" rel="noopener" href="https://github.com/liu-jianhao/Cpp-Design-Patterns">github</a><br><a target="_blank" rel="noopener" href="https://refactoringguru.cn/design-patterns/">这个网站</a>也非常生动。</p>
+<h3 id="C-实现"><a href="#C-实现" class="headerlink" title="C++实现"></a>C++实现</h3><ol>
+<li><p>非线程安全(懒汉)</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Single</span>&#123;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="type">static</span> Single* instance;</span><br><span class="line">    <span class="built_in">Single</span>()&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">static</span> Single* <span class="title">getInstance</span><span class="params">()</span></span>;</span><br><span class="line">    Single&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Single&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    <span class="built_in">Single</span>(<span class="type">const</span> Single&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function">Single* <span class="title">Single::getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(instance == <span class="literal">nullptr</span>)&#123;</span><br><span class="line">        instance = <span class="keyword">new</span> <span class="built_in">Single</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> instance;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func1</span><span class="params">()</span></span>&#123;</span><br><span class="line">    std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">milliseconds</span>(<span class="number">1000</span>));</span><br><span class="line">    Single* singleton = Single::<span class="built_in">getInstance</span>();</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;f1 addr:&quot;</span> &lt;&lt; singleton &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func2</span><span class="params">()</span></span>&#123;</span><br><span class="line">    std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">milliseconds</span>(<span class="number">1000</span>));</span><br><span class="line">    Single* singleton = Single::<span class="built_in">getInstance</span>();</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;f2 addr:&quot;</span> &lt;&lt; singleton &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line">Single* Single::instance = <span class="literal">nullptr</span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="function">std::thread <span class="title">t1</span><span class="params">(func1)</span></span>;</span><br><span class="line">    <span class="function">std::thread <span class="title">t2</span><span class="params">(func2)</span></span>;</span><br><span class="line">    t1.<span class="built_in">join</span>();</span><br><span class="line">    t2.<span class="built_in">join</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>线程安全懒汉(获得单例的时候加锁)</p>
+</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Single</span>&#123;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="type">static</span> Single* instance;</span><br><span class="line">    <span class="type">static</span> std::mutex s_mutex;</span><br><span class="line">    <span class="built_in">Single</span>()&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">static</span> Single* <span class="title">getInstance</span><span class="params">()</span></span>;</span><br><span class="line">    Single&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Single&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    <span class="built_in">Single</span>(<span class="type">const</span> Single&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function">Single* <span class="title">Single::getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="function">std::unique_lock&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(s_mutex)</span></span>;</span><br><span class="line">    <span class="keyword">if</span>(instance == <span class="literal">nullptr</span>)&#123;</span><br><span class="line">        instance = <span class="keyword">new</span> <span class="built_in">Single</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> instance;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func1</span><span class="params">()</span></span>&#123;</span><br><span class="line">    std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">milliseconds</span>(<span class="number">1000</span>));</span><br><span class="line">    Single* singleton = Single::<span class="built_in">getInstance</span>();</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;f1 addr:&quot;</span> &lt;&lt; singleton &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func2</span><span class="params">()</span></span>&#123;</span><br><span class="line">    std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">milliseconds</span>(<span class="number">1000</span>));</span><br><span class="line">    Single* singleton = Single::<span class="built_in">getInstance</span>();</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;f2 addr:&quot;</span> &lt;&lt; singleton &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line">std::mutex Single::s_mutex;</span><br><span class="line">Single* Single::instance = <span class="literal">nullptr</span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="function">std::thread <span class="title">t1</span><span class="params">(func1)</span></span>;</span><br><span class="line">    <span class="function">std::thread <span class="title">t2</span><span class="params">(func2)</span></span>;</span><br><span class="line">    t1.<span class="built_in">join</span>();</span><br><span class="line">    t2.<span class="built_in">join</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>线程安全懒汉（c++11局部静态变量）<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Single</span>&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">Single</span>() = <span class="keyword">default</span>;</span><br><span class="line">    ~<span class="built_in">Single</span>()&#123;&#125;</span><br><span class="line">    <span class="built_in">Single</span>(<span class="type">const</span> Single&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    <span class="built_in">Single</span>(Single&amp;&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    Single&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Single&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    Single&amp; <span class="keyword">operator</span>=(Single&amp;&amp;) = <span class="keyword">delete</span>;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">static</span> Single* <span class="title">getInstance</span><span class="params">()</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function">Single* <span class="title">Single::getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">static</span> Single instance &#123;&#125;;</span><br><span class="line">    <span class="keyword">return</span> &amp;instance;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func1</span><span class="params">()</span></span>&#123;</span><br><span class="line">    std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">milliseconds</span>(<span class="number">1000</span>));</span><br><span class="line">    Single* singleton = Single::<span class="built_in">getInstance</span>();</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;f1 addr:&quot;</span> &lt;&lt; singleton &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func2</span><span class="params">()</span></span>&#123;</span><br><span class="line">    std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">milliseconds</span>(<span class="number">1000</span>));</span><br><span class="line">    Single* singleton = Single::<span class="built_in">getInstance</span>();</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;f2 addr:&quot;</span> &lt;&lt; singleton &lt;&lt; std::endl;</span><br><span class="line">&#125; </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="function">std::thread <span class="title">t1</span><span class="params">(func1)</span></span>;</span><br><span class="line">    <span class="function">std::thread <span class="title">t2</span><span class="params">(func2)</span></span>;</span><br><span class="line">    t1.<span class="built_in">join</span>();</span><br><span class="line">    t2.<span class="built_in">join</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>线程安全饿汉式(直接显式申请)<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Single</span>&#123;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="type">static</span> Single* instance;</span><br><span class="line">    <span class="built_in">Single</span>()&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">static</span> Single* <span class="title">getInstance</span><span class="params">()</span></span>;</span><br><span class="line">    Single&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Single&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    <span class="built_in">Single</span>(<span class="type">const</span> Single&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">freeSingle</span><span class="params">()</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function">Single* <span class="title">Single::getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(instance == <span class="literal">nullptr</span>)&#123;</span><br><span class="line">        instance = <span class="keyword">new</span> <span class="built_in">Single</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> instance;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Single::freeSingle</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="built_in">delete</span>(instance);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func1</span><span class="params">()</span></span>&#123;</span><br><span class="line">    std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">milliseconds</span>(<span class="number">1000</span>));</span><br><span class="line">    Single* singleton = Single::<span class="built_in">getInstance</span>();</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;f1 addr:&quot;</span> &lt;&lt; singleton &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func2</span><span class="params">()</span></span>&#123;</span><br><span class="line">    std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">milliseconds</span>(<span class="number">1000</span>));</span><br><span class="line">    Single* singleton = Single::<span class="built_in">getInstance</span>();</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;f2 addr:&quot;</span> &lt;&lt; singleton &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line">Single* Single::instance = <span class="keyword">new</span> <span class="built_in">Single</span>();</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="function">std::thread <span class="title">t1</span><span class="params">(func1)</span></span>;</span><br><span class="line">    <span class="function">std::thread <span class="title">t2</span><span class="params">(func2)</span></span>;</span><br><span class="line">    t1.<span class="built_in">join</span>();</span><br><span class="line">    t2.<span class="built_in">join</span>();</span><br><span class="line">    Single::<span class="built_in">freeSingle</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>懒汉式是以时间换空间，适应于访问量较小时；推荐使用内部静态变量的懒汉单例，代码量少</li>
+<li>饿汉式是以空间换时间，适应于访问量较大时，或者线程比较多的的情况</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9AGDT%EF%BC%8CLDT/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9AGDT%EF%BC%8CLDT/" class="post-title-link" itemprop="url">Linux内核系列：GDT/LDT</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-08-29 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-29T00:00:00+08:00">2021-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:59:32" itemprop="dateModified" datetime="2022-09-25T01:59:32+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="GDT"><a href="#GDT" class="headerlink" title="GDT"></a>GDT</h3><p>现代的内存寻址方式一般采用保护模式。    </p>
+<p>Q:什么是保护模式？   </p>
+<p>A:保护模式是相对于实模式来说的，以前的内存寻址是直接由cpu段寄存器+偏移量去实存里面找物理地址，例如在8086的时候，也就是16位cpu的时候，CPU配备了4个16位段寄存器（CS代码段寄存器、DS数据段寄存器、SS堆栈段寄存器和ES附加寄存器），这种方式非常粗暴并且很容易出错，一旦用户修改段寄存的值，就可以随意访问所有内存，到了80296芯片，大家意识到直接访问实地址的危害，intel将寻址方式改为保护模式，保护模式下段寄存器不在指向一个真实地址，而是变成指向一个数据结构的指针，这个数据结构就是<font color = orange>Segment Descripter Table</font>，又根据这个段描述符表里存的是全局共同的，还是进程私有的，分成了全局段描述符表（GDT）和局部段描述符表（LDT）。  </p>
+<p>需要了解的：</p>
+<ol>
+<li>GDT里面具体存的是什么？  <ul>
+<li>段描述符，8字节，包括系统级段描述符和LDT段描述符</li>
+</ul>
+</li>
+<li>我们访问内存的具体步骤是什么？<ul>
+<li>从GDTR中拿到GDT在内存中的基地址，得到段描述符表；</li>
+<li>从段选择子中的前13位得到我们要访问的段的描述符在段描述符表中的索引（需要考虑TI和RPL）；</li>
+<li>从段描述符表中得到要访问的段的描述符，得到其基地址；</li>
+<li>基地址加上偏移地址就是我们要访问的内存地址（当然这里是虚拟地址，接下来是分页机制的功能将虚地址转换为物理地址，不做讨论。）</li>
+</ul>
+</li>
+</ol>
+<p>具体参考<a target="_blank" rel="noopener" href="https://www.cnblogs.com/chenwb89/p/operating_system_003.html">这篇文章</a>，<a target="_blank" rel="noopener" href="http://www.techbulo.com/708.html">这篇文章</a></p>
+<h3 id="LDT"><a href="#LDT" class="headerlink" title="LDT"></a>LDT</h3><p>LDT和GDT差不多，区别有：</p>
+<ol>
+<li>LDT是局部段描述符表，GDT是全局段描述符表</li>
+<li>LDT可以有多个，GDT只能有一个</li>
+<li>LDT本身是个段，需要在GDT中保存其自身描述符</li>
+<li>GDT用来描述系统的分段，LDT用来描述某个任务的分段情况，由于每个进程都有自己的一套程序段、数据段、堆栈段，有了局部描述符表则可以将每个进程的程序段、数据段、堆栈段封装在一起，只要改变LDTR就可以实现对不同进程的段进行访问。</li>
+</ol>
+
       
     </div>
 
@@ -1047,7 +1146,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-count">137</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
