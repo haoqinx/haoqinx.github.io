@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="星海横流 岁月成碑">
@@ -102,6 +102,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -136,11 +137,38 @@
     <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
 
 </div>
     </header>
@@ -595,7 +623,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:51:49" itemprop="dateModified" datetime="2022-09-25T01:51:49+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 02:05:46" itemprop="dateModified" datetime="2022-09-25T02:05:46+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -618,103 +646,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h2 id="海量日志找出现次数最多的记录"><a href="#海量日志找出现次数最多的记录" class="headerlink" title="海量日志找出现次数最多的记录"></a>海量日志找出现次数最多的记录</h2><ul>
-<li>问题主要是记录不能全部载入到内存</li>
-</ul>
-<ol>
-<li>先把整个文件分割成若干个小文件，比如1000个小文件</li>
-<li>找出每个文件中出现次数最多的记录（输出1000个记录+频次）</li>
-<li>从每个文件出现最多的记录找出全局出现次数最多的记录（合并记录，找出最多的频次）</li>
-</ol>
-<h2 id="统计topk个热门记录"><a href="#统计topk个热门记录" class="headerlink" title="统计topk个热门记录"></a>统计topk个热门记录</h2><ol>
-<li>依次遍历这些文件，通过hash映射，将每个文件的每条数据映射到新构造的多个小文件中（设生成了nn个小文件）；</li>
-<li>依次统计每个小文件中出现次数最多的kk条数据，构成hash表，hash表中每个键值对的形式为 dataItem: count；</li>
-<li>利用堆排序，依次遍历这些hash表，在n∗kn∗k条数据中，找出count值最大的kk个；</li>
-</ol>
-<h2 id="海量数据查重"><a href="#海量数据查重" class="headerlink" title="海量数据查重"></a>海量数据查重</h2><ol>
-<li>遍历A中的所有数据，通过hash映射将他们分布存储在n个小文件中，记为{a1,a2,…,an}；</li>
-<li>遍历B中的所有数据，通过hash映射将他们分布存储在n个小文件中，记为{b1,b2,…,bn}；</li>
-<li>根据hash函数性质可知，A和B中的相同数据一定被映射到序号相同的小文件，所以我们依次比较{ai,bi}即可；</li>
-<li>如果问题更进一步，要求返回重复次数最多的k条数据，则可以将对比小文件找到的数据存入hash表，键为数据，值为该数据出现的次数。再用大小为k的堆，排序找出即可。</li>
-</ol>
-<h2 id="海量数据频率排序"><a href="#海量数据频率排序" class="headerlink" title="海量数据频率排序"></a>海量数据频率排序</h2><ol>
-<li>顺序读文件，利用hash将相同的记录输出到相同的文件里。</li>
-<li>每个小文件统计频率， 排序</li>
-<li>归并排序(外部排序)<br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/codeMedita/p/7425291.html">外部排序参考</a></li>
-</ol>
-<h2 id="int数字重复数据查找（BitMap）"><a href="#int数字重复数据查找（BitMap）" class="headerlink" title="int数字重复数据查找（BitMap）"></a>int数字重复数据查找（BitMap）</h2><ul>
-<li>例如：在2.5亿个整数里找不重复的整数</li>
-</ul>
-<ol>
-<li>使用2bitmap算法， 00 代表没有出现，01表示出现一次，10表示出现多次。</li>
-<li>计算下：整数4B，最多表示2^32个数，每个数用2个bit表示，就是2^32 * 2 &#x2F; 2^30 &#x2F; 8 &#x3D; 1G，注意那个8是B转bit。</li>
-<li>然后扫描这2.5亿个整数，查看Bitmap中相对应位，如果是00变01，01变10，10保持不变。所描完事后，查看bitmap，把对应位是01的整数输出即可。</li>
-</ol>
-<ul>
-<li>再例如：给40亿个不重复的unsigned int的整数，没排过序的，然后再给一个数，如何快速判断这个数是否在那40亿个数当中？<br>原理和上面一样，使用1bitmap就可以了</li>
-</ul>
-<h2 id="超大文件求交集"><a href="#超大文件求交集" class="headerlink" title="超大文件求交集"></a>超大文件求交集</h2><ul>
-<li>现有两个各有20亿行的文件，每一行都只有一个数字，求这两个文件的交集。</li>
-</ul>
-<ol>
-<li>开辟128M的int数组。<ul>
-<li>int最大表示4G，也就是需要2^32bit位， 一个int是4B，也就是32bit，因此需要2^32&#x2F;2^5&#x3D;2^27bit。</li>
-</ul>
-</li>
-<li>对于每个数，先 &#x2F;32，确定在数组哪个位置，然后%32，确定在该int的哪一位，然后对这个数组取并集即可统计</li>
-<li>如果存在正负数的话，设置正负两个bitmap然后分别求交集即可</li>
-</ol>
-<h2 id="超大文件字符串重复"><a href="#超大文件字符串重复" class="headerlink" title="超大文件字符串重复"></a>超大文件字符串重复</h2><ul>
-<li>给定a、b两个文件，各存放50亿个url，每个url各占64字节，内存限制是4G，让你找出a、b文件共同的url</li>
-</ul>
-<ol>
-<li><p>分文件： </p>
-<ul>
-<li><p>遍历文件a，对每个url求取hash(url)%1000，然后根据所取得的值将url分别存储到1000个小文件（记为a0,a1,…,a999）中。这样每个小文件的大约为300M。 </p>
-</li>
-<li><p>遍历文件b，采取和a相同的方式将url分别存储到1000小文件（记为b0,b1,…,b999）。这样处理后，所有可能相同的url都在对应的小文件（a0vsb0,a1vsb1,…,a999vsb999）中，不对应的小文件不可能有相同的url。然后我们只要求出1000对小文件中相同的url即可。</p>
-</li>
-</ul>
-</li>
-<li><p>逐个找重复：</p>
-</li>
-</ol>
-<ul>
-<li>求每对小文件中相同的url： 把其中一个小文件的url存储到hash_set中，然后遍历另一个小文件的每个url，看其是否在刚才构建的hash_set中，如果是，那么就是共同的url，存到文件里面就可以了。</li>
-</ul>
-<h2 id="海量数据中位数（计数排序）"><a href="#海量数据中位数（计数排序）" class="headerlink" title="海量数据中位数（计数排序）"></a>海量数据中位数（计数排序）</h2><ul>
-<li><p>只有2G内存的pc机，在一个存有10G个整数的文件，从中找到中位数，写一个算法。</p>
-</li>
-<li><p>分析：<br>  明显是一道工程性很强的题目，和一般的查找中位数的题目有几点不同。</p>
-</li>
-</ul>
-<ol>
-<li><p>原数据不能读进内存，不然可以用快速选择，如果数的范围合适的话还可以考虑桶排序或者计数排序，但这里假设是32位整数，仍有4G种取值，需要一个16G大小的数组来计数。</p>
-</li>
-<li><p>若看成从N个数中找出第K大的数，如果K个数可以读进内存，可以利用最小或最大堆，但这里K&#x3D;N&#x2F;2,有5G个数，仍然不能读进内存。</p>
-</li>
-</ol>
-<ul>
-<li>解法一：桶排序</li>
-</ul>
-<ol>
-<li><p>读一遍10G个整数，把整数映射到256M个区段中，用一个64位无符号整数给每个相应区段记数。</p>
-</li>
-<li><p>从前到后对每一段的计数累加，当累加的和超过5G时停止，找出这个区段（即累加停止时达到的区段，也是中位数所在的区段）的数值范围，设为[a，a+15]，同时记录累加到前一个区段的总数，设为m。然后，释放除这个区段占用的内存。</p>
-</li>
-<li><p>再读一遍10G个整数，把在[a，a+15]内的每个值计数，即有16个计数。</p>
-</li>
-<li><p>对新的计数依次累加，每次的和设为n，当m+n的值超过5G时停止，此时的这个计数所对应的数就是中位数。</p>
-</li>
-</ol>
-<ul>
-<li><p>解法二：二进制分文件</p>
-<p>  假设10亿个数字保存在一个大文件中，依次读一部分文件到内存(不超过内存的限制：1GB)，将每个数字用二进制表示，比较二进制的最高位(第32位)，如果数字的最高位为0，则将这个数字写入 file_0文件中；如果最高位为 1，则将该数字写入file_1文件中。【这里的最高位类似于快速排序中的枢轴元素】</p>
-<p>  从而将10亿个数字分成了两个文件（几乎是二分的），假设 file_0文件中有 6亿 个数字，file_1文件中有 4亿 个数字。那么中位数就在 file_0 文件中，并且是 file_0 文件中所有数字排序之后的第 1亿 个数字。</p>
-</li>
-</ul>
-
+          <p>海量数据问题</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/02/03/%E6%B5%B7%E9%87%8F%E6%95%B0%E6%8D%AE%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -764,7 +704,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:51:39" itemprop="dateModified" datetime="2022-09-25T01:51:39+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 02:05:31" itemprop="dateModified" datetime="2022-09-25T02:05:31+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -787,41 +727,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h3 id="瓶颈"><a href="#瓶颈" class="headerlink" title="瓶颈"></a>瓶颈</h3><ol>
-<li><p>cpu<br>测试的时候cpu占用率70% 多核情况下占用60%</p>
-</li>
-<li><p>带宽<br>网络占用率</p>
-</li>
-<li><p>磁盘</p>
-</li>
-</ol>
-<p>如果存在LOG日志写磁盘或者从磁盘映射文件，可能会存在瓶颈</p>
-<ol start="4">
-<li>处理流程</li>
-</ol>
-<p>epoll ET&#x2F;LT模式</p>
-<ol start="5">
-<li>进程能打开最大文件描述符数</li>
-</ol>
-<p>同时能打开65535个文件，但是一般情况下不可能并行打开这么多</p>
-<ol start="6">
-<li>数据库连接等等软件层面的限制</li>
-</ol>
-<h3 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h3><ol>
-<li><p>cpu<br>尽量利用多核优势，或者利用分布式进行负载均衡</p>
-</li>
-<li><p>带宽<br>增加网络带宽</p>
-</li>
-<li><p>磁盘<br>使用SSD，尽量减少磁盘IO次数</p>
-</li>
-<li><p>处理流程<br>各有优势，使用LT不容易犯错，使用ET模式更高效</p>
-</li>
-<li><p>进程能打开最大文件描述符</p>
-</li>
-</ol>
-<p>这个一般不是瓶颈，在长链接情况下可能会成为瓶颈。</p>
-
+          <p>服务器瓶颈</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/02/01/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%93%B6%E9%A2%88%E5%9C%A8%E5%93%AA%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -871,7 +785,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:51:21" itemprop="dateModified" datetime="2022-09-25T01:51:21+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 02:05:19" itemprop="dateModified" datetime="2022-09-25T02:05:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -894,60 +808,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h2 id="输入一个url后到出现页面发生什么？"><a href="#输入一个url后到出现页面发生什么？" class="headerlink" title="输入一个url后到出现页面发生什么？"></a>输入一个url后到出现页面发生什么？</h2><ol>
-<li><p>DNS解析</p>
-<ul>
-<li>查询浏览器缓存</li>
-<li>查询操作系统缓存</li>
-<li>查询路由器缓存&#x2F;ISP服务器缓存</li>
-<li>通过递归和迭代两种方式查询dns服务器</li>
-</ul>
-</li>
-<li><p>TCP连接</p>
-<ul>
-<li>应用层：HTTP数据（GET&#x2F;POST）</li>
-<li>传输层：TCP数据（三次握手、SYN泛洪攻击）<ul>
-<li>SYN攻击是伪造tcp头，虚造一个ip，导致服务方永远无法收到ack，半连接状态消耗系统资源，一般可以设置syn timeout或者拒绝大量相同ip访问来避免。</li>
-</ul>
-</li>
-<li>网络层：IP头（arp）</li>
-<li>链路层：以太网首部（广播单播、arp攻击）<ul>
-<li>arp攻击：局域网内有大量虚假arp应答</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>服务器响应</p>
-<ul>
-<li>协议解析</li>
-<li>资源发送</li>
-</ul>
-</li>
-<li><p>浏览器渲染</p>
-</li>
-</ol>
-<h2 id="数据从磁盘到内存全过程？"><a href="#数据从磁盘到内存全过程？" class="headerlink" title="数据从磁盘到内存全过程？"></a>数据从磁盘到内存全过程？</h2><p>1、初始化DMA控制器并启动磁盘<br>2、从磁盘传输一块数据到内存缓冲区<br>3、DMA控制器发出中断请求<br>4、执行“DMA结束”中断服务程序</p>
-<h2 id="数据从网卡到磁盘全过程？"><a href="#数据从网卡到磁盘全过程？" class="headerlink" title="数据从网卡到磁盘全过程？"></a>数据从网卡到磁盘全过程？</h2><ol>
-<li>网卡收到数据包</li>
-<li>将数据包从网卡硬件缓存读入内存（DMA –&gt; skb_buffer）</li>
-<li>通知内核处理<ul>
-<li>NIC触发硬中断，硬中断处理程序会调用驱动程序启动软中断，后续慢慢处理。</li>
-<li>软中断触发NAPI，循环处理ring_buffer指向的skb_buffer</li>
-</ul>
-</li>
-<li>经过TCP&#x2F;IP协议层逐层处理</li>
-<li>应用程序通过read()从sockert buffer读取内容</li>
-</ol>
-<p>用一段话描述：网卡收到数据包，DMA到内核内存，中断通知内核数据有了，内核按轮次处理消耗数据包，一轮处理完成后，开启硬中断。其核心就是网卡和内核其实是生产和消费模型，网卡生产，内核负责消费，生产者需要通知消费者消费；如果生产过快会产生丢包，如果消费过慢也会产生问题。也就说在高流量压力情况下，只有生产消费优化后，消费能力够快，此生产消费关系才可以正常维持，所以如果物理接口有丢包计数时候，未必是网卡存在问题，也可能是内核消费的太慢。</p>
-<h2 id="源代码到运行全过程"><a href="#源代码到运行全过程" class="headerlink" title="源代码到运行全过程"></a>源代码到运行全过程</h2><ol>
-<li>预处理</li>
-<li>编译（词法分析，语法分析，中间代码生成，优化）</li>
-<li>汇编</li>
-<li>链接</li>
-<li>生成ELF文件</li>
-</ol>
-
+          <p>场景题</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/01/31/%E5%9C%BA%E6%99%AF%E9%A2%98/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1385,6 +1254,10 @@
   
 
 
+
+
+  
+<script src="/js/local-search.js"></script>
 
 
 
