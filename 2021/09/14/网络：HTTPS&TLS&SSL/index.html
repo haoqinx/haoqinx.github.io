@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -21,16 +21,16 @@
     var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="SSL&#x2F;TLS 基本流程   客户端想服务端索要并验证公钥。 双方协商生成对话密钥。 双方采用对话密钥进行加密通信。   详细解释上面流程的第一二两步叫做握手。如下图所示：一共有四次通信，在握手阶段都是明文。   客户端发出请求（ClientHello）  客户端主要向服务器提供以下信息 支持的协议版本，比如TLS 1.0版。 一个客户端生成的随机数，稍后用于生成”对话密钥”。 支持的加密方法，比">
+  <meta name="description" content="SSL&#x2F;TLS 基本流程   客户端想服务端索要并验证公钥。 双方协商生成对话密钥。 双方采用对话密钥进行加密通信。   详细解释上面流程的第一二两步叫做握手。如下图所示：一共有四次通信，在握手阶段都是明文。   客户端发出请求（ClientHello）  客户端主要向服务器提供以下信息 支持的协议版本，比如TLS 1.0版。 一个客户端生成的随机数，稍后用于生成”对话密钥”。 支持的加">
 <meta property="og:type" content="article">
 <meta property="og:title" content="网络复习：HTTPS&#x2F;TLS&#x2F;SSL">
 <meta property="og:url" content="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9AHTTPS&TLS&SSL/index.html">
 <meta property="og:site_name" content="面向自由编程">
-<meta property="og:description" content="SSL&#x2F;TLS 基本流程   客户端想服务端索要并验证公钥。 双方协商生成对话密钥。 双方采用对话密钥进行加密通信。   详细解释上面流程的第一二两步叫做握手。如下图所示：一共有四次通信，在握手阶段都是明文。   客户端发出请求（ClientHello）  客户端主要向服务器提供以下信息 支持的协议版本，比如TLS 1.0版。 一个客户端生成的随机数，稍后用于生成”对话密钥”。 支持的加密方法，比">
+<meta property="og:description" content="SSL&#x2F;TLS 基本流程   客户端想服务端索要并验证公钥。 双方协商生成对话密钥。 双方采用对话密钥进行加密通信。   详细解释上面流程的第一二两步叫做握手。如下图所示：一共有四次通信，在握手阶段都是明文。   客户端发出请求（ClientHello）  客户端主要向服务器提供以下信息 支持的协议版本，比如TLS 1.0版。 一个客户端生成的随机数，稍后用于生成”对话密钥”。 支持的加">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://haoqinx.github.io/images/tls-1.png">
 <meta property="article:published_time" content="2021-09-13T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-11-17T11:25:33.420Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.130Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="协议">
 <meta name="twitter:card" content="summary">
@@ -199,7 +199,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-11-17 19:25:33" itemprop="dateModified" datetime="2021-11-17T19:25:33+08:00">2021-11-17</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -222,7 +222,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="SSL-TLS"><a href="#SSL-TLS" class="headerlink" title="SSL/TLS"></a>SSL/TLS</h3><ol>
+        <h3 id="SSL-x2F-TLS"><a href="#SSL-x2F-TLS" class="headerlink" title="SSL&#x2F;TLS"></a>SSL&#x2F;TLS</h3><ol>
 <li>基本流程</li>
 </ol>
 <ul>
@@ -248,7 +248,7 @@
 <li>服务器证书。</li>
 </ul>
 </li>
-<li>客户端回应<br>  客户端收到回应之后，首先验证证书，若没有问题，就从证书中取出公钥，然后发送下面三个信息：<ul>
+<li>客户端回应<br> 客户端收到回应之后，首先验证证书，若没有问题，就从证书中取出公钥，然后发送下面三个信息：<ul>
 <li>一个随机数。该随机数用服务器公钥加密，防止被窃听。</li>
 <li>编码改变通知，表示随后的信息都将用双方商定的加密方法和密钥发送。</li>
 <li>客户端握手结束通知，表示客户端的握手阶段已经结束。这一项同时也是前面发送的所有内容的hash值，用来供服务器校验。</li>
@@ -256,7 +256,7 @@
 </li>
 <li>服务器的最后回应<br>  服务器收到客户端的第三个随机数pre-master key之后，计算生成本次会话所用的”会话密钥”。然后，向客户端最后发送下面信息。<ul>
 <li>编码改变通知，表示随后的信息都将用双方商定的加密方法和密钥发送。</li>
-<li>服务器握手结束通知，表示服务器的握手阶段已经结束。这一项同时也是前面发送的所有内容的hash值，用来供客户端校验。  </li>
+<li>服务器握手结束通知，表示服务器的握手阶段已经结束。这一项同时也是前面发送的所有内容的hash值，用来供客户端校验。</li>
 </ul>
 </li>
 </ul>
@@ -285,12 +285,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9APING%E5%91%BD%E4%BB%A4%E5%8E%9F%E7%90%86/" rel="prev" title="网络复习：PING & traceroute命令原理">
-      <i class="fa fa-chevron-left"></i> 网络复习：PING & traceroute命令原理
+    <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E3%80%81%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/" rel="prev" title="网络复习：TCP滑动窗口、拥塞控制">
+      <i class="fa fa-chevron-left"></i> 网络复习：TCP滑动窗口、拥塞控制
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/09/14/%E6%99%BA%E8%83%BD%E8%8A%AF%E7%89%87/" rel="next" title="嵌入式人工智能">
-      嵌入式人工智能 <i class="fa fa-chevron-right"></i>
+    <a href="/2021/09/14/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AB%E6%A0%91%EF%BC%8CB+%E6%A0%91%EF%BC%8C%E7%BA%A2%E9%BB%91%E6%A0%91/" rel="next" title="数据结构：B树，B+树，B*树，红黑树">
+      数据结构：B树，B+树，B*树，红黑树 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -350,7 +350,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#SSL-TLS"><span class="nav-number">1.</span> <span class="nav-text">SSL&#x2F;TLS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTPS"><span class="nav-number">2.</span> <span class="nav-text">HTTPS</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#SSL-x2F-TLS"><span class="nav-number">1.</span> <span class="nav-text">SSL&#x2F;TLS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTPS"><span class="nav-number">2.</span> <span class="nav-text">HTTPS</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -366,7 +366,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

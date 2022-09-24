@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -29,7 +29,7 @@
 <meta property="og:description" content="概念 引用不是新定义一个变量，而是给一个已经存在的变量取了一个别名，编译器不会为引用变量开辟内存空间，它和它引用的变量共用同一块内存空间。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-08-19T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-10-29T12:10:18.171Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.117Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="effective c++">
@@ -198,7 +198,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:10:18" itemprop="dateModified" datetime="2021-10-29T20:10:18+08:00">2021-10-29</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -222,19 +222,23 @@
 
       
         <h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><ul>
-<li>引用不是新定义一个变量，而是给一个已经存在的变量取了一个别名，编译器不会为引用变量开辟内存空间，它和它引用的变量共用同一块内存空间。<span id="more"></span>
-<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3></li>
+<li>引用不是新定义一个变量，而是给一个已经存在的变量取了一个别名，编译器不会为引用变量开辟内存空间，它和它引用的变量共用同一块内存空间。<span id="more"></span></li>
+</ul>
+<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><ul>
 <li>引用变量</li>
 </ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> data = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span>&amp; ref = data; <span class="comment">//可读可写</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> data = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span>&amp; ref = data; <span class="comment">//可读可写</span></span><br></pre></td></tr></table></figure>
 
 <ul>
 <li><p>常引用变量</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> data = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> <span class="keyword">const</span>&amp; ref = data;<span class="comment">//只读</span></span><br></pre></td></tr></table></figure></li>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> data = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> <span class="type">const</span>&amp; ref = data;<span class="comment">//只读</span></span><br></pre></td></tr></table></figure>
+</li>
 <li><p>常引用常量</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> data = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span>&amp; ref = data;</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">int</span> data = <span class="number">0</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span>&amp; ref = data;</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>指针引用</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> data = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> *p = &amp;data;</span><br><span class="line"><span class="keyword">int</span>* &amp;ref = p;</span><br><span class="line">cout &lt;&lt; data &lt;&lt; endl; <span class="comment">//0</span></span><br><span class="line">cout &lt;&lt; *p &lt;&lt; endl; <span class="comment">//0</span></span><br><span class="line">cout &lt;&lt; *ref &lt;&lt; endl; <span class="comment">//0</span></span><br><span class="line">cout &lt;&lt; p &lt;&lt; endl;<span class="comment">//0x61fe14</span></span><br><span class="line">cout &lt;&lt; ref &lt;&lt; endl;<span class="comment">//0x61fe14</span></span><br></pre></td></tr></table></figure></li>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> data = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> *p = &amp;data;</span><br><span class="line"><span class="type">int</span>* &amp;ref = p;</span><br><span class="line">cout &lt;&lt; data &lt;&lt; endl; <span class="comment">//0</span></span><br><span class="line">cout &lt;&lt; *p &lt;&lt; endl; <span class="comment">//0</span></span><br><span class="line">cout &lt;&lt; *ref &lt;&lt; endl; <span class="comment">//0</span></span><br><span class="line">cout &lt;&lt; p &lt;&lt; endl;<span class="comment">//0x61fe14</span></span><br><span class="line">cout &lt;&lt; ref &lt;&lt; endl;<span class="comment">//0x61fe14</span></span><br></pre></td></tr></table></figure>
+</li>
 <li><p>引用变量的类型必须与它的实体类型一致（因为取别名要符合引用实体的身份，如果类型不一致则会报错）</p>
 </li>
 <li><p>引用变量使用必须要进行初始化（不然没有实体都不知道给谁取别名）</p>
@@ -249,15 +253,15 @@
 </ul>
 <h3 id="必须返回对象时，不要使用引用"><a href="#必须返回对象时，不要使用引用" class="headerlink" title="必须返回对象时，不要使用引用"></a>必须返回对象时，不要使用引用</h3><ul>
 <li><p>考虑如下的例子，考虑在函数内生成一个对象</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> val;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="title">A</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="title">A</span><span class="params">(<span class="keyword">int</span> x)</span>:val(x)&#123;</span>&#125;;</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">getVal</span><span class="params">()</span><span class="keyword">const</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> val;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">const</span> A&amp; <span class="keyword">operator</span>*(<span class="keyword">const</span> A&amp; lhs, <span class="keyword">const</span> A&amp; rhs)&#123;</span><br><span class="line">    A* res = <span class="keyword">new</span> <span class="built_in">A</span>(lhs.<span class="built_in">getVal</span>() * rhs.<span class="built_in">getVal</span>());</span><br><span class="line">    <span class="keyword">return</span> *res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="type">int</span> val;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="title">A</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="title">A</span><span class="params">(<span class="type">int</span> x)</span>:val(x)&#123;</span>&#125;;</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="type">int</span> <span class="title">getVal</span><span class="params">()</span><span class="type">const</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> val;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="type">const</span> A&amp; <span class="keyword">operator</span>*(<span class="type">const</span> A&amp; lhs, <span class="type">const</span> A&amp; rhs)&#123;</span><br><span class="line">    A* res = <span class="keyword">new</span> <span class="built_in">A</span>(lhs.<span class="built_in">getVal</span>() * rhs.<span class="built_in">getVal</span>());</span><br><span class="line">    <span class="keyword">return</span> *res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>  operator*函数内生成了一个对象，并在heap上分配了内存，那么这块内存永远不会再外部释放，因为离开函数作用域这个指针将自动销毁。<br>  那么使用下面这个函数生成临时对象也一样不可取，因为离开函数作用域，这个对象将被销毁。</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> A&amp; <span class="keyword">operator</span>*(<span class="keyword">const</span> A&amp; lhs, <span class="keyword">const</span> A&amp; rhs)&#123;</span><br><span class="line">    <span class="function">A <span class="title">res</span><span class="params">(lhs.getVal() * rhs.getVal())</span></span>;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> A&amp; <span class="keyword">operator</span>*(<span class="type">const</span> A&amp; lhs, <span class="type">const</span> A&amp; rhs)&#123;</span><br><span class="line">    <span class="function">A <span class="title">res</span><span class="params">(lhs.getVal() * rhs.getVal())</span></span>;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>  能不能像下面这样声明一个静态对象来保存结果呢？</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> A&amp; <span class="keyword">operator</span>*(<span class="keyword">const</span> A&amp; lhs, <span class="keyword">const</span> A&amp; rhs)&#123;</span><br><span class="line">    <span class="keyword">static</span> A res;</span><br><span class="line">    res = <span class="built_in">A</span>(lhs.<span class="built_in">getVal</span>() * rhs.<span class="built_in">getVal</span>());</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> A&amp; <span class="keyword">operator</span>*(<span class="type">const</span> A&amp; lhs, <span class="type">const</span> A&amp; rhs)&#123;</span><br><span class="line">    <span class="type">static</span> A res;</span><br><span class="line">    res = <span class="built_in">A</span>(lhs.<span class="built_in">getVal</span>() * rhs.<span class="built_in">getVal</span>());</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>  表面上看没有太大问题，但是在使用中我们常常会像一下这样来使用：</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> <span class="keyword">operator</span>==(<span class="keyword">const</span> A&amp; lhs, <span class="keyword">const</span> A&amp; rhs);</span><br><span class="line">A r, s, t, x;</span><br><span class="line"><span class="keyword">if</span>((r * s) == (t * x))&#123;</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">bool</span> <span class="keyword">operator</span>==(<span class="type">const</span> A&amp; lhs, <span class="type">const</span> A&amp; rhs);</span><br><span class="line">A r, s, t, x;</span><br><span class="line"><span class="keyword">if</span>((r * s) == (t * x))&#123;</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>  如果保存的是静态对象，那么这个表达式永远为真。表达式展开的结果是</p>
   <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">operator</span>==(<span class="keyword">operator</span>*(r, s), <span class="keyword">operator</span>*(t, x)))&#123;&#125;</span><br></pre></td></tr></table></figure>
@@ -268,7 +272,7 @@
 <ul>
 <li>让函数返回一个新对象</li>
 </ul>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="keyword">const</span> A <span class="keyword">operator</span>*(<span class="keyword">const</span> A&amp; lhs, <span class="keyword">const</span> A&amp; rhs)&#123;</span><br><span class="line">    <span class="function">A <span class="title">res</span><span class="params">(lhs.getVal() * rhs.getVal())</span></span>;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="type">const</span> A <span class="keyword">operator</span>*(<span class="type">const</span> A&amp; lhs, <span class="type">const</span> A&amp; rhs)&#123;</span><br><span class="line">    <span class="function">A <span class="title">res</span><span class="params">(lhs.getVal() * rhs.getVal())</span></span>;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 </ul>
 
     </div>
@@ -370,7 +374,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

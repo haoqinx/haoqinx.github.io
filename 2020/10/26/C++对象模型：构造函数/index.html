@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -29,7 +29,7 @@
 <meta property="og:description" content="编译器何时生成默认构造函数？编译器生成的构造函数只适用于编译器的正确性，类内的数据初始化不由编译器负责!  如果一个class内部含有一个成员对象，并且这个对象有默认构造函数，那么编译器就会为这个class生成默认构造函数。 此class继承自一个含有默认构造函数的基类。 带有virtual function的Class或者继承了一个含有virtual fuction的父类。 使用了虚继承的类。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-10-25T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-04-07T05:11:34.183Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.107Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="C++">
 <meta name="twitter:card" content="summary">
@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-04-07 13:11:34" itemprop="dateModified" datetime="2022-04-07T13:11:34+08:00">2022-04-07</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -235,7 +235,7 @@
 <ul>
 <li>明确初始化</li>
 </ul>
- <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">X</span>&#123;</span>&#125;;</span><br><span class="line">X xx;</span><br><span class="line">X xxx = xx; <span class="comment">// 拷贝构造</span></span><br></pre></td></tr></table></figure>
+ <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">X</span>&#123;&#125;;</span><br><span class="line">X xx;</span><br><span class="line">X xxx = xx; <span class="comment">// 拷贝构造</span></span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>函数值传递</li>
@@ -245,8 +245,8 @@
 <ul>
 <li>函数内对象返回(此处在g++7.5版本中没有调用拷贝构造，直接返回了对象，属于编译优化)</li>
 </ul>
- <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">X</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">X</span>()&#123;&#125;</span><br><span class="line">    <span class="built_in">X</span>(<span class="keyword">const</span> X&amp; x)&#123;</span><br><span class="line">        i = x.i;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;copy&quot;</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">X <span class="title">func</span><span class="params">()</span></span>&#123;</span><br><span class="line">    X xx;</span><br><span class="line">    xx.i = <span class="number">10</span>;</span><br><span class="line">    cout &lt;&lt; (<span class="keyword">int</span> *)&amp;xx &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> xx;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    X x = <span class="built_in">func</span>();</span><br><span class="line">    cout &lt;&lt; (<span class="keyword">int</span> *)&amp;x;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//0x7ffffe3b1284</span></span><br><span class="line"><span class="comment">//0x7ffffe3b1284</span></span><br></pre></td></tr></table></figure></li>
-<li><p>编译器什么时候为我们生成拷贝构造？<br><font color = orange> 决定一个拷贝构造是否被合成取决于class是否展现 bitwise copy semantics. 当展现了bitwise copy semantics，编译器不会合成默认拷贝构造。</font>   </p>
+ <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">X</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">X</span>()&#123;&#125;</span><br><span class="line">    <span class="built_in">X</span>(<span class="type">const</span> X&amp; x)&#123;</span><br><span class="line">        i = x.i;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;copy&quot;</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">X <span class="title">func</span><span class="params">()</span></span>&#123;</span><br><span class="line">    X xx;</span><br><span class="line">    xx.i = <span class="number">10</span>;</span><br><span class="line">    cout &lt;&lt; (<span class="type">int</span> *)&amp;xx &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> xx;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    X x = <span class="built_in">func</span>();</span><br><span class="line">    cout &lt;&lt; (<span class="type">int</span> *)&amp;x;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//0x7ffffe3b1284</span></span><br><span class="line"><span class="comment">//0x7ffffe3b1284</span></span><br></pre></td></tr></table></figure></li>
+<li><p>编译器什么时候为我们生成拷贝构造？<br><font color = orange> 决定一个拷贝构造是否被合成取决于class是否展现 bitwise copy semantics. 当展现了bitwise copy semantics，编译器不会合成默认拷贝构造。</font></p>
 </li>
 </ol>
 <ul>
@@ -365,7 +365,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -21,15 +21,15 @@
     var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="问题描述vscode Remote SSH 抽风系列：报错command ‘_workbench.downloadResource’ failed” when connecting to a remote host via ssh.     主要问题是我的远程Linux环境是连不上网的，我用本机Windows系统搭建了一个Apache服务器，Linux代理到本机端口实现访问外网。    vscod">
+  <meta name="description" content="问题描述vscode Remote SSH 抽风系列：报错command ‘_workbench.downloadResource’ failed” when connecting to a remote host via ssh.     主要问题是我的远程Linux环境是连不上网的，我用本机Windows系统搭建了一个Apache服务器，Linux代理到本机端口实现访问外网。   vscode">
 <meta property="og:type" content="article">
 <meta property="og:title" content="vscode远程登录不上（command &#39;_workbench.downloadResource&#39; failed&quot; when connecting to a remote host via ssh）">
 <meta property="og:url" content="http://haoqinx.github.io/2020/10/02/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%EF%BC%9Avscode%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95%E5%87%BA%E9%94%99/index.html">
 <meta property="og:site_name" content="面向自由编程">
-<meta property="og:description" content="问题描述vscode Remote SSH 抽风系列：报错command ‘_workbench.downloadResource’ failed” when connecting to a remote host via ssh.     主要问题是我的远程Linux环境是连不上网的，我用本机Windows系统搭建了一个Apache服务器，Linux代理到本机端口实现访问外网。    vscod">
+<meta property="og:description" content="问题描述vscode Remote SSH 抽风系列：报错command ‘_workbench.downloadResource’ failed” when connecting to a remote host via ssh.     主要问题是我的远程Linux环境是连不上网的，我用本机Windows系统搭建了一个Apache服务器，Linux代理到本机端口实现访问外网。   vscode">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-10-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-11-23T06:15:25.185Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.124Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="Bug">
 <meta name="twitter:card" content="summary">
@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-11-23 14:15:25" itemprop="dateModified" datetime="2021-11-23T14:15:25+08:00">2021-11-23</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -222,12 +222,11 @@
       
         <h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><p>vscode Remote SSH 抽风系列：报错command ‘_workbench.downloadResource’ failed” when connecting to a remote host via ssh.   </p>
 <ol>
-<li><p>主要问题是我的远程Linux环境是连不上网的，我用本机Windows系统搭建了一个Apache服务器，Linux代理到本机端口实现访问外网。  </p>
-</li>
-<li><p>vscode Remote SSH连接的时候需要下载一个.vscode-server文件，vscode中一直显示下载失败。一直提示重新输入密码？？就不能提示下下载失败吗？？什么伞兵设置？</p>
-<span id="more"></span>
-<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3></li>
-<li><p>在你远程登录的那个文件夹下面找到<br>/home/.vscode-server/bin/ccbaa2d27e38e5afa3e5c21c1c7bef4657064247<br>这个文件，commitid就是后面那一串ccbaa2d27e38e5afa3e5c21c1c7bef4657064247 </p>
+<li>主要问题是我的远程Linux环境是连不上网的，我用本机Windows系统搭建了一个Apache服务器，Linux代理到本机端口实现访问外网。  </li>
+<li>vscode Remote SSH连接的时候需要下载一个.vscode-server文件，vscode中一直显示下载失败。一直提示重新输入密码？？就不能提示下下载失败吗？？什么伞兵设置？<span id="more"></span></li>
+</ol>
+<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><ol>
+<li><p>在你远程登录的那个文件夹下面找到<br>&#x2F;home&#x2F;.vscode-server&#x2F;bin&#x2F;ccbaa2d27e38e5afa3e5c21c1c7bef4657064247<br>这个文件，commitid就是后面那一串ccbaa2d27e38e5afa3e5c21c1c7bef4657064247 </p>
 </li>
 <li><p>手动下载  </p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://vscode.cdn.azure.cn/stable/$&#123;commit&#125;/vscode-server-linux-x64.tar.gz  </span><br></pre></td></tr></table></figure>
@@ -235,7 +234,7 @@
 </li>
 <li><p>解压并且改名</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf vscode-server.tar.gz</span><br><span class="line">mv vscode-server</span><br></pre></td></tr></table></figure></li>
-<li><p><font color=red>设置下载结束标志</font>   </p>
+<li><p><font color=red>设置下载结束标志</font></p>
 </li>
 </ol>
 <p>注意这步很坑，如果没设置就会让你一直下，在这里卡了好久。</p>
@@ -342,7 +341,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

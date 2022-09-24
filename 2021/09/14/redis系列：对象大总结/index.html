@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -44,7 +44,7 @@
 <meta property="og:image" content="http://haoqinx.github.io/images/redis-obj-14.png">
 <meta property="og:image" content="http://haoqinx.github.io/images/redis-obj-14.png">
 <meta property="article:published_time" content="2021-09-13T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-10-29T11:38:26.611Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.115Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -213,7 +213,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 19:38:26" itemprop="dateModified" datetime="2021-10-29T19:38:26+08:00">2021-10-29</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -237,7 +237,7 @@
 
       
         <h3 id="对象类型和编码"><a href="#对象类型和编码" class="headerlink" title="对象类型和编码"></a>对象类型和编码</h3><p>在redis中，并没有使用之前学到的数据结构来直接构建数据库，而是基于这些数据结构构建了一个对象系统，这个系统包含了字符串对象，列表对象，哈希对象，集合对象和有序集合对象五种类型。<br>在redis中，对象的数据结构如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* The actual Redis Object */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> REDIS_LRU_BITS 24</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> REDIS_LRU_CLOCK_MAX ((1<span class="meta-string">&lt;&lt;REDIS_LRU_BITS)-1) /* Max value of obj-&gt;</span>lru */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> REDIS_LRU_CLOCK_RESOLUTION 1000 <span class="comment">/* LRU clock resolution in ms */</span></span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">redisObject</span> &#123;</span></span><br><span class="line">    <span class="keyword">unsigned</span> type:<span class="number">4</span>;</span><br><span class="line">    <span class="keyword">unsigned</span> encoding:<span class="number">4</span>;</span><br><span class="line">    <span class="keyword">unsigned</span> lru:REDIS_LRU_BITS; <span class="comment">/* lru time (relative to server.lruclock) */</span></span><br><span class="line">    <span class="keyword">int</span> refcount;</span><br><span class="line">    <span class="keyword">void</span> *ptr;</span><br><span class="line">&#125; robj;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* The actual Redis Object */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_LRU_BITS 24</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_LRU_CLOCK_MAX ((1<span class="string">&lt;&lt;REDIS_LRU_BITS)-1) /* Max value of obj-&gt;</span>lru */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_LRU_CLOCK_RESOLUTION 1000 <span class="comment">/* LRU clock resolution in ms */</span></span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">redisObject</span> &#123;</span></span><br><span class="line">    <span class="type">unsigned</span> type:<span class="number">4</span>;</span><br><span class="line">    <span class="type">unsigned</span> encoding:<span class="number">4</span>;</span><br><span class="line">    <span class="type">unsigned</span> lru:REDIS_LRU_BITS; <span class="comment">/* lru time (relative to server.lruclock) */</span></span><br><span class="line">    <span class="type">int</span> refcount;</span><br><span class="line">    <span class="type">void</span> *ptr;</span><br><span class="line">&#125; robj;</span><br></pre></td></tr></table></figure>
 <span id="more"></span>
 <p>对象宏定义如下：<br><img src="/images/redis-obj-1.png"><br>对象的ptr指针指向了这个对象的底层数据结构，这些数据结构由对象的encoding属性决定：<br><img src="/images/redis-obj-2.png"><br>不同类型的编码的对象可能有多种形式：<br><img src="/images/redis-obj-3.png"></p>
 <h3 id="字符串对象"><a href="#字符串对象" class="headerlink" title="字符串对象"></a>字符串对象</h3><p>字符串的编码可以是int，raw，embstr。</p>
@@ -266,7 +266,7 @@
 <h4 id="编码转换-2"><a href="#编码转换-2" class="headerlink" title="编码转换"></a>编码转换</h4><p>满足下面两个条件使用ziplist编码：</p>
 <ul>
 <li>哈希对象保存的所有键值对的键和值的字符串长度都小于64字节。</li>
-<li>键值对数量小于512个。 </li>
+<li>键值对数量小于512个。</li>
 </ul>
 <p>除此之外使用字典存储。</p>
 <h4 id="命令的实现"><a href="#命令的实现" class="headerlink" title="命令的实现"></a>命令的实现</h4><p><img src="/images/redis-obj-11.png"></p>
@@ -278,7 +278,7 @@
 <h4 id="编码转换-3"><a href="#编码转换-3" class="headerlink" title="编码转换"></a>编码转换</h4><p>集合对象满足下面两个条件使用intset编码：</p>
 <ul>
 <li>集合对象保存的所有元素都是整数。</li>
-<li>集合对象保存的元素数量不超过512个。  </li>
+<li>集合对象保存的元素数量不超过512个。</li>
 </ul>
 <p>除此之外使用hashtable实现。</p>
 <h4 id="集合命令的实现"><a href="#集合命令的实现" class="headerlink" title="集合命令的实现"></a>集合命令的实现</h4><p><img src="/images/redis-obj-12.png"></p>
@@ -298,17 +298,17 @@
 </ul>
 <h4 id="命令的实现-1"><a href="#命令的实现-1" class="headerlink" title="命令的实现"></a>命令的实现</h4><p><img src="/images/redis-obj-14.png"></p>
 <h3 id="内存回收、对象共享和空转时长"><a href="#内存回收、对象共享和空转时长" class="headerlink" title="内存回收、对象共享和空转时长"></a>内存回收、对象共享和空转时长</h3><ul>
-<li>内存回收  </li>
+<li>内存回收</li>
 </ul>
 <p>在对象结构体中</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">redisObject</span> &#123;</span></span><br><span class="line">    <span class="keyword">unsigned</span> type:<span class="number">4</span>;</span><br><span class="line">    <span class="keyword">unsigned</span> encoding:<span class="number">4</span>;</span><br><span class="line">    <span class="keyword">unsigned</span> lru:REDIS_LRU_BITS; <span class="comment">/* lru time (relative to server.lruclock) */</span></span><br><span class="line">    <span class="keyword">int</span> refcount;</span><br><span class="line">    <span class="keyword">void</span> *ptr;</span><br><span class="line">&#125; robj;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">redisObject</span> &#123;</span></span><br><span class="line">    <span class="type">unsigned</span> type:<span class="number">4</span>;</span><br><span class="line">    <span class="type">unsigned</span> encoding:<span class="number">4</span>;</span><br><span class="line">    <span class="type">unsigned</span> lru:REDIS_LRU_BITS; <span class="comment">/* lru time (relative to server.lruclock) */</span></span><br><span class="line">    <span class="type">int</span> refcount;</span><br><span class="line">    <span class="type">void</span> *ptr;</span><br><span class="line">&#125; robj;</span><br></pre></td></tr></table></figure>
 <p>有一个refcount字段用来记录对象的引用计数信息。对象的整个生命周期可以分为创建对象，操作对象，释放对象三个阶段。</p>
 <ul>
 <li>对象共享</li>
 </ul>
 <p>对象的引用计数还能带来对象共享的作用：如果键A创建”100”作为值对象，此时键B如果需要创建一个同样的值对象，就可以直接在A的值对象的引用计数上加1。<br><font color = orange>redis不共享包含字符串的对象，原因在于每次共享需要比较对象是否完全相同，如果是整数，复杂度为O(1)，如果是字符串，复杂度是O（N），如果是包含了多个值的对象，复杂度会上升为O(N^2)。</font> </p>
 <ul>
-<li>空转时长  </li>
+<li>空转时长</li>
 </ul>
 <p>另外结构体中的lru记录了当前时间减去值对象最后一次被访问的时间，当程序内存超过限制，会优先清理长时间没有访问的元素。</p>
 
@@ -333,8 +333,8 @@
       <i class="fa fa-chevron-left"></i> redis系列：常见问题
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%97%E5%85%B8/" rel="next" title="redis系列：字典">
-      redis系列：字典 <i class="fa fa-chevron-right"></i>
+    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%8D%E5%88%B6/" rel="next" title="redis系列：复制">
+      redis系列：复制 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -410,7 +410,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

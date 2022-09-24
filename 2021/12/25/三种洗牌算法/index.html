@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -29,7 +29,7 @@
 <meta property="og:description" content="问题描述从n个元素中选出m个 Fisher-Yates Shuffle假设待选元素数组N， 此算法核心思想为每次选一个，然后把此元素从数组删除。 Knuth-Durstenfeld Shuffle是方法一的改进，由于方法一删除通常会伴随内存从新分配或者元素重新排列或者辅助空间，因此方法二将删除改为每次选一个之后，跟最后面的元素交换，然后减少选的范围。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-12-24T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-04-07T05:08:46.362Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.114Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="算法">
 <meta name="twitter:card" content="summary">
@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-04-07 13:08:46" itemprop="dateModified" datetime="2022-04-07T13:08:46+08:00">2022-04-07</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -226,7 +226,7 @@
 <span id="more"></span>
 <h2 id="Inside-Out-Algorithm"><a href="#Inside-Out-Algorithm" class="headerlink" title="Inside-Out Algorithm"></a>Inside-Out Algorithm</h2><p>由于方法二需要额外的空间存储整个元素数组，此方法改进为遍历数组然后每次将i元素跟0~i元素交换。  </p>
 <p>如果知道arr的lengh的话，可以改为for循环，由于是从前往后遍历，所以可以应对arr[]数目未知的情况，或者arr[]是一个动态增加的情况。</p>
-<h2 id="蓄水池抽样"><a href="#蓄水池抽样" class="headerlink" title="蓄水池抽样"></a>蓄水池抽样</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Reservoir_Sampling</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; arr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> k;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = m; i &lt; arr.<span class="built_in">size</span>(); ++ i)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">srand</span>((<span class="keyword">unsigned</span>)<span class="built_in">time</span>(<span class="literal">NULL</span>));</span><br><span class="line">		k = <span class="built_in">rand</span>() % (i + <span class="number">1</span>);</span><br><span class="line">		<span class="keyword">if</span> (k &lt; M)</span><br><span class="line">			<span class="built_in">swap</span>(arr[k], arr[i]); </span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="蓄水池抽样"><a href="#蓄水池抽样" class="headerlink" title="蓄水池抽样"></a>蓄水池抽样</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Reservoir_Sampling</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; arr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> k;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = m; i &lt; arr.<span class="built_in">size</span>(); ++ i)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">srand</span>((<span class="type">unsigned</span>)<span class="built_in">time</span>(<span class="literal">NULL</span>));</span><br><span class="line">		k = <span class="built_in">rand</span>() % (i + <span class="number">1</span>);</span><br><span class="line">		<span class="keyword">if</span> (k &lt; M)</span><br><span class="line">			<span class="built_in">swap</span>(arr[k], arr[i]); </span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>从伪代码很容易理解，就是从第m个元素开始，以（i + 1)为界生成随机数，如果随机数小于m,则交换两个元素。</p>
 
@@ -328,7 +328,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

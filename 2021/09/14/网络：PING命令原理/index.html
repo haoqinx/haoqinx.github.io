@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -33,7 +33,7 @@
 <meta property="og:image" content="http://haoqinx.github.io/images/ping-1.png">
 <meta property="og:image" content="http://haoqinx.github.io/images/ping-2.png">
 <meta property="article:published_time" content="2021-09-13T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-11-17T13:19:34.861Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.115Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="协议">
 <meta name="twitter:card" content="summary">
@@ -202,7 +202,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-11-17 21:19:34" itemprop="dateModified" datetime="2021-11-17T21:19:34+08:00">2021-11-17</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -229,7 +229,7 @@
 <span id="more"></span>
 <p>ICMP从类别上大概分为查询报文和差错报文。<br><img src="/images/icmp-2.png"></p>
 <h3 id="PING"><a href="#PING" class="headerlink" title="PING"></a>PING</h3><p>ping命令基于ICMP查询报文设计，原理是用类型码为8的ICMP发请 求，受到请求的主机则用类型码为0的ICMP回应。<br>ping首先通过arp协议广播请求目的主机的MAC地址，得到MAC地址之后发送请求报文。<br>回送应答报文格式如下：<br><img src="/images/ping-1.png"><br>和原始ICMP报文不同之处就是新增加了标识符和序号，标识符通常包含PID，序号从0开始，每次发送加1，可以确认网络包是否丢失。<br>PING命令的总体流程如下图所示<br><img src="/images/ping-2.png"></p>
-<h3 id="traceroute"><a href="#traceroute" class="headerlink" title="traceroute"></a>traceroute</h3><p>Traceroute的原理是非常非常的有意思，它受到目的主机的IP后，首先给目的主机发送一个TTL=1的UDP数据包，而经过的第一个路由器收到这个数据包以后，就自动把TTL减1，而TTL变为0以后，路由器就把这个包给抛弃了，并同时产生 一个主机不可达的ICMP数据报给主机。主机收到这个数据报以后再发一个TTL=2的UDP数据报给目的主机，然后刺激第二个路由器给主机发ICMP数据 报。如此往复直到到达目的主机。这样，traceroute就拿到了所有的路由器ip。从而避开了ip头只能记录有限路由IP的问题。</p>
+<h3 id="traceroute"><a href="#traceroute" class="headerlink" title="traceroute"></a>traceroute</h3><p>Traceroute的原理是非常非常的有意思，它受到目的主机的IP后，首先给目的主机发送一个TTL&#x3D;1的UDP数据包，而经过的第一个路由器收到这个数据包以后，就自动把TTL减1，而TTL变为0以后，路由器就把这个包给抛弃了，并同时产生 一个主机不可达的ICMP数据报给主机。主机收到这个数据报以后再发一个TTL&#x3D;2的UDP数据报给目的主机，然后刺激第二个路由器给主机发ICMP数据 报。如此往复直到到达目的主机。这样，traceroute就拿到了所有的路由器ip。从而避开了ip头只能记录有限路由IP的问题。</p>
 <p>有人要问，我怎么知道UDP到没到达目的主机呢？这就涉及一个技巧的问题，TCP和UDP协议有一个端口号定义，而普通的网络程序只监控少数的几个号码较 小的端口，比如说80,比如说23,等等。而traceroute发送的是端口号&gt;30000(真变态)的UDP报，所以到达目的主机的时候，目的 主机只能发送一个端口不可达的ICMP数据报给主机。主机接到这个报告以后就知道，主机到了。</p>
 
     </div>
@@ -249,12 +249,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%20&%20UDP/" rel="prev" title="网络复习：TCP & UDP">
-      <i class="fa fa-chevron-left"></i> 网络复习：TCP & UDP
+    <a href="/2021/09/14/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AB%E6%A0%91%EF%BC%8CB+%E6%A0%91%EF%BC%8C%E7%BA%A2%E9%BB%91%E6%A0%91/" rel="prev" title="数据结构：B树，B+树，B*树，红黑树">
+      <i class="fa fa-chevron-left"></i> 数据结构：B树，B+树，B*树，红黑树
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9AHTTPS&TLS&SSL/" rel="next" title="网络复习：HTTPS/TLS/SSL">
-      网络复习：HTTPS/TLS/SSL <i class="fa fa-chevron-right"></i>
+    <a href="/2021/09/14/%E6%99%BA%E8%83%BD%E8%8A%AF%E7%89%87/" rel="next" title="嵌入式人工智能">
+      嵌入式人工智能 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -330,7 +330,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

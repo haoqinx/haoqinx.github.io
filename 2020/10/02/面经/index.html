@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -21,15 +21,15 @@
     var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="阿里云开放平台一面2.28：  实习、项目介绍 最有挑战的项目？难点、怎么解决的？ 内存泄漏（检测工具valgrind&#x2F;钩子函数、相关命令） 编程层面如何预防内存泄漏，除了智能指针？ linux网络编程和tcp连接对应关系 三次握手四次挥手，timewait、closewait leveldb原理（memtable&#x2F;immemtable&#x2F;sstable&#x2F;log&#x2F;manifast&#x2F;footer）">
+  <meta name="description" content="阿里云开放平台一面2.28：  实习、项目介绍 最有挑战的项目？难点、怎么解决的？ 内存泄漏（检测工具valgrind&#x2F;钩子函数、相关命令） 编程层面如何预防内存泄漏，除了智能指针？ linux网络编程和tcp连接对应关系 三次握手四次挥手，timewait、closewait leveldb原理（memtable&#x2F;immemtable&#x2F;sstable&#x2F;l">
 <meta property="og:type" content="article">
 <meta property="og:title" content="暑期实习面经">
 <meta property="og:url" content="http://haoqinx.github.io/2020/10/02/%E9%9D%A2%E7%BB%8F/index.html">
 <meta property="og:site_name" content="面向自由编程">
-<meta property="og:description" content="阿里云开放平台一面2.28：  实习、项目介绍 最有挑战的项目？难点、怎么解决的？ 内存泄漏（检测工具valgrind&#x2F;钩子函数、相关命令） 编程层面如何预防内存泄漏，除了智能指针？ linux网络编程和tcp连接对应关系 三次握手四次挥手，timewait、closewait leveldb原理（memtable&#x2F;immemtable&#x2F;sstable&#x2F;log&#x2F;manifast&#x2F;footer）">
+<meta property="og:description" content="阿里云开放平台一面2.28：  实习、项目介绍 最有挑战的项目？难点、怎么解决的？ 内存泄漏（检测工具valgrind&#x2F;钩子函数、相关命令） 编程层面如何预防内存泄漏，除了智能指针？ linux网络编程和tcp连接对应关系 三次握手四次挥手，timewait、closewait leveldb原理（memtable&#x2F;immemtable&#x2F;sstable&#x2F;l">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-10-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-04-26T14:15:00.276Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.127Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="面经">
 <meta name="twitter:card" content="summary">
@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-04-26 22:15:00" itemprop="dateModified" datetime="2022-04-26T22:15:00+08:00">2022-04-26</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -225,26 +225,26 @@
 <ol>
 <li>实习、项目介绍</li>
 <li>最有挑战的项目？难点、怎么解决的？</li>
-<li>内存泄漏（检测工具valgrind/钩子函数、相关命令）</li>
+<li>内存泄漏（检测工具valgrind&#x2F;钩子函数、相关命令）</li>
 <li>编程层面如何预防内存泄漏，除了智能指针？</li>
 <li>linux网络编程和tcp连接对应关系</li>
 <li>三次握手四次挥手，timewait、closewait</li>
-<li>leveldb原理（memtable/immemtable/sstable/log/manifast/footer）</li>
+<li>leveldb原理（memtable&#x2F;immemtable&#x2F;sstable&#x2F;log&#x2F;manifast&#x2F;footer）</li>
 <li>vector底层实现、动态扩容</li>
 <li>竞态、临界区、举例</li>
 <li>ptmalloc底层实现</li>
 <li>tcmalloc、jemalloc底层实现，和ptmalloc对比</li>
 <li>伙伴系统、slab分配器、STL二级配置器（内存池）</li>
-<li>最有成就感的项目/经历<br>算法题：之字形打印二叉树</li>
+<li>最有成就感的项目&#x2F;经历<br>算法题：之字形打印二叉树</li>
 </ol>
 <p>笔试3.14</p>
 <p>二面3.16：</p>
 <ol>
 <li>实习、项目挖10分钟</li>
-<li>NUMA/UMA</li>
+<li>NUMA&#x2F;UMA</li>
 <li>内核自旋锁底层实现？while和自旋锁的区别？</li>
 <li>内存屏障</li>
-<li>多文件全局变量的初始化顺序？例如a.cc有int a = 10, b.cc有int b = a, c.cc有int c = b;问main函数中a,b,c的值是什么(随机值还是10还是0？)</li>
+<li>多文件全局变量的初始化顺序？例如a.cc有int a &#x3D; 10, b.cc有int b &#x3D; a, c.cc有int c &#x3D; b;问main函数中a,b,c的值是什么(随机值还是10还是0？)</li>
 <li>x86架构模型</li>
 <li>x86和arm在内存架构上的不同<br>算法：利用malloc和free实现自己的my_malloc和my_free，使之可以基于N字节对齐。</li>
 </ol>
@@ -288,8 +288,7 @@
 <li>协程池必要吗？和面试官产生分歧。</li>
 <li>内核函数read、write在哪个链接器里？？不知道想要问啥。</li>
 <li>内核自旋锁实现</li>
-<li>反问</li>
-<li>19 挂</li>
+<li>反问<br>3.19 挂</li>
 </ol>
 <p>字节基架<br>一面：</p>
 <ol>
@@ -412,7 +411,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

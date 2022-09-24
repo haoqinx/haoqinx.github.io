@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -21,15 +21,15 @@
     var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="终极总结 C++基础 对const的理解？const指针和引用的区别？  #define和const的区别？  说说static关键字的用法？https:&#x2F;&#x2F;blog.csdn.net&#x2F;ypshowm&#x2F;article&#x2F;details&#x2F;89030194  inline函数的使用？  知道#pragma pack(n)吗？怎么实现内存对齐的？  解释下”extern C”，在什么时候会用到？  用st">
+  <meta name="description" content="终极总结 C++基础 对const的理解？const指针和引用的区别？ #define和const的区别？ 说说static关键字的用法？https:&#x2F;&#x2F;blog.csdn.net&#x2F;ypshowm&#x2F;article&#x2F;details&#x2F;89030194 inline函数的使用？ 知道#pragma pack(n)吗？怎么实现内存对齐的？ 解释下”extern C”，在什么时候会用到？ 用struct实现">
 <meta property="og:type" content="article">
 <meta property="og:title" content="大总结">
 <meta property="og:url" content="http://haoqinx.github.io/2021/09/14/%E8%87%AA%E9%97%AE%E6%B8%85%E5%8D%95/index.html">
 <meta property="og:site_name" content="面向自由编程">
-<meta property="og:description" content="终极总结 C++基础 对const的理解？const指针和引用的区别？  #define和const的区别？  说说static关键字的用法？https:&#x2F;&#x2F;blog.csdn.net&#x2F;ypshowm&#x2F;article&#x2F;details&#x2F;89030194  inline函数的使用？  知道#pragma pack(n)吗？怎么实现内存对齐的？  解释下”extern C”，在什么时候会用到？  用st">
+<meta property="og:description" content="终极总结 C++基础 对const的理解？const指针和引用的区别？ #define和const的区别？ 说说static关键字的用法？https:&#x2F;&#x2F;blog.csdn.net&#x2F;ypshowm&#x2F;article&#x2F;details&#x2F;89030194 inline函数的使用？ 知道#pragma pack(n)吗？怎么实现内存对齐的？ 解释下”extern C”，在什么时候会用到？ 用struct实现">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-09-13T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-12-02T12:27:25.636Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.129Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="综合">
 <meta name="twitter:card" content="summary">
@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-12-02 20:27:25" itemprop="dateModified" datetime="2021-12-02T20:27:25+08:00">2021-12-02</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -222,74 +222,47 @@
       
         <p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/circle/discuss/XXGdoF/">终极总结</a></p>
 <h1 id="C-基础"><a href="#C-基础" class="headerlink" title="C++基础"></a>C++基础</h1><ol>
-<li><p>对const的理解？const指针和引用的区别？</p>
-</li>
-<li><p>#define和const的区别？</p>
-</li>
-<li><p>说说static关键字的用法？<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/ypshowm/article/details/89030194">https://blog.csdn.net/ypshowm/article/details/89030194</a></p>
-</li>
-<li><p>inline函数的使用？</p>
-</li>
-<li><p>知道#pragma pack(n)吗？怎么实现内存对齐的？</p>
-</li>
-<li><p>解释下”extern C”，在什么时候会用到？</p>
-</li>
-<li><p>用struct实现下继承？</p>
-</li>
-<li><p>解释下friend关键字？</p>
-</li>
-<li><p>多态的实现方式？</p>
-</li>
-<li><p>虚析构函数？虚构造函数？</p>
-</li>
-<li><p>说说虚表的内存布局？</p>
-</li>
-<li><p>纯虚函数？虚继承？</p>
-</li>
-<li><p>模板继承？模板特化/偏特化？</p>
-</li>
-<li><p>虚函数可以是内联函数吗？</p>
-</li>
-<li><p>构造函数能是虚函数吗，析构函数呢？</p>
-</li>
-<li><p>c++四大强制类型转换？</p>
-</li>
-<li><p>四大类型转换发生的时间？编译/执行</p>
-</li>
-<li><p>构造函数初始化列表和函数内部赋值的区别？</p>
-<h1 id="C-11"><a href="#C-11" class="headerlink" title="C++11"></a>C++11</h1></li>
-<li><p>decltype用过吗?</p>
-</li>
-<li><p>左值引用和右值引用是什么？</p>
-</li>
-<li><p>移动语义和完美转发说说？</p>
-</li>
-<li><p>智能指针有哪些？</p>
-</li>
-<li><p>说说每个的实现原理和应用场景？</p>
-</li>
-<li><h1 id="C-内存"><a href="#C-内存" class="headerlink" title="C++内存"></a>C++内存</h1></li>
-<li><p>new/delete 和malloc/free区别？</p>
-</li>
-<li><p>ralloc/alloca</p>
-</li>
-<li><p>双重free会发生什么？</p>
-</li>
-<li><p>如何定义一个只能在栈/堆上生成的对象？</p>
-</li>
-<li><p>讲下ptmalloc？</p>
-</li>
-<li><p>讲下tcmalloc？</p>
-</li>
-<li><p>讲下jemalloc？</p>
-</li>
-<li><p>知道哪些强制类型转换？（static_cast等)</p>
-</li>
+<li>对const的理解？const指针和引用的区别？</li>
+<li>#define和const的区别？</li>
+<li>说说static关键字的用法？<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/ypshowm/article/details/89030194">https://blog.csdn.net/ypshowm/article/details/89030194</a></li>
+<li>inline函数的使用？</li>
+<li>知道#pragma pack(n)吗？怎么实现内存对齐的？</li>
+<li>解释下”extern C”，在什么时候会用到？</li>
+<li>用struct实现下继承？</li>
+<li>解释下friend关键字？</li>
+<li>多态的实现方式？</li>
+<li>虚析构函数？虚构造函数？</li>
+<li>说说虚表的内存布局？</li>
+<li>纯虚函数？虚继承？</li>
+<li>模板继承？模板特化&#x2F;偏特化？</li>
+<li>虚函数可以是内联函数吗？</li>
+<li>构造函数能是虚函数吗，析构函数呢？</li>
+<li>c++四大强制类型转换？</li>
+<li>四大类型转换发生的时间？编译&#x2F;执行</li>
+<li>构造函数初始化列表和函数内部赋值的区别？</li>
+</ol>
+<h1 id="C-11"><a href="#C-11" class="headerlink" title="C++11"></a>C++11</h1><ol>
+<li>decltype用过吗?</li>
+<li>左值引用和右值引用是什么？</li>
+<li>移动语义和完美转发说说？</li>
+<li>智能指针有哪些？</li>
+<li>说说每个的实现原理和应用场景？</li>
+<li></li>
+</ol>
+<h1 id="C-内存"><a href="#C-内存" class="headerlink" title="C++内存"></a>C++内存</h1><ol>
+<li>new&#x2F;delete 和malloc&#x2F;free区别？</li>
+<li>ralloc&#x2F;alloca</li>
+<li>双重free会发生什么？</li>
+<li>如何定义一个只能在栈&#x2F;堆上生成的对象？</li>
+<li>讲下ptmalloc？</li>
+<li>讲下tcmalloc？</li>
+<li>讲下jemalloc？</li>
+<li>知道哪些强制类型转换？（static_cast等)</li>
 </ol>
 <h1 id="STL"><a href="#STL" class="headerlink" title="STL"></a>STL</h1><ol>
 <li>五大组成部分？</li>
 <li>有哪些容器？</li>
-<li>vector/map/哈希/deque底层实现？</li>
+<li>vector&#x2F;map&#x2F;哈希&#x2F;deque底层实现？</li>
 <li>sort算法实现是什么？全都是快排吗？</li>
 </ol>
 <h1 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h1><ol>
@@ -299,8 +272,8 @@
 <li>服务器大量TIME_WAIT怎么办？</li>
 <li>TCP粘包？</li>
 <li>TCP拥塞控制？</li>
-<li>http1.0/1.1/2.0区别？</li>
-<li>TLS/HTTPS握手过程？</li>
+<li>http1.0&#x2F;1.1&#x2F;2.0区别？</li>
+<li>TLS&#x2F;HTTPS握手过程？</li>
 <li>ARP协议？</li>
 <li>PING命令实现原理？</li>
 <li>Traceroute命令实现原理？</li>
@@ -317,10 +290,12 @@
 <li>虚拟内存？</li>
 <li>页表工作原理，MMU底层原理？</li>
 <li>进程虚拟空间地址text段下面保留的128M空间是干嘛的，为什么不能是256M？<ul>
-<li>128M空间是保留的C语言库，至于为啥不是256M，目前未知（节省空间？）.<h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1></li>
+<li>128M空间是保留的C语言库，至于为啥不是256M，目前未知（节省空间？）.</li>
 </ul>
 </li>
-<li>B树/B+树/红黑树有什么区别？</li>
+</ol>
+<h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><ol>
+<li>B树&#x2F;B+树&#x2F;红黑树有什么区别？</li>
 <li>红黑树旋转？</li>
 <li>排序算法复杂度？</li>
 </ol>
@@ -347,7 +322,7 @@
 </ol>
 <p>将机器从1开始编号到10，每个机器取对应编号个硬币，共计55个硬币。<br>假设每个机器生产的硬币都是5g，则这55个硬币总总量为275g；<br>与实际的重量做差值，即为生产4g硬币对应机器的编号。<br>（如果是1号机器，因为只取了1个硬币，重量比2</p>
 <ol start="2">
-<li>给一个硬币，要求生成1/5的概率。<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">g1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span> / <span class="built_in">random</span>() &gt; <span class="number">0.5</span> ? <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">ing <span class="title">getAns</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        res = (<span class="built_in">g1</span>() &lt;&lt; <span class="number">2</span>) + (<span class="built_in">g1</span>() &lt;&lt; <span class="number">1</span>) + <span class="built_in">g1</span>();</span><br><span class="line">    &#125; <span class="keyword">while</span> (res == <span class="number">7</span> || res == <span class="number">6</span> || res == <span class="number">5</span>);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>给一个硬币，要求生成1&#x2F;5的概率。<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">g1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span> / <span class="built_in">random</span>() &gt; <span class="number">0.5</span> ? <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">ing <span class="title">getAns</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        res = (<span class="built_in">g1</span>() &lt;&lt; <span class="number">2</span>) + (<span class="built_in">g1</span>() &lt;&lt; <span class="number">1</span>) + <span class="built_in">g1</span>();</span><br><span class="line">    &#125; <span class="keyword">while</span> (res == <span class="number">7</span> || res == <span class="number">6</span> || res == <span class="number">5</span>);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 </ol>
 
     </div>
@@ -367,12 +342,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/09/14/%E8%99%9A%E6%8B%9F%E5%8C%96%EF%BC%9Adocker%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" rel="prev" title="Docker底层原理：CGroup & Namespace">
-      <i class="fa fa-chevron-left"></i> Docker底层原理：CGroup & Namespace
+    <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9AAlias-Template/" rel="prev" title="c++11新特性：Alias-Template">
+      <i class="fa fa-chevron-left"></i> c++11新特性：Alias-Template
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E3%80%81%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/" rel="next" title="网络复习：TCP滑动窗口、拥塞控制">
-      网络复习：TCP滑动窗口、拥塞控制 <i class="fa fa-chevron-right"></i>
+    <a href="/2021/09/14/%E8%99%9A%E6%8B%9F%E5%8C%96%EF%BC%9Adocker%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" rel="next" title="Docker底层原理：CGroup & Namespace">
+      Docker底层原理：CGroup & Namespace <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -448,7 +423,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -32,7 +32,7 @@
 <meta property="og:image" content="http://haoqinx.github.io/images/ptmalloc-2.png">
 <meta property="og:image" content="http://haoqinx.github.io/images/ptmalloc-3.png">
 <meta property="article:published_time" content="2021-08-28T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-12-07T15:00:49.212Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.126Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="Linux">
 <meta property="article:tag" content="内存管理">
@@ -202,7 +202,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-12-07 23:00:49" itemprop="dateModified" datetime="2021-12-07T23:00:49+08:00">2021-12-07</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -239,7 +239,7 @@
 </ol>
 <ul>
 <li>mem：返回给用户的内存指针</li>
-<li>chunk控制位：P，它表示前一个块是否在使用中，M，他表示当前chunk是从哪个内存区域获得的虚拟内存（mmao/brk）A，表示该chunk属于主分配区或者非主分配区。<br>下面展示了一个空闲chunk在内存中的状态<br><img src="/images/ptmalloc-2.png"></li>
+<li>chunk控制位：P，它表示前一个块是否在使用中，M，他表示当前chunk是从哪个内存区域获得的虚拟内存（mmao&#x2F;brk）A，表示该chunk属于主分配区或者非主分配区。<br>下面展示了一个空闲chunk在内存中的状态<br><img src="/images/ptmalloc-2.png"></li>
 </ul>
 <ol start="3">
 <li>bins</li>
@@ -252,7 +252,7 @@
 </li>
 <li><p>large bins:large bins中的每一个bin分别包含了一个给定范围内的chunk，其中的chunk按大小序排列。相同大小的chunk同样按照最近使用顺序排列。</p>
 </li>
-<li><p>fast bins:主要用来处理申请释放一些小的内存空间。后入先出。   </p>
+<li><p>fast bins:主要用来处理申请释放一些小的内存空间。后入先出。</p>
 </li>
 </ul>
 <p>ptmalloc中在分配过程中引入了fast bins，不大于max_fast （默认值为64B）的chunk被释放后，首先会被放到fast bins 中，<font color = orange>fast bins中的chunk并不改变它的使用标志P。</font>这样也就无法将它们合并。当需要给用户分配的chunk小于或等于max_fast时，ptmalloc首先会在fast bins中查找相应的空闲块，然后才会去查找bins中的空闲chunk.</p>
@@ -290,7 +290,7 @@
 <h3 id="分配具体流程"><a href="#分配具体流程" class="headerlink" title="分配具体流程"></a>分配具体流程</h3><ol>
 <li>获取分配区的锁，为了防止多个线程同时访问同一个分配区，在进行分配之前需要取得分配区域的锁。线程先查看线程私有实例中是否已经存在一个分配区，如果存在尝试对该分配区加锁，如果加锁成功，使用该分配区分配内存，否则，该线程搜索分配区循环链表试图获得一个空闲（没有加锁）的分配区。如果所有的分配区都已经加锁，那么ptmalloc会开辟一个新的分配区，把该分配区加入到全局分配区循环链表和线程的私有实例中并加锁，然后使用该分配区进行分配操作。开辟出来的新分配区一定为非主分配区，因为主分配区是从父进程那里继承来的。开辟非主分配区时会调用mmap()创建一个sub-heap，并设置好top chunk。</li>
 <li>将用户的请求大小转换为实际需要分配的chunk空间大小。</li>
-<li>判断所需分配chunk的大小是否满足chunk_size &lt;= max_fast (max_fast 默认为 64B)，如果是的话，则转下一步，否则跳到第5步。</li>
+<li>判断所需分配chunk的大小是否满足chunk_size &lt;&#x3D; max_fast (max_fast 默认为 64B)，如果是的话，则转下一步，否则跳到第5步。</li>
 <li>首先尝试在fast bins中取一个所需大小的chunk分配给用户。如果可以找到，则分配结束。否则转到下一步。</li>
 <li>判断所需大小是否处在small bins中，即判断chunk_size &lt; 512B是否成立。如果chunk大小处在small bins中，则转下一步，否则转到第6步。</li>
 <li>根据所需分配的chunk的大小，找到具体所在的某个small bin，从该bin的尾部摘取一个恰好满足大小的chunk。若成功，则分配结束，否则，转到下一步。</li>
@@ -321,12 +321,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Ashell%E5%91%BD%E4%BB%A4%E5%92%8C%E8%84%9A%E6%9C%AC%E6%89%A7%E8%A1%8C%E5%8E%9F%E7%90%86/" rel="prev" title="Linux内核系列：shell命令和脚本执行原理">
-      <i class="fa fa-chevron-left"></i> Linux内核系列：shell命令和脚本执行原理
+    <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Ased%E5%92%8Cawk%E5%91%BD%E4%BB%A4/" rel="prev" title="Linux内核系列：awk、sed命令">
+      <i class="fa fa-chevron-left"></i> Linux内核系列：awk、sed命令
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E5%A4%A7%E6%80%BB%E7%BB%93/" rel="next" title="Linux内核系列：内存管理大总结-ptmalloc/tcmalloc/jemalloc">
-      Linux内核系列：内存管理大总结-ptmalloc/tcmalloc/jemalloc <i class="fa fa-chevron-right"></i>
+    <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Aptmalloc/" rel="next" title="Linux内核系列：malloc底层原理(ptmalloc)">
+      Linux内核系列：malloc底层原理(ptmalloc) <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -402,7 +402,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -29,7 +29,7 @@
 <meta property="og:description" content="乐观锁和悲观锁 定义 乐观锁：每次获取数据的时候，都不会担心数据被修改，所以每次获取数据的时候都不会进行加锁，但是在更新数据的时候需要判断该数据是否被别人修改过。如果数据被其他线程修改，则不进行数据更新，如果数据没有被其他线程修改，则进行数据更新。由于数据没有进行加锁，期间该数据可以被其他线程进行读写操作。 悲观锁：每次获取数据的时候，都会担心数据被修改，所以每次获取数据的时候都会进行加锁，确保在">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-08-11T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-11-23T13:29:39.725Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.113Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="Linux">
 <meta property="article:tag" content="多线程">
@@ -198,7 +198,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-11-23 21:29:39" itemprop="dateModified" datetime="2021-11-23T21:29:39+08:00">2021-11-23</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -240,8 +240,9 @@
 </ul>
 </li>
 <li>应用场景：<br> 在线程持有锁时间较短的情况下可以使用自旋锁节省上下文切换开销，但是对于长时间持有的锁不适宜设计为自旋，因为自选时CPU忙等，耗费大量算力。</li>
-<li>变种：自适应自旋锁，可以根据上一次线程持有锁的时间来确定自旋一段时间或者直接阻塞。 <h3 id="互斥锁和条件锁（条件变量）"><a href="#互斥锁和条件锁（条件变量）" class="headerlink" title="互斥锁和条件锁（条件变量）"></a>互斥锁和条件锁（条件变量）</h3>可以参考<a href="https://haoqinx.github.io/2021/09/02/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%9A%E7%BA%BF%E7%A8%8B/">线程同步</a>。</li>
+<li>变种：自适应自旋锁，可以根据上一次线程持有锁的时间来确定自旋一段时间或者直接阻塞。</li>
 </ol>
+<h3 id="互斥锁和条件锁（条件变量）"><a href="#互斥锁和条件锁（条件变量）" class="headerlink" title="互斥锁和条件锁（条件变量）"></a>互斥锁和条件锁（条件变量）</h3><p>可以参考<a href="https://haoqinx.github.io/2021/09/02/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%9A%E7%BA%BF%E7%A8%8B/">线程同步</a>。</p>
 <h3 id="其他锁"><a href="#其他锁" class="headerlink" title="其他锁"></a>其他锁</h3><ul>
 <li>可重入锁和不可冲入锁：一个线程中多个流程能不能获取同一把锁，或者在递归情况下能不能避免死锁。</li>
 <li>多个线程竞争时要不要排队？排队称为公平锁，先尝试插队，若失败再排队称为非公平锁。</li>
@@ -347,7 +348,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

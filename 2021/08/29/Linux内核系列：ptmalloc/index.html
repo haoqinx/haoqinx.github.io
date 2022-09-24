@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -35,7 +35,7 @@
 <meta property="og:image" content="http://haoqinx.github.io/images/malloc-4.png">
 <meta property="og:image" content="http://haoqinx.github.io/images/malloc-5.png">
 <meta property="article:published_time" content="2021-08-28T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-12-07T11:46:47.979Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.119Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="Linux">
 <meta property="article:tag" content="内存管理">
@@ -205,7 +205,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-12-07 19:46:47" itemprop="dateModified" datetime="2021-12-07T19:46:47+08:00">2021-12-07</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -237,7 +237,8 @@
 
 <ul>
 <li><p>源码注释写到：</p>
-  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">Chunks of memory are maintained using a `boundary tag&#x27; method as</span></span><br><span class="line"><span class="comment">described in e.g., Knuth or Standish.  (See the paper by Paul</span></span><br><span class="line"><span class="comment">Wilson ftp://ftp.cs.utexas.edu/pub/garbage/allocsrv.ps for a</span></span><br><span class="line"><span class="comment">survey of such techniques.)  Sizes of free chunks are stored both</span></span><br><span class="line"><span class="comment">in the front of each chunk and at the end.  This makes</span></span><br><span class="line"><span class="comment">consolidating fragmented chunks into bigger chunks very fast.  The</span></span><br><span class="line"><span class="comment">size fields also hold bits representing whether chunks are free or</span></span><br><span class="line"><span class="comment">in use.</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">        An allocated chunk looks like this:</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    chunk-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span></span><br><span class="line"><span class="comment">        |             Size of previous chunk, if allocated            | |</span></span><br><span class="line"><span class="comment">        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span></span><br><span class="line"><span class="comment">        |             Size of chunk, in bytes                       |M|P|</span></span><br><span class="line"><span class="comment">    mem-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span></span><br><span class="line"><span class="comment">        |             User data starts here...                          .</span></span><br><span class="line"><span class="comment">        .                                                               .</span></span><br><span class="line"><span class="comment">        .             (malloc_usable_size() bytes)                      .</span></span><br><span class="line"><span class="comment">        .                                                               |</span></span><br><span class="line"><span class="comment">nextchunk-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span></span><br><span class="line"><span class="comment">        |             Size of chunk                                     |</span></span><br><span class="line"><span class="comment">        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure></li>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">Chunks of memory are maintained using a `boundary tag&#x27; method as</span></span><br><span class="line"><span class="comment">described in e.g., Knuth or Standish.  (See the paper by Paul</span></span><br><span class="line"><span class="comment">Wilson ftp://ftp.cs.utexas.edu/pub/garbage/allocsrv.ps for a</span></span><br><span class="line"><span class="comment">survey of such techniques.)  Sizes of free chunks are stored both</span></span><br><span class="line"><span class="comment">in the front of each chunk and at the end.  This makes</span></span><br><span class="line"><span class="comment">consolidating fragmented chunks into bigger chunks very fast.  The</span></span><br><span class="line"><span class="comment">size fields also hold bits representing whether chunks are free or</span></span><br><span class="line"><span class="comment">in use.</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">        An allocated chunk looks like this:</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    chunk-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span></span><br><span class="line"><span class="comment">        |             Size of previous chunk, if allocated            | |</span></span><br><span class="line"><span class="comment">        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span></span><br><span class="line"><span class="comment">        |             Size of chunk, in bytes                       |M|P|</span></span><br><span class="line"><span class="comment">    mem-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span></span><br><span class="line"><span class="comment">        |             User data starts here...                          .</span></span><br><span class="line"><span class="comment">        .                                                               .</span></span><br><span class="line"><span class="comment">        .             (malloc_usable_size() bytes)                      .</span></span><br><span class="line"><span class="comment">        .                                                               |</span></span><br><span class="line"><span class="comment">nextchunk-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span></span><br><span class="line"><span class="comment">        |             Size of chunk                                     |</span></span><br><span class="line"><span class="comment">        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+</li>
 <li><p>大概意思就是使用了boundary tag技术，也就是free block上下两端加cookie，还记得vc6和STL的allocator章节的图，就像下面这样。</p>
 <p>  <img src="/images/cookie.png"></p>
 </li>
@@ -249,7 +250,7 @@
 <ul>
 <li>prev_size：如果前一个chunk是空闲的，该域表示前一个chunk的大小，如果前一个chunk不空闲，该域无意义。注意：这里的前一个指的是存储物理相邻地址较低的那一个chunk。</li>
 <li>size：该 chunk 的大小，大小必须是 2 SIZE_SZ 的整数倍。如果申请的内存大小不是 2 SIZE_SZ 的整数倍，会被转换满足大小的最小的 2 * SIZE_SZ 的倍数。32 位系统中，SIZE_SZ 是 4；64 位系统中，SIZE_SZ 是 8。 该字段的低三个比特位对 chunk 的大小没有影响，它们从高到低分别表示：<ul>
-<li>A: NON_MAIN_ARENA，记录当前 chunk 是否不属于主线程（分配区/arena），1表示不属于，0表示属于。</li>
+<li>A: NON_MAIN_ARENA，记录当前 chunk 是否不属于主线程（分配区&#x2F;arena），1表示不属于，0表示属于。</li>
 <li>M: IS_MAPPED，他表示当前chunk是从哪个内存区域获得的虚拟内存。M为1表示该chunk是从mmap映射区域分配的，否则是从heap区域分配的。</li>
 <li>P: PREV_INUSE，记录前一个 chunk 块是否被分配。一般来说，堆中第一个被分配的内存块的 size 字段的P位都会被设置为1，以便于防止访问前面的非法内存。当一个 chunk 的 size 的 P 位为 0 时，我们能通过 prev_size 字段来获取上一个 chunk 的大小以及地址。这也方便进行空闲chunk之间的合并。</li>
 </ul>
@@ -274,7 +275,7 @@
 <ul>
 <li><p>mmap：内核将硬盘文件的内容直接映射到内存，任何应用程序都可通过 Linux 的 mmap() 系统调用请求这种映射。</p>
 <ul>
-<li>内存映射是一种方便高效的文件 I/O 方式， 因而被用于装载动态共享库。</li>
+<li>内存映射是一种方便高效的文件 I&#x2F;O 方式， 因而被用于装载动态共享库。</li>
 <li>用户也可创建匿名内存映射，该映射没有对应的文件，可用于存放程序数据。<ul>
 <li>在 Linux 中，若通过 malloc() 请求一大块内存，C 运行库将创建一个匿名内存映射，而不使用堆内存。“大块”意味着比阈值MMAP_THRESHOLD还大，缺省为 128KB，可通过 mallopt() 调整。</li>
 </ul>
@@ -284,13 +285,13 @@
 </li>
 <li><p>sbrk() 或brk()：start_brk和brk分别是堆的起始和终止地址，我们使用malloc动态分配的内存就在这之间。我们可以使用系统调用sbrk() 或brk()增加brk的值，达到增大堆空间的效果，但是系统调用代价太大，涉及到用户态和内核态的相互转换。所以，实际中系统分配较大的堆空间，进程通过malloc()库函数在堆上进行空间动态分配，堆如果不够用malloc可以进行系统调用，增大brk的值。</p>
 <ul>
-<li>两个系统调用的源码为：  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">brk</span><span class="params">(<span class="keyword">void</span> *addr)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">sbrk</span><span class="params">(<span class="keyword">intptr_t</span> increment)</span></span>;</span><br></pre></td></tr></table></figure>
+<li>两个系统调用的源码为：  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">brk</span><span class="params">(<span class="type">void</span> *addr)</span>;</span><br><span class="line"><span class="type">void</span> *<span class="title function_">sbrk</span><span class="params">(<span class="type">intptr_t</span> increment)</span>;</span><br></pre></td></tr></table></figure>
   brk函数将break指针直接设置为某个地址，而sbrk将break指针从当前位置移动increment所指定的增量。brk在执行成功时返回0，否则返回-1并设置errno为ENOMEM；sbrk成功时返回break指针移动之前所指向的地址，否则返回(void *)-1。<br>  <font color=orange>如果将increment设置为0，则可以获得当前break的地址。另外需要注意的是，由于Linux是按页进行内存映射的，所以如果break被设置为没有按页大小对齐，则系统实际上会在最后映射一个完整的页，从而实际已映射的内存空间比break指向的地方要大一些。但是使用break之后的地址是很危险的（尽管也许break之后确实有一小块可用内存地址）。</font></li>
 </ul>
 </li>
 </ul>
 <h3 id="malloc实现"><a href="#malloc实现" class="headerlink" title="malloc实现"></a>malloc实现</h3><p>linux下malloc源码分析具体可见《glibc内存管理ptmalloc源代码分析》一书.下面对其思想进行概括，主要掌握其思想，细节实现不在此讨论。</p>
-<p>由于brk/sbrk/mmap属于系统调用，如果每次申请内存，都调用这三个函数中的一个，那么每次都要产生系统调用开销（即cpu从用户态切换到内核态的上下文切换，这里要保存用户态数据，等会还要切换回用户态），这是非常影响性能的；其次，这样申请的内存容易产生碎片，因为堆是从低地址到高地址，如果低地址的内存没有被释放，高地址的内存就不能被回收。鉴于此，malloc采用的是内存池的实现方式，malloc内存池实现方式更类似于STL分配器和memcached的内存池，先申请一大块内存，然后将内存分成不同大小的内存块，然后用户申请内存时，直接从内存池中选择一块相近的内存块即可。<br><img src="/images/malloc-3.png"></p>
+<p>由于brk&#x2F;sbrk&#x2F;mmap属于系统调用，如果每次申请内存，都调用这三个函数中的一个，那么每次都要产生系统调用开销（即cpu从用户态切换到内核态的上下文切换，这里要保存用户态数据，等会还要切换回用户态），这是非常影响性能的；其次，这样申请的内存容易产生碎片，因为堆是从低地址到高地址，如果低地址的内存没有被释放，高地址的内存就不能被回收。鉴于此，malloc采用的是内存池的实现方式，malloc内存池实现方式更类似于STL分配器和memcached的内存池，先申请一大块内存，然后将内存分成不同大小的内存块，然后用户申请内存时，直接从内存池中选择一块相近的内存块即可。<br><img src="/images/malloc-3.png"></p>
 <p>源码注释对bin的大小描述为：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> Bins for sizes &lt; 512 bytes contain chunks of all the same size, spaced</span></span><br><span class="line"><span class="comment">    8 bytes apart. Larger bins are approximately logarithmically spaced:</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    64 bins of size       8</span></span><br><span class="line"><span class="comment">    32 bins of size      64</span></span><br><span class="line"><span class="comment">    16 bins of size     512</span></span><br><span class="line"><span class="comment">     8 bins of size    4096</span></span><br><span class="line"><span class="comment">     4 bins of size   32768</span></span><br><span class="line"><span class="comment">     2 bins of size  262144</span></span><br><span class="line"><span class="comment">     1 bin  of size what&#x27;s left</span></span><br><span class="line"><span class="comment">    </span></span><br><span class="line"><span class="comment">There is actually a little bit of slop in the numbers in bin_index</span></span><br><span class="line"><span class="comment">for the sake of speed. This makes no difference elsewhere.</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">The bins top out around 1MB because we expect to service large</span></span><br><span class="line"><span class="comment">requests via mmap.</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">Bin 0 does not exist.  Bin 1 is the unordered list; if that would be</span></span><br><span class="line"><span class="comment">a valid chunk size the small bins are bumped up one.</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
 <p>内存池保存在bins这个长128的数组中，每个元素都是一双向个链表。</p>
@@ -318,14 +319,14 @@
 </ul>
 <h3 id="malloc步骤"><a href="#malloc步骤" class="headerlink" title="malloc步骤"></a>malloc步骤</h3><p>malloc 内存分配流程</p>
 <ol>
-<li>如果分配内存&lt;512字节，则通过内存大小定位到smallbins对应的index上(floor(size/8)).<ul>
+<li>如果分配内存&lt;512字节，则通过内存大小定位到smallbins对应的index上(floor(size&#x2F;8)).<ul>
 <li>如果smallbins[index]为空，进入步骤3.</li>
 <li>如果smallbins[index]非空，直接返回第一个chunk.</li>
 </ul>
 </li>
 <li>如果分配内存&gt;512字节，则定位到largebins对应的index上.<ul>
 <li>如果largebins[index]为空，进入步骤3.</li>
-<li>如果largebins[index]非空，扫描链表，找到第一个大小最合适的chunk，如size=12.5K，则使用chunk B，剩下的0.5k放入unsorted_list中</li>
+<li>如果largebins[index]非空，扫描链表，找到第一个大小最合适的chunk，如size&#x3D;12.5K，则使用chunk B，剩下的0.5k放入unsorted_list中</li>
 </ul>
 </li>
 <li>遍历unsorted_list，查找合适size的chunk，如果找到则返回；否则，将这些chunk都归类放到smallbins和largebins里面.</li>
@@ -348,8 +349,8 @@
 </ol>
 <p>如上图示: top chunk是堆顶的chunk，堆顶指针brk位于top chunk的顶部。移动brk指针，即可扩充top chunk的大小。<font color=red>当top chunk大小超过128k(可配置)时，会触发malloc_trim操作，调用sbrk(-size)将内存归还操作系统。</font></p>
 <p>以上图chunk分布图为例，按照glibc的内存分配策略，我们考虑下如下场景(假设brk其实地址是512k)：</p>
-<p>malloc 40k内存，即chunkA，brk = 512k + 40k = 552k malloc 50k内存，即chunkB，brk = 552k + 50k = 602k malloc 60k内存，即chunkC，brk = 602k + 60k = 662k free chunkA。</p>
-<p>此时，由于brk = 662k，而释放的内存是位于[512k, 552k]之间，无法通过移动brk指针，将区域内内存交还操作系统，因此，在[512k, 552k]的区域内便形成了一个内存空洞即内存碎片。 按照glibc的策略，free后的chunkA区域由于不和top chunk相邻，因此，无法和top chunk 合并，应该挂在unsorted_list链表上。</p>
+<p>malloc 40k内存，即chunkA，brk &#x3D; 512k + 40k &#x3D; 552k malloc 50k内存，即chunkB，brk &#x3D; 552k + 50k &#x3D; 602k malloc 60k内存，即chunkC，brk &#x3D; 602k + 60k &#x3D; 662k free chunkA。</p>
+<p>此时，由于brk &#x3D; 662k，而释放的内存是位于[512k, 552k]之间，无法通过移动brk指针，将区域内内存交还操作系统，因此，在[512k, 552k]的区域内便形成了一个内存空洞即内存碎片。 按照glibc的策略，free后的chunkA区域由于不和top chunk相邻，因此，无法和top chunk 合并，应该挂在unsorted_list链表上。</p>
 <h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ul>
 <li>后分配的内存先释放,因为 ptmalloc 收缩内存是从 top chunk 开始,如果与 top chunk 相邻的 chunk 不能释放, top chunk 以下的 chunk 都无法释放。</li>
 <li>多线程锁开销大， 需要避免多线程频繁分配释放。</li>
@@ -376,12 +377,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Ased%E5%92%8Cawk%E5%91%BD%E4%BB%A4/" rel="prev" title="Linux内核系列：awk、sed命令">
-      <i class="fa fa-chevron-left"></i> Linux内核系列：awk、sed命令
+    <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Aptmalloc%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" rel="prev" title="Linux内核系列：ptmalloc源码分析">
+      <i class="fa fa-chevron-left"></i> Linux内核系列：ptmalloc源码分析
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Ammap%E5%8E%9F%E7%90%86%E6%B5%85%E8%B0%88/" rel="next" title="c++内存管理系列：mmap原理">
-      c++内存管理系列：mmap原理 <i class="fa fa-chevron-right"></i>
+    <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9AELF%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F/" rel="next" title="Linux内核系列：ELF文件格式">
+      Linux内核系列：ELF文件格式 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -457,7 +458,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

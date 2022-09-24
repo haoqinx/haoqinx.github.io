@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -29,7 +29,7 @@
 <meta property="og:description" content="用法模板参数就是模板的参数，它是一种模板技巧，形式如下： 1234567891011template&lt;typename T, template&lt;typename U&gt; typename Container&gt;class Foo&amp;#123;    private:        Container&lt;T&gt; c;    public:        Foo()&amp;#123">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-09-03T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-10-29T12:08:38.796Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.123Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="C++11">
@@ -198,7 +198,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:08:38" itemprop="dateModified" datetime="2021-10-29T20:08:38+08:00">2021-10-29</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -222,12 +222,12 @@
 
       
         <h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><p>模板参数就是模板的参数，它是一种模板技巧，形式如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">template</span>&lt;<span class="keyword">typename</span> U&gt; <span class="keyword">typename</span> Container&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span>&#123;</span></span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        Container&lt;T&gt; c;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="built_in">Foo</span>()&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">long</span> i = <span class="number">0</span>; i &lt; SIZE; ++i)&#123;</span><br><span class="line">                c.<span class="built_in">insert</span>(c.<span class="built_in">end</span>(), <span class="built_in">T</span>());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">template</span>&lt;<span class="keyword">typename</span> U&gt; <span class="keyword">typename</span> Container&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Foo</span>&#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        Container&lt;T&gt; c;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="built_in">Foo</span>()&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">long</span> i = <span class="number">0</span>; i &lt; SIZE; ++i)&#123;</span><br><span class="line">                c.<span class="built_in">insert</span>(c.<span class="built_in">end</span>(), <span class="built_in">T</span>());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <span id="more"></span>
 <p>当我们需要向模板参数传递参数的时候，例如我需要一个形如Foo&lt;string,list<string>&gt;这样的类，在使用的时候可以这么定义：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//模板别名不能写在函数体内</span></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">using</span> Lst = list&lt;T, allocator&lt;T&gt;&gt;;</span><br><span class="line"><span class="comment">//调用</span></span><br><span class="line">Foo&lt;string, list&gt; mylist1;  <span class="comment">//写法错误</span></span><br><span class="line">Foo&lt;string, Lst&gt; mylist2;</span><br></pre></td></tr></table></figure>
 <p>下面这个不是模板参数，因为list已经绑定了int类型的模板参数.</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> <span class="title">T</span>, <span class="keyword">class</span> <span class="title">Sequence</span> =</span> deque&lt;T&gt;&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">stack</span> &#123;</span></span><br><span class="line">    </span><br><span class="line">  <span class="keyword">friend</span> <span class="keyword">bool</span> operateo== &lt;&gt; (cosnt stack&amp;, <span class="keyword">const</span> stack&amp;);</span><br><span class="line">  <span class="keyword">friend</span> <span class="keyword">bool</span> operateo&lt; &lt;&gt; (cosnt stack&amp;, <span class="keyword">const</span> stack&amp;);</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">  Sequence c;</span><br><span class="line">  ......</span><br><span class="line">&#125;;</span><br><span class="line">stack&lt;<span class="keyword">int</span>&gt; s1;</span><br><span class="line">stack&lt;<span class="keyword">int</span>, list&lt;<span class="keyword">int</span>&gt;&gt; s2;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="keyword">class</span> <span class="title class_">Sequence</span> = deque&lt;T&gt;&gt;</span><br><span class="line"><span class="keyword">class</span> stack &#123;</span><br><span class="line">    </span><br><span class="line">  <span class="keyword">friend</span> <span class="type">bool</span> operateo== &lt;&gt; (cosnt stack&amp;, <span class="type">const</span> stack&amp;);</span><br><span class="line">  <span class="keyword">friend</span> <span class="type">bool</span> operateo&lt; &lt;&gt; (cosnt stack&amp;, <span class="type">const</span> stack&amp;);</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">  Sequence c;</span><br><span class="line">  ......</span><br><span class="line">&#125;;</span><br><span class="line">stack&lt;<span class="type">int</span>&gt; s1;</span><br><span class="line">stack&lt;<span class="type">int</span>, list&lt;<span class="type">int</span>&gt;&gt; s2;</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -246,12 +246,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9A%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/" rel="prev" title="c++11新特性：右值引用">
-      <i class="fa fa-chevron-left"></i> c++11新特性：右值引用
+    <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Alambda/" rel="prev" title="c++11新特性：lambda">
+      <i class="fa fa-chevron-left"></i> c++11新特性：lambda
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Alambda/" rel="next" title="c++11新特性：lambda">
-      c++11新特性：lambda <i class="fa fa-chevron-right"></i>
+    <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Adecltype/" rel="next" title="c++11新特性：decltype">
+      c++11新特性：decltype <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -327,7 +327,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

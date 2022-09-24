@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -29,7 +29,7 @@
 <meta property="og:description" content="为什么set&#x2F;map底层用红黑树而不用AVL树？红黑树与AVL比较：  AVL是严格平衡的，频繁的插入和删除，会引起频繁的rebalance，导致效率降低；红黑树是弱平衡的，算是一种折中，插入最多旋转2次，删除最多旋转3次。  红黑树在查找、插入删除的复杂度都是O(logn)，且性能稳定，所以STL里面很多结构包括map底层都是使用的红黑树。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-09-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-10-29T12:09:27.373Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.126Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="STL">
@@ -198,7 +198,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:09:27" itemprop="dateModified" datetime="2021-10-29T20:09:27+08:00">2021-10-29</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -221,7 +221,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="为什么set-map底层用红黑树而不用AVL树？"><a href="#为什么set-map底层用红黑树而不用AVL树？" class="headerlink" title="为什么set/map底层用红黑树而不用AVL树？"></a>为什么set/map底层用红黑树而不用AVL树？</h3><p>红黑树与AVL比较：</p>
+        <h3 id="为什么set-x2F-map底层用红黑树而不用AVL树？"><a href="#为什么set-x2F-map底层用红黑树而不用AVL树？" class="headerlink" title="为什么set&#x2F;map底层用红黑树而不用AVL树？"></a>为什么set&#x2F;map底层用红黑树而不用AVL树？</h3><p>红黑树与AVL比较：</p>
 <ol>
 <li><p>AVL是严格平衡的，频繁的插入和删除，会引起频繁的rebalance，导致效率降低；红黑树是弱平衡的，算是一种折中，插入最多旋转2次，删除最多旋转3次。</p>
 </li>
@@ -229,13 +229,13 @@
 <span id="more"></span></li>
 </ol>
 <h3 id="STL的sort内部使用什么排序算法？"><a href="#STL的sort内部使用什么排序算法？" class="headerlink" title="STL的sort内部使用什么排序算法？"></a>STL的sort内部使用什么排序算法？</h3><p>直接上源码</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">RanIt</span>, <span class="keyword">class</span> _<span class="title">Pr</span>&gt;</span></span><br><span class="line"><span class="function">_CONSTEXPR20 <span class="keyword">void</span> <span class="title">sort</span><span class="params">(<span class="keyword">const</span> _RanIt _First, <span class="keyword">const</span> _RanIt _Last, _Pr _Pred)</span> </span>&#123; <span class="comment">// order [_First, _Last), using _Pred</span></span><br><span class="line">    _Adl_verify_range(_First, _Last);</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> _UFirst = _Get_unwrapped(_First);</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> _ULast  = _Get_unwrapped(_Last);</span><br><span class="line">    _Sort_unchecked(_UFirst, _ULast, _ULast - _UFirst, _Pass_fn(_Pred));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">_RanIt</span>, <span class="keyword">class</span> <span class="title class_">_Pr</span>&gt;</span><br><span class="line"><span class="function">_CONSTEXPR20 <span class="type">void</span> <span class="title">sort</span><span class="params">(<span class="type">const</span> _RanIt _First, <span class="type">const</span> _RanIt _Last, _Pr _Pred)</span> </span>&#123; <span class="comment">// order [_First, _Last), using _Pred</span></span><br><span class="line">    _Adl_verify_range(_First, _Last);</span><br><span class="line">    <span class="type">const</span> <span class="keyword">auto</span> _UFirst = _Get_unwrapped(_First);</span><br><span class="line">    <span class="type">const</span> <span class="keyword">auto</span> _ULast  = _Get_unwrapped(_Last);</span><br><span class="line">    _Sort_unchecked(_UFirst, _ULast, _ULast - _UFirst, _Pass_fn(_Pred));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这是一个入口函数，先检查迭代器的区间是不是合法的，然后进入主要的排序函数,下面看排序函数是怎么工作的。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> _<span class="title">RanIt</span>, <span class="keyword">class</span> _<span class="title">Pr</span>&gt;</span></span><br><span class="line">_CONSTEXPR20 <span class="keyword">void</span> _Sort_unchecked(_RanIt _First, _RanIt _Last, _Iter_diff_t&lt;_RanIt&gt; _Ideal, _Pr _Pred) &#123;</span><br><span class="line">    <span class="comment">// order [_First, _Last), using _Pred</span></span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="keyword">if</span> (_Last - _First &lt;= _ISORT_MAX) &#123; <span class="comment">// small</span></span><br><span class="line">            _Insertion_sort_unchecked(_First, _Last, _Pred);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (_Ideal &lt;= <span class="number">0</span>) &#123; <span class="comment">// heap sort if too many divisions</span></span><br><span class="line">            _Make_heap_unchecked(_First, _Last, _Pred);</span><br><span class="line">            _Sort_heap_unchecked(_First, _Last, _Pred);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// divide and conquer by quicksort</span></span><br><span class="line">        <span class="keyword">auto</span> _Mid = _Partition_by_median_guess_unchecked(_First, _Last, _Pred);</span><br><span class="line"></span><br><span class="line">        _Ideal = (_Ideal &gt;&gt; <span class="number">1</span>) + (_Ideal &gt;&gt; <span class="number">2</span>); <span class="comment">// allow 1.5 log2(N) divisions</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (_Mid.first - _First &lt; _Last - _Mid.second) &#123; <span class="comment">// loop on second half</span></span><br><span class="line">            _Sort_unchecked(_First, _Mid.first, _Ideal, _Pred);</span><br><span class="line">            _First = _Mid.second;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; <span class="comment">// loop on first half</span></span><br><span class="line">            _Sort_unchecked(_Mid.second, _Last, _Ideal, _Pred);</span><br><span class="line">            _Last = _Mid.first;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">_RanIt</span>, <span class="keyword">class</span> <span class="title class_">_Pr</span>&gt;</span><br><span class="line">_CONSTEXPR20 <span class="type">void</span> _Sort_unchecked(_RanIt _First, _RanIt _Last, _Iter_diff_t&lt;_RanIt&gt; _Ideal, _Pr _Pred) &#123;</span><br><span class="line">    <span class="comment">// order [_First, _Last), using _Pred</span></span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="keyword">if</span> (_Last - _First &lt;= _ISORT_MAX) &#123; <span class="comment">// small</span></span><br><span class="line">            _Insertion_sort_unchecked(_First, _Last, _Pred);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (_Ideal &lt;= <span class="number">0</span>) &#123; <span class="comment">// heap sort if too many divisions</span></span><br><span class="line">            _Make_heap_unchecked(_First, _Last, _Pred);</span><br><span class="line">            _Sort_heap_unchecked(_First, _Last, _Pred);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// divide and conquer by quicksort</span></span><br><span class="line">        <span class="keyword">auto</span> _Mid = _Partition_by_median_guess_unchecked(_First, _Last, _Pred);</span><br><span class="line"></span><br><span class="line">        _Ideal = (_Ideal &gt;&gt; <span class="number">1</span>) + (_Ideal &gt;&gt; <span class="number">2</span>); <span class="comment">// allow 1.5 log2(N) divisions</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (_Mid.first - _First &lt; _Last - _Mid.second) &#123; <span class="comment">// loop on second half</span></span><br><span class="line">            _Sort_unchecked(_First, _Mid.first, _Ideal, _Pred);</span><br><span class="line">            _First = _Mid.second;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; <span class="comment">// loop on first half</span></span><br><span class="line">            _Sort_unchecked(_Mid.second, _Last, _Ideal, _Pred);</span><br><span class="line">            _Last = _Mid.first;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这是一个递归函数，注释可以说是非常清晰了。</p>
 <ol>
-<li>首先检查要排序的长度，如果长度小于_ISORT_MAX = 32，那么直接进行插入排序。主要的想法是<br>在32这么一个量级上序列基本上已经有序，使用插入排序效率已经相对较高。</li>
-<li>然后检查递归深度，没进行一次递归，就对_Ideal进行 _Ideal = (_Ideal &gt;&gt; 1) + (_Ideal &gt;&gt; 2)操作，<br>主要的作用是防止快排递归深度过深导致爆栈。</li>
+<li>首先检查要排序的长度，如果长度小于_ISORT_MAX &#x3D; 32，那么直接进行插入排序。主要的想法是<br>在32这么一个量级上序列基本上已经有序，使用插入排序效率已经相对较高。</li>
+<li>然后检查递归深度，没进行一次递归，就对_Ideal进行 _Ideal &#x3D; (_Ideal &gt;&gt; 1) + (_Ideal &gt;&gt; 2)操作，<br>主要的作用是防止快排递归深度过深导致爆栈。</li>
 <li>如果深度可以接受，进行快排。</li>
 </ol>
 
@@ -261,8 +261,8 @@
       <i class="fa fa-chevron-left"></i> c++内存管理系列：G2.9内存管理
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Avector/" rel="next" title="c++STL系列：vector">
-      c++STL系列：vector <i class="fa fa-chevron-right"></i>
+    <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Astack&&queue/" rel="next" title="c++STL系列：stack&&queue">
+      c++STL系列：stack&&queue <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -322,7 +322,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88set-map%E5%BA%95%E5%B1%82%E7%94%A8%E7%BA%A2%E9%BB%91%E6%A0%91%E8%80%8C%E4%B8%8D%E7%94%A8AVL%E6%A0%91%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">为什么set&#x2F;map底层用红黑树而不用AVL树？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#STL%E7%9A%84sort%E5%86%85%E9%83%A8%E4%BD%BF%E7%94%A8%E4%BB%80%E4%B9%88%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">STL的sort内部使用什么排序算法？</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88set-x2F-map%E5%BA%95%E5%B1%82%E7%94%A8%E7%BA%A2%E9%BB%91%E6%A0%91%E8%80%8C%E4%B8%8D%E7%94%A8AVL%E6%A0%91%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">为什么set&#x2F;map底层用红黑树而不用AVL树？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#STL%E7%9A%84sort%E5%86%85%E9%83%A8%E4%BD%BF%E7%94%A8%E4%BB%80%E4%B9%88%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">STL的sort内部使用什么排序算法？</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -338,7 +338,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

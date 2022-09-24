@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -29,7 +29,7 @@
 <meta property="og:description" content="member function类型   static member function  nonstatic member function   nonstatic member function 设计原则是和 nonmember效率相同，方法就是隐藏传入一个this指针，重写为外部函数时，函数签名带标识保证全局唯一。  virtual function   虚函数调用时会到虚表找到相关的函数地址">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-10-23T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-04-15T02:07:03.366Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.117Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="C++">
 <meta name="twitter:card" content="summary">
@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-04-15 10:07:03" itemprop="dateModified" datetime="2022-04-15T10:07:03+08:00">2022-04-15</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -233,9 +233,10 @@
 <p>  虚函数调用时会到虚表找到相关的函数地址，然后传入this指针。例如调用：</p>
   <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ptr -&gt; <span class="built_in">func</span>();</span><br></pre></td></tr></table></figure>
 <p>  在编译器中会生成：</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(*ptr -&gt; vptr[<span class="number">1</span>])(ptr);</span><br></pre></td></tr></table></figure>
-<span id="more"></span></li>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(*ptr -&gt; vptr[<span class="number">1</span>])(ptr);</span><br></pre></td></tr></table></figure></li>
 </ul>
+<span id="more"></span>
+
 <ol start="2">
 <li>thunk机制</li>
 </ol>
@@ -342,7 +343,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

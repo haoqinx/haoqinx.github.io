@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -30,7 +30,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://haoqinx.github.io/images/select-1.png">
 <meta property="article:published_time" content="2021-09-13T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-10-29T12:16:49.629Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.126Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="网络编程">
 <meta name="twitter:card" content="summary">
@@ -199,7 +199,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:16:49" itemprop="dateModified" datetime="2021-10-29T20:16:49+08:00">2021-10-29</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -222,20 +222,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="select函数"><a href="#select函数" class="headerlink" title="select函数"></a>select函数</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> maxfdp,fd_set *readfds,fd_set *writefds,fd_set *errorfds,struct timeval *timeout)</span></span>;</span><br></pre></td></tr></table></figure>
+        <h3 id="select函数"><a href="#select函数" class="headerlink" title="select函数"></a>select函数</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">select</span><span class="params">(<span class="type">int</span> maxfdp,fd_set *readfds,fd_set *writefds,fd_set *errorfds,<span class="keyword">struct</span> timeval *timeout)</span>;</span><br></pre></td></tr></table></figure>
 <ol>
 <li>int maxfdp是一个整数值，是指集合中所有文件描述符的范围，即所有文件描述符的最大值加1，不能错！在Windows中这个参数的值无所谓，可以设置不正确。<span id="more"></span></li>
-<li>struct fd_set可以理解为一个集合，这个集合中存放的是文件描述符(file descriptor)，即文件句柄。fd_set集合可以通过一些宏由人为来操作。<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">FD_ZERO(fd_set *fdset)：清空fdset与所有文件句柄的联系。 </span><br><span class="line">FD_SET(<span class="keyword">int</span> fd, fd_set *fdset)：建立文件句柄fd与fdset的联系。 </span><br><span class="line">FD_CLR(<span class="keyword">int</span> fd, fd_set *fdset)：清除文件句柄fd与fdset的联系。 </span><br><span class="line">FD_ISSET(<span class="keyword">int</span> fd, fdset *fdset)：检查fdset联系的文件句柄fd是否可读写，&gt;<span class="number">0</span>表示可读写。 </span><br></pre></td></tr></table></figure></li>
-<li>struct timeval用来代表时间值，有两个成员，一个是秒数，另一个是毫秒数。 若将NULL以形参传入，即不传入时间结构，就是将select置于阻塞状态，一定等到监视文件描述符集合中某个文件描述符发生变化为止；第二，若将时间值设为0秒0毫秒，就变成一个纯粹的非阻塞函数，不管文件描述符是否有变化，都立刻返回继续执行，文件无变化返回0，有变化返回一个正值；第三，timeout的值大于0，这就是等待的超时时间，即select在timeout时间内阻塞，超时时间之内有事件到来就返回了，否则在超时后不管怎样一定返回。<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">timeval</span>&#123;</span>      </span><br><span class="line">    <span class="keyword">long</span> tv_sec;   <span class="comment">/*秒 */</span></span><br><span class="line">    <span class="keyword">long</span> tv_usec;  <span class="comment">/*微秒 */</span>   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li>三个fd_set分别监视文件描述符的读写异常变化，如果有select会返回一个大于0的值。如果没有则在timeout的时间后select返回0，若发生错误返回负值。可以传入NULL值，表示不关心任何文件的读/写/异常变化。</li>
+<li>struct fd_set可以理解为一个集合，这个集合中存放的是文件描述符(file descriptor)，即文件句柄。fd_set集合可以通过一些宏由人为来操作。<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">FD_ZERO(fd_set *fdset)：清空fdset与所有文件句柄的联系。 </span><br><span class="line">FD_SET(<span class="type">int</span> fd, fd_set *fdset)：建立文件句柄fd与fdset的联系。 </span><br><span class="line">FD_CLR(<span class="type">int</span> fd, fd_set *fdset)：清除文件句柄fd与fdset的联系。 </span><br><span class="line">FD_ISSET(<span class="type">int</span> fd, fdset *fdset)：检查fdset联系的文件句柄fd是否可读写，&gt;<span class="number">0</span>表示可读写。 </span><br></pre></td></tr></table></figure></li>
+<li>struct timeval用来代表时间值，有两个成员，一个是秒数，另一个是毫秒数。 若将NULL以形参传入，即不传入时间结构，就是将select置于阻塞状态，一定等到监视文件描述符集合中某个文件描述符发生变化为止；第二，若将时间值设为0秒0毫秒，就变成一个纯粹的非阻塞函数，不管文件描述符是否有变化，都立刻返回继续执行，文件无变化返回0，有变化返回一个正值；第三，timeout的值大于0，这就是等待的超时时间，即select在timeout时间内阻塞，超时时间之内有事件到来就返回了，否则在超时后不管怎样一定返回。<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">timeval</span>&#123;</span>      </span><br><span class="line">    <span class="type">long</span> tv_sec;   <span class="comment">/*秒 */</span></span><br><span class="line">    <span class="type">long</span> tv_usec;  <span class="comment">/*微秒 */</span>   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>三个fd_set分别监视文件描述符的读写异常变化，如果有select会返回一个大于0的值。如果没有则在timeout的时间后select返回0，若发生错误返回负值。可以传入NULL值，表示不关心任何文件的读&#x2F;写&#x2F;异常变化。</li>
 </ol>
 <h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p>源码中的调用树如下：<br><img src="/images/select-1.png"></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">staticint <span class="title">core_sys_select</span><span class="params">(<span class="keyword">int</span> n, fd_set __user *inp, fd_set __user *outp, fd_set __user *<span class="built_in">exp</span>, s64 *timeout)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//读取当前进程的文件描述符表，如果传入的n大于当前进程最大的文件描述符，给予修正。</span></span><br><span class="line">    <span class="comment">//尝试使用栈分配内存，不够则用堆。需要使用6倍于最大描述符的描述符个数</span></span><br><span class="line">    <span class="comment">//get_fd_set调用copy_from_user从用户空间拷贝了fd_set</span></span><br><span class="line">    <span class="comment">//执行ret = do_select(n, &amp;fds, timeout);</span></span><br><span class="line">    <span class="comment">//将修改后的fd_set写回用户空间</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function">staticint <span class="title">core_sys_select</span><span class="params">(<span class="keyword">int</span> n, fd_set __user *inp, fd_set __user *outp, fd_set __user *<span class="built_in">exp</span>, s64 *timeout)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//读取当前进程的文件描述符表，如果传入的n大于当前进程最大的文件描述符，给予修正。</span></span><br><span class="line">    <span class="comment">//尝试使用栈分配内存，不够则用堆。需要使用6倍于最大描述符的描述符个数</span></span><br><span class="line">    <span class="comment">//get_fd_set调用copy_from_user从用户空间拷贝了fd_set</span></span><br><span class="line">    <span class="comment">//执行ret = do_select(n, &amp;fds, timeout);</span></span><br><span class="line">    <span class="comment">//将修改后的fd_set写回用户空间</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>do_select函数中，遍历所有n个fd，对每一个fd调用对应驱动程序中的poll函数。poll函数调用poll_wait函数，poll_wait函数调用__pollwait()，这个函数会初始化等待队列项（有个pollwake函数），并将该等待队列项添加到从驱动程序中传递过来的等待队列头中去。驱动程序在得知设备有IO事件时（通常是该设备上IO事件中断），会调用wakeup，wakeup –&gt; _wake_up_common -&gt; curr-&gt;func(即pollwake)。pollwake函数里面调用_pollwake函数, 通过pwq-&gt;triggered = 1将进程标志为唤醒。再调用default_wake_function(&amp;dummy_wait, mode, sync, key)这个默认的通用唤醒函数唤醒调用select的进程。 请注意，poll函数会返回一个mask码值，通过这个值我们可以判断是否可读写。更详细的必须看 do_select源码。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">staticint <span class="title function_">core_sys_select</span><span class="params">(<span class="type">int</span> n, fd_set __user *inp, fd_set __user *outp, fd_set __user *<span class="built_in">exp</span>, s64 *timeout)</span> &#123;</span><br><span class="line">    <span class="comment">//读取当前进程的文件描述符表，如果传入的n大于当前进程最大的文件描述符，给予修正。</span></span><br><span class="line">    <span class="comment">//尝试使用栈分配内存，不够则用堆。需要使用6倍于最大描述符的描述符个数</span></span><br><span class="line">    <span class="comment">//get_fd_set调用copy_from_user从用户空间拷贝了fd_set</span></span><br><span class="line">    <span class="comment">//执行ret = do_select(n, &amp;fds, timeout);</span></span><br><span class="line">    <span class="comment">//将修改后的fd_set写回用户空间</span></span><br><span class="line">&#125;</span><br><span class="line">staticint <span class="title function_">core_sys_select</span><span class="params">(<span class="type">int</span> n, fd_set __user *inp, fd_set __user *outp, fd_set __user *<span class="built_in">exp</span>, s64 *timeout)</span> &#123;</span><br><span class="line">    <span class="comment">//读取当前进程的文件描述符表，如果传入的n大于当前进程最大的文件描述符，给予修正。</span></span><br><span class="line">    <span class="comment">//尝试使用栈分配内存，不够则用堆。需要使用6倍于最大描述符的描述符个数</span></span><br><span class="line">    <span class="comment">//get_fd_set调用copy_from_user从用户空间拷贝了fd_set</span></span><br><span class="line">    <span class="comment">//执行ret = do_select(n, &amp;fds, timeout);</span></span><br><span class="line">    <span class="comment">//将修改后的fd_set写回用户空间</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>do_select函数中，遍历所有n个fd，对每一个fd调用对应驱动程序中的poll函数。poll函数调用poll_wait函数，poll_wait函数调用__pollwait()，这个函数会初始化等待队列项（有个pollwake函数），并将该等待队列项添加到从驱动程序中传递过来的等待队列头中去。驱动程序在得知设备有IO事件时（通常是该设备上IO事件中断），会调用wakeup，wakeup –&gt; _wake_up_common -&gt; curr-&gt;func(即pollwake)。pollwake函数里面调用_pollwake函数, 通过pwq-&gt;triggered &#x3D; 1将进程标志为唤醒。再调用default_wake_function(&amp;dummy_wait, mode, sync, key)这个默认的通用唤醒函数唤醒调用select的进程。 请注意，poll函数会返回一个mask码值，通过这个值我们可以判断是否可读写。更详细的必须看 do_select源码。</p>
 <h3 id="流程总结"><a href="#流程总结" class="headerlink" title="流程总结"></a>流程总结</h3><ol>
-<li><p>select的睡眠过程<br>支持阻塞操作的设备驱动通常会实现一组自身的等待队列如读/写等待队列用于支持上层(用户层)所需的BLOCK或NONBLOCK操作。当应用程序通过设备驱动访问该设备时(默认为BLOCK操作)，若该设备当前没有数据可读或写，则将该用户进程插入到该设备驱动对应的读/写等待队列让其睡眠一段时间，等到有数据可读/写时再将该进程唤醒。</p>
-<p> select就是巧妙的利用等待队列机制让用户进程适当在没有资源可读/写时睡眠，有资源可读/写时唤醒。下面我们看看select睡眠的详细过程。</p>
-<p> select会循环遍历它所监测的fd_set内的所有文件描述符对应的驱动程序的poll函数。驱动程序提供的poll函数首先会将调用select的用户进程插入到该设备驱动对应资源的等待队列(如读/写等待队列)，然后返回一个bitmask告诉select当前资源哪些可用。当select循环遍历完所有fd_set内指定的文件描述符对应的poll函数后，如果没有一个资源可用(即没有一个文件可供操作)，则select让该进程睡眠，一直等到有资源可用为止，进程被唤醒(或者timeout)继续往下执行。</p>
+<li><p>select的睡眠过程<br>支持阻塞操作的设备驱动通常会实现一组自身的等待队列如读&#x2F;写等待队列用于支持上层(用户层)所需的BLOCK或NONBLOCK操作。当应用程序通过设备驱动访问该设备时(默认为BLOCK操作)，若该设备当前没有数据可读或写，则将该用户进程插入到该设备驱动对应的读&#x2F;写等待队列让其睡眠一段时间，等到有数据可读&#x2F;写时再将该进程唤醒。</p>
+<p> select就是巧妙的利用等待队列机制让用户进程适当在没有资源可读&#x2F;写时睡眠，有资源可读&#x2F;写时唤醒。下面我们看看select睡眠的详细过程。</p>
+<p> select会循环遍历它所监测的fd_set内的所有文件描述符对应的驱动程序的poll函数。驱动程序提供的poll函数首先会将调用select的用户进程插入到该设备驱动对应资源的等待队列(如读&#x2F;写等待队列)，然后返回一个bitmask告诉select当前资源哪些可用。当select循环遍历完所有fd_set内指定的文件描述符对应的poll函数后，如果没有一个资源可用(即没有一个文件可供操作)，则select让该进程睡眠，一直等到有资源可用为止，进程被唤醒(或者timeout)继续往下执行。</p>
 </li>
 <li><p>唤醒该进程的过程通常是在所监测文件的设备驱动内实现的，驱动程序维护了针对自身资源读写的等待队列。当设备驱动发现自身资源变为可读写并且有进程睡眠在该资源的等待队列上时，就会唤醒这个资源等待队列上的进程。</p>
 </li>
@@ -243,7 +243,7 @@
 <h3 id="poll和select的区别"><a href="#poll和select的区别" class="headerlink" title="poll和select的区别"></a>poll和select的区别</h3><ol>
 <li>使用的是定长数组，而poll是通过用户自定义数组长度的形式（pollfd[]）。</li>
 <li>select只支持最大fd &lt; 1024，如果单个进程的文件句柄数超过1024，select就不能用了。poll在接口上无限制，考虑到每次都要拷贝到内核，一般文件句柄多的情况下建议用poll。</li>
-<li>select由于使用的是位运算，所以select需要分别设置read/write/error fds的掩码。而poll是通过设置数据结构中fd和event参数来实现read/write，比如读为POLLIN，写为POLLOUT，出错为POLLERR：</li>
+<li>select由于使用的是位运算，所以select需要分别设置read&#x2F;write&#x2F;error fds的掩码。而poll是通过设置数据结构中fd和event参数来实现read&#x2F;write，比如读为POLLIN，写为POLLOUT，出错为POLLERR：</li>
 <li>：select中fd_set是被内核和用户共同修改的，所以要么每次FD_CLR再FD_SET，要么备份一份memcpy进去。而poll中用户修改的是events，系统修改的是revents。所以参考muduo的代码，都不需要自己去清除revents，从而使得代码更加简洁。</li>
 <li>select的timeout使用的是struct timeval *timeout，poll的timeout单位是int。</li>
 <li>select使用的是绝对时间，poll使用的是相对时间。</li>
@@ -348,7 +348,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

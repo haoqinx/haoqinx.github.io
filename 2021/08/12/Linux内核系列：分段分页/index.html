@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -32,7 +32,7 @@
 <meta property="og:image" content="http://haoqinx.github.io/images/seg-2.png">
 <meta property="og:image" content="http://haoqinx.github.io/images/seg-3.png">
 <meta property="article:published_time" content="2021-08-11T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-10-29T12:16:17.007Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.117Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="Linux">
 <meta property="article:tag" content="内存">
@@ -202,7 +202,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:16:17" itemprop="dateModified" datetime="2021-10-29T20:16:17+08:00">2021-10-29</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -229,9 +229,9 @@
 <ol>
 <li>地址空间不隔离：任何程序都可以直接访问物理地址，那么恶意的程序很容易修改其他程序的内存数据。</li>
 <li>内存使用率低：没有有效的内存管理机制，需要一个程序执行时，监控程序就将整个程序装入内存中然后开始执行。如果我们忽然需要运行一个程序C，这时候内存空间不够了，我们只释放A的内存空间是不够的，因此需要将B移到磁盘，这中间有大量的数据换入患处，导致效率十分低下。</li>
-<li>程序运行的地址不确定：程序每次需要装入运行时，我们都需要给它在内存中分配一块足够大的空闲区域，每个空闲区域的位置是不确定的，给程序的编写造成了一定的麻烦。因为程序在编写时，访问数据和指令跳转的目标地址都是固定的，这设计到了程序的重定位问题。<span id="more"></span>
-<h3 id="分段"><a href="#分段" class="headerlink" title="分段"></a>分段</h3>最开始解决上面这个问题使用的是分段的方法，基本思路是把一段与程序所需要的内存空间大小的虚拟空间映射到某个地址空间。如A需要10M，那我们就假设有个地址从0x00000000到0x00A00000大小的假想的空间。然后从实际的物理内存中分配一个相同大小的空间例如0x00100000到0x00B00000.然后把两个空间做一一映射。这个映射过程由软件来设置，比如操作系统来设置，实际的地址转换由硬件来完成。<br><img src="/images/seg-1.png"></li>
+<li>程序运行的地址不确定：程序每次需要装入运行时，我们都需要给它在内存中分配一块足够大的空闲区域，每个空闲区域的位置是不确定的，给程序的编写造成了一定的麻烦。因为程序在编写时，访问数据和指令跳转的目标地址都是固定的，这设计到了程序的重定位问题。<span id="more"></span></li>
 </ol>
+<h3 id="分段"><a href="#分段" class="headerlink" title="分段"></a>分段</h3><p>最开始解决上面这个问题使用的是分段的方法，基本思路是把一段与程序所需要的内存空间大小的虚拟空间映射到某个地址空间。如A需要10M，那我们就假设有个地址从0x00000000到0x00A00000大小的假想的空间。然后从实际的物理内存中分配一个相同大小的空间例如0x00100000到0x00B00000.然后把两个空间做一一映射。这个映射过程由软件来设置，比如操作系统来设置，实际的地址转换由硬件来完成。<br><img src="/images/seg-1.png"></p>
 <p>分段解决了前面提到的问题中的1~3，首先做到了地址隔离，如果A访问B的地址，软件会检测访问越界。并且由于虚拟地址，程序不需要关心物理地址的变化，因此程序也不需要重定位。不过这种方法对内存的使用效率依然很低，因为每次内存的换入换出依然是这个程序。</p>
 <h3 id="分页"><a href="#分页" class="headerlink" title="分页"></a>分页</h3><p>分页的基本思想是将地址空间划为固定大小的页。每一页的大小由硬件支持。<br>现在我们进程的虚拟空间按页分割，常用的数据和代码页装载到内存，不常用的代码和数据保存在磁盘里。在这里，我们把虚拟空间的页叫做虚拟页，物理内存中的页叫做物理页，把磁盘中的页叫做磁盘页。从下图可以看到映射关系，我们可以发现，虚拟空间的有些页被映射到同一个物理页，这样就可以实现内存共享。<br><img src="/images/seg-2.png"></p>
 <p>当进程需要两个页时，硬件会捕获这个消息，也就是产生缺页中断，操作系统会接管进程，将缺页从磁盘中读出来并且装入内存中。虚拟存储实现需要依靠硬件的支持，如下图所示，一般使用MMU单元进行页映射。<br><img src="/images/seg-3.png"></p>
@@ -336,7 +336,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

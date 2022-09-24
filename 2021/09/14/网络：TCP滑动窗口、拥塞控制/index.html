@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -38,7 +38,7 @@
 <meta property="og:image" content="http://haoqinx.github.io/images/tcp-2-7.png">
 <meta property="og:image" content="http://haoqinx.github.io/images/tcp-2-8.png">
 <meta property="article:published_time" content="2021-09-13T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-04-29T01:59:41.133Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.125Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="协议">
 <meta name="twitter:card" content="summary">
@@ -207,7 +207,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-04-29 09:59:41" itemprop="dateModified" datetime="2022-04-29T09:59:41+08:00">2022-04-29</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -256,7 +256,7 @@
 <h4 id="慢启动"><a href="#慢启动" class="headerlink" title="慢启动"></a>慢启动</h4><p><img src="/images/tcp-2-5.png"><br>发送个过程中比较接收端窗口和拥塞窗口，选最小值作为窗口大小。<br>下图展示了TCP窗口变化：<br><img src="/images/tcp-2-6.png"></p>
 <ul>
 <li>开始不设置阈值，当超时重发设置为拥塞窗口的一半；</li>
-<li>每经过一个轮次，拥塞窗口 *= 2。</li>
+<li>每经过一个轮次，拥塞窗口 *&#x3D; 2。</li>
 </ul>
 <h4 id="拥塞避免"><a href="#拥塞避免" class="headerlink" title="拥塞避免"></a>拥塞避免</h4><p>为了防止拥塞窗口cwnd增长过大引起网络拥塞，还需要设置一个慢开始门限ssthresh状态变量（如何设置ssthresh）。慢开始门限ssthresh的用法如下：</p>
 <ul>
@@ -264,19 +264,19 @@
 </li>
 <li><p>当 cwnd &gt; ssthresh 时，停止使用慢开始算法而改用拥塞避免算法。</p>
 </li>
-<li><p>当 cwnd = ssthresh 时，既可使用慢开始算法，也可使用拥塞控制避免算法。<br><img src="/images/tcp-2-7.png"></p>
+<li><p>当 cwnd &#x3D; ssthresh 时，既可使用慢开始算法，也可使用拥塞控制避免算法。<br><img src="/images/tcp-2-7.png"></p>
 </li>
-<li><p> 当TCP连接进行初始化时，把拥塞窗口cwnd置为1。慢启动门限的初始值设置为16个报文段，即 cwnd = 16 。</p>
+<li><p>当TCP连接进行初始化时，把拥塞窗口cwnd置为1。慢启动门限的初始值设置为16个报文段，即 cwnd &#x3D; 16 。</p>
 </li>
-<li><p>在执行慢开始算法时，拥塞窗口 cwnd 的初始值为1。拥塞窗口cwnd 随着传输轮次按指数规律增长。当拥塞窗口cwnd增长到慢开始门限值ssthresh时（即当cwnd=16时），就改为执行拥塞控制算法，拥塞窗口按线 性规律增长。</p>
+<li><p>在执行慢开始算法时，拥塞窗口 cwnd 的初始值为1。拥塞窗口cwnd 随着传输轮次按指数规律增长。当拥塞窗口cwnd增长到慢开始门限值ssthresh时（即当cwnd&#x3D;16时），就改为执行拥塞控制算法，拥塞窗口按线 性规律增长。</p>
 </li>
-<li><p> 假定拥塞窗口的数值增长到24时，网络出现超时（这很可能就是网络发生拥塞了）。更新后的ssthresh值变为12（即变为出现超时时的拥塞窗口数值 24的一半），拥塞窗口再重新设置为1，并执行慢开始算法。当cwnd=ssthresh=12时改为执行拥塞避免算法，拥塞窗口按线性规律增长，每经过 一个往返时间增加一个MSS的大小。</p>
+<li><p>假定拥塞窗口的数值增长到24时，网络出现超时（这很可能就是网络发生拥塞了）。更新后的ssthresh值变为12（即变为出现超时时的拥塞窗口数值 24的一半），拥塞窗口再重新设置为1，并执行慢开始算法。当cwnd&#x3D;ssthresh&#x3D;12时改为执行拥塞避免算法，拥塞窗口按线性规律增长，每经过 一个往返时间增加一个MSS的大小。</p>
 </li>
 </ul>
 <h4 id="快恢复"><a href="#快恢复" class="headerlink" title="快恢复"></a>快恢复</h4><p><img src="/images/tcp-2-8.png"></p>
 <ul>
 <li>当发送方连续收到三个重复确认，就执行“乘法减小”算法，把慢开始门限ssthresh减半。这是为了预防网络发生拥塞。请注意：接下去不执行慢开始算法。</li>
-<li> 由于发送方现在认为网络很可能没有发生拥塞，因此与慢开始不同之处是现在不执行慢开始算法（即拥塞窗口cwnd现在不设置为1），而是把cwnd值设置为 慢开始门限ssthresh减半后的数值，然后开始执行拥塞避免算法（“加法增大”），使拥塞窗口缓慢地线性增大。</li>
+<li>由于发送方现在认为网络很可能没有发生拥塞，因此与慢开始不同之处是现在不执行慢开始算法（即拥塞窗口cwnd现在不设置为1），而是把cwnd值设置为 慢开始门限ssthresh减半后的数值，然后开始执行拥塞避免算法（“加法增大”），使拥塞窗口缓慢地线性增大。</li>
 </ul>
 
     </div>
@@ -296,12 +296,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/09/14/%E8%87%AA%E9%97%AE%E6%B8%85%E5%8D%95/" rel="prev" title="大总结">
-      <i class="fa fa-chevron-left"></i> 大总结
+    <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%20&%20UDP/" rel="prev" title="网络复习：TCP & UDP">
+      <i class="fa fa-chevron-left"></i> 网络复习：TCP & UDP
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9Ahttp/" rel="next" title="网络复习：HTTP1.0/1.1/2.0">
-      网络复习：HTTP1.0/1.1/2.0 <i class="fa fa-chevron-right"></i>
+    <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9AHTTPS&TLS&SSL/" rel="next" title="网络复习：HTTPS/TLS/SSL">
+      网络复习：HTTPS/TLS/SSL <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -377,7 +377,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

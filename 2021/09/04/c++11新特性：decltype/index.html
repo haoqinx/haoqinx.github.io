@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -29,7 +29,7 @@
 <meta property="og:description" content="源从何来很长时间以来我们都希望有这么一个功能：给定一个对象，通过某个函数或者关键字，获得它的类型。c++有typeid的实现，也就是返回一个对象的typeid字符串，但是这个字符串不能用来声明一个新变量。因此c++11就出现了decltype这个关键字。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-09-03T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-10-29T11:38:50.746Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.124Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="C++11">
@@ -198,7 +198,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 19:38:50" itemprop="dateModified" datetime="2021-10-29T19:38:50+08:00">2021-10-29</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -231,16 +231,14 @@
 <p>在上面这个函数里，有两个模板参数，变量x和y对operator + 进行操作符重载之后，我们不知道函数的返回类型是什么，这个时候我们就可以用decltype来做。</p>
 </li>
 <li><p>元编程<br>在模板函数或者模板类里面，可以灵活使用decltype来获得模板类型定义新变量。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(T obj)</span></span>&#123;</span><br><span class="line">    map&lt;<span class="keyword">int</span>, string&gt; coll;</span><br><span class="line">    <span class="comment">//通过对象名拿到类型</span></span><br><span class="line">    <span class="keyword">decltype</span>(coll)::value_type elem;</span><br><span class="line">    <span class="comment">//得到模板参数对象的迭代器名</span></span><br><span class="line">    <span class="function"><span class="keyword">typedef</span> <span class="keyword">typename</span> <span class="title">decltype</span><span class="params">(obj)</span>::iterator iterType</span>;</span><br><span class="line">    <span class="comment">//定义迭代器</span></span><br><span class="line">    iterType iter;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">foo</span><span class="params">(T obj)</span></span>&#123;</span><br><span class="line">    map&lt;<span class="type">int</span>, string&gt; coll;</span><br><span class="line">    <span class="comment">//通过对象名拿到类型</span></span><br><span class="line">    <span class="keyword">decltype</span>(coll)::value_type elem;</span><br><span class="line">    <span class="comment">//得到模板参数对象的迭代器名</span></span><br><span class="line">    <span class="function"><span class="keyword">typedef</span> <span class="keyword">typename</span> <span class="title">decltype</span><span class="params">(obj)</span>::iterator iterType</span>;</span><br><span class="line">    <span class="comment">//定义迭代器</span></span><br><span class="line">    iterType iter;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 <li><p>传递lambda表达式的类型<br>使用decltype和lambda可以起到仿函数的作用。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> cmp = [](<span class="keyword">const</span> Foo&amp; f1, <span class="keyword">const</span> Foo&amp; f2)&#123;</span><br><span class="line">    <span class="keyword">return</span> f1.<span class="built_in">data</span>() &gt; f2.<span class="built_in">data</span>();</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function">std::set&lt;Foo,<span class="title">decltype</span><span class="params">(cmp)</span>&gt; <span class="title">coll</span><span class="params">(cmp)</span></span>;</span><br></pre></td></tr></table></figure>
-<h3 id="和auto的区别"><a href="#和auto的区别" class="headerlink" title="和auto的区别"></a>和auto的区别</h3></li>
-<li><p>auto类型说明符用编译器计算变量的初始值来推断其类型,而decltype虽然也让编译器分析表达式并得到它的类型,但是不实际计算表达式的值。</p>
-</li>
-<li><p>编译器推断出来的auto类型有时候和初始值的类型并不完全一致,编译器会适当的改变结果类型使其更符合初始化规则,例如，auto一般会忽略掉顶层const，而把底层const保留下来,与之相反,decltype会保留变量的顶层const。</p>
-</li>
-<li><p>decltype的结果类型与表达形式密切相关。有一种情况需要特别注意：对于decltype 所用表达式来说，如果变量名加上一对括号，则得到的类型与不加上括号的时候可能不同。如果decltype使用的是一个不加括号的变量，那么得到的结果就是这个变量的类型。但是如果给这个变量加上一个或多层括号，那么编译器会把这个变量当作一个表达式看待，变量是一个可以作为左值的特殊表达式，所以这样的decltype就会返回引用类型。</p>
-</li>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> cmp = [](<span class="type">const</span> Foo&amp; f1, <span class="type">const</span> Foo&amp; f2)&#123;</span><br><span class="line">    <span class="keyword">return</span> f1.<span class="built_in">data</span>() &gt; f2.<span class="built_in">data</span>();</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function">std::set&lt;Foo,<span class="title">decltype</span><span class="params">(cmp)</span>&gt; <span class="title">coll</span><span class="params">(cmp)</span></span>;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="和auto的区别"><a href="#和auto的区别" class="headerlink" title="和auto的区别"></a>和auto的区别</h3><ul>
+<li>auto类型说明符用编译器计算变量的初始值来推断其类型,而decltype虽然也让编译器分析表达式并得到它的类型,但是不实际计算表达式的值。</li>
+<li>编译器推断出来的auto类型有时候和初始值的类型并不完全一致,编译器会适当的改变结果类型使其更符合初始化规则,例如，auto一般会忽略掉顶层const，而把底层const保留下来,与之相反,decltype会保留变量的顶层const。</li>
+<li>decltype的结果类型与表达形式密切相关。有一种情况需要特别注意：对于decltype 所用表达式来说，如果变量名加上一对括号，则得到的类型与不加上括号的时候可能不同。如果decltype使用的是一个不加括号的变量，那么得到的结果就是这个变量的类型。但是如果给这个变量加上一个或多层括号，那么编译器会把这个变量当作一个表达式看待，变量是一个可以作为左值的特殊表达式，所以这样的decltype就会返回引用类型。</li>
 </ul>
 
     </div>
@@ -261,8 +259,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Alambda/" rel="prev" title="c++11新特性：lambda">
-      <i class="fa fa-chevron-left"></i> c++11新特性：lambda
+    <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atemplate-template-parameter/" rel="prev" title="c++11新特性：template-template-parameter">
+      <i class="fa fa-chevron-left"></i> c++11新特性：template-template-parameter
     </a></div>
       <div class="post-nav-item">
     <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9AAlias-Template/" rel="next" title="c++11新特性：Alias-Template">
@@ -342,7 +340,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

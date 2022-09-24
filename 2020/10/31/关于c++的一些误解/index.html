@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -29,7 +29,7 @@
 <meta property="og:description" content="关于C++默认构造函数的一些误解   当我们没有声明类的默认构造函数时，编译器会默认给我们生成默认构造函数？ 错误，在下面四种情况下会生成默认构造： 带有默认构造函数的成员对象 带有默认构造函数的基类 带有虚函数的类 有虚继承的类     如果没有声明类的默认构造函数，编译器会给我们类的成员变量例如整型，指针等初始化？ 错误，编译器只生成其需要的用户自定义类的默认构造，对变量不初始化，这些活儿是">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-10-30T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-12-07T06:41:50.784Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.121Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="C++">
 <meta name="twitter:card" content="summary">
@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-12-07 14:41:50" itemprop="dateModified" datetime="2021-12-07T14:41:50+08:00">2021-12-07</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -245,7 +245,7 @@
 <ul>
 <li>错误，初始化顺序是按照类中定义的顺序。</li>
 </ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">int</span> j;</span><br><span class="line">    <span class="built_in">A</span>(<span class="keyword">int</span> val):<span class="built_in">j</span>(val),<span class="built_in">i</span>(j)&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="function">A <span class="title">a</span><span class="params">(<span class="number">1</span>)</span></span>;</span><br><span class="line">    cout &lt;&lt; a.i &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; a.j &lt;&lt; endl;  <span class="comment">//程序输出：32767 1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> i;</span><br><span class="line">    <span class="type">int</span> j;</span><br><span class="line">    <span class="built_in">A</span>(<span class="type">int</span> val):<span class="built_in">j</span>(val),<span class="built_in">i</span>(j)&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="function">A <span class="title">a</span><span class="params">(<span class="number">1</span>)</span></span>;</span><br><span class="line">    cout &lt;&lt; a.i &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; a.j &lt;&lt; endl;  <span class="comment">//程序输出：32767 1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -343,7 +343,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

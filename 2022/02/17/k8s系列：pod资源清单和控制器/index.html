@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -29,7 +29,7 @@
 <meta property="og:description" content="Pod 概念：多个docker的集合，有一个pause容器，其他容器共享这个容器的网络栈和存储，这样多个应用可以实现本地访问其他应用。 分类 自主式pod（不是被控制器管理的pod） 控制器管理的pod">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-02-16T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-04-07T05:49:18.777Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.124Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="K8S">
 <meta name="twitter:card" content="summary">
@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-04-07 13:49:18" itemprop="dateModified" datetime="2022-04-07T13:49:18+08:00">2022-04-07</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -230,7 +230,7 @@
 </ul>
 <span id="more"></span>
 <h3 id="Pod控制器"><a href="#Pod控制器" class="headerlink" title="Pod控制器"></a>Pod控制器</h3><ul>
-<li>Replication Controller/ ReplicaSet / Deployment</li>
+<li>Replication Controller&#x2F; ReplicaSet &#x2F; Deployment</li>
 </ul>
 <p>RC保证容器应用的副本始终保持在用户定义的副本数，如果容器异常，自动创建新的pod替代，异常多出来的容器也会自动回收。  </p>
 <p>RS相比RC多了集合式的selector。  </p>
@@ -246,7 +246,7 @@
 </ul>
 <p>下图展示了利用flann eld组件进行转发的原理图，flanneld可以使整个网络扁平化：<br><a href="/images/k8s-7.png"></a></p>
 <ol>
-<li>假如webapp2想要访问backend，怎么同过内网ip进行通信？  </li>
+<li>假如webapp2想要访问backend，怎么同过内网ip进行通信？</li>
 </ol>
 <ul>
 <li>首先webApp2发送数据到docker0</li>
@@ -283,10 +283,13 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B5%84%E6%BA%90%E5%92%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" rel="prev" title="k8s系列：资源和声明周期">
-      <i class="fa fa-chevron-left"></i> k8s系列：资源和声明周期
+    <a href="/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/" rel="prev" title="k8s系列：基础概念">
+      <i class="fa fa-chevron-left"></i> k8s系列：基础概念
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2022/09/25/%E4%BA%91%E8%AE%A1%E7%AE%97ACP/" rel="next" title="">
+       <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -361,7 +364,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

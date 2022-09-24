@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -33,7 +33,7 @@
 <meta property="og:image" content="http://haoqinx.github.io/images/hash-3.png">
 <meta property="og:image" content="http://haoqinx.github.io/images/hash-4.png">
 <meta property="article:published_time" content="2021-09-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-10-29T12:09:52.607Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.113Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="STL">
@@ -203,7 +203,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-10-29 20:09:52" itemprop="dateModified" datetime="2021-10-29T20:09:52+08:00">2021-10-29</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -226,27 +226,27 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="底层结构：hashtable"><a href="#底层结构：hashtable" class="headerlink" title="底层结构：hashtable"></a>底层结构：hashtable</h3><p>unordered set/map底层是以hashtable为数据结构，任何对象/类都可以折射成一个数值（类对象都是由数据构成，对数据进行一些操作然后hash就可以转化成一个数值）.</p>
+        <h3 id="底层结构：hashtable"><a href="#底层结构：hashtable" class="headerlink" title="底层结构：hashtable"></a>底层结构：hashtable</h3><p>unordered set&#x2F;map底层是以hashtable为数据结构，任何对象&#x2F;类都可以折射成一个数值（类对象都是由数据构成，对数据进行一些操作然后hash就可以转化成一个数值）.</p>
 <span id="more"></span>
 <p><img src="/images/hashtable-1.png"></p>
-<p>在空间充足的情况下如果hashtable足够长，那么冲突可以大大降低，但是现实中常常采用的是hashtable长度为M，N为数据量，只要M&gt;N即可。<br>常见的hashtable解决碰撞的方法：<br>例如，已知哈希表长度m=11，哈希函数为：H（key）= key % 11，则H（47）=3，H（26）=4，H（60）=5，假设下一个关键字为69，则H（69）=3，与47冲突。</p>
+<p>在空间充足的情况下如果hashtable足够长，那么冲突可以大大降低，但是现实中常常采用的是hashtable长度为M，N为数据量，只要M&gt;N即可。<br>常见的hashtable解决碰撞的方法：<br>例如，已知哈希表长度m&#x3D;11，哈希函数为：H（key）&#x3D; key % 11，则H（47）&#x3D;3，H（26）&#x3D;4，H（60）&#x3D;5，假设下一个关键字为69，则H（69）&#x3D;3，与47冲突。</p>
 <ul>
-<li><p>线性探测再散列<br>  dii=1，2，3，…，m-1<br>  这种方法的特点是：冲突发生时，顺序查看表中下一单元，直到找出一个空单元或查遍全表。  </p>
-<p>  如果用线性探测再散列处理冲突，下一个哈希地址为H1=（3 + 1）% 11 = 4，仍然冲突，再找下一个哈希地址为H2=（3 + 2）% 11 = 5，还是冲突，继续找下一个哈希地址为H3=（3 + 3）% 11 = 6，此时不再冲突，将69填入5号单元。</p>
+<li><p>线性探测再散列<br>  dii&#x3D;1，2，3，…，m-1<br>  这种方法的特点是：冲突发生时，顺序查看表中下一单元，直到找出一个空单元或查遍全表。  </p>
+<p>  如果用线性探测再散列处理冲突，下一个哈希地址为H1&#x3D;（3 + 1）% 11 &#x3D; 4，仍然冲突，再找下一个哈希地址为H2&#x3D;（3 + 2）% 11 &#x3D; 5，还是冲突，继续找下一个哈希地址为H3&#x3D;（3 + 3）% 11 &#x3D; 6，此时不再冲突，将69填入5号单元。</p>
 </li>
 <li><p>二次探测再散列</p>
-<p>  di=12，-12，22，-22，…，k2，-k2 ( k&lt;=m/2 )</p>
+<p>  di&#x3D;12，-12，22，-22，…，k2，-k2 ( k&lt;&#x3D;m&#x2F;2 )</p>
 <p>  这种方法的特点是：冲突发生时，在表的左右进行跳跃式探测，比较灵活。  </p>
-<p>  如果用二次探测再散列处理冲突，下一个哈希地址为H1=（3 + 12）% 11 = 4，仍然冲突，再找下一个哈希地址为H2=（3 - 12）% 11 = 2，此时不再冲突，将69填入2号单元。</p>
+<p>  如果用二次探测再散列处理冲突，下一个哈希地址为H1&#x3D;（3 + 12）% 11 &#x3D; 4，仍然冲突，再找下一个哈希地址为H2&#x3D;（3 - 12）% 11 &#x3D; 2，此时不再冲突，将69填入2号单元。</p>
 </li>
 <li><p>伪随机探测再散列</p>
-<p>  di=伪随机数序列。</p>
-<p>  具体实现时，应建立一个伪随机数发生器，（如i=(i+p) % m），并给定一个随机数做起点。</p>
-<p>  如果用伪随机探测再散列处理冲突，且伪随机数序列为：2，5，9，……..，则下一个哈希地址为H1=（3 + 2）% 11 = 5，仍然冲突，再找下一个哈希地址为H2=（3 + 5）% 11 = 8，此时不再冲突，将69填入8号单元。</p>
+<p>  di&#x3D;伪随机数序列。</p>
+<p>  具体实现时，应建立一个伪随机数发生器，（如i&#x3D;(i+p) % m），并给定一个随机数做起点。</p>
+<p>  如果用伪随机探测再散列处理冲突，且伪随机数序列为：2，5，9，……..，则下一个哈希地址为H1&#x3D;（3 + 2）% 11 &#x3D; 5，仍然冲突，再找下一个哈希地址为H2&#x3D;（3 + 5）% 11 &#x3D; 8，此时不再冲突，将69填入8号单元。</p>
 </li>
 <li><p>再hash<br>  这种方法是同时构造多个不同的哈希函数：</p>
-<p>  Hi=RH1（key） i=1，2，…，k</p>
-<p>  当哈希地址Hi=RH1（key）发生冲突时，再计算Hi=RH2（key）……，直到冲突不再产生。这种方法不易产生聚集，但增加了计算时间。</p>
+<p>  Hi&#x3D;RH1（key） i&#x3D;1，2，…，k</p>
+<p>  当哈希地址Hi&#x3D;RH1（key）发生冲突时，再计算Hi&#x3D;RH2（key）……，直到冲突不再产生。这种方法不易产生聚集，但增加了计算时间。</p>
 </li>
 <li><p>链地址法<br>  这种方法的基本思想是将所有哈希地址为i的元素构成一个称为同义词链的单链表，并将单链表的头指针存在哈希表的第i个单元中，因而查找、插入和删除主要在同义词链中进行。链地址法适用于经常进行插入和删除的情况。</p>
 </li>
@@ -277,12 +277,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Avector/" rel="prev" title="c++STL系列：vector">
-      <i class="fa fa-chevron-left"></i> c++STL系列：vector
+    <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Astack&&queue/" rel="prev" title="c++STL系列：stack&&queue">
+      <i class="fa fa-chevron-left"></i> c++STL系列：stack&&queue
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Astack&&queue/" rel="next" title="c++STL系列：stack&&queue">
-      c++STL系列：stack&&queue <i class="fa fa-chevron-right"></i>
+    <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Aset/" rel="next" title="c++STL系列：set & multiset">
+      c++STL系列：set & multiset <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -358,7 +358,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

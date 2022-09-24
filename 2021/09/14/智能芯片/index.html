@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -21,15 +21,15 @@
     var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="嵌入式人工智能第六章 人工智能的发展  机器学习（参考《机器学习》周志华，《统计学习方法》） 模型评估方法 监督学习（分类，强化学习） 半监督学习，无监督学习（聚类） 集成学习 概率图模型 规则学习   深度学习（参考《深度学习》） 深度前馈网络 正则化 优化（梯度下降） 卷积网络（CNN） RNN&#x2F;LSTM 其他前沿理论（配分函数和近似推断，自编码器，生成对抗网络，图神经网络）     硬件架构">
+  <meta name="description" content="嵌入式人工智能第六章 人工智能的发展  机器学习（参考《机器学习》周志华，《统计学习方法》） 模型评估方法 监督学习（分类，强化学习） 半监督学习，无监督学习（聚类） 集成学习 概率图模型 规则学习   深度学习（参考《深度学习》） 深度前馈网络 正则化 优化（梯度下降） 卷积网络（CNN） RNN&#x2F;LSTM 其他前沿理论（配分函数和近似推断，自编码器，生成对抗网络，图神经网络）">
 <meta property="og:type" content="article">
 <meta property="og:title" content="嵌入式人工智能">
 <meta property="og:url" content="http://haoqinx.github.io/2021/09/14/%E6%99%BA%E8%83%BD%E8%8A%AF%E7%89%87/index.html">
 <meta property="og:site_name" content="面向自由编程">
-<meta property="og:description" content="嵌入式人工智能第六章 人工智能的发展  机器学习（参考《机器学习》周志华，《统计学习方法》） 模型评估方法 监督学习（分类，强化学习） 半监督学习，无监督学习（聚类） 集成学习 概率图模型 规则学习   深度学习（参考《深度学习》） 深度前馈网络 正则化 优化（梯度下降） 卷积网络（CNN） RNN&#x2F;LSTM 其他前沿理论（配分函数和近似推断，自编码器，生成对抗网络，图神经网络）     硬件架构">
+<meta property="og:description" content="嵌入式人工智能第六章 人工智能的发展  机器学习（参考《机器学习》周志华，《统计学习方法》） 模型评估方法 监督学习（分类，强化学习） 半监督学习，无监督学习（聚类） 集成学习 概率图模型 规则学习   深度学习（参考《深度学习》） 深度前馈网络 正则化 优化（梯度下降） 卷积网络（CNN） RNN&#x2F;LSTM 其他前沿理论（配分函数和近似推断，自编码器，生成对抗网络，图神经网络）">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-09-13T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-11-19T14:43:11.951Z">
+<meta property="article:modified_time" content="2022-09-24T17:34:19.118Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="硬件">
 <meta name="twitter:card" content="summary">
@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-11-19 22:43:11" itemprop="dateModified" datetime="2021-11-19T22:43:11+08:00">2021-11-19</time>
+                <time title="Modified: 2022-09-25 01:34:19" itemprop="dateModified" datetime="2022-09-25T01:34:19+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -237,7 +237,7 @@
 <li>正则化</li>
 <li>优化（梯度下降）</li>
 <li>卷积网络（CNN）</li>
-<li>RNN/LSTM</li>
+<li>RNN&#x2F;LSTM</li>
 <li>其他前沿理论（配分函数和近似推断，自编码器，生成对抗网络，图神经网络）</li>
 </ol>
 </li>
@@ -245,7 +245,8 @@
 </li>
 <li><p>硬件架构<br> 本小节主要介绍常用的处理器，在嵌入式端广泛运用在深度学习训练、推理过程的加速。</p>
 <ol>
-<li>GPU<br>图像处理器。<br>GPU采用数量众多的计算单元和超长的流水线，善于处理图像领域的运算加速。但GPU无法单独工作，必须由CPU进行控制调用才能工作。CPU可单独作用，处理复杂的逻辑运算和不同的数据类型，但当需要大量的处理类型统一的数据时，则可调用GPU进行并行计算。深度学习的崛起受到GPU发展的推动。<ol>
+<li><p>GPU<br> 图像处理器。<br> GPU采用数量众多的计算单元和超长的流水线，善于处理图像领域的运算加速。但GPU无法单独工作，必须由CPU进行控制调用才能工作。CPU可单独作用，处理复杂的逻辑运算和不同的数据类型，但当需要大量的处理类型统一的数据时，则可调用GPU进行并行计算。深度学习的崛起受到GPU发展的推动。</p>
+<ol>
 <li>GPU发展历史</li>
 <li>GPU功能</li>
 <li>GPU物理架构(以Nvidia为例)<ol>
@@ -256,49 +257,54 @@
 <li>NVidia Turing架构（<a target="_blank" rel="noopener" href="https://images.nvidia.cn/aem-dam/en-zz/Solutions/design-visualization/technologies/turing-architecture/NVIDIA-Turing-Architecture-Whitepaper.pdf%EF%BC%89">https://images.nvidia.cn/aem-dam/en-zz/Solutions/design-visualization/technologies/turing-architecture/NVIDIA-Turing-Architecture-Whitepaper.pdf）</a></li>
 </ol>
 </li>
-<li>GPU运行机制（[]<a target="_blank" rel="noopener" href="http://haifux.org/lectures/267/Introduction-to-GPUs.pdf">http://haifux.org/lectures/267/Introduction-to-GPUs.pdf</a><br><a target="_blank" rel="noopener" href="http://download.nvidia.com/developer/cuda/seminar/TDCI_Arch.pdf%EF%BC%89">http://download.nvidia.com/developer/cuda/seminar/TDCI_Arch.pdf）</a><ol>
+<li>GPU运行机制（[]<a target="_blank" rel="noopener" href="http://haifux.org/lectures/267/Introduction-to-GPUs.pdf">http://haifux.org/lectures/267/Introduction-to-GPUs.pdf</a><br> <a target="_blank" rel="noopener" href="http://download.nvidia.com/developer/cuda/seminar/TDCI_Arch.pdf%EF%BC%89">http://download.nvidia.com/developer/cuda/seminar/TDCI_Arch.pdf）</a><ol>
 <li>渲染总览</li>
 <li>逻辑管线</li>
 <li>技术要点</li>
 <li>GPU资源机制</li>
 </ol>
 </li>
-<li>总结 </li>
+<li>总结</li>
 </ol>
 </li>
-<li>FPGA （Field Programmable Gate Array，现场可编程门阵列）<br>(这部分内容非常新，资料不多，很多是专利和未公开架构。如专利201880061751.0)<br>半定制化的人工智能专用芯片。FPGA适用于多指令，单数据流的分析，与GPU相反，因此常用于预测阶段，如云端。（下面除5之外，参考《FPGA原理和结构》，在本书7.7章有深度学习结合FPGA，但过于简单）<ol>
+<li><p>FPGA （Field Programmable Gate Array，现场可编程门阵列）<br> (这部分内容非常新，资料不多，很多是专利和未公开架构。如专利201880061751.0)<br> 半定制化的人工智能专用芯片。FPGA适用于多指令，单数据流的分析，与GPU相反，因此常用于预测阶段，如云端。（下面除5之外，参考《FPGA原理和结构》，在本书7.7章有深度学习结合FPGA，但过于简单）</p>
+<ol>
 <li>FPGA发展历史</li>
 <li>FPGA构成要素和结构</li>
 <li>FPGA工作原理</li>
 <li>FPGA开发流程</li>
 <li>FPGA AI芯片案例：DPU（资源连接：<a target="_blank" rel="noopener" href="https://blogs.nvidia.com/blog/2020/05/20/whats-a-dpu-data-processing-unit/%EF%BC%89">https://blogs.nvidia.com/blog/2020/05/20/whats-a-dpu-data-processing-unit/）</a><ol>
-<li>基本概念<br>DPU（Deep learning Processing Unit）深度学习处理器</li>
+<li>基本概念<br> DPU（Deep learning Processing Unit）深度学习处理器</li>
 <li>工作原理</li>
-<li>和CPU/GPU优势  </li>
+<li>和CPU&#x2F;GPU优势</li>
 </ol>
 </li>
 </ol>
 </li>
-<li>ASIC（Application Specific IntegratedCircuit）<br>ASIC是指依产品需求不同而定制化的特殊规格集成电路，由特定使用者要求和特定电子系统的需要而设计、制造。（参考《高级ASIC芯片综合》）<ol>
+<li><p>ASIC（Application Specific IntegratedCircuit）<br> ASIC是指依产品需求不同而定制化的特殊规格集成电路，由特定使用者要求和特定电子系统的需要而设计、制造。（参考《高级ASIC芯片综合》）</p>
+<ol>
 <li>基本概念</li>
 <li>静态时序分析</li>
 <li>设计约束和优化设计</li>
 <li>物理综合</li>
-<li>ASIC AI芯片案例<br> TPU（Tensor Processing Unit）<br> (参考论文 <a target="_blank" rel="noopener" href="https://arxiv.org/ftp/arxiv/papers/1704/1704.04760.pdf">https://arxiv.org/ftp/arxiv/papers/1704/1704.04760.pdf</a>)<br> 张量处理器<br> 谷歌专门为加速深层神经网络运算能力而研发的一款芯片，其实也是一款ASIC。TPU与同期的CPU和GPU相比，可以提供15-30倍的性能提升，以及30-80倍的效率（性能/瓦特）提升。<ol>
+<li>ASIC AI芯片案例<br> TPU（Tensor Processing Unit）<br> (参考论文 <a target="_blank" rel="noopener" href="https://arxiv.org/ftp/arxiv/papers/1704/1704.04760.pdf">https://arxiv.org/ftp/arxiv/papers/1704/1704.04760.pdf</a>)<br> 张量处理器<br> 谷歌专门为加速深层神经网络运算能力而研发的一款芯片，其实也是一款ASIC。TPU与同期的CPU和GPU相比，可以提供15-30倍的性能提升，以及30-80倍的效率（性能&#x2F;瓦特）提升。<ol>
 <li>架构</li>
-<li>实现  </li>
-</ol>
- <em>备选：NPU（（Neural network Processing Unit）<br> 神经网络处理器：用电路模拟人类的神经元和突触结构，将神经网络结构直接以硬件形式体现。但是没有找到相关论文。</em></li>
+<li>实现<br> <em>备选：NPU（（Neural network Processing Unit）<br> 神经网络处理器：用电路模拟人类的神经元和突触结构，将神经网络结构直接以硬件形式体现。但是没有找到相关论文。</em></li>
 </ol>
 </li>
-<li>总结与比较<ol>
-<li>优缺点（能耗，推理速度，通用性，复杂程度，成本）<br> 例：<ul>
+</ol>
+</li>
+<li><p>总结与比较</p>
+<ol>
+<li><p>优缺点（能耗，推理速度，通用性，复杂程度，成本）<br> 例：</p>
+<ul>
 <li>GPU性能好，功耗高，通用性好。管理控制能力（最弱），功耗（最高）。</li>
 <li>FPGA可编程，灵活程度介于GPU和ASIC之间。开发难度大、只适合定点运算、价格比较昂贵。</li>
 <li>ASIC,作为集成电路技术与特定用户的整机或系统技术紧密结合的产物，与通用集成电路相比具有体积更小、重量更轻、 功耗更低、可靠性提高、性能提高、保密性增强、成本降低等优点。</li>
 </ul>
 </li>
-<li>应用场景（大型高性能计算、通用嵌入式、定制化嵌入式）</li>
+<li><p>应用场景（大型高性能计算、通用嵌入式、定制化嵌入式）</p>
+</li>
 </ol>
 </li>
 </ol>
@@ -325,18 +331,18 @@
 </li>
 <li>嵌入式部署<br> 本小节主要介绍目前主流的嵌入式AI<strong>部署</strong>框架:<ol>
 <li>基于硬件环境<ol>
-<li>基于arm架构：armnn（<br>官网 <a target="_blank" rel="noopener" href="https://developer.arm.com/solutions/machine-learning-on-arm/developer-material/white-papers-and-research-papers">https://developer.arm.com/solutions/machine-learning-on-arm/developer-material/white-papers-and-research-papers</a><br>软件地址：<a target="_blank" rel="noopener" href="https://github.com/ARM-software/armnn%EF%BC%89">https://github.com/ARM-software/armnn）</a><ol>
+<li>基于arm架构：armnn（<br> 官网 <a target="_blank" rel="noopener" href="https://developer.arm.com/solutions/machine-learning-on-arm/developer-material/white-papers-and-research-papers">https://developer.arm.com/solutions/machine-learning-on-arm/developer-material/white-papers-and-research-papers</a><br> 软件地址：<a target="_blank" rel="noopener" href="https://github.com/ARM-software/armnn%EF%BC%89">https://github.com/ARM-software/armnn）</a><ol>
 <li>硬件设计（<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1801.06274.pdf%EF%BC%89">https://arxiv.org/pdf/1801.06274.pdf）</a></li>
 <li>软件优化（<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1801.04326.pdf%EF%BC%89">https://arxiv.org/pdf/1801.04326.pdf）</a></li>
 </ol>
 </li>
-<li>基于通用GPU/CPU：tensorflow Lite(官网：<a target="_blank" rel="noopener" href="https://www.tensorflow.org/lite?hl=zh-cn">https://www.tensorflow.org/lite?hl=zh-cn</a>)<br>特点：</li>
+<li>基于通用GPU&#x2F;CPU：tensorflow Lite(官网：<a target="_blank" rel="noopener" href="https://www.tensorflow.org/lite?hl=zh-cn">https://www.tensorflow.org/lite?hl=zh-cn</a>)<br> 特点：</li>
 </ol>
 <ul>
 <li>为不同端上优化的核心operator的解释器（Interpreter）打包成一个轻量的二进制包；</li>
 <li>丰富的平台支持。Android和iOS设备、嵌入式Linux、微控制器设备等；</li>
 <li>多语言API调用支持。Java, Swift, Objective-C, C++, and Python；</li>
-<li>高性能。针对硬件精心优化的底层kernel实现，如预融合策略的激活和bias算子/底层kernel；</li>
+<li>高性能。针对硬件精心优化的底层kernel实现，如预融合策略的激活和bias算子&#x2F;底层kernel；</li>
 <li>模型优化工具。量化模型，该策略可在不影响精度的前提下减小模型尺寸；</li>
 <li>高效模型格式。使用轻量的FlatBuffer（跨平台，且比protobuf性能好，最初为游戏和性能相关任务而开发）。</li>
 </ul>
@@ -366,7 +372,7 @@
 </li>
 <li>目标检测<ol>
 <li>数据集（COCO）</li>
-<li>算法：YOLO mobile/YOLO v4</li>
+<li>算法：YOLO mobile&#x2F;YOLO v4</li>
 <li>模型训练</li>
 <li>模型部署</li>
 </ol>
@@ -392,8 +398,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9AHTTPS&TLS&SSL/" rel="prev" title="网络复习：HTTPS/TLS/SSL">
-      <i class="fa fa-chevron-left"></i> 网络复习：HTTPS/TLS/SSL
+    <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9APING%E5%91%BD%E4%BB%A4%E5%8E%9F%E7%90%86/" rel="prev" title="网络复习：PING & traceroute命令原理">
+      <i class="fa fa-chevron-left"></i> 网络复习：PING & traceroute命令原理
     </a></div>
       <div class="post-nav-item">
     <a href="/2021/09/14/%E6%97%A0%E9%94%81%E9%98%9F%E5%88%97/" rel="next" title="无锁队列">
@@ -473,7 +479,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
