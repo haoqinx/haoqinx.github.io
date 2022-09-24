@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="内核函数poll_wait 作用：把当前进程加入到驱动里自定义的等待队列上  当驱动事件就绪后，就可以在驱动里自定义的等待队列上唤醒调用poll的进程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux网络编程：epoll内核原理">
+<meta property="og:url" content="http://haoqinx.github.io/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9Aepoll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="面向自由编程">
+<meta property="og:description" content="内核函数poll_wait 作用：把当前进程加入到驱动里自定义的等待队列上  当驱动事件就绪后，就可以在驱动里自定义的等待队列上唤醒调用poll的进程">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://haoqinx.github.io/images/epoll-1.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/epoll-2.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/epoll-4.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/epoll-5.png">
+<meta property="article:published_time" content="2021-09-13T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-10-29T12:16:45.674Z">
+<meta property="article:author" content="hqin">
+<meta property="article:tag" content="网络编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://haoqinx.github.io/images/epoll-1.png">
+
+<link rel="canonical" href="http://haoqinx.github.io/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9Aepoll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Linux网络编程：epoll内核原理 | 面向自由编程</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">面向自由编程</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9Aepoll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux网络编程：epoll内核原理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-10-29 20:16:45" itemprop="dateModified" datetime="2021-10-29T20:16:45+08:00">2021-10-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="内核函数poll-wait"><a href="#内核函数poll-wait" class="headerlink" title="内核函数poll_wait"></a>内核函数poll_wait</h3><ul>
+<li>作用：把当前进程加入到驱动里自定义的等待队列上 </li>
+<li>当驱动事件就绪后，就可以在驱动里自定义的等待队列上唤醒调用poll的进程<span id="more"></span>
+<h3 id="钩子poll"><a href="#钩子poll" class="headerlink" title="钩子poll"></a>钩子poll</h3>内核f_op-&gt;poll必须配合驱动自己的等待队列才能用，不然驱动有事件产生后不知道哪些进程调用了poll来等待这个事件：<br>内核f_op-&gt;poll要做的事情：</li>
+<li>调用poll_wait，将当前进程放入驱动设备的等待队列上，这样驱动就知道哪些进程在调用poll等待事件</li>
+<li>检查此时立刻已有的事件（POLLIN\POLLOUT\POLLERR……）并返回掩码表示<br>f_op-&gt;poll是一个非阻塞的操作，立即返回，返回值以掩码形式表示当前已产生的事件集合。<br>例如：<br>snull驱动有两个自定义的等待队列：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">wait_queue_head_t</span> inq;<span class="comment">//读取进程无数据可读时，在此队列等待</span></span><br><span class="line"><span class="keyword">wait_queue_head_t</span> outq;<span class="comment">//写入进程无空间可写时，在此队列等待</span></span><br></pre></td></tr></table></figure>
+由于snull驱动的读操作read会在读取数据后，唤醒outq队列上的写进程们<br>且snull驱动的写操作write会在写入数据后，唤醒inq队列上的读进程们，因此snull驱动的poll操作：</li>
+</ul>
+<ol>
+<li>调用poll_wait将当前进程加入到inq;</li>
+<li>调用poll_wait将当前进程加入到outq;</li>
+<li>查看当前有什么事件，返回掩码.<br>假设某进程X调用poll，则进程X会出现在inq与outq等待队列上</li>
+</ol>
+<p>之后snull写入时，由于将唤醒inq，故调用poll而进入inq的进程X被唤醒<br>同理，snull读取时，由于将唤醒outq，故调用poll而进入outq的进程X被唤醒.<br>于是，读、写事件唤醒了调用poll等待事件产生的进程们。</p>
+<h3 id="等待队列"><a href="#等待队列" class="headerlink" title="等待队列"></a>等待队列</h3><p>等待队列对头：wait_queue_head_t<br>队列的成员：wait_queue_t<br>wait_queue_t的成员:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> *<span class="keyword">private</span>; <span class="comment">/*指向进程描述符task_struct*/</span></span><br><span class="line"><span class="keyword">wait_queue_func_t</span>  func;<span class="comment">//唤醒时调用此函数，即钩子函数</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span>  <span class="title">task_list</span>;</span><span class="comment">//队列链表指针</span></span><br></pre></td></tr></table></figure>
+<p><font color = orange>一般钩子函数func是内核默认函数default_wake_function，功能就是唤醒进程。<br>我们也可以在把进程放入等待队列时主动设定钩子函数，使得在唤醒进程时自动执行我们需要的操作.</font><br><font color = red>epoll就利用了队列钩子函数：把产生的事件内容copy到rdlist,这样，事件来临时会自动把事件内容放到rdlist中，而不需要我们自己遍历监听句柄们查有谁产生了事件.</font></p>
+<h3 id="epoll内核原理1：调用epoll-create1-epoll-create"><a href="#epoll内核原理1：调用epoll-create1-epoll-create" class="headerlink" title="epoll内核原理1：调用epoll_create1/epoll_create"></a>epoll内核原理1：调用epoll_create1/epoll_create</h3><p>创建了epoll句柄eventpoll，返回其文件表示的描述符epfd<br><img src="/images/epoll-1.png"></p>
+<p>eventpoll内部有以下关键数据结构：</p>
+<ul>
+<li>rbtree：红黑树，每个被加入到epoll监控的文件事件会创建一个epitem结构，作为rbtree节点; <ul>
+<li>使用rbtree的优点：可容纳大量文件事件，方便增删改（O(lgN)）</li>
+</ul>
+</li>
+<li>rdlist：内核链表，用于存放当前产生了期待事件产生的文件句柄们（这里的一个文件句柄可以理解为一个epoll_event）</li>
+<li>wq：当进程调用epoll_wait等待时，进程加入等待队列wq</li>
+<li>poll_wait：eventpoll本身的等待队列，由于eventpoll自己也被当做文件，这个队列用于自己被别人调用select/poll/epoll监听的情况（一般没啥用）。  </li>
+</ul>
+<p>poll_wait在啥时候用呢：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">fd = socket(...);</span><br><span class="line">efd1 = epoll_create();</span><br><span class="line">efd2 = epoll_create();</span><br><span class="line">epoll_ctl(efd1, EPOLL_CTL_ADD, fd, ...);</span><br><span class="line">epoll_ctl(efd2, EPOLL_CTL_ADD, efd1, ...);</span><br></pre></td></tr></table></figure>
+<p>如上，efd1监控fd，而efd2监控了efd1，即嵌套的epoll监控：epoll监控另一个epoll句柄<br>efd2要监控efd1，将调用efd1的poll函数<br>回忆之前说过：文件f_op-&gt;poll需要配合驱动提供的等待队列<br>对于epollfd，等待队列就是poll_wait<br>efd2监听efd1，会调用efd1-&gt;f_op-&gt;poll，于是把当前进程放到efd1的poll_wait队列上<br>在epoll的内核实现中，当efd1本身监听到fd事件产生后，会顺便唤醒poll_wait上的进程<br>于是，“efd1监听到事件” 被通知到efd2。这样，就实现了epollfd被其他多路复用监听了！<br>故：poll_wait就是用于epoll句柄被另外的多路复用监听的，配合epoll自己的f_op-&gt;poll，看起来一般用不到。</p>
+<h3 id="epoll内核原理2：调用epoll-ctl操作句柄新增监控事件"><a href="#epoll内核原理2：调用epoll-ctl操作句柄新增监控事件" class="headerlink" title="epoll内核原理2：调用epoll_ctl操作句柄新增监控事件"></a>epoll内核原理2：调用epoll_ctl操作句柄新增监控事件</h3><p>epoll_ctl：EPOLL_CTL_ADD、EPOLL_CTL_MOD、EPOLL_CTL_DEL新增、修改、删除红黑树上的文件句柄。<br><font color = orange>其中epll_ctl：EPOLL_CTL_ADD新增句柄不仅仅新增红黑树节点，更关键的是对文件开始监控！与select/poll的本质区别：并不是调用epoll_wait的时候才监听文件，而是EPOLL_CTL_ADD的时候就开始监听了!</font></p>
+<ul>
+<li>EPOLL_CTL_ADD<br>  epoll_ctl(epfd, EPOLL_CTL_ADD, fd, fdevent)核心流程：<ul>
+<li>对要注册的事件event-&gt;events追加关心事件：EPOLLERR | EPOLLHUP(EPOLLERR、EPOLLHUP事件会被自动监听，即使我们没设置)</li>
+<li>创建epitem结构，加入到红黑树中.</li>
+<li><font color = red>revent = file-&gt;f_op-&gt;poll，即调用poll，把当前进程放到文件的等待队列上且设置回调函数ep_poll_callback，返回值revent是文件当前已产生事件掩码.</font></li>
+<li>检查返回事件：如果revent与关心事件event-&gt;events有交集（说明ADD之前事件就准备好了）<ul>
+<li>把此epitem节点拷贝到rdlist链表中；（就绪句柄拷贝到rdlist）;</li>
+<li>如果有进程在wq等待队列上（即有进程在调用epoll_wait等待），则唤醒之！</li>
+<li>顺便，如果有进程在poll_wait等待队列上（即有进程调用多路复用来监听当前epoll句柄），则唤醒之！</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>可以看到，如果在EPOLL_CTL_ADD一个文件之前，这个文件关心的事件就已经产生了的话，由于会唤醒wq队列上的进程，则此时EPOLL_CTL_ADD会使得epoll_wait函数从阻塞中返回.</p>
+<p><img src="/images/epoll-2.png"></p>
+<ul>
+<li><p>回调函数ep_poll_callback<br>  回调函数ep_poll_callback作为等待队列的回调函数：<br>  当文件事件来临，唤醒文件等待队列上进程，ep_poll_callback函数将被自动调用，并把已产生事件们作为其参数传入。<br>  流程：</p>
+<ul>
+<li>ep_poll_callback检查已产生事件与关心事件是否有交集，如果有：<ul>
+<li>文件的epitem节点拷贝到rdlist链表上（就绪句柄拷贝到rdlist）</li>
+<li>如果有进程在wq等待队列上（即有进程在调用epoll_wait等待），则唤醒之！</li>
+<li>顺便，如果有进程在poll_wait等待队列上（即有进程调用多路复用来监听当前epoll句柄），则唤醒之！  </li>
+</ul>
+</li>
+</ul>
+<p>  简而言之：回调函数把文件句柄拷贝到rdlist，并唤醒epoll_wait等待的进程</p>
+</li>
+</ul>
+<h3 id="epoll内核原理3：当文件有事件来临时："><a href="#epoll内核原理3：当文件有事件来临时：" class="headerlink" title="epoll内核原理3：当文件有事件来临时："></a>epoll内核原理3：当文件有事件来临时：</h3><ol>
+<li>对应的等待队列上的进程被唤醒，执行回调函数ep_poll_callback，并把已产生事件们以参数传入</li>
+<li>call ep_poll_callback.<br><img src="/images/epoll-4.png"></li>
+</ol>
+<p>简而言之：事件发生时，文件句柄被自动拷贝到rdlist，调用epoll_wait等待的进程们被唤醒</p>
+<h3 id="epoll内核原理4：调用epoll-wait等待事件"><a href="#epoll内核原理4：调用epoll-wait等待事件" class="headerlink" title="epoll内核原理4：调用epoll_wait等待事件"></a>epoll内核原理4：调用epoll_wait等待事件</h3><p>epoll_wait并不监听文件句柄，而是等待rdlist不空 or 收到信号 or 超时这三种条件后返回<br>伪代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">epoll_wait(epfd, events, MAXSIZE, timeout)</span><br><span class="line">    res = <span class="number">0</span></span><br><span class="line">    jitimeout = 剩余时间，timeout换算为内核时间</span><br><span class="line">    <span class="keyword">while</span> rdlist为空：</span><br><span class="line">        当前进程放到等待队列wq中；</span><br><span class="line">        <span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">            如果rdlist不空，或者jitimeout = <span class="number">0</span>超时</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            如果有信号挂起</span><br><span class="line">                res = EINTR</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            jitimeout = schedule_timeout(jitimeout)</span><br><span class="line">            让出CPU，唤醒后返回新的剩余时间</span><br><span class="line"></span><br><span class="line">    如果res = <span class="number">0</span>，说明rdlist不空 <span class="keyword">or</span> 超时了</span><br><span class="line">        则把rdlist中句柄们调用ep_send_events函数拷贝到events数组中，返回拷贝了几个句柄，赋值给res</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">    <span class="comment">//res = -1，收到信号；</span></span><br><span class="line">    <span class="comment">//res = 0，超时</span></span><br><span class="line">    <span class="comment">//res &gt; 0, 有res个句柄拷贝到events数组</span></span><br></pre></td></tr></table></figure>
+<p>主要逻辑：</p>
+<ul>
+<li>不断让出CPU，直到： <ul>
+<li>rdlist有数据</li>
+<li>超时</li>
+<li>收到信号</li>
+</ul>
+</li>
+<li>如果rdlist有数据，则拷贝到用户传入的events数组<br><img src="/images/epoll-5.png"></li>
+</ul>
+<p>简而言之：等待rdlist不空或者超时、信号中断，rdlist不空则把句柄们拷贝到用户空间.</p>
+<h3 id="水平触发、边沿触发"><a href="#水平触发、边沿触发" class="headerlink" title="水平触发、边沿触发"></a>水平触发、边沿触发</h3><p>拷贝句柄函数ep_send_events会先遍历rdlist中每个句柄，对于每个句柄，再次调用poll获取实际事件：</p>
+<ol>
+<li>如果与关心事件有交集：<br>如果句柄是水平触发（EPOLLLT），则再次把句柄加入到rdlist；否则从rdlist中删除.<br>于是水平模式下次还会准备好，这就是EPOLLET 与 EPOLLLT的区别原理</li>
+<li>如果与关心事件无交集，从rdlist中删除之.<br>问题：如此一来看起来水平模式的句柄永远都不断重新加入rdlist，这就成永远都通知了吧？<br>当事件已经被处理完后，调用poll得到的实际事件与关心事件已经无交集了，于是会被删除的！</li>
+</ol>
+<p>ep_send_events函数内再次调用poll获取实际事件就是为了EPOLLLT模式而生的，防止其永远加入rdlist！<br>于是，EPOLLLT读事件 做到了只要有数据就不停通知，直到没数据就不再通知了.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag"># 网络编程</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9Aselect,poll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86/" rel="prev" title="Linux网络编程：select/poll内核原理">
+      <i class="fa fa-chevron-left"></i> Linux网络编程：select/poll内核原理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/09/14/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/" rel="next" title="Linux内核系列：进程间通信">
+      Linux内核系列：进程间通信 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E5%87%BD%E6%95%B0poll-wait"><span class="nav-number">1.</span> <span class="nav-text">内核函数poll_wait</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%92%A9%E5%AD%90poll"><span class="nav-number">2.</span> <span class="nav-text">钩子poll</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AD%89%E5%BE%85%E9%98%9F%E5%88%97"><span class="nav-number">3.</span> <span class="nav-text">等待队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#epoll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%861%EF%BC%9A%E8%B0%83%E7%94%A8epoll-create1-epoll-create"><span class="nav-number">4.</span> <span class="nav-text">epoll内核原理1：调用epoll_create1&#x2F;epoll_create</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#epoll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%862%EF%BC%9A%E8%B0%83%E7%94%A8epoll-ctl%E6%93%8D%E4%BD%9C%E5%8F%A5%E6%9F%84%E6%96%B0%E5%A2%9E%E7%9B%91%E6%8E%A7%E4%BA%8B%E4%BB%B6"><span class="nav-number">5.</span> <span class="nav-text">epoll内核原理2：调用epoll_ctl操作句柄新增监控事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#epoll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%863%EF%BC%9A%E5%BD%93%E6%96%87%E4%BB%B6%E6%9C%89%E4%BA%8B%E4%BB%B6%E6%9D%A5%E4%B8%B4%E6%97%B6%EF%BC%9A"><span class="nav-number">6.</span> <span class="nav-text">epoll内核原理3：当文件有事件来临时：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#epoll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%864%EF%BC%9A%E8%B0%83%E7%94%A8epoll-wait%E7%AD%89%E5%BE%85%E4%BA%8B%E4%BB%B6"><span class="nav-number">7.</span> <span class="nav-text">epoll内核原理4：调用epoll_wait等待事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B0%B4%E5%B9%B3%E8%A7%A6%E5%8F%91%E3%80%81%E8%BE%B9%E6%B2%BF%E8%A7%A6%E5%8F%91"><span class="nav-number">8.</span> <span class="nav-text">水平触发、边沿触发</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hqin"
+      src="/images/001.jpg">
+  <p class="site-author-name" itemprop="name">hqin</p>
+  <div class="site-description" itemprop="description">星海横流 岁月成碑</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hqin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="匿名管道适用场景：在父子线程间传递信息。核心是pipe函数，创建了全双工的两个文件描述符。下图来自APUE十五章。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux内核系列：进程间通信">
+<meta property="og:url" content="http://haoqinx.github.io/2021/09/14/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/index.html">
+<meta property="og:site_name" content="面向自由编程">
+<meta property="og:description" content="匿名管道适用场景：在父子线程间传递信息。核心是pipe函数，创建了全双工的两个文件描述符。下图来自APUE十五章。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://haoqinx.github.io/images/ipc-1.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/ipc-2.png">
+<meta property="article:published_time" content="2021-09-13T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-23T07:28:51.528Z">
+<meta property="article:author" content="hqin">
+<meta property="article:tag" content="内核">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://haoqinx.github.io/images/ipc-1.png">
+
+<link rel="canonical" href="http://haoqinx.github.io/2021/09/14/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Linux内核系列：进程间通信 | 面向自由编程</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">面向自由编程</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux内核系列：进程间通信
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-11-23 15:28:51" itemprop="dateModified" datetime="2021-11-23T15:28:51+08:00">2021-11-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="匿名管道"><a href="#匿名管道" class="headerlink" title="匿名管道"></a>匿名管道</h3><p>适用场景：在父子线程间传递信息。<br>核心是pipe函数，创建了全双工的两个文件描述符。下图来自APUE十五章。<br><img src="/images/ipc-1.png"></p>
+<span id="more"></span>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> fd[<span class="number">2</span>];</span><br><span class="line">    <span class="keyword">pid_t</span> pid;</span><br><span class="line">    <span class="keyword">int</span> err = <span class="built_in">pipe</span>(fd);</span><br><span class="line">    <span class="keyword">char</span> line[<span class="number">100</span>];</span><br><span class="line">    <span class="keyword">if</span>(err == <span class="number">-1</span>)&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;pipe error&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>((pid = fork()) &lt; <span class="number">0</span>)&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;fork error&quot;</span> &lt;&lt; endl;</span><br><span class="line">        <span class="built_in">abort</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(pid &gt; <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="built_in">close</span>(fd[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">char</span> s[] = <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">        <span class="built_in">write</span>(fd[<span class="number">1</span>], s, <span class="built_in"><span class="keyword">sizeof</span></span>(s));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="built_in">close</span>(fd[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">int</span> n = <span class="built_in">read</span>(fd[<span class="number">0</span>], line, <span class="number">100</span>);</span><br><span class="line">        <span class="built_in">write</span>(STDOUT_FILENO, line, n);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="命令管道"><a href="#命令管道" class="headerlink" title="命令管道"></a>命令管道</h3><p>在Linux中使用mkfifo函数创建一个命令管道，可以使用此管道实现不同进程之间的通信。<br>命名管道和匿名的相同和不用是：</p>
+<ul>
+<li>相同：<ul>
+<li>都用管道通信</li>
+<li>管道数据都存在内核内存的缓冲区</li>
+</ul>
+</li>
+<li>不同：<ul>
+<li>匿名不在磁盘建立管道文件，FIFO在磁盘建立文件</li>
+<li>PIPE需要进程具有亲缘关系，FIFO不需要  </li>
+</ul>
+</li>
+</ul>
+<p>读和写可以设置阻塞或者非阻塞：</p>
+<ul>
+<li>阻塞：<ul>
+<li>写端等待数据被读走后才写</li>
+<li>读端等待数据写入后才读</li>
+</ul>
+</li>
+<li>非阻塞：<ul>
+<li>写端一直写，直到缓冲区满</li>
+<li>读端无论有无数据，立刻返回</li>
+</ul>
+</li>
+</ul>
+<p>下面是一个使用实例：</p>
+<p>写端</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FIFO_FIFE <span class="meta-string">&quot;./fiffo&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BUFF_SIZE PIPE_BUF</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">mkfifo</span>(FIFO_FIFE, <span class="number">0666</span>) &lt; <span class="number">0</span> &amp;&amp; errno != EEXIST)&#123;</span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;create fifo file error&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">char</span> info[] = <span class="string">&quot;0&quot;</span>;</span><br><span class="line">        <span class="keyword">int</span> fd = <span class="built_in">open</span>(FIFO_FIFE, O_CREAT | O_WRONLY, <span class="number">0666</span>);</span><br><span class="line">        <span class="keyword">if</span>(fd &gt; <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">int</span> count = <span class="number">60</span>;</span><br><span class="line">            <span class="keyword">while</span>(-- count)&#123;</span><br><span class="line">                <span class="built_in">write</span>(fd, info, <span class="built_in"><span class="keyword">sizeof</span></span>(info));</span><br><span class="line">                <span class="built_in">sleep</span>(<span class="number">1</span>);</span><br><span class="line">                cout &lt;&lt; <span class="string">&quot;writing&quot;</span> &lt;&lt; info &lt;&lt; <span class="string">&quot; msg to fifo&quot;</span> &lt;&lt; endl;</span><br><span class="line">                info[<span class="number">0</span>] = (<span class="keyword">char</span>)(<span class="string">&#x27;0&#x27;</span> + count);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">char</span> sig[] = <span class="string">&quot;end&quot;</span>;</span><br><span class="line">            <span class="built_in">write</span>(fd, sig, <span class="built_in"><span class="keyword">sizeof</span></span>(sig));</span><br><span class="line">            <span class="built_in">close</span>(fd);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>读端</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FIFO_FIFE <span class="meta-string">&quot;./fiffo&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BUFF_SIZE PIPE_BUF</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">mkfifo</span>(FIFO_FIFE, <span class="number">0666</span>) &lt; <span class="number">0</span> &amp;&amp; errno != EEXIST)&#123;</span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;create fifo file error&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">char</span> buf[BUFF_SIZE];</span><br><span class="line">        <span class="keyword">int</span> fd = <span class="built_in">open</span>(FIFO_FIFE, O_CREAT | O_RDONLY, <span class="number">0666</span>);</span><br><span class="line">        <span class="keyword">if</span>(fd &gt; <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">                <span class="built_in">read</span>(fd, buf, BUFF_SIZE);</span><br><span class="line">                <span class="built_in">sleep</span>(<span class="number">1</span>);</span><br><span class="line">                cout &lt;&lt; <span class="string">&quot;reading &quot;</span> &lt;&lt; buf &lt;&lt; <span class="string">&quot; from fifo&quot;</span> &lt;&lt; endl;</span><br><span class="line">                <span class="keyword">if</span>(<span class="built_in">strcmp</span>(buf, <span class="string">&quot;end&quot;</span>) == <span class="number">0</span>)&#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">close</span>(fd);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="信号"><a href="#信号" class="headerlink" title="信号"></a>信号</h3><p>信号是异步的，一个进程不必通过任何操作来等待信号的到达。<br>使用信号有两个作用：</p>
+<ul>
+<li>让进程直到发生了一个特定的事件</li>
+<li>强迫进程去执行信号处理程序</li>
+</ul>
+<p>ps: 信号机制是一种特殊的软中断设计。</p>
+<p>信号机制底层实现：</p>
+<ol>
+<li>信号产生：内核更新目标进程的数据结构表示一个新信号已发送；</li>
+<li>信号传递：内核强迫目标进程：<ul>
+<li>改变进程的执行状态</li>
+<li>执行一个信号处理函数</li>
+</ul>
+</li>
+<li>注意：当信号产生但还未被传递，则称为挂起信号。进程执行信号处理函数时屏蔽同编号的信号。</li>
+</ol>
+<p>信号处理的相关源码和细节<a target="_blank" rel="noopener" href="https://os.51cto.com/art/202108/675743.htm">参考这篇文章</a>.<br>用一张图来概括：<br><img src="/images/ipc-2.png"></p>
+<p>下面写一个实例吧：<br>在新版系统中使用sigaction处理信号：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigaction</span><span class="params">(<span class="keyword">int</span> signum, <span class="keyword">const</span> struct sigaction *act, struct sigaction *oldact)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用 sigaction 结构取代了单一的 sighandler_t 函数指针</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sigaction</span> &#123;</span></span><br><span class="line">	<span class="built_in"><span class="keyword">void</span></span>     (*sa_handler)(<span class="keyword">int</span>); <span class="comment">// 信号处理函数</span></span><br><span class="line">	<span class="built_in"><span class="keyword">void</span></span>     (*sa_sigaction)(<span class="keyword">int</span>, <span class="keyword">siginfo_t</span> *, <span class="keyword">void</span> *);	<span class="comment">// 另一种替代的信号处理函数</span></span><br><span class="line">	<span class="keyword">sigset_t</span>   sa_mask;  <span class="comment">// 指定了应该被阻塞的信号掩码</span></span><br><span class="line">	<span class="keyword">int</span>        sa_flags; <span class="comment">// 指定一组修改信号行为的标志</span></span><br><span class="line">	<span class="built_in"><span class="keyword">void</span></span>     (*sa_restorer)(<span class="keyword">void</span>); <span class="comment">// 应用程序不是使用这个成员</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>接收端：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ERR_EXIT(m) \</span></span><br><span class="line"><span class="meta">     do &#123; \</span></span><br><span class="line"><span class="meta">        perror(m); \</span></span><br><span class="line"><span class="meta">        exit(EXIT_FAILURE); \</span></span><br><span class="line"><span class="meta">    &#125;  while( 0)</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">handler</span><span class="params">( <span class="keyword">int</span>, <span class="keyword">siginfo_t</span> *,  <span class="keyword">void</span> *)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">( <span class="keyword">int</span> argc,  <span class="keyword">char</span> *argv[])</span></span>&#123;</span><br><span class="line">     <span class="class"><span class="keyword">struct</span> <span class="title">sigaction</span> <span class="title">act</span>;</span></span><br><span class="line">    act.sa_sigaction = handler;  <span class="comment">//sa_sigaction与sa_handler只能取其一</span></span><br><span class="line">     <span class="comment">//sa_sigaction多用于实时信号，可以保存信息</span></span><br><span class="line">    <span class="built_in">sigemptyset</span>(&amp;act.sa_mask);</span><br><span class="line">    act.sa_flags = SA_SIGINFO;  <span class="comment">// 设置标志位后可以接收其他进程</span></span><br><span class="line">     <span class="comment">// 发送的数据，保存在siginfo_t结构体中</span></span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (<span class="built_in">sigaction</span>(SIGUSR1, &amp;act,  <span class="literal">NULL</span>) &lt;  <span class="number">0</span>)</span><br><span class="line">        <span class="built_in">ERR_EXIT</span>( <span class="string">&quot;sigaction error&quot;</span>);</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;mypid:&quot;</span> &lt;&lt; <span class="built_in">getpid</span>() &lt;&lt; endl;</span><br><span class="line">     <span class="keyword">for</span> (; ;)</span><br><span class="line">        <span class="built_in">pause</span>();</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span>  <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">handler</span><span class="params">( <span class="keyword">int</span> sig, <span class="keyword">siginfo_t</span> *info,  <span class="keyword">void</span> *ctx)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>( <span class="string">&quot;recv a sig=%d data=%d data=%d\n&quot;</span>,</span><br><span class="line">           sig, info-&gt;si_value.sival_int, info-&gt;si_int);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>发送端：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ERR_EXIT(m) \</span></span><br><span class="line"><span class="meta">     do &#123; \</span></span><br><span class="line"><span class="meta">        perror(m); \</span></span><br><span class="line"><span class="meta">        exit(EXIT_FAILURE); \</span></span><br><span class="line"><span class="meta">    &#125;  while( 0)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">( <span class="keyword">int</span> argc,  <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">     <span class="keyword">if</span> (argc !=  <span class="number">2</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(stderr,  <span class="string">&quot;Usage %s pid\n&quot;</span>, argv[ <span class="number">0</span>]);</span><br><span class="line">        <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pid_t</span> pid = <span class="built_in">atoi</span>(argv[ <span class="number">1</span>]);  <span class="comment">//字符串转换为整数</span></span><br><span class="line">     <span class="class"><span class="keyword">union</span> <span class="title">sigval</span> <span class="title">val</span>;</span></span><br><span class="line">    val.sival_int =  <span class="number">100</span>;</span><br><span class="line">    <span class="built_in">sigqueue</span>(pid, SIGUSR1, val);  <span class="comment">// 只可以发信号给某个进程，而不能是进程组</span></span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span>  <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><font color = green>上面这两段程序在ubuntu 16.04虚拟机、linux16.04 系统运行正常，在wsl ubuntu 18.04下运行时，接受不到信号，暂时还没有找到原因。</font></p>
+<h3 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h3><p>信号量的本质就是对资源的一组控制原语，进程间可以通过信号量实现同步。</p>
+<p>下面用信号量实现经典的生产者消费者问题，<font color = green> 下面使用线程实现的，但是原理差不多，主要就是解决同步问题。</font></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;semaphore.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> item;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N 20</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> pSpeed 1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> cSpeed 2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">sem_t</span> mutex, empty, full;</span><br><span class="line"><span class="keyword">int</span> head, tail;</span><br><span class="line"><span class="keyword">int</span> buf[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">showbuf</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(head &gt; tail)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = tail; i &lt;= head; ++ i)&#123;</span><br><span class="line">            cout &lt;&lt; buf[i] &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(head &lt; tail)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = tail; i &lt;= N; ++ i)&#123;</span><br><span class="line">            cout &lt;&lt; buf[i] &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; head; ++ i)&#123;</span><br><span class="line">            cout &lt;&lt; buf[i] &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++ i)&#123;</span><br><span class="line">            cout &lt;&lt; buf[i] &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">producer</span><span class="params">(<span class="keyword">void</span>* id)</span></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">        item r = <span class="built_in">rand</span>() % <span class="number">100</span> + <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">sleep</span>(pSpeed);</span><br><span class="line">        <span class="built_in">sem_wait</span>(&amp;empty);</span><br><span class="line">        <span class="built_in">sem_wait</span>(&amp;mutex);</span><br><span class="line">        buf[head] = r;</span><br><span class="line">        head = (++ head) % N;</span><br><span class="line">        <span class="built_in">showbuf</span>();</span><br><span class="line">        <span class="built_in">sem_post</span>(&amp;mutex);</span><br><span class="line">        <span class="built_in">sem_post</span>(&amp;full);</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">customer</span><span class="params">(<span class="keyword">void</span>* id)</span></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">        <span class="built_in">sleep</span>(cSpeed);</span><br><span class="line">        <span class="built_in">sem_wait</span>(&amp;full);</span><br><span class="line">        <span class="built_in">sem_wait</span>(&amp;mutex);</span><br><span class="line">        buf[tail] = <span class="number">0</span>;</span><br><span class="line">        tail = (++ tail) % N;</span><br><span class="line">        <span class="built_in">showbuf</span>();</span><br><span class="line">        <span class="built_in">sem_post</span>(&amp;mutex);</span><br><span class="line">        <span class="built_in">sem_post</span>(&amp;empty);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">( <span class="keyword">int</span> argc,  <span class="keyword">char</span> *argv[])</span></span>&#123;</span><br><span class="line">    head = <span class="number">0</span>, tail = head;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">sem_init</span>(&amp;mutex, <span class="number">0</span>, <span class="number">1</span>) == <span class="number">-1</span>)</span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;sem_init error 1&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">sem_init</span>(&amp;empty, <span class="number">0</span>, N) == <span class="number">-1</span>)</span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;sem_init error 1&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">sem_init</span>(&amp;full, <span class="number">0</span>, <span class="number">0</span>) == <span class="number">-1</span>)</span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;sem_init error 1&quot;</span>);</span><br><span class="line">    <span class="keyword">pthread_t</span> p1, p2, c1, c2;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">pthread_create</span>(&amp;p1, <span class="literal">NULL</span>, producer, (<span class="keyword">void</span>*)<span class="string">&quot;p1&quot;</span>))</span><br><span class="line">		<span class="built_in">perror</span>(<span class="string">&quot;pthread_create&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">pthread_create</span>(&amp;p2, <span class="literal">NULL</span>, producer, (<span class="keyword">void</span>*)<span class="string">&quot;p1&quot;</span>))</span><br><span class="line">		<span class="built_in">perror</span>(<span class="string">&quot;pthread_create&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">pthread_create</span>(&amp;c1, <span class="literal">NULL</span>, customer, (<span class="keyword">void</span>*)<span class="string">&quot;c1&quot;</span>))</span><br><span class="line">		<span class="built_in">perror</span>(<span class="string">&quot;pthread_create&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">pthread_create</span>(&amp;c2, <span class="literal">NULL</span>, customer, (<span class="keyword">void</span>*)<span class="string">&quot;c2&quot;</span>))</span><br><span class="line">		<span class="built_in">perror</span>(<span class="string">&quot;pthread_create&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">pthread_join</span>(p1, <span class="literal">NULL</span>)) <span class="built_in">perror</span>(<span class="string">&quot;pthread_join&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">pthread_join</span>(p2, <span class="literal">NULL</span>)) <span class="built_in">perror</span>(<span class="string">&quot;pthread_join&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">pthread_join</span>(c1, <span class="literal">NULL</span>)) <span class="built_in">perror</span>(<span class="string">&quot;pthread_join&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">pthread_join</span>(c2, <span class="literal">NULL</span>)) <span class="built_in">perror</span>(<span class="string">&quot;pthread_join&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>  <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="共享内存"><a href="#共享内存" class="headerlink" title="共享内存"></a>共享内存</h3><p>共享内存就是允许两个或多个进程共享一定的存储区。就如同 malloc() 函数向不同进程返回了指向同一个物理内存区域的指针。当一个进程改变了这块地址中的内容的时候，其它进程都会察觉到这个更改。因为数据不需要在客户机和服务器端之间复制，数据直接写到内存，不用若干次数据拷贝，所以这是最快的一种IPC。<br><font color = orange>注意：共享内存没有任何的同步与互斥机制，所以要使用信号量来实现对共享内存的存取的同步。</font></p>
+<p>下面以mmap为例说明如何进行进程间通信：<br>注意需要先创建一个文件，文件名作为输入参数。<br>读端：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/mman.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;error.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BUF_SIZE 100  </span></span><br><span class="line">     </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span>  </span></span><br><span class="line"><span class="function"></span>&#123;  </span><br><span class="line">     <span class="keyword">int</span> fd, nread, i;  </span><br><span class="line">     <span class="class"><span class="keyword">struct</span> <span class="title">stat</span> <span class="title">sb</span>;</span>  </span><br><span class="line">     <span class="keyword">char</span> *mapped, buf[BUF_SIZE];  </span><br><span class="line">     </span><br><span class="line">     <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; BUF_SIZE; i++) &#123;  </span><br><span class="line">          buf[i] = <span class="string">&#x27;#&#x27;</span>;  </span><br><span class="line">     &#125;  </span><br><span class="line">     <span class="comment">/* 打开文件 */</span>  </span><br><span class="line">     <span class="keyword">if</span> ((fd = <span class="built_in">open</span>(argv[<span class="number">1</span>], O_RDWR)) &lt; <span class="number">0</span>) &#123;  </span><br><span class="line">          <span class="built_in">perror</span>(<span class="string">&quot;open&quot;</span>);  </span><br><span class="line">     &#125;  </span><br><span class="line">     </span><br><span class="line">     <span class="comment">/* 获取文件的属性 */</span>  </span><br><span class="line">     <span class="keyword">if</span> ((<span class="built_in">fstat</span>(fd, &amp;sb)) == <span class="number">-1</span>) &#123;  </span><br><span class="line">          <span class="built_in">perror</span>(<span class="string">&quot;fstat&quot;</span>);  </span><br><span class="line">     &#125;  </span><br><span class="line">     </span><br><span class="line">     <span class="comment">/* 将文件映射至进程的地址空间 */</span>  </span><br><span class="line">     <span class="keyword">if</span> ((mapped = (<span class="keyword">char</span> *)<span class="built_in">mmap</span>(<span class="literal">NULL</span>, sb.st_size, PROT_READ |   </span><br><span class="line">                    PROT_WRITE, MAP_SHARED, fd, <span class="number">0</span>)) == (<span class="keyword">void</span> *)<span class="number">-1</span>) &#123;  </span><br><span class="line">          <span class="built_in">perror</span>(<span class="string">&quot;mmap&quot;</span>);  </span><br><span class="line">     &#125;  </span><br><span class="line">     </span><br><span class="line">     <span class="comment">/* 文件已在内存, 关闭文件也可以操纵内存 */</span>  </span><br><span class="line">     <span class="built_in">close</span>(fd);  </span><br><span class="line">     </span><br><span class="line">     <span class="comment">/* 每隔两秒查看存储映射区是否被修改 */</span>  </span><br><span class="line">     <span class="keyword">while</span> (<span class="number">1</span>) &#123;  </span><br><span class="line">          cout &lt;&lt; mapped &lt;&lt; endl;</span><br><span class="line">          <span class="built_in">sleep</span>(<span class="number">2</span>);  </span><br><span class="line">     &#125;  </span><br><span class="line">     </span><br><span class="line">     <span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
+
+<p>写端：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//进程B的代码</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/mman.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;error.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BUF_SIZE 100  </span></span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span></span>&#123;  </span><br><span class="line">    <span class="keyword">int</span> fd, nread, i;  </span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">stat</span> <span class="title">sb</span>;</span>  </span><br><span class="line">    <span class="keyword">char</span> *mapped, buf[BUF_SIZE];  </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; BUF_SIZE; i++) &#123;  </span><br><span class="line">        buf[i] = <span class="string">&#x27;#&#x27;</span>;  </span><br><span class="line">    &#125;  </span><br><span class="line">    </span><br><span class="line">    <span class="comment">/* 打开文件 */</span>  </span><br><span class="line">    <span class="keyword">if</span> ((fd = <span class="built_in">open</span>(argv[<span class="number">1</span>], O_RDWR)) &lt; <span class="number">0</span>) &#123;  </span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;open&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">    </span><br><span class="line">    <span class="comment">/* 获取文件的属性 */</span>  </span><br><span class="line">    <span class="keyword">if</span> ((<span class="built_in">fstat</span>(fd, &amp;sb)) == <span class="number">-1</span>) &#123;  </span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;fstat&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">    </span><br><span class="line">    <span class="comment">/* 私有文件映射将无法修改文件 */</span>  </span><br><span class="line">    <span class="keyword">if</span> ((mapped = (<span class="keyword">char</span> *)<span class="built_in">mmap</span>(<span class="literal">NULL</span>, sb.st_size, PROT_READ |   </span><br><span class="line">                    PROT_WRITE, MAP_SHARED, fd, <span class="number">0</span>)) == (<span class="keyword">void</span> *)<span class="number">-1</span>) &#123;  </span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;mmap&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">    </span><br><span class="line">    <span class="comment">/* 映射完后, 关闭文件也可以操纵内存 */</span>  </span><br><span class="line">    <span class="built_in">close</span>(fd);  </span><br><span class="line">    </span><br><span class="line">     </span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">        <span class="comment">/* 修改一个字符 */</span>  </span><br><span class="line">        mapped[<span class="number">0</span>] = <span class="string">&#x27;9&#x27;</span>; </span><br><span class="line">        <span class="built_in">sleep</span>(<span class="number">1</span>);</span><br><span class="line">        cout &lt;&lt; mapped &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
+<h3 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h3><p>Linux的消息队列(queue)实质上是一个链表, 它有消息队列标识符(queue ID). msgget创建一个新队列或打开一个存在的队列; msgsnd向队列末端添加一条新消息; msgrcv从队列中取消息, 取消息是不一定遵循先进先出的, 也可以按消息的类型字段取消息。<br>下面实例说明如何利用linux msg系列系统调用来使用消息队列进行进程间通信：<br>发送端：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/mman.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ipc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/msg.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;error.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> MAX_LEN = <span class="number">20</span>;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">item</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> id;</span><br><span class="line">    <span class="keyword">char</span> data[MAX_LEN];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> handle_error(msg) \</span></span><br><span class="line"><span class="meta">        perror(msg);    \</span></span><br><span class="line"><span class="meta">        exit(-1);   </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span>  </span>&#123;  </span><br><span class="line">     <span class="keyword">int</span> msqid;</span><br><span class="line">     item it;</span><br><span class="line">     <span class="keyword">long</span> <span class="keyword">int</span> msgtype = <span class="number">0</span>;</span><br><span class="line">     msqid = <span class="built_in">msgget</span>((<span class="keyword">key_t</span>)<span class="number">10086</span>, <span class="number">0666</span> | IPC_CREAT);</span><br><span class="line">     <span class="keyword">if</span>(msqid &lt; <span class="number">0</span>)&#123;</span><br><span class="line">          <span class="built_in">handle_error</span>(<span class="string">&quot;msg queue create error&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">int</span> count = <span class="number">20</span>;</span><br><span class="line">     <span class="keyword">while</span>(-- count)&#123;</span><br><span class="line">          <span class="keyword">if</span>(count == <span class="number">1</span>)&#123;</span><br><span class="line">               <span class="built_in">memcpy</span>(it.data, <span class="string">&quot;end&quot;</span>, <span class="built_in"><span class="keyword">sizeof</span></span>(<span class="string">&quot;end&quot;</span>));</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">else</span>&#123;</span><br><span class="line">               string temp = <span class="string">&quot;number: &quot;</span> + <span class="built_in">to_string</span>(count);</span><br><span class="line">               <span class="keyword">const</span> <span class="keyword">char</span> * msg = temp.<span class="built_in">c_str</span>();</span><br><span class="line">               <span class="built_in">memcpy</span>(it.data, msg, <span class="built_in"><span class="keyword">sizeof</span></span>(msg));</span><br><span class="line">          &#125;</span><br><span class="line">          cout &lt;&lt; <span class="string">&quot;sending:&quot;</span> &lt;&lt; it.data &lt;&lt; endl;</span><br><span class="line">          <span class="keyword">if</span>(<span class="built_in">msgsnd</span>(msqid, &amp;it, <span class="built_in"><span class="keyword">sizeof</span></span>(item), <span class="number">0</span>) &lt; <span class="number">0</span>)&#123;</span><br><span class="line">               <span class="built_in">handle_error</span>(<span class="string">&quot;send error&quot;</span>);</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="built_in">sleep</span>(<span class="number">1</span>);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
+<p>接收端：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//进程B的代码</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/mman.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ipc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/msg.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;error.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> MAX_LEN = <span class="number">20</span>;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">item</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> id;</span><br><span class="line">    <span class="keyword">char</span> data[MAX_LEN];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> handle_error(msg) \</span></span><br><span class="line"><span class="meta">        perror(msg);    \</span></span><br><span class="line"><span class="meta">        exit(-1);   </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span></span>&#123;  </span><br><span class="line">    <span class="keyword">int</span> msqid;</span><br><span class="line">    item it;</span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">int</span> msgtype = <span class="number">0</span>;</span><br><span class="line">    msqid = <span class="built_in">msgget</span>((<span class="keyword">key_t</span>)<span class="number">10086</span>, <span class="number">0666</span> | IPC_CREAT);</span><br><span class="line">    <span class="keyword">if</span>(msqid &lt; <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="built_in">handle_error</span>(<span class="string">&quot;msg queue create error&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">msgrcv</span>(msqid, &amp;it, <span class="built_in"><span class="keyword">sizeof</span></span>(item), msgtype, <span class="number">0</span>) &lt; <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="built_in">handle_error</span>(<span class="string">&quot;msg rev error&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;msg : &quot;</span> &lt;&lt; it.data &lt;&lt; endl;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">strcmp</span>(it.data, <span class="string">&quot;end&quot;</span>) == <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
+
+<h3 id="Socket"><a href="#Socket" class="headerlink" title="Socket"></a>Socket</h3><p>常用于网络编程，在进程间通信时可以用，但是感觉大材小用了。在后续网络编程中会详细分析。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%86%85%E6%A0%B8/" rel="tag"># 内核</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9Aepoll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86/" rel="prev" title="Linux网络编程：epoll内核原理">
+      <i class="fa fa-chevron-left"></i> Linux网络编程：epoll内核原理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/09/14/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%A4%E5%84%BF%E8%BF%9B%E7%A8%8B%E5%92%8C%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B/" rel="next" title="Linux内核系列：孤儿进程和僵尸进程">
+      Linux内核系列：孤儿进程和僵尸进程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8C%BF%E5%90%8D%E7%AE%A1%E9%81%93"><span class="nav-number">1.</span> <span class="nav-text">匿名管道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E7%AE%A1%E9%81%93"><span class="nav-number">2.</span> <span class="nav-text">命令管道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7"><span class="nav-number">3.</span> <span class="nav-text">信号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">4.</span> <span class="nav-text">信号量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98"><span class="nav-number">5.</span> <span class="nav-text">共享内存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">6.</span> <span class="nav-text">消息队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Socket"><span class="nav-number">7.</span> <span class="nav-text">Socket</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hqin"
+      src="/images/001.jpg">
+  <p class="site-author-name" itemprop="name">hqin</p>
+  <div class="site-description" itemprop="description">星海横流 岁月成碑</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hqin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

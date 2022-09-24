@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="嵌入式人工智能第六章 人工智能的发展  机器学习（参考《机器学习》周志华，《统计学习方法》） 模型评估方法 监督学习（分类，强化学习） 半监督学习，无监督学习（聚类） 集成学习 概率图模型 规则学习   深度学习（参考《深度学习》） 深度前馈网络 正则化 优化（梯度下降） 卷积网络（CNN） RNN&#x2F;LSTM 其他前沿理论（配分函数和近似推断，自编码器，生成对抗网络，图神经网络）     硬件架构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="嵌入式人工智能">
+<meta property="og:url" content="http://haoqinx.github.io/2021/09/14/%E6%99%BA%E8%83%BD%E8%8A%AF%E7%89%87/index.html">
+<meta property="og:site_name" content="面向自由编程">
+<meta property="og:description" content="嵌入式人工智能第六章 人工智能的发展  机器学习（参考《机器学习》周志华，《统计学习方法》） 模型评估方法 监督学习（分类，强化学习） 半监督学习，无监督学习（聚类） 集成学习 概率图模型 规则学习   深度学习（参考《深度学习》） 深度前馈网络 正则化 优化（梯度下降） 卷积网络（CNN） RNN&#x2F;LSTM 其他前沿理论（配分函数和近似推断，自编码器，生成对抗网络，图神经网络）     硬件架构">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-09-13T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-19T14:43:11.951Z">
+<meta property="article:author" content="hqin">
+<meta property="article:tag" content="硬件">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://haoqinx.github.io/2021/09/14/%E6%99%BA%E8%83%BD%E8%8A%AF%E7%89%87/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>嵌入式人工智能 | 面向自由编程</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">面向自由编程</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E6%99%BA%E8%83%BD%E8%8A%AF%E7%89%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          嵌入式人工智能
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-11-19 22:43:11" itemprop="dateModified" datetime="2021-11-19T22:43:11+08:00">2021-11-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%A1%AC%E4%BB%B6%E6%9E%B6%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">硬件架构</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="嵌入式人工智能第六章"><a href="#嵌入式人工智能第六章" class="headerlink" title="嵌入式人工智能第六章"></a>嵌入式人工智能第六章</h3><ol>
+<li><p>人工智能的发展</p>
+<ol>
+<li>机器学习（参考《机器学习》周志华，《统计学习方法》）<ol>
+<li>模型评估方法</li>
+<li>监督学习（分类，强化学习）</li>
+<li>半监督学习，无监督学习（聚类）</li>
+<li>集成学习</li>
+<li>概率图模型</li>
+<li>规则学习</li>
+</ol>
+</li>
+<li>深度学习（参考《深度学习》）<ol>
+<li>深度前馈网络</li>
+<li>正则化</li>
+<li>优化（梯度下降）</li>
+<li>卷积网络（CNN）</li>
+<li>RNN/LSTM</li>
+<li>其他前沿理论（配分函数和近似推断，自编码器，生成对抗网络，图神经网络）</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>硬件架构<br> 本小节主要介绍常用的处理器，在嵌入式端广泛运用在深度学习训练、推理过程的加速。</p>
+<ol>
+<li>GPU<br>图像处理器。<br>GPU采用数量众多的计算单元和超长的流水线，善于处理图像领域的运算加速。但GPU无法单独工作，必须由CPU进行控制调用才能工作。CPU可单独作用，处理复杂的逻辑运算和不同的数据类型，但当需要大量的处理类型统一的数据时，则可调用GPU进行并行计算。深度学习的崛起受到GPU发展的推动。<ol>
+<li>GPU发展历史</li>
+<li>GPU功能</li>
+<li>GPU物理架构(以Nvidia为例)<ol>
+<li>NVidia Tesla架构（<a target="_blank" rel="noopener" href="https://images.nvidia.cn/content/pdf/tesla/whitepaper/pascal-architecture-whitepaper.pdf%EF%BC%89">https://images.nvidia.cn/content/pdf/tesla/whitepaper/pascal-architecture-whitepaper.pdf）</a></li>
+<li>NVidia Fermi架构</li>
+<li>NVidia Maxwell架构</li>
+<li>NVidia Kepler架构</li>
+<li>NVidia Turing架构（<a target="_blank" rel="noopener" href="https://images.nvidia.cn/aem-dam/en-zz/Solutions/design-visualization/technologies/turing-architecture/NVIDIA-Turing-Architecture-Whitepaper.pdf%EF%BC%89">https://images.nvidia.cn/aem-dam/en-zz/Solutions/design-visualization/technologies/turing-architecture/NVIDIA-Turing-Architecture-Whitepaper.pdf）</a></li>
+</ol>
+</li>
+<li>GPU运行机制（[]<a target="_blank" rel="noopener" href="http://haifux.org/lectures/267/Introduction-to-GPUs.pdf">http://haifux.org/lectures/267/Introduction-to-GPUs.pdf</a><br><a target="_blank" rel="noopener" href="http://download.nvidia.com/developer/cuda/seminar/TDCI_Arch.pdf%EF%BC%89">http://download.nvidia.com/developer/cuda/seminar/TDCI_Arch.pdf）</a><ol>
+<li>渲染总览</li>
+<li>逻辑管线</li>
+<li>技术要点</li>
+<li>GPU资源机制</li>
+</ol>
+</li>
+<li>总结 </li>
+</ol>
+</li>
+<li>FPGA （Field Programmable Gate Array，现场可编程门阵列）<br>(这部分内容非常新，资料不多，很多是专利和未公开架构。如专利201880061751.0)<br>半定制化的人工智能专用芯片。FPGA适用于多指令，单数据流的分析，与GPU相反，因此常用于预测阶段，如云端。（下面除5之外，参考《FPGA原理和结构》，在本书7.7章有深度学习结合FPGA，但过于简单）<ol>
+<li>FPGA发展历史</li>
+<li>FPGA构成要素和结构</li>
+<li>FPGA工作原理</li>
+<li>FPGA开发流程</li>
+<li>FPGA AI芯片案例：DPU（资源连接：<a target="_blank" rel="noopener" href="https://blogs.nvidia.com/blog/2020/05/20/whats-a-dpu-data-processing-unit/%EF%BC%89">https://blogs.nvidia.com/blog/2020/05/20/whats-a-dpu-data-processing-unit/）</a><ol>
+<li>基本概念<br>DPU（Deep learning Processing Unit）深度学习处理器</li>
+<li>工作原理</li>
+<li>和CPU/GPU优势  </li>
+</ol>
+</li>
+</ol>
+</li>
+<li>ASIC（Application Specific IntegratedCircuit）<br>ASIC是指依产品需求不同而定制化的特殊规格集成电路，由特定使用者要求和特定电子系统的需要而设计、制造。（参考《高级ASIC芯片综合》）<ol>
+<li>基本概念</li>
+<li>静态时序分析</li>
+<li>设计约束和优化设计</li>
+<li>物理综合</li>
+<li>ASIC AI芯片案例<br> TPU（Tensor Processing Unit）<br> (参考论文 <a target="_blank" rel="noopener" href="https://arxiv.org/ftp/arxiv/papers/1704/1704.04760.pdf">https://arxiv.org/ftp/arxiv/papers/1704/1704.04760.pdf</a>)<br> 张量处理器<br> 谷歌专门为加速深层神经网络运算能力而研发的一款芯片，其实也是一款ASIC。TPU与同期的CPU和GPU相比，可以提供15-30倍的性能提升，以及30-80倍的效率（性能/瓦特）提升。<ol>
+<li>架构</li>
+<li>实现  </li>
+</ol>
+ <em>备选：NPU（（Neural network Processing Unit）<br> 神经网络处理器：用电路模拟人类的神经元和突触结构，将神经网络结构直接以硬件形式体现。但是没有找到相关论文。</em></li>
+</ol>
+</li>
+<li>总结与比较<ol>
+<li>优缺点（能耗，推理速度，通用性，复杂程度，成本）<br> 例：<ul>
+<li>GPU性能好，功耗高，通用性好。管理控制能力（最弱），功耗（最高）。</li>
+<li>FPGA可编程，灵活程度介于GPU和ASIC之间。开发难度大、只适合定点运算、价格比较昂贵。</li>
+<li>ASIC,作为集成电路技术与特定用户的整机或系统技术紧密结合的产物，与通用集成电路相比具有体积更小、重量更轻、 功耗更低、可靠性提高、性能提高、保密性增强、成本降低等优点。</li>
+</ul>
+</li>
+<li>应用场景（大型高性能计算、通用嵌入式、定制化嵌入式）</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>软件框架<br> （主流<strong>开发</strong>框架是tensorflow和pytorch，嵌入式端一般有tensorlite，armnn，tensorrt和一些其他中间协议，但原理书籍几乎没有，下面以tensorflow为例，参考开源书《Tensorflow内核剖析》，下载地址<a target="_blank" rel="noopener" href="https://raw.github.com/horance-liu/tensorflow-internals/master/tensorflow-internals.pdf%EF%BC%89">https://raw.github.com/horance-liu/tensorflow-internals/master/tensorflow-internals.pdf）</a></p>
+<ol>
+<li>依赖环境</li>
+<li>系统架构<ol>
+<li>Client</li>
+<li>Master</li>
+<li>Worker</li>
+<li>Kernel</li>
+</ol>
+</li>
+<li>图控制</li>
+<li>会话管理</li>
+<li>编程模型<ol>
+<li>计算图</li>
+<li>设备</li>
+<li>会话</li>
+<li>变量</li>
+<li>队列</li>
+</ol>
+</li>
+<li>嵌入式部署<br> 本小节主要介绍目前主流的嵌入式AI<strong>部署</strong>框架:<ol>
+<li>基于硬件环境<ol>
+<li>基于arm架构：armnn（<br>官网 <a target="_blank" rel="noopener" href="https://developer.arm.com/solutions/machine-learning-on-arm/developer-material/white-papers-and-research-papers">https://developer.arm.com/solutions/machine-learning-on-arm/developer-material/white-papers-and-research-papers</a><br>软件地址：<a target="_blank" rel="noopener" href="https://github.com/ARM-software/armnn%EF%BC%89">https://github.com/ARM-software/armnn）</a><ol>
+<li>硬件设计（<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1801.06274.pdf%EF%BC%89">https://arxiv.org/pdf/1801.06274.pdf）</a></li>
+<li>软件优化（<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1801.04326.pdf%EF%BC%89">https://arxiv.org/pdf/1801.04326.pdf）</a></li>
+</ol>
+</li>
+<li>基于通用GPU/CPU：tensorflow Lite(官网：<a target="_blank" rel="noopener" href="https://www.tensorflow.org/lite?hl=zh-cn">https://www.tensorflow.org/lite?hl=zh-cn</a>)<br>特点：</li>
+</ol>
+<ul>
+<li>为不同端上优化的核心operator的解释器（Interpreter）打包成一个轻量的二进制包；</li>
+<li>丰富的平台支持。Android和iOS设备、嵌入式Linux、微控制器设备等；</li>
+<li>多语言API调用支持。Java, Swift, Objective-C, C++, and Python；</li>
+<li>高性能。针对硬件精心优化的底层kernel实现，如预融合策略的激活和bias算子/底层kernel；</li>
+<li>模型优化工具。量化模型，该策略可在不影响精度的前提下减小模型尺寸；</li>
+<li>高效模型格式。使用轻量的FlatBuffer（跨平台，且比protobuf性能好，最初为游戏和性能相关任务而开发）。</li>
+</ul>
+<ol start="3">
+<li>其他框架：tensorRT</li>
+</ol>
+</li>
+<li>基于编译方法：TVM（<a target="_blank" rel="noopener" href="https://tvm.apache.org/%EF%BC%89">https://tvm.apache.org/）</a></li>
+<li>基于文件格式：ONNX（<a target="_blank" rel="noopener" href="https://onnx.ai/%EF%BC%89">https://onnx.ai/）</a></li>
+<li>对比<ol>
+<li>支持的平台</li>
+<li>推理性能对比</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>综合案例</p>
+<ol>
+<li>评价标准<ol>
+<li>模型精度（准确率，召回率，精确率，F值）</li>
+<li>能耗</li>
+<li>吞吐量和时延</li>
+<li>能效比</li>
+</ol>
+</li>
+<li>目标检测<ol>
+<li>数据集（COCO）</li>
+<li>算法：YOLO mobile/YOLO v4</li>
+<li>模型训练</li>
+<li>模型部署</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%A1%AC%E4%BB%B6/" rel="tag"># 硬件</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9AHTTPS&TLS&SSL/" rel="prev" title="网络复习：HTTPS/TLS/SSL">
+      <i class="fa fa-chevron-left"></i> 网络复习：HTTPS/TLS/SSL
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/09/14/%E6%97%A0%E9%94%81%E9%98%9F%E5%88%97/" rel="next" title="无锁队列">
+      无锁队列 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B5%8C%E5%85%A5%E5%BC%8F%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%AC%AC%E5%85%AD%E7%AB%A0"><span class="nav-number">1.</span> <span class="nav-text">嵌入式人工智能第六章</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hqin"
+      src="/images/001.jpg">
+  <p class="site-author-name" itemprop="name">hqin</p>
+  <div class="site-description" itemprop="description">星海横流 岁月成碑</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hqin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

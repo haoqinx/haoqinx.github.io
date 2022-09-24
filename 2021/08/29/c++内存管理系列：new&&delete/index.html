@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="内存分配的层面 c++ 内存分配相相关函数如下表所示。    分配 释放 类属 可否重载    malloc() free() C函数 x   new delete C++表达式 x   ::operator new() ::operator delete() C++函数 √   allocator::allocate() allocator::deallocate() C++标准库 可自由设计并">
+<meta property="og:type" content="article">
+<meta property="og:title" content="c++内存管理系列：new&#x2F;operator new&#x2F;placement new">
+<meta property="og:url" content="http://haoqinx.github.io/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Anew&&delete/index.html">
+<meta property="og:site_name" content="面向自由编程">
+<meta property="og:description" content="内存分配的层面 c++ 内存分配相相关函数如下表所示。    分配 释放 类属 可否重载    malloc() free() C函数 x   new delete C++表达式 x   ::operator new() ::operator delete() C++函数 √   allocator::allocate() allocator::deallocate() C++标准库 可自由设计并">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://haoqinx.github.io/images/008.png">
+<meta property="article:published_time" content="2021-08-28T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-10-29T12:09:13.922Z">
+<meta property="article:author" content="hqin">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="内存管理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://haoqinx.github.io/images/008.png">
+
+<link rel="canonical" href="http://haoqinx.github.io/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Anew&&delete/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>c++内存管理系列：new/operator new/placement new | 面向自由编程</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">面向自由编程</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Anew&&delete/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          c++内存管理系列：new/operator new/placement new
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-08-29 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-29T00:00:00+08:00">2021-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-10-29 20:09:13" itemprop="dateModified" datetime="2021-10-29T20:09:13+08:00">2021-10-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="内存分配的层面"><a href="#内存分配的层面" class="headerlink" title="内存分配的层面"></a>内存分配的层面</h3><ul>
+<li><p>c++ 内存分配相相关函数如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th align="center">分配</th>
+<th align="center">释放</th>
+<th align="center">类属</th>
+<th align="center">可否重载</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">malloc()</td>
+<td align="center">free()</td>
+<td align="center">C函数</td>
+<td align="center">x</td>
+</tr>
+<tr>
+<td align="center">new</td>
+<td align="center">delete</td>
+<td align="center">C++表达式</td>
+<td align="center">x</td>
+</tr>
+<tr>
+<td align="center">::operator new()</td>
+<td align="center">::operator delete()</td>
+<td align="center">C++函数</td>
+<td align="center">√</td>
+</tr>
+<tr>
+<td align="center">allocator<T>::allocate()</td>
+<td align="center">allocator<T>::deallocate()</td>
+<td align="center">C++标准库</td>
+<td align="center">可自由设计并搭配任何容器</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<span id="more"></span>
+
+<p><img src="/images/008.png"></p>
+<center>内存分配层次</center>
+
+<ul>
+<li><p>那么我们应该如何使用这几个呢？下面给一段测试程序：</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span>* p1 = <span class="built_in">malloc</span>(<span class="number">512</span>);</span><br><span class="line"><span class="built_in">free</span>(p1);</span><br><span class="line"></span><br><span class="line">complex&lt;<span class="keyword">int</span>&gt;* p2 = <span class="keyword">new</span> complex&lt;<span class="keyword">int</span>&gt;;</span><br><span class="line"><span class="keyword">delete</span> p2;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span>* p3 = ::<span class="keyword">operator</span> <span class="built_in"><span class="keyword">new</span></span>(<span class="number">512</span>);</span><br><span class="line">::<span class="function"><span class="keyword">operator</span> <span class="title">delete</span><span class="params">(p3)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//GNU下的allocator</span></span><br><span class="line">allocator&lt;<span class="keyword">int</span>&gt; alloc;</span><br><span class="line"><span class="keyword">int</span>* p4 = alloc.<span class="built_in">allocate</span>(<span class="number">512</span>);</span><br><span class="line">alloc.<span class="built_in">deallocate</span>(p4, <span class="number">512</span>);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="operator-new-operator-delete"><a href="#operator-new-operator-delete" class="headerlink" title="operator new/operator delete"></a>operator new/operator delete</h3><ul>
+<li>new背后做的事<br>对于下面这行代码</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">complex* p = <span class="keyword">new</span> <span class="built_in">complex</span>(<span class="number">1</span>,<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+
+<p>编译器会帮我们转化成下面三个动作</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">complex* p;</span><br><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">    <span class="keyword">void</span>* mem = <span class="keyword">operator</span> <span class="built_in"><span class="keyword">new</span></span>(<span class="built_in"><span class="keyword">sizeof</span></span>(complex)); <span class="comment">//申请内存</span></span><br><span class="line">    p = <span class="keyword">static_cast</span>&lt;complex*&gt;(mem); <span class="comment">// 类型转换</span></span><br><span class="line">    p -&gt; complex::<span class="built_in">complex</span>(<span class="number">1</span>, <span class="number">2</span>); <span class="comment">// 调用构造函数</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in"><span class="keyword">catch</span></span>(std::bad_alloc)&#123;</span><br><span class="line">    <span class="comment">//若构造函数失败，回收资源</span></span><br><span class="line">    <span class="comment">//若内存不够，重复获取直到有足够资源或者直接抛出异常</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而operator new的声明为</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span>* <span class="keyword">operator</span> <span class="title">new</span> <span class="params">(std::<span class="keyword">size_t</span> size)</span> <span class="title">throw</span> <span class="params">(std::bad_alloc)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>源码是</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//__cdecl 是C Declaration的缩写（declaration，声明），表示C语言默认的函数调用方法：所有参数从右到左依次入栈，这些参数由调用者清除，称为手动清栈。 被调用函数不会要求调用者传递多少参数，调用者传递过多或者过少的参数，甚至完全不同的参数都不会产生编译阶段的错误。</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> *__CRTDECL <span class="keyword">operator</span> <span class="title">new</span><span class="params">(<span class="keyword">size_t</span> size)</span> <span class="title">throw</span> <span class="params">(std::bad_alloc)</span> </span>&#123;       </span><br><span class="line">	<span class="comment">// try to allocate size bytes</span></span><br><span class="line">	<span class="keyword">void</span> *p;</span><br><span class="line">	<span class="keyword">while</span> ((p = <span class="built_in">malloc</span>(size)) == <span class="number">0</span>)      <span class="comment">//申请空间</span></span><br><span class="line">		<span class="keyword">if</span> (_callnewh(size) == <span class="number">0</span>) &#123;      <span class="comment">//若申请失败则调用处理函数       </span></span><br><span class="line">			<span class="comment">// report no memory</span></span><br><span class="line">			<span class="keyword">static</span> <span class="keyword">const</span> std::bad_alloc nomem;</span><br><span class="line">            _RAISE(nomem);               <span class="comment">//#define _RAISE(x) ::std:: _Throw(x) 抛出nomem的异常</span></span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">return</span> (p);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在effective c++也提到过，第一步如果用户自定义全局operator new，那么此函数可以接管默认operator new，但是用户尽量仿照默认版本的套路，要么不断请求新的空间，要么抛出异常，要么结束程序。</p>
+<p>对应的内存释放程序则十分简单了</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="keyword">operator</span> <span class="title">delete</span><span class="params">(<span class="keyword">void</span> *memoryToBeDeallocated)</span> <span class="keyword">noexcept</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	std::<span class="built_in">free</span>(ptr);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意以下几点：<br> （1）对于不是类类型（class、struct 或 union）的对象，将调用全局 delete 运算符。<br> （2）于类类型的对象，如果重载operator delete()，则在释放对象时默认调用重载版本，可以使用作用域运算符(::)置于delete之前，显示调用全局operator delete().<br> （3）delete运算符在释放对象之前会调用对象析构函数。</p>
+<p> 验证汇编代码<br> <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;complex&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;memory&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> x;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">A</span>(<span class="keyword">int</span> x):<span class="built_in">x</span>(x)&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;A::ctor&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">A</span>()&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;A::dtor&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;   </span><br><span class="line">    A* p = <span class="keyword">new</span> <span class="built_in">A</span>(<span class="number">10</span>);</span><br><span class="line">    <span class="built_in"><span class="keyword">delete</span></span>(p);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br> 反汇编后：<br> <figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"> (gdb) disas main</span><br><span class="line">Dump of assembler code for function main():</span><br><span class="line">   <span class="number">0x0000000000401550</span> &lt;+<span class="number">0</span>&gt;:     <span class="keyword">push</span>   <span class="built_in">rbp</span></span><br><span class="line">   <span class="number">0x0000000000401551</span> &lt;+<span class="number">1</span>&gt;:     <span class="keyword">push</span>   <span class="built_in">rsi</span></span><br><span class="line">   <span class="number">0x0000000000401552</span> &lt;+<span class="number">2</span>&gt;:     <span class="keyword">push</span>   <span class="built_in">rbx</span></span><br><span class="line">   <span class="number">0x0000000000401553</span> &lt;+<span class="number">3</span>&gt;:     <span class="keyword">mov</span>    <span class="built_in">rbp</span>,<span class="built_in">rsp</span></span><br><span class="line">   <span class="number">0x0000000000401556</span> &lt;+<span class="number">6</span>&gt;:     <span class="keyword">sub</span>    <span class="built_in">rsp</span>,<span class="number">0x30</span></span><br><span class="line">   <span class="number">0x000000000040155a</span> &lt;+<span class="number">10</span>&gt;:    <span class="keyword">call</span>   <span class="number">0x401720</span> &lt;__main&gt;</span><br><span class="line">   <span class="number">0x000000000040155f</span> &lt;+<span class="number">15</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">ecx</span>,<span class="number">0x4</span> <span class="comment">; new start</span></span><br><span class="line">   <span class="number">0x0000000000401564</span> &lt;+<span class="number">20</span>&gt;:    <span class="keyword">call</span>   <span class="number">0x401648</span> &lt;_Znwy&gt;</span><br><span class="line">   <span class="number">0x0000000000401569</span> &lt;+<span class="number">25</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">rbx</span>,<span class="built_in">rax</span></span><br><span class="line">   <span class="number">0x000000000040156c</span> &lt;+<span class="number">28</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">edx</span>,<span class="number">0xa</span></span><br><span class="line">   <span class="number">0x0000000000401571</span> &lt;+<span class="number">33</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">rcx</span>,<span class="built_in">rbx</span></span><br><span class="line">   <span class="number">0x0000000000401574</span> &lt;+<span class="number">36</span>&gt;:    <span class="keyword">call</span>   <span class="number">0x402d20</span> &lt;A::A(<span class="keyword">int</span>)&gt;<span class="comment">;构造函数</span></span><br><span class="line">   <span class="number">0x0000000000401579</span> &lt;+<span class="number">41</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rbp</span>-<span class="number">0x8</span>],<span class="built_in">rbx</span> </span><br><span class="line">   <span class="number">0x000000000040157d</span> &lt;+<span class="number">45</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">rbx</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rbp</span>-<span class="number">0x8</span>] <span class="comment">;new end</span></span><br><span class="line">   <span class="number">0x0000000000401581</span> &lt;+<span class="number">49</span>&gt;:    <span class="keyword">test</span>   <span class="built_in">rbx</span>,<span class="built_in">rbx</span> <span class="comment">; delete start</span></span><br><span class="line">   <span class="number">0x0000000000401584</span> &lt;+<span class="number">52</span>&gt;:    <span class="keyword">je</span>     <span class="number">0x40159b</span> &lt;main()+<span class="number">75</span>&gt;</span><br><span class="line">   <span class="number">0x0000000000401586</span> &lt;+<span class="number">54</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">rcx</span>,<span class="built_in">rbx</span></span><br><span class="line">   <span class="number">0x0000000000401589</span> &lt;+<span class="number">57</span>&gt;:    <span class="keyword">call</span>   <span class="number">0x402d60</span> &lt;A::~A()&gt; <span class="comment">; 析构函数</span></span><br><span class="line">   <span class="number">0x000000000040158e</span> &lt;+<span class="number">62</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">edx</span>,<span class="number">0x4</span></span><br><span class="line">   <span class="number">0x0000000000401593</span> &lt;+<span class="number">67</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">rcx</span>,<span class="built_in">rbx</span></span><br><span class="line">   <span class="number">0x0000000000401596</span> &lt;+<span class="number">70</span>&gt;:    <span class="keyword">call</span>   <span class="number">0x401650</span> &lt;_ZdlPvy&gt;</span><br><span class="line">=&gt; <span class="number">0x000000000040159b</span> &lt;+<span class="number">75</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">eax</span>,<span class="number">0x0</span> <span class="comment">;delete end</span></span><br><span class="line">   <span class="number">0x00000000004015a0</span> &lt;+<span class="number">80</span>&gt;:    <span class="keyword">jmp</span>    <span class="number">0x4015bd</span> &lt;main()+<span class="number">109</span>&gt;</span><br><span class="line">   <span class="number">0x00000000004015a2</span> &lt;+<span class="number">82</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">rsi</span>,<span class="built_in">rax</span></span><br><span class="line">   <span class="number">0x00000000004015a5</span> &lt;+<span class="number">85</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">edx</span>,<span class="number">0x4</span></span><br><span class="line">   <span class="number">0x00000000004015aa</span> &lt;+<span class="number">90</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">rcx</span>,<span class="built_in">rbx</span></span><br><span class="line">   <span class="number">0x00000000004015ad</span> &lt;+<span class="number">93</span>&gt;:    <span class="keyword">call</span>   <span class="number">0x401650</span> &lt;_ZdlPvy&gt;</span><br><span class="line">   <span class="number">0x00000000004015b2</span> &lt;+<span class="number">98</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">rax</span>,<span class="built_in">rsi</span></span><br><span class="line">   <span class="number">0x00000000004015b5</span> &lt;+<span class="number">101</span>&gt;:   <span class="keyword">mov</span>    <span class="built_in">rcx</span>,<span class="built_in">rax</span></span><br><span class="line">   <span class="number">0x00000000004015b8</span> &lt;+<span class="number">104</span>&gt;:   <span class="keyword">call</span>   <span class="number">0x402af0</span> &lt;_Unwind_Resume&gt;</span><br><span class="line">   <span class="number">0x00000000004015bd</span> &lt;+<span class="number">109</span>&gt;:   <span class="keyword">add</span>    <span class="built_in">rsp</span>,<span class="number">0x30</span></span><br><span class="line">   <span class="number">0x00000000004015c1</span> &lt;+<span class="number">113</span>&gt;:   <span class="keyword">pop</span>    <span class="built_in">rbx</span></span><br><span class="line">   <span class="number">0x00000000004015c2</span> &lt;+<span class="number">114</span>&gt;:   <span class="keyword">pop</span>    <span class="built_in">rsi</span></span><br><span class="line">   <span class="number">0x00000000004015c3</span> &lt;+<span class="number">115</span>&gt;:   <span class="keyword">pop</span>    <span class="built_in">rbp</span></span><br><span class="line">   <span class="number">0x00000000004015c4</span> &lt;+<span class="number">116</span>&gt;:   <span class="keyword">ret</span>    </span><br><span class="line">End of assembler dump.</span><br><span class="line">(gdb) info line <span class="number">18</span></span><br><span class="line">Line <span class="number">18</span> of <span class="string">&quot;main.cpp&quot;</span> starts <span class="meta">at</span> address <span class="number">0x40155f</span> &lt;main()+<span class="number">15</span>&gt;</span><br><span class="line">   <span class="keyword">and</span> ends <span class="meta">at</span> <span class="number">0x40157d</span> &lt;main()+<span class="number">45</span>&gt;.</span><br><span class="line">Line <span class="number">19</span> of <span class="string">&quot;main.cpp&quot;</span> starts <span class="meta">at</span> address <span class="number">0x40157d</span> &lt;main()+<span class="number">45</span>&gt;</span><br><span class="line"><span class="keyword">and</span> ends <span class="meta">at</span> <span class="number">0x40159b</span> &lt;main()+<span class="number">75</span>&gt;.</span><br></pre></td></tr></table></figure><br>从汇编代码可以看出new首先申请一块内存然后调用构造函数，而delete先调用析构函数然后在释放内存。</p>
+<h3 id="array-new-delete"><a href="#array-new-delete" class="headerlink" title="array new/delete[]"></a>array new/delete[]</h3><p>测试代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;complex&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;memory&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> x;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">A</span>(<span class="keyword">int</span> x):<span class="built_in">x</span>(x)&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;A::ctor&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">A</span>()&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;A::A()&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">A</span>()&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;A::dtor&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setX</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span> -&gt; x = x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getX</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;   </span><br><span class="line">    A* p = <span class="keyword">new</span> A[<span class="number">10</span>];</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)&#123;</span><br><span class="line">        p[i].<span class="built_in">setX</span>(i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)&#123;</span><br><span class="line">        cout &lt;&lt; p[i].<span class="built_in">getX</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">delete</span>[] p;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>查看内存布局</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">(gdb) p p</span><br><span class="line">$<span class="number">2</span> = (A *) <span class="number">0x6e1e68</span></span><br><span class="line">(gdb) x/<span class="number">128</span>xb <span class="number">0x6e1e38</span></span><br><span class="line"><span class="number">0x6e1e38</span>:       <span class="number">0xab</span>    <span class="number">0xab</span>    <span class="number">0xab</span>    <span class="number">0xab</span>    <span class="number">0xab</span>    <span class="number">0xab</span>    <span class="number">0xab</span>    <span class="number">0xab</span></span><br><span class="line"><span class="number">0x6e1e40</span>:       <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br><span class="line"><span class="number">0x6e1e48</span>:       <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br><span class="line"><span class="number">0x6e1e50</span>:       <span class="number">0xee</span>    <span class="number">0xfe</span>    <span class="number">0xee</span>    <span class="number">0xfe</span>    <span class="number">0xee</span>    <span class="number">0xfe</span>    <span class="number">0xee</span>    <span class="number">0xfe</span>  </span><br><span class="line"><span class="number">0x6e1e58</span>:       <span class="number">0x97</span>    <span class="number">0x1a</span>    <span class="number">0x9c</span>    <span class="number">0x1e</span>    <span class="number">0xaf</span>    <span class="number">0x57</span>    <span class="number">0x00</span>    <span class="number">0x3f</span></span><br><span class="line"><span class="number">0x6e1e60</span>:       <span class="number">0x0a</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span> <span class="comment">//数组长度10</span></span><br><span class="line"><span class="number">0x6e1e68</span>:       <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x01</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span> <span class="comment">//p[0],p[1]</span></span><br><span class="line"><span class="number">0x6e1e70</span>:       <span class="number">0x02</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x03</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br><span class="line"><span class="number">0x6e1e78</span>:       <span class="number">0x04</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x05</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br><span class="line"><span class="number">0x6e1e80</span>:       <span class="number">0x06</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x07</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br><span class="line"><span class="number">0x6e1e88</span>:       <span class="number">0x08</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x09</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span> <span class="comment">//p[8],p[9]</span></span><br><span class="line"><span class="comment">//....</span></span><br></pre></td></tr></table></figure>
+<p>查看delete[]的汇编代码</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">x0000000000401637 &lt;+<span class="number">231</span>&gt;:   <span class="keyword">je</span>     <span class="number">0x40168f</span> &lt;main()+<span class="number">319</span>&gt;</span><br><span class="line">   <span class="number">0x0000000000401639</span> &lt;+<span class="number">233</span>&gt;:   <span class="keyword">mov</span>    <span class="built_in">rax</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rbp</span>-<span class="number">0x10</span>]<span class="comment">;将数组首地址移入寄存器</span></span><br><span class="line">   <span class="number">0x000000000040163d</span> &lt;+<span class="number">237</span>&gt;:   <span class="keyword">sub</span>    <span class="built_in">rax</span>,<span class="number">0x8</span><span class="comment">;向前8个字节</span></span><br><span class="line">   <span class="number">0x0000000000401641</span> &lt;+<span class="number">241</span>&gt;:   <span class="keyword">mov</span>    <span class="built_in">rax</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rax</span>]<span class="comment">;数组长度</span></span><br><span class="line">   <span class="number">0x0000000000401644</span> &lt;+<span class="number">244</span>&gt;:   <span class="keyword">lea</span>    <span class="built_in">rdx</span>,[<span class="built_in">rax</span>*<span class="number">4</span>+<span class="number">0x0</span>]<span class="comment">;终点地址</span></span><br><span class="line">   <span class="number">0x000000000040164c</span> &lt;+<span class="number">252</span>&gt;:   <span class="keyword">mov</span>    <span class="built_in">rax</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rbp</span>-<span class="number">0x10</span>]</span><br><span class="line">   <span class="number">0x0000000000401650</span> &lt;+<span class="number">256</span>&gt;:   <span class="keyword">lea</span>    <span class="built_in">rbx</span>,[<span class="built_in">rdx</span>+<span class="built_in">rax</span>*<span class="number">1</span>]</span><br><span class="line">   <span class="number">0x0000000000401654</span> &lt;+<span class="number">260</span>&gt;:   <span class="keyword">cmp</span>    <span class="built_in">rbx</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rbp</span>-<span class="number">0x10</span>]</span><br><span class="line">   <span class="number">0x0000000000401658</span> &lt;+<span class="number">264</span>&gt;:   <span class="keyword">je</span>     <span class="number">0x401668</span> &lt;main()+<span class="number">280</span>&gt;</span><br><span class="line">   <span class="number">0x000000000040165a</span> &lt;+<span class="number">266</span>&gt;:   <span class="keyword">sub</span>    <span class="built_in">rbx</span>,<span class="number">0x4</span> <span class="comment">;从最后一个开始析构，因此减sizeof(A) = 4</span></span><br><span class="line">   <span class="number">0x000000000040165e</span> &lt;+<span class="number">270</span>&gt;:   <span class="keyword">mov</span>    <span class="built_in">rcx</span>,<span class="built_in">rbx</span></span><br><span class="line">   <span class="number">0x0000000000401661</span> &lt;+<span class="number">273</span>&gt;:   <span class="keyword">call</span>   <span class="number">0x402ed0</span> &lt;A::~A()&gt;</span><br><span class="line">   <span class="number">0x0000000000401666</span> &lt;+<span class="number">278</span>&gt;:   <span class="keyword">jmp</span>    <span class="number">0x401654</span> &lt;main()+<span class="number">260</span>&gt;<span class="comment">;循环析构</span></span><br><span class="line">   <span class="number">0x0000000000401668</span> &lt;+<span class="number">280</span>&gt;:   <span class="keyword">mov</span>    <span class="built_in">rax</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rbp</span>-<span class="number">0x10</span>]</span><br><span class="line">   <span class="number">0x000000000040166c</span> &lt;+<span class="number">284</span>&gt;:   <span class="keyword">sub</span>    <span class="built_in">rax</span>,<span class="number">0x8</span></span><br><span class="line">   <span class="number">0x0000000000401670</span> &lt;+<span class="number">288</span>&gt;:   <span class="keyword">mov</span>    <span class="built_in">rax</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rax</span>]</span><br><span class="line">   <span class="number">0x0000000000401673</span> &lt;+<span class="number">291</span>&gt;:   <span class="keyword">add</span>    <span class="built_in">rax</span>,<span class="number">0x2</span></span><br><span class="line">   <span class="number">0x0000000000401677</span> &lt;+<span class="number">295</span>&gt;:   <span class="keyword">lea</span>    <span class="built_in">rdx</span>,[<span class="built_in">rax</span>*<span class="number">4</span>+<span class="number">0x0</span>]</span><br><span class="line">   <span class="number">0x000000000040167f</span> &lt;+<span class="number">303</span>&gt;:   <span class="keyword">mov</span>    <span class="built_in">rax</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rbp</span>-<span class="number">0x10</span>]</span><br><span class="line">   <span class="number">0x0000000000401683</span> &lt;+<span class="number">307</span>&gt;:   <span class="keyword">sub</span>    <span class="built_in">rax</span>,<span class="number">0x8</span></span><br><span class="line">   <span class="number">0x0000000000401687</span> &lt;+<span class="number">311</span>&gt;:   <span class="keyword">mov</span>    <span class="built_in">rcx</span>,<span class="built_in">rax</span></span><br><span class="line">   <span class="number">0x000000000040168a</span> &lt;+<span class="number">314</span>&gt;:   <span class="keyword">call</span>   <span class="number">0x401780</span> &lt;_ZdaPvy&gt;</span><br><span class="line">   <span class="number">0x000000000040168f</span> &lt;+<span class="number">319</span>&gt;:   <span class="keyword">lea</span>    <span class="built_in">rcx</span>,[<span class="built_in">rip</span>+<span class="number">0x298a</span>]        # <span class="number">0x404020</span> &lt;_ZStL6ignore+<span class="number">23</span>&gt;</span><br></pre></td></tr></table></figure>
+<p>delete[]获得对象数组的地址后，向前8个字节获得数组长度然后从最后一个对象开始析构，完成后释放整个空间。</p>
+<h3 id="operator-new-operator-delete重载"><a href="#operator-new-operator-delete重载" class="headerlink" title="operator new/operator delete重载"></a>operator new/operator delete重载</h3><p>当我们需要在new的时候增加一些特殊的动作，比如输出一些调试信息等，我们需要自己对operator进行重载。例如假如我们重写了下面这个版本，输出一些信息：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span>* <span class="keyword">operator</span> <span class="title">new</span><span class="params">(<span class="keyword">size_t</span> size,string&amp; info)</span><span class="title">throw</span><span class="params">()</span></span>&#123;</span><br><span class="line">        cout &lt;&lt; info;</span><br><span class="line">        <span class="keyword">return</span> ::<span class="keyword">operator</span> <span class="built_in"><span class="keyword">new</span></span>(size);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="keyword">operator</span> <span class="title">delete</span><span class="params">(<span class="keyword">void</span>* p, string&amp; info)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> ::<span class="keyword">operator</span> <span class="built_in"><span class="keyword">delete</span></span>(p);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">string <span class="title">s</span><span class="params">(<span class="string">&quot;info&quot;</span>)</span></span>;</span><br><span class="line">A* p = <span class="built_in"><span class="keyword">new</span></span> (s) <span class="built_in">A</span>(<span class="number">10</span>);</span><br><span class="line"><span class="built_in"><span class="keyword">delete</span></span>(p);</span><br></pre></td></tr></table></figure>
+<p>看看汇编层面：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(gdb) info line <span class="number">26</span></span><br><span class="line">Line <span class="number">26</span> of <span class="string">&quot;main.cpp&quot;</span> starts at address <span class="number">0x4015fb</span> &lt;<span class="built_in">main</span>()+<span class="number">65</span>&gt; <span class="keyword">and</span> ends at <span class="number">0x40162d</span> &lt;<span class="built_in">main</span>()+<span class="number">115</span>&gt;.</span><br><span class="line"></span><br><span class="line">(gdb) info line <span class="number">27</span></span><br><span class="line">Line <span class="number">27</span> of <span class="string">&quot;main.cpp&quot;</span> starts at address <span class="number">0x40162d</span> &lt;<span class="built_in">main</span>()+<span class="number">115</span>&gt; <span class="keyword">and</span> ends at <span class="number">0x401639</span> &lt;<span class="built_in">main</span>()+<span class="number">127</span>&gt;.</span><br></pre></td></tr></table></figure>
+
+<p>placement new:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0x00000000004015fb</span> &lt;+<span class="number">65</span>&gt;:    <span class="keyword">lea</span>    <span class="built_in">rax</span>,[<span class="built_in">rbp</span>-<span class="number">0x30</span>]</span><br><span class="line"><span class="number">0x00000000004015ff</span> &lt;+<span class="number">69</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">rdx</span>,<span class="built_in">rax</span></span><br><span class="line"><span class="number">0x0000000000401602</span> &lt;+<span class="number">72</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">ecx</span>,<span class="number">0x4</span></span><br><span class="line"><span class="number">0x0000000000401607</span> &lt;+<span class="number">77</span>&gt;:    <span class="keyword">call</span>   <span class="number">0x401550</span> &lt;operator new(unsigned long long, <span class="keyword">std</span>::__cxx11::basic_string&lt;char, <span class="keyword">std</span>::char_traits&lt;char&gt;, <span class="keyword">std</span>::allocator&lt;char&gt; &gt;&amp;)&gt;</span><br><span class="line"><span class="number">0x000000000040160c</span> &lt;+<span class="number">82</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">rbx</span>,<span class="built_in">rax</span></span><br><span class="line"><span class="number">0x000000000040160f</span> &lt;+<span class="number">85</span>&gt;:    <span class="keyword">test</span>   <span class="built_in">rbx</span>,<span class="built_in">rbx</span></span><br><span class="line"><span class="number">0x0000000000401612</span> &lt;+<span class="number">88</span>&gt;:    <span class="keyword">je</span>     <span class="number">0x401626</span> &lt;main()+<span class="number">108</span>&gt;</span><br><span class="line"><span class="number">0x0000000000401614</span> &lt;+<span class="number">90</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">edx</span>,<span class="number">0xa</span></span><br><span class="line"><span class="number">0x0000000000401619</span> &lt;+<span class="number">95</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">rcx</span>,<span class="built_in">rbx</span></span><br><span class="line"><span class="number">0x000000000040161c</span> &lt;+<span class="number">98</span>&gt;:    <span class="keyword">call</span>   <span class="number">0x402e50</span> &lt;A::A(<span class="keyword">int</span>)&gt;</span><br><span class="line"><span class="number">0x0000000000401621</span> &lt;+<span class="number">103</span>&gt;:   <span class="keyword">mov</span>    <span class="built_in">rax</span>,<span class="built_in">rbx</span></span><br><span class="line"><span class="number">0x0000000000401624</span> &lt;+<span class="number">106</span>&gt;:   <span class="keyword">jmp</span>    <span class="number">0x401629</span> &lt;main()+<span class="number">111</span>&gt;</span><br><span class="line"><span class="number">0x0000000000401626</span> &lt;+<span class="number">108</span>&gt;:   <span class="keyword">mov</span>    <span class="built_in">rax</span>,<span class="built_in">rbx</span></span><br><span class="line"><span class="number">0x0000000000401629</span> &lt;+<span class="number">111</span>&gt;:   <span class="keyword">mov</span>    <span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rbp</span>-<span class="number">0x38</span>],<span class="built_in">rax</span></span><br><span class="line"><span class="number">0x000000000040162d</span> &lt;+<span class="number">115</span>&gt;:   <span class="keyword">mov</span>    <span class="built_in">rbx</span>,<span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rbp</span>-<span class="number">0x38</span>]</span><br></pre></td></tr></table></figure>
+<p>placement delete:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">   <span class="number">0x0000000000401631</span> &lt;+<span class="number">119</span>&gt;:   <span class="keyword">test</span>   <span class="built_in">rbx</span>,<span class="built_in">rbx</span></span><br><span class="line">   <span class="number">0x0000000000401634</span> &lt;+<span class="number">122</span>&gt;:   <span class="keyword">je</span>     <span class="number">0x40164b</span> &lt;main()+<span class="number">145</span>&gt;</span><br><span class="line">   <span class="number">0x0000000000401636</span> &lt;+<span class="number">124</span>&gt;:   <span class="keyword">mov</span>    <span class="built_in">rcx</span>,<span class="built_in">rbx</span></span><br><span class="line">   <span class="number">0x0000000000401639</span> &lt;+<span class="number">127</span>&gt;:   <span class="keyword">call</span>   <span class="number">0x402e90</span> &lt;A::~A()&gt;</span><br><span class="line">   <span class="number">0x000000000040163e</span> &lt;+<span class="number">132</span>&gt;:   <span class="keyword">mov</span>    <span class="built_in">edx</span>,<span class="number">0x4</span></span><br><span class="line">   <span class="number">0x0000000000401643</span> &lt;+<span class="number">137</span>&gt;:   <span class="keyword">mov</span>    <span class="built_in">rcx</span>,<span class="built_in">rbx</span></span><br><span class="line">   <span class="number">0x0000000000401646</span> &lt;+<span class="number">140</span>&gt;:   <span class="keyword">call</span>   <span class="number">0x401748</span> &lt;_ZdlPvy&gt;</span><br><span class="line">=&gt; <span class="number">0x000000000040164b</span> &lt;+<span class="number">145</span>&gt;:   <span class="keyword">mov</span>    <span class="built_in">ebx</span>,<span class="number">0x0</span></span><br></pre></td></tr></table></figure>
+<p>系统就会使用我们定义的版本进行内存分配。<br>既然默认new 和 delete工作的很好，问什么需要重载？</p>
+<ul>
+<li>可以用来检测运用上的错误</li>
+<li>可以提高效率，节省不必要的内存，提高回收和分配的速度（比如针对某一对象的内存池）</li>
+<li>可以收集对内存使用的数据统计</li>
+<li>operator delete主要为了处理异常，一般情况下delete会调用全局operator delete释放内存。</li>
+</ul>
+<h3 id="placement-new"><a href="#placement-new" class="headerlink" title="placement new"></a>placement new</h3><p>placement new是重载operator new的一个标准、全局的版本，它不能被自定义的版本代替（不像普通的operator new和operator delete能够被替换成用户自定义的版本）。<br>它的原型如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="keyword">operator</span> <span class="title">new</span><span class="params">( <span class="keyword">size_t</span>, <span class="keyword">void</span> *p )</span> <span class="title">throw</span><span class="params">()</span>  </span>&#123; </span><br><span class="line">    <span class="keyword">return</span> p; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><font color=orange>它不能够被自定义的版本代替（不像普通版本的operator new和operator delete能够被替换）</font>。如果你想在已经分配的内存中创建一个对象，使用new是不行的。也就是说placement new允许你在一个已经分配好的内存中（栈或堆中）构造一个新的对象。原型中void*p实际上就是指向一个已经分配好的内存缓冲区的的首地址。</p>
+<ul>
+<li><p>我们为什么需要placement new？</p>
+<p>  1.用placement new 解决buffer的问题</p>
+<p>  问题描述：用new分配的数组缓冲时，由于调用了默认构造函数，因此执行效率上不佳。若没有默认构造函数则会发生编译时错误。如果你想在预分配的内存上创建对象，用缺省的new操作符是行不通的。要解决这个问题，你可以用placement new构造。它允许你构造一个新对象到预分配的内存上。</p>
+<p>  2.增大时空效率的问题</p>
+<p>  使用new操作符分配内存需要在堆中查找足够大的剩余空间，显然这个操作速度是很慢的，而且有可能出现无法分配内存的异常（空间不够）。placement new就可以解决这个问题。我们构造对象都是在一个预先准备好了的内存缓冲区中进行，不需要查找内存，内存分配的时间是常数；而且不会出现在程序运行中途出现内存不足的异常。所以，placement new非常适合那些对时间要求比较高，长时间运行不希望被打断的应用程序。</p>
+</li>
+<li><p>placement new使用步骤</p>
+<ul>
+<li><p>第一步  缓存提前分配<br>有三种方式：<br>  1.为了保证通过placement new使用的缓存区的memory alignment(内存队列)正确准备，使用普通的new来分配它：在堆上进行分配class Task。</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> * buff = <span class="keyword">new</span> [<span class="built_in"><span class="keyword">sizeof</span></span>(Task)]; <span class="comment">//分配内存</span></span><br></pre></td></tr></table></figure>
+<p>  (请注意auto或者static内存并非都正确地为每一个对象类型排列，所以，你将不能以placement new使用它们。)</p>
+<p>  2.在栈上进行分配</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Task</span> ;</span></span><br><span class="line"><span class="keyword">char</span> buf[<span class="function">N*<span class="title">sizeof</span><span class="params">(Task)</span>]</span>; <span class="comment">//分配内存</span></span><br></pre></td></tr></table></figure>
+<p>  3.还有一种方式，就是直接通过地址来使用。(必须是有意义的地址)</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span>* buf = <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">void</span>*&gt; (<span class="number">0xF00F</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p>第二步：对象的分配 </p>
+<p>  在刚才已分配的缓存区调用placement new来构造一个对象。<br>  Task *ptask = new (buf) Task</p>
+</li>
+<li><p>第三步：使用</p>
+<p>  按照普通方式使用分配的对象：</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ptask-&gt;<span class="built_in">memberfunction</span>();</span><br><span class="line">ptask-&gt; member;</span><br><span class="line"><span class="comment">//...</span></span><br></pre></td></tr></table></figure></li>
+<li><p>第四步：对象的析构</p>
+<p>  一旦你使用完这个对象，你必须调用它的析构函数来毁灭它。按照下面的方式调用析构函数：</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ptask-&gt;~<span class="built_in">Task</span>(); <span class="comment">//调用外在的析构函数</span></span><br></pre></td></tr></table></figure></li>
+<li><p>第五步：释放</p>
+<p>  你可以反复利用缓存并给它分配一个新的对象（重复步骤2，3，4）如果你不打算再次使用这个缓存，你可以象这样释放它：delete [] buf;</p>
+</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" rel="tag"># 内存管理</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Atcmalloc/" rel="prev" title="c++内存管理系列：tcmalloc">
+      <i class="fa fa-chevron-left"></i> c++内存管理系列：tcmalloc
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Ajemalloc/" rel="next" title="c++内存管理系列：jemalloc">
+      c++内存管理系列：jemalloc <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E7%9A%84%E5%B1%82%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">内存分配的层面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#operator-new-operator-delete"><span class="nav-number">2.</span> <span class="nav-text">operator new&#x2F;operator delete</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#array-new-delete"><span class="nav-number">3.</span> <span class="nav-text">array new&#x2F;delete[]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#operator-new-operator-delete%E9%87%8D%E8%BD%BD"><span class="nav-number">4.</span> <span class="nav-text">operator new&#x2F;operator delete重载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#placement-new"><span class="nav-number">5.</span> <span class="nav-text">placement new</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hqin"
+      src="/images/001.jpg">
+  <p class="site-author-name" itemprop="name">hqin</p>
+  <div class="site-description" itemprop="description">星海横流 岁月成碑</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hqin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

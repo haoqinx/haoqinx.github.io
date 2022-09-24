@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="阿里云开放平台一面2.28：  实习、项目介绍 最有挑战的项目？难点、怎么解决的？ 内存泄漏（检测工具valgrind&#x2F;钩子函数、相关命令） 编程层面如何预防内存泄漏，除了智能指针？ linux网络编程和tcp连接对应关系 三次握手四次挥手，timewait、closewait leveldb原理（memtable&#x2F;immemtable&#x2F;sstable&#x2F;log&#x2F;manifast&#x2F;footer）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="暑期实习面经">
+<meta property="og:url" content="http://haoqinx.github.io/2020/10/02/%E9%9D%A2%E7%BB%8F/index.html">
+<meta property="og:site_name" content="面向自由编程">
+<meta property="og:description" content="阿里云开放平台一面2.28：  实习、项目介绍 最有挑战的项目？难点、怎么解决的？ 内存泄漏（检测工具valgrind&#x2F;钩子函数、相关命令） 编程层面如何预防内存泄漏，除了智能指针？ linux网络编程和tcp连接对应关系 三次握手四次挥手，timewait、closewait leveldb原理（memtable&#x2F;immemtable&#x2F;sstable&#x2F;log&#x2F;manifast&#x2F;footer）">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-04-26T14:15:00.276Z">
+<meta property="article:author" content="hqin">
+<meta property="article:tag" content="面经">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://haoqinx.github.io/2020/10/02/%E9%9D%A2%E7%BB%8F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>暑期实习面经 | 面向自由编程</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">面向自由编程</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2020/10/02/%E9%9D%A2%E7%BB%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          暑期实习面经
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-02 00:00:00" itemprop="dateCreated datePublished" datetime="2020-10-02T00:00:00+08:00">2020-10-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-04-26 22:15:00" itemprop="dateModified" datetime="2022-04-26T22:15:00+08:00">2022-04-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%9D%A2%E7%BB%8F/" itemprop="url" rel="index"><span itemprop="name">面经</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <span id="more"></span>
+<p>阿里云开放平台<br>一面2.28：</p>
+<ol>
+<li>实习、项目介绍</li>
+<li>最有挑战的项目？难点、怎么解决的？</li>
+<li>内存泄漏（检测工具valgrind/钩子函数、相关命令）</li>
+<li>编程层面如何预防内存泄漏，除了智能指针？</li>
+<li>linux网络编程和tcp连接对应关系</li>
+<li>三次握手四次挥手，timewait、closewait</li>
+<li>leveldb原理（memtable/immemtable/sstable/log/manifast/footer）</li>
+<li>vector底层实现、动态扩容</li>
+<li>竞态、临界区、举例</li>
+<li>ptmalloc底层实现</li>
+<li>tcmalloc、jemalloc底层实现，和ptmalloc对比</li>
+<li>伙伴系统、slab分配器、STL二级配置器（内存池）</li>
+<li>最有成就感的项目/经历<br>算法题：之字形打印二叉树</li>
+</ol>
+<p>笔试3.14</p>
+<p>二面3.16：</p>
+<ol>
+<li>实习、项目挖10分钟</li>
+<li>NUMA/UMA</li>
+<li>内核自旋锁底层实现？while和自旋锁的区别？</li>
+<li>内存屏障</li>
+<li>多文件全局变量的初始化顺序？例如a.cc有int a = 10, b.cc有int b = a, c.cc有int c = b;问main函数中a,b,c的值是什么(随机值还是10还是0？)</li>
+<li>x86架构模型</li>
+<li>x86和arm在内存架构上的不同<br>算法：利用malloc和free实现自己的my_malloc和my_free，使之可以基于N字节对齐。</li>
+</ol>
+<p>hr面3.18：<br>聊天+谈职业规划<br>3.21意向</p>
+<p>阿里云块存储<br>一面2.26：<br>算法题：字符串转整数、公共子树</p>
+<ol>
+<li>介绍项目、实习</li>
+<li>leveldb原理</li>
+<li>死锁及解决</li>
+<li>如何检测系统瓶颈（cpu、磁盘、网络、内存）</li>
+<li>unordered_map底层原理，扩容机制</li>
+<li>struct和class的区别</li>
+<li>多线程和多进程各自的优缺点</li>
+<li>最近在关注的技术（HTTP3.0）</li>
+<li>http3.0 为什么用udp</li>
+<li>3.0实现细节、TLS3.0</li>
+<li>反问</li>
+</ol>
+<p>二面3.1</p>
+<ol>
+<li>介绍</li>
+<li>linux文件系统</li>
+<li>零拷贝</li>
+<li>c++文件编码执行整个过程20min（涉及 键盘io、中断、显示器、elf文件、编译、链接、加载、执行、物理内存、虚拟内存、进程管理等等细节）</li>
+<li>linux cfs进程调度底层原理</li>
+<li>磁盘缓存、布局</li>
+<li>linux io细节<br>算法题：组合总和</li>
+</ol>
+<p>3.2通知二面过 但已选择其他部门 放弃后续面试</p>
+<p>腾讯wxg3.17</p>
+<ol>
+<li>代码：回文串、c++单例模式：懒汉、线程安全模式、最大字符串</li>
+<li>函数返回临时对象的问题</li>
+<li>sizeof为0</li>
+<li>移动构造使用场景</li>
+<li>new时内存不够，修改abort()报错要怎么做，(operator new修改回调函数)</li>
+<li>协程项目深挖（15min）</li>
+<li>协程堆上内存不够了会发生什么</li>
+<li>协程堆内存不够，申请两倍空间，拷贝过去会有什么问题</li>
+<li>第三方库调你的协程库需要怎么做？</li>
+<li>协程池必要吗？和面试官产生分歧。</li>
+<li>内核函数read、write在哪个链接器里？？不知道想要问啥。</li>
+<li>内核自旋锁实现</li>
+<li>反问</li>
+<li>19 挂</li>
+</ol>
+<p>字节基架<br>一面：</p>
+<ol>
+<li>介绍</li>
+<li>leveldb深挖（原理，读写，存储，多key查询，压缩，合并，数据结构）</li>
+<li>mysql深挖（acid，事务，隔离级别，redo，undo，mvcc，readview，多线程缓存）</li>
+<li>B树、B+树，节点分裂</li>
+<li>osi七层</li>
+<li>虚拟内存</li>
+<li>进程和线程</li>
+<li>进程间通信</li>
+<li>页表</li>
+<li>k8s（apiserver，etcd，node，kubelet） </li>
+<li>docker原理<br>算法题：二叉查找树第k小元素非递归实现（没写出来）</li>
+</ol>
+<p>总结：问的都是不擅长的数据库，擅长的操作系统和网络问的都是八股，算法题拉了，思路对的但是做了40分钟没写出来，应该是凉透了。<br>更新：二十分钟后询问hr 一面过<br>os:算法题没做出来过了？</p>
+<p>二面：</p>
+<ol>
+<li>介绍</li>
+<li>操作系统深挖</li>
+<li>内存管理、虚拟内存</li>
+<li>内核自旋锁原理，读写锁</li>
+<li>NUMA、MESI</li>
+<li>对计算机网络的理解</li>
+<li>反问<br>算法：<br>面试官：一面算法下来写过了吗？答写了。<br>面试官：不能用辅助数据结构、空间复杂度O(1)。楼主心态爆炸，这里写了20min没写出来。<br>面试官放水：写下memcpy和strcpy？楼主已经懵逼，忘记怎么写的了，卒。<br>面试后了解到面试官应该想要实现Morris遍历。</li>
+</ol>
+<p>总结：算法未准备充分，字节面试还得好好刷算法。秋招再战！</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%9D%A2%E7%BB%8F/" rel="tag"># 面经</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/02/%E8%AE%BE%E8%AE%A1rpc%E6%A1%86%E6%9E%B6%E9%9C%80%E8%A6%81%E8%80%83%E8%99%91%E4%BB%80%E4%B9%88%EF%BC%9F/" rel="next" title="设计一个rpc框架需要考虑什么？">
+      设计一个rpc框架需要考虑什么？ <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hqin"
+      src="/images/001.jpg">
+  <p class="site-author-name" itemprop="name">hqin</p>
+  <div class="site-description" itemprop="description">星海横流 岁月成碑</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hqin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

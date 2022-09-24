@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="背景知识 Language Representation Learning下图展示了NLP的一般网络结构，下面一层是对词进行非上下文的编码，上面一层代表了在具体任务上对词进行基于上下文的编码。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NLP：大规模预训练模型">
+<meta property="og:url" content="http://haoqinx.github.io/2020/10/02/NLP%EF%BC%9A%E9%A2%84%E8%AE%AD%E7%BB%83%E7%BB%BC%E8%BF%B0/index.html">
+<meta property="og:site_name" content="面向自由编程">
+<meta property="og:description" content="背景知识 Language Representation Learning下图展示了NLP的一般网络结构，下面一层是对词进行非上下文的编码，上面一层代表了在具体任务上对词进行基于上下文的编码。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://haoqinx.github.io/images/survey-1.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/survey-2.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/survey-3.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/survey-4.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/survey-5.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/survey-6.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/survey-7.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/survey-8.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/survey-10.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/survey-11.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/survey-11.png">
+<meta property="article:published_time" content="2020-10-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-10-29T12:16:54.411Z">
+<meta property="article:author" content="hqin">
+<meta property="article:tag" content="预训练">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://haoqinx.github.io/images/survey-1.png">
+
+<link rel="canonical" href="http://haoqinx.github.io/2020/10/02/NLP%EF%BC%9A%E9%A2%84%E8%AE%AD%E7%BB%83%E7%BB%BC%E8%BF%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>NLP：大规模预训练模型 | 面向自由编程</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">面向自由编程</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2020/10/02/NLP%EF%BC%9A%E9%A2%84%E8%AE%AD%E7%BB%83%E7%BB%BC%E8%BF%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NLP：大规模预训练模型
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-02 00:00:00" itemprop="dateCreated datePublished" datetime="2020-10-02T00:00:00+08:00">2020-10-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-10-29 20:16:54" itemprop="dateModified" datetime="2021-10-29T20:16:54+08:00">2021-10-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h3><ol>
+<li>Language Representation Learning<br>下图展示了NLP的一般网络结构，下面一层是对词进行非上下文的编码，上面一层代表了在具体任务上对词进行基于上下文的编码。<br><img src="/images/survey-1.png"></li>
+</ol>
+<span id="more"></span>
+<ul>
+<li>Non-contextual Embeddings：<br>下面这层嵌入的目标是将离散的语言符号映射到连续的embedding空间中，一般在训练的过程中是随着具体任务的其他模型参数一起训练的。<br>这种嵌入有两个缺点，首先是这种嵌入是静态的，也就是说词嵌入表示不随着文本的改变而改变，第二点是会出现OOV问题，因此这种表示没办法对一词多义的词进行良好的表示，为了解决这个问题，character-level和sub-word level的word分解被广泛应用到NLP任务中，例如说CharCNN，FastTest,BPE等。</li>
+<li>Contextual Embeddings：<br>为了解决一词多义等词嵌入问题，必须结合上下文的信息来进行embedding，下面是几种方式，其中(a)和(b)属于sequence models,(c)属于None-sequence models。<br><img src="/images/survey-2.png"><br>(a)和(b)的优点是容易训练并且在不同的NLP任务中取得了不错的结果，缺点是无法捕捉长期依赖。(c)的优点是可以捕捉任意两个词之间的关系，更加灵活和强大，缺点是需要十分庞大的训练语料并且在小数据集上容易过拟合。</li>
+</ul>
+<h3 id="Overview-of-PTMs"><a href="#Overview-of-PTMs" class="headerlink" title="Overview of PTMs"></a>Overview of PTMs</h3><ol>
+<li>预训练任务<br>预训练任务主要分成三种：</li>
+</ol>
+<ul>
+<li>Supervised learning</li>
+<li>Unsupervised learning（簇、密度、隐藏表示）</li>
+<li>Self-Supervised learning（MLM、NSP等）</li>
+</ul>
+<ol start="2">
+<li><p>Language Modeling (LM)<br>Probabilistic language modeling (LM)是最通用的无监督预训练任务，下面给出一个形式化的定义：<br>给定一个文本序列<br><img src="/images/survey-3.png"><br>那么他的概率可以被分解成：<br><img src="/images/survey-4.png"><br>单向语言模型的缺点就是只能将其左方和他自己进行编码。</p>
+</li>
+<li><p>Masked Language Modeling (MLM)<br>具体来说就是遮挡掉一部分token，然后试图使用其他的token预测遮盖掉的部分，这种预训练方法也有缺点，就是在训练阶段和fine-tune阶段的token出现数量不一致，因为在训练阶段遮挡了一部分token</p>
+</li>
+<li><p>Sequence-to-Sequence MLM (Seq2Seq MLM)<br>MLM通常被看做是一个分类任务，将一个masked的seq输入到encoder中，然后通过softmax输出分类概率，或者我们可以使用encoder-decoder架构，在encoder输入masked的seq，让decoder去生成对应的token（MASS、T5）</p>
+</li>
+<li><p>Enhanced Masked Language Modeling (E-MLM)<br>对MLM任务进行提升，比如：</p>
+<ul>
+<li>RoBERTa使用动态mask；</li>
+<li>UniLM将MLM任务扩展为单向、双向、seq2seq三种；</li>
+<li>XLM使用双向平行语料库进行训练，XLM的每个训练样本包含含义相同语言不同的两条句子，而不是像BERT中一条样本仅来自同1一语言，XLM模型中，我们可以对每组句子，用一个语言的上下文信息去预测另一个语言被遮住的token。因为句子对中不同的随机词语会被遮住，模型可以利用翻译信息去预测token。模型也接受语言ID和不同语言token的顺序信息，也就是位置编码。这些新的元数据能帮模型学习到不同语言的token间关系。</li>
+<li>structBERT:1/3的时候： 是上下句，分类为1,1/3的时候：  是上下句反序，分类为2,1/3的时候： 是不同文档的句子，分类为3 这个任务对句子对的任务效果好。</li>
+</ul>
+</li>
+<li><p>Permuted Language Modeling (PLM)<br>为了解决在训练阶段的[MASK]模型在微调阶段不存在的影响，Permuted Language Model被提出来了，其中个最有代表性的是Xlnet.</p>
+</li>
+<li><p>Denoising Autoencoder (DAE)<br>输入一个带有噪声的seq，使用一个seq2seq模型去重建无噪声文本，有以下几种方法去破坏文本：</p>
+<ul>
+<li>Token Masking：随机采样token然后将它们替换成[mask]</li>
+<li>Token Deletion：随机删除token，模型需要知道删除的token的位置</li>
+<li>Text Infilling:具有代表性的是spanBERT，随机屏蔽一段text，模型需要预测多少text被屏蔽。</li>
+<li>Sentence Permutation:随机打乱句子的顺序。  </li>
+<li>Document Rotation:随机选择一个token然后旋转documet，以这个token为开始，模型需要确定document的真实开始位置。</li>
+</ul>
+</li>
+<li><p>Contrastive Learning (CTL)</p>
+</li>
+</ol>
+<p>对比学习假设一些文本对相对于随机选择来说有更高的语义相似性。对于一个文本对，定义一个得分方程s(x,y)，任务的目标是最小化目标函数：<br><img src="/images/survey-5.png"><br>其中y+叫做和x相似的正样本，y-叫做和x不相似的负样本。得分方程通常通过learnable neural encoder学习，有两种方式，一种是<br><img src="/images/survey-6.png"><br>另一种是：<br><img src="/images/survey-7.png"><br>CTL的想法是”learning by comparison”，CTL通常比LM的复杂度低。</p>
+<ol start="9">
+<li>Deep InfoMax (DIM)  </li>
+</ol>
+<p>最早是cv上面的概念，是通过最大化image representation 和local regions之间的互信息来提升image representation表达能力的。泛化到nlp里面就是把seq开头的字符（比如[cls]）的hidden state作为文本的编码表示，DIM的目标是最大化<br><img src="/images/survey-8.png"><br>10. Replaced Token Detection (RTD)<br>主要思想和NCE一样，但是预测的是给定一个token的上下文预测这个token是否被替换。CBOW可以看做是一个RTD的简易版本。<br>ELECTRA：使用类似GAN的思想，具体参考论文。WKLM则是在entity-level替换单词（替换的单词和被替换的词具有相同的类别，也就是相似度比较高），然后训练模型判断实体是否被替换。<br>11. Next Sentence Prediction (NSP)<br>50%替换成随意的下一个句子，但是后来的工作对于这个预训练任务基本上没有采用，效果也很好。<br>12. Sentence Order Prediction (SOP)<br>打乱两个句子的顺序进行训练。</p>
+<h3 id="PTM的分类"><a href="#PTM的分类" class="headerlink" title="PTM的分类"></a>PTM的分类</h3><ol>
+<li>Representation Type：non-contextual and contextual models</li>
+<li>Architectures：LSTM, Transformer encoder, Transformer decoder, and the full Transformer architecture</li>
+<li>Pre-Training Task Types：2.1已经讨论过了</li>
+<li>Extensions：knowledge-enriched PTMs, multilingual or language-specific PTMs, multi-model PTMs, domainspecific PTMs and compressed PTMs.</li>
+</ol>
+<p><img src="/images/survey-10.png"><br><img src="/images/survey-11.png"></p>
+<h3 id="PTM扩展"><a href="#PTM扩展" class="headerlink" title="PTM扩展"></a>PTM扩展</h3><p>PTM的扩展</p>
+<ol>
+<li>Knowledge-Enriched PTMs</li>
+</ol>
+<ul>
+<li>linguistically-informed BERT（LIBERT）:在BERT中引入语言学知识；</li>
+<li>SentiLR：对每个单词引入情感标签；</li>
+<li>SenseBERT：在训练过程中除了经典BERT的MLM任务等等，还引入了WordNet里面的软标签，e.g. bass具有noun.food，noun.animal，noun.artifact，noun.person三种标签，模型需要预测这些意义;</li>
+<li>ERNIE：引入实体联系知识；</li>
+<li>KnowBERT:在输入文本中显式建模实体跨度(Entity spans)，并使用实体链接器(Entity Linker)从KB中检测mention、检索相关的实体嵌入(Entity embeddings)，以形成知识增强的实体跨度表示形式。然后使用word-to-entity attention将单词的表示重新上下文化，以携带全部的实体信息。</li>
+<li>KEPLER:将知识图谱的实体嵌入引入到预训练中；</li>
+<li>K-BERT：将知识图谱的三元组形式通过tree-form的形式输入到BERT；</li>
+<li>Pretrained encyclopedia：Weakly supervised </li>
+</ul>
+<p>knowledge-pretrained language model：引入知识图谱的知识<br>这些模型大多数会在引入知识的时候更新参数，这会带来灾难遗忘的问题。</p>
+<ul>
+<li>K-Adapter:在训练不同的预训练任务的时候，使用不同的adapter，这样可以保证连续的知识融合。</li>
+<li>Enhancing pre-trained language representations with rich knowledge for machine reading comprehension:机器阅读理解模型，知识和文本融合，包括语言和事实知识的融合。</li>
+<li>Barack’s wife hillary: Using knowledge graphs for fact-aware language modeling:将语言模型扩展到知识图谱语言模型。</li>
+<li>Latent relation language models：将语言模型融合到latent relation language model</li>
+</ul>
+<h3 id="多语言"><a href="#多语言" class="headerlink" title="多语言"></a>多语言</h3><ol>
+<li>Cross-Lingual Language Understanding (XLU)</li>
+</ol>
+<ul>
+<li>Multilingual BERT：使用共享词库和权重在wikipedia上训练top104个语言，每个训练样本是单语言的，虽然没有跨语言样本，但是展现出了较好的效果。</li>
+<li>XLM：前面提到过的，在平行语料中使用MLM训练。</li>
+</ul>
+<ol start="2">
+<li>Cross-Lingual Language Generation (XLG)</li>
+</ol>
+<ul>
+<li>MASS：不用多说</li>
+<li>XNLG</li>
+<li>mBART</li>
+</ul>
+<ol start="3">
+<li>Multi-Modal PTMs</li>
+</ol>
+<ul>
+<li>Video-Text PTMs<ol>
+<li>VideoBERT</li>
+<li>CBT</li>
+<li>Uni-ViLM</li>
+</ol>
+</li>
+<li>Image-Text PTMs<ol start="4">
+<li>ViLBERT</li>
+<li>LXMERT</li>
+<li>VisualBERT</li>
+<li>B2T2</li>
+<li>VLBERT</li>
+<li>Unicoder-VL</li>
+<li>UNITER</li>
+</ol>
+</li>
+<li>Audio-Text PTMs</li>
+</ul>
+<h3 id="预训练模型压缩"><a href="#预训练模型压缩" class="headerlink" title="预训练模型压缩"></a>预训练模型压缩</h3><p><img src="/images/survey-11.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%A2%84%E8%AE%AD%E7%BB%83/" rel="tag"># 预训练</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/02/NLP%EF%BC%9A%E9%A2%84%E8%AE%AD%E7%BB%83%E8%92%B8%E9%A6%8F/" rel="prev" title="NLP：预训练模型蒸馏">
+      <i class="fa fa-chevron-left"></i> NLP：预训练模型蒸馏
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/10/02/NLP%EF%BC%9AKnowledge-enhenced-PTM/" rel="next" title="NLP：Knowledge-Enhanced PTMs">
+      NLP：Knowledge-Enhanced PTMs <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">背景知识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Overview-of-PTMs"><span class="nav-number">2.</span> <span class="nav-text">Overview of PTMs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PTM%E7%9A%84%E5%88%86%E7%B1%BB"><span class="nav-number">3.</span> <span class="nav-text">PTM的分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PTM%E6%89%A9%E5%B1%95"><span class="nav-number">4.</span> <span class="nav-text">PTM扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E8%AF%AD%E8%A8%80"><span class="nav-number">5.</span> <span class="nav-text">多语言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9"><span class="nav-number">6.</span> <span class="nav-text">预训练模型压缩</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hqin"
+      src="/images/001.jpg">
+  <p class="site-author-name" itemprop="name">hqin</p>
+  <div class="site-description" itemprop="description">星海横流 岁月成碑</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hqin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

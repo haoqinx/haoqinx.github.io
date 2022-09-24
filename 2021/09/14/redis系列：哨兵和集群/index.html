@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="哨兵模式基本概念和详细流程见《Redis设计与实现》、《Redis5设计与源码分析》，只说下自己的理解。下图是一个基本的主从复制的哨兵系统：主要有三种角色：哨兵、主服务器，从服务器。  哨兵：一种特殊的redis服务端，使用哨兵专用命令。用来监控主从状态，执行故障转移等。 主服务器：执行客户端请求，同步自身数据到从服务器。 从服务器：从主服务器同步数据。  系统的重要逻辑点有：  哨兵读入用户指定">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis系列：哨兵和集群">
+<meta property="og:url" content="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%93%A8%E5%85%B5%E5%92%8C%E9%9B%86%E7%BE%A4/index.html">
+<meta property="og:site_name" content="面向自由编程">
+<meta property="og:description" content="哨兵模式基本概念和详细流程见《Redis设计与实现》、《Redis5设计与源码分析》，只说下自己的理解。下图是一个基本的主从复制的哨兵系统：主要有三种角色：哨兵、主服务器，从服务器。  哨兵：一种特殊的redis服务端，使用哨兵专用命令。用来监控主从状态，执行故障转移等。 主服务器：执行客户端请求，同步自身数据到从服务器。 从服务器：从主服务器同步数据。  系统的重要逻辑点有：  哨兵读入用户指定">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://haoqinx.github.io/images/sen-1.png">
+<meta property="article:published_time" content="2021-09-13T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-19T03:19:35.295Z">
+<meta property="article:author" content="hqin">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://haoqinx.github.io/images/sen-1.png">
+
+<link rel="canonical" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%93%A8%E5%85%B5%E5%92%8C%E9%9B%86%E7%BE%A4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>redis系列：哨兵和集群 | 面向自由编程</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">面向自由编程</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%93%A8%E5%85%B5%E5%92%8C%E9%9B%86%E7%BE%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          redis系列：哨兵和集群
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-11-19 11:19:35" itemprop="dateModified" datetime="2021-11-19T11:19:35+08:00">2021-11-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="哨兵模式"><a href="#哨兵模式" class="headerlink" title="哨兵模式"></a>哨兵模式</h3><p>基本概念和详细流程见《Redis设计与实现》、《Redis5设计与源码分析》，只说下自己的理解。<br>下图是一个基本的主从复制的哨兵系统：<br><img src="/images/sen-1.png"><br>主要有三种角色：哨兵、主服务器，从服务器。</p>
+<ul>
+<li>哨兵：一种特殊的redis服务端，使用哨兵专用命令。用来监控主从状态，执行故障转移等。</li>
+<li>主服务器：执行客户端请求，同步自身数据到从服务器。</li>
+<li>从服务器：从主服务器同步数据。</li>
+</ul>
+<p>系统的重要逻辑点有：</p>
+<ol>
+<li>哨兵读入用户指定的配置文件，对每个要被监视的主服务器建立一个示例结构，然后创建连向主服务器的命令连接和订阅连接，命令用来向主服务器发送命令请求，订阅用来接受指定频道的消息。</li>
+<li>哨兵向服务器发送INFO命令来获得主服务器及所有从服务器的地址信息，然后创建对应的实例。</li>
+<li>哨兵每10s向主服务器和从服务器方发送INFO命令，如果判定主服务器下线，或者正在执行故障转移，频率增大到1s一次。</li>
+<li>哨兵会对和自己同时监视主服务器的哨兵每2s通信一次（通信通过服务器的__sentinel__:hello中转传播），表示自己存在，同时也会接受其他哨兵的消息。</li>
+<li>哨兵之间只有命令连接，哨兵和服务器之间有命令和订阅连接。</li>
+<li>哨兵1s一次向主服务器，从服务器，哨兵节点发PING命令，根据回复判断在线状态，如果收到无效回复或没有回复，就判断此节点为主观下线。</li>
+<li>判断主观下线之后，向其他哨兵询问，如果超过半数确认则判定为客观下线。</li>
+<li>哨兵通过raft一致性算法选举出头哨兵，头哨兵执行故障转移操作。</li>
+<li>故障转移通过在下线的主服务器的从服务器列表中来选择，选择状态良好，和主服务器通信时间最新，复制偏移量更大，ID更小的节点。</li>
+<li>将此从服务器置为主服务器，原主服务器若上线则置为从服务器。</li>
+</ol>
+<h3 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h3><p>基本概念和详细流程见《Redis设计与实现》、《Redis5设计与源码分析》，只说下自己的理解。<br>只阐述下主要流程：</p>
+<ol>
+<li>节点之间通过两两握手来讲其他节点添加到自己的集群中。其实就是在自己的数据结构上初始化节点结构体。</li>
+<li>集群中的16384个槽分派给节点（<a href="https://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">为什么是16384个节点</a>）。</li>
+<li>节点接受到一个命令请求，会使用CRC16(key) % 16384 来确定槽，如果不是自己负责，会自动重定向到正确的节点（怎么重定向？其实就是有一个数据，记录了每个槽对应的节点指针）。</li>
+<li>重新分片的原理：见《Redis设计与实现》p266.</li>
+<li>集群中的节点通过gossip协议通信，常见的消息有MEET,PING,PONG,PUBLISH,FAIL等。</li>
+</ol>
+<h3 id="单机模式，主从模式，哨兵模式，集群模式优缺点："><a href="#单机模式，主从模式，哨兵模式，集群模式优缺点：" class="headerlink" title="单机模式，主从模式，哨兵模式，集群模式优缺点："></a>单机模式，主从模式，哨兵模式，集群模式优缺点：</h3><ol>
+<li>单机模式</li>
+</ol>
+<ul>
+<li>优点：<ul>
+<li>架构简单，部署方便</li>
+<li>性价比高</li>
+<li>性能高</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>不保证数据可靠性</li>
+<li>在缓存使用，进程重启之后容易丢失数据，不能解决缓存预热问题。（ps:缓存预热：新的缓存系统没有任何缓存数据，在缓存重建数据的过程中，系统性能和数据库负载都不太好，所以最好是在系统上线之前就把要缓存的热点数据加载到缓存中，这种缓存预加载手段就是预热。）</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li>主从模式</li>
+</ol>
+<ul>
+<li>优点：<ul>
+<li>高可靠行：能够在主库主张自动切换从库</li>
+<li>读写分离：从节点扩展读数据库的压力，只有主节点才能写</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>故障恢复复杂，主节点出现异常，需要手动将从节点配置为主节点</li>
+<li>主节点写能力有限，大量写容易宕机</li>
+<li>主机单机存储有限</li>
+<li>原生复制弊端（早期版本）：如：Redis 复制中断后，Slave 会发起 psync，此时如果同步不成功，则会进行全量同步，主库执行全量备份的同时可能会造成毫秒或秒级的卡顿;又由于 COW 机制，导致极端情况下的主库内存溢出，程序异常退出或宕机;主库节点生成备份文件导致服务器磁盘 IO 和 CPU(压缩)资源消耗;发送数 GB 大小的备份文件导致服务器出口带宽暴增，阻塞请求，建议升级到最新版本。</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>哨兵模式：</li>
+</ol>
+<ul>
+<li><p>优点：</p>
+<ul>
+<li>Redis Sentinel 集群部署简单。</li>
+<li>能够解决 Redis 主从模式下的高可用切换问题。</li>
+<li>很方便实现 Redis 数据节点的线形扩展，轻松突破 Redis 自身单线程瓶颈，可极大满足 Redis 大容量或高性能的业务需求。</li>
+<li>可以实现一套 Sentinel 监控一组 Redis 数据节点或多组数据节点。</li>
+</ul>
+</li>
+<li><p>缺点：</p>
+<ul>
+<li>是一种中心化的集群实现方案：始终只有一个Redis主机来接收和处理写请求，写操作受单机瓶颈影响。</li>
+<li>集群里所有节点保存的都是全量数据，浪费内存空间，没有真正实现分布式存储。数据量过大时，主从同步严重影响master的性能。</li>
+<li>Redis主机宕机后，哨兵模式正在投票选举的情况之外，因为投票选举结束之前，谁也不知道主机和从机是谁，此时Redis也会开启保护机制，禁止写操作，直到选举出了新的Redis主机。</li>
+</ul>
+</li>
+</ul>
+<ol start="4">
+<li>集群模式</li>
+</ol>
+<ul>
+<li><p>优点：</p>
+<ul>
+<li>无中心架构。数据按照 slot 存储分布在多个节点，节点间数据共享，可动态调整数据分布。</li>
+<li>可扩展性：可线性扩展到 1000 多个节点，节点可动态添加或删除。</li>
+<li>高可用性：部分节点不可用时，集群仍可用。通过增加 Slave 做 standby 数据副本，能够实现故障自动 failover，节点之间通过 gossip 协议交换状态信息，用投票机制完成 Slave 到 Master 的角色提升。</li>
+</ul>
+</li>
+<li><p>缺点：</p>
+<ul>
+<li>Key 事务操作支持有限，只支持多 key 在同一节点上的事务操作，当多个 Key 分布于不同的节点上时无法使用事务功能。</li>
+<li>Key 作为数据分区的最小粒度，不能将一个很大的键值对象如 hash、list 等映射到不同的节点。</li>
+<li>不支持多数据库空间，单机下的 redis 可以支持到 16 个数据库，集群模式下只能使用 1 个数据库空间，即 db 0。</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Redis/" rel="tag"># Redis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%8D%E5%88%B6/" rel="prev" title="redis系列：复制">
+      <i class="fa fa-chevron-left"></i> redis系列：复制
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%8A%A8%E6%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="next" title="redis系列：动态字符串">
+      redis系列：动态字符串 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">哨兵模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4"><span class="nav-number">2.</span> <span class="nav-text">集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E6%9C%BA%E6%A8%A1%E5%BC%8F%EF%BC%8C%E4%B8%BB%E4%BB%8E%E6%A8%A1%E5%BC%8F%EF%BC%8C%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%EF%BC%8C%E9%9B%86%E7%BE%A4%E6%A8%A1%E5%BC%8F%E4%BC%98%E7%BC%BA%E7%82%B9%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">单机模式，主从模式，哨兵模式，集群模式优缺点：</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hqin"
+      src="/images/001.jpg">
+  <p class="site-author-name" itemprop="name">hqin</p>
+  <div class="site-description" itemprop="description">星海横流 岁月成碑</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hqin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

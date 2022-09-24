@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="基本形式lambda表达式的本质就是重载了()运算符的类，这种类通常被称为functor，即行为像函数的类。因此lambda表达式对象其实就是一个匿名的functor。一个标准的lambda表达式包括：捕获列表、参数列表、mutable指示符、尾置返回类型（-&gt;返回类型）和函数体： 1[capture list] (params list) mutable exception-&gt; re">
+<meta property="og:type" content="article">
+<meta property="og:title" content="c++11新特性：lambda">
+<meta property="og:url" content="http://haoqinx.github.io/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Alambda/index.html">
+<meta property="og:site_name" content="面向自由编程">
+<meta property="og:description" content="基本形式lambda表达式的本质就是重载了()运算符的类，这种类通常被称为functor，即行为像函数的类。因此lambda表达式对象其实就是一个匿名的functor。一个标准的lambda表达式包括：捕获列表、参数列表、mutable指示符、尾置返回类型（-&gt;返回类型）和函数体： 1[capture list] (params list) mutable exception-&gt; re">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-09-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-10-29T12:08:34.736Z">
+<meta property="article:author" content="hqin">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="C++11">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://haoqinx.github.io/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Alambda/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>c++11新特性：lambda | 面向自由编程</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">面向自由编程</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Alambda/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          c++11新特性：lambda
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-04 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-04T00:00:00+08:00">2021-09-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-10-29 20:08:34" itemprop="dateModified" datetime="2021-10-29T20:08:34+08:00">2021-10-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="基本形式"><a href="#基本形式" class="headerlink" title="基本形式"></a>基本形式</h3><p>lambda表达式的本质就是重载了()运算符的类，这种类通常被称为functor，即行为像函数的类。因此lambda表达式对象其实就是一个匿名的functor。<br>一个标准的lambda表达式包括：捕获列表、参数列表、mutable指示符、尾置返回类型（-&gt;返回类型）和函数体：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[capture list] (params list) <span class="keyword">mutable</span> exception-&gt; <span class="keyword">return</span> type &#123; function body &#125;</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<ul>
+<li>capture list：捕获外部变量列表</li>
+<li>params list：形参列表</li>
+<li>mutable指示符：用来说用是否可以修改捕获的变量</li>
+<li>exception：异常设定</li>
+<li>return type：返回类型</li>
+<li>function body：函数体</li>
+</ul>
+<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><p>lambda实际上是一个匿名仿函数对象。重载operator()来实现仿函数功能。基本使用方法如下:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;   </span><br><span class="line">    <span class="keyword">int</span> x = <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">int</span> y = <span class="number">19</span>;</span><br><span class="line">    <span class="keyword">auto</span> fun = [&amp;x,y](<span class="keyword">int</span> x, <span class="keyword">int</span> y)&#123;</span><br><span class="line">        <span class="keyword">return</span> x + y;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">fun</span>(x,y);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>反汇编之后可以看到：</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">(gdb) disas main</span><br><span class="line">Dump of assembler code for function main():</span><br><span class="line">   <span class="number">0x0000000000401569</span> &lt;+<span class="number">0</span>&gt;:     <span class="keyword">push</span>   <span class="built_in">rbp</span></span><br><span class="line">   <span class="number">0x000000000040156a</span> &lt;+<span class="number">1</span>&gt;:     <span class="keyword">mov</span>    <span class="built_in">rbp</span>,<span class="built_in">rsp</span></span><br><span class="line">   <span class="number">0x000000000040156d</span> &lt;+<span class="number">4</span>&gt;:     <span class="keyword">sub</span>    <span class="built_in">rsp</span>,<span class="number">0x40</span></span><br><span class="line">   <span class="number">0x0000000000401571</span> &lt;+<span class="number">8</span>&gt;:     <span class="keyword">call</span>   <span class="number">0x4016f0</span> &lt;__main&gt;</span><br><span class="line">   <span class="number">0x0000000000401576</span> &lt;+<span class="number">13</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">DWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rbp</span>-<span class="number">0x8</span>],<span class="number">0x9</span>   </span><br><span class="line">   <span class="number">0x000000000040157d</span> &lt;+<span class="number">20</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">DWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rbp</span>-<span class="number">0x4</span>],<span class="number">0x13</span>  </span><br><span class="line">   <span class="number">0x0000000000401584</span> &lt;+<span class="number">27</span>&gt;:    <span class="keyword">lea</span>    <span class="built_in">rax</span>,[<span class="built_in">rbp</span>-<span class="number">0x8</span>]</span><br><span class="line">   <span class="number">0x0000000000401588</span> &lt;+<span class="number">31</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">QWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rbp</span>-<span class="number">0x20</span>],<span class="built_in">rax</span>  </span><br><span class="line">   <span class="number">0x000000000040158c</span> &lt;+<span class="number">35</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">eax</span>,<span class="built_in">DWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rbp</span>-<span class="number">0x4</span>]   </span><br><span class="line">   <span class="number">0x000000000040158f</span> &lt;+<span class="number">38</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">DWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rbp</span>-<span class="number">0x18</span>],<span class="built_in">eax</span>  </span><br><span class="line">   <span class="number">0x0000000000401592</span> &lt;+<span class="number">41</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">edx</span>,<span class="built_in">DWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rbp</span>-<span class="number">0x8</span>]   </span><br><span class="line">   <span class="number">0x0000000000401595</span> &lt;+<span class="number">44</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">ecx</span>,<span class="built_in">DWORD</span> <span class="built_in">PTR</span> [<span class="built_in">rbp</span>-<span class="number">0x4</span>]   </span><br><span class="line">   <span class="number">0x0000000000401598</span> &lt;+<span class="number">47</span>&gt;:    <span class="keyword">lea</span>    <span class="built_in">rax</span>,[<span class="built_in">rbp</span>-<span class="number">0x20</span>]</span><br><span class="line">   <span class="number">0x000000000040159c</span> &lt;+<span class="number">51</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">r8d</span>,<span class="built_in">ecx</span></span><br><span class="line">   <span class="number">0x000000000040159f</span> &lt;+<span class="number">54</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">rcx</span>,<span class="built_in">rax</span></span><br><span class="line">   <span class="number">0x00000000004015a2</span> &lt;+<span class="number">57</span>&gt;:    <span class="keyword">call</span>   <span class="number">0x401550</span> &lt;&lt;lambda(<span class="keyword">int</span>, <span class="keyword">int</span>)&gt;::operator()(<span class="keyword">int</span>, <span class="keyword">int</span>) const&gt;</span><br><span class="line">=&gt; <span class="number">0x00000000004015a7</span> &lt;+<span class="number">62</span>&gt;:    <span class="keyword">mov</span>    <span class="built_in">eax</span>,<span class="number">0x0</span></span><br><span class="line">   <span class="number">0x00000000004015ac</span> &lt;+<span class="number">67</span>&gt;:    <span class="keyword">add</span>    <span class="built_in">rsp</span>,<span class="number">0x40</span></span><br><span class="line">   <span class="number">0x00000000004015b0</span> &lt;+<span class="number">71</span>&gt;:    <span class="keyword">pop</span>    <span class="built_in">rbp</span></span><br><span class="line">   <span class="number">0x00000000004015b1</span> &lt;+<span class="number">72</span>&gt;:    <span class="keyword">ret</span></span><br><span class="line">End of assembler dump</span><br></pre></td></tr></table></figure>
+<p>看到call的是一个lambda(int,int)::operator()(int,int)const方法。<br>这个函数的反汇编结果是：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">(gdb) disas <span class="number">0x401550</span></span><br><span class="line">Dump of assembler code <span class="keyword">for</span> function &lt;<span class="built_in">lambda</span>(<span class="keyword">int</span>, <span class="keyword">int</span>)&gt;::<span class="built_in"><span class="keyword">operator</span></span>()(<span class="keyword">int</span>, <span class="keyword">int</span>) <span class="keyword">const</span>:</span><br><span class="line">   <span class="number">0x0000000000401550</span> &lt;+<span class="number">0</span>&gt;:     push   rbp</span><br><span class="line">   <span class="number">0x0000000000401551</span> &lt;+<span class="number">1</span>&gt;:     mov    rbp,rsp</span><br><span class="line">   <span class="number">0x0000000000401554</span> &lt;+<span class="number">4</span>&gt;:     mov    QWORD PTR [rbp+<span class="number">0x10</span>],rcx</span><br><span class="line">   <span class="number">0x0000000000401558</span> &lt;+<span class="number">8</span>&gt;:     mov    DWORD PTR [rbp+<span class="number">0x18</span>],edx  </span><br><span class="line">   <span class="number">0x000000000040155b</span> &lt;+<span class="number">11</span>&gt;:    mov    DWORD PTR [rbp+<span class="number">0x20</span>],r8d</span><br><span class="line">   <span class="number">0x000000000040155f</span> &lt;+<span class="number">15</span>&gt;:    mov    edx,DWORD PTR [rbp+<span class="number">0x18</span>]</span><br><span class="line">   <span class="number">0x0000000000401562</span> &lt;+<span class="number">18</span>&gt;:    mov    eax,DWORD PTR [rbp+<span class="number">0x20</span>]</span><br><span class="line">   <span class="number">0x0000000000401565</span> &lt;+<span class="number">21</span>&gt;:    add    eax,edx</span><br><span class="line">   <span class="number">0x0000000000401567</span> &lt;+<span class="number">23</span>&gt;:    pop    rbp</span><br><span class="line">   <span class="number">0x0000000000401568</span> &lt;+<span class="number">24</span>&gt;:    ret</span><br></pre></td></tr></table></figure>
+
+<h3 id="捕获形式"><a href="#捕获形式" class="headerlink" title="捕获形式"></a>捕获形式</h3><center>
+
+<table>
+<thead>
+<tr>
+<th align="center">捕获形式</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">[]</td>
+<td align="center">不捕获任何外部变量</td>
+</tr>
+<tr>
+<td align="center">[变量名, …]</td>
+<td align="center">默认以值得形式捕获指定的多个外部变量（用逗号分隔），如果引用捕获，需要显示声明（使用&amp;说明符）</td>
+</tr>
+<tr>
+<td align="center">[this]</td>
+<td align="center">以值的形式捕获this指针</td>
+</tr>
+<tr>
+<td align="center">[=]</td>
+<td align="center">以值的形式捕获所有外部变量</td>
+</tr>
+<tr>
+<td align="center">[&amp;]</td>
+<td align="center">以引用形式捕获所有外部变量</td>
+</tr>
+<tr>
+<td align="center">[=, &amp;x]</td>
+<td align="center">变量x以引用形式捕获，其余变量以传值形式捕获</td>
+</tr>
+<tr>
+<td align="center">[&amp;, x]</td>
+<td align="center">变量x以值的形式捕获，其余变量以引用形式捕获</td>
+</tr>
+</tbody></table>
+</center>
+需要注意的事项：
+
+<ul>
+<li>外部变量是在lambda匿名类构造时传入的。并且传入的是外部变量的引用（由于C++的引用本身就是语法糖，反汇编层面看到的是指针，但是结合源码分析不难得出这里应该是引用）。<font color = orange>ambda匿名类会将捕获参数中的变量添加到其成员变量中，并设置一个带有该参数引用类型的构造函数，并在构造函数中完成对相应成员变量的赋值。在调用其operator()函数时，如果用到了捕获列表中的局部变量，则从给匿名类对象的成员变量中取出。</font></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/C-11/" rel="tag"># C++11</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atemplate-template-parameter/" rel="prev" title="c++11新特性：template-template-parameter">
+      <i class="fa fa-chevron-left"></i> c++11新特性：template-template-parameter
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Adecltype/" rel="next" title="c++11新特性：decltype">
+      c++11新特性：decltype <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%BD%A2%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">基本形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8D%95%E8%8E%B7%E5%BD%A2%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">捕获形式</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hqin"
+      src="/images/001.jpg">
+  <p class="site-author-name" itemprop="name">hqin</p>
+  <div class="site-description" itemprop="description">星海横流 岁月成碑</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hqin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

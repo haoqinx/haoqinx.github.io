@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="虚函数内存模型 我们可以用基类型A的引用或者指针持有实际类型为派生类B的对象，这意味着，编译时我们无法通过其声明类型来确定其实际类型，也就无法确定应该调用哪个具体的虚函数。考虑到程序中的每个函数都在内存中有着唯一的地址，我们可以将具体函数的地址作为成员变量，存放在对象之中，这样就可以在运行时，通过访问这个成员变量，获取到实际类型虚函数的地址。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="effective-c++系列：单继承、多继承、虚函数、虚继承内存布局">
+<meta property="og:url" content="http://haoqinx.github.io/2021/08/27/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E8%99%9A%E7%BB%A7%E6%89%BF%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80/index.html">
+<meta property="og:site_name" content="面向自由编程">
+<meta property="og:description" content="虚函数内存模型 我们可以用基类型A的引用或者指针持有实际类型为派生类B的对象，这意味着，编译时我们无法通过其声明类型来确定其实际类型，也就无法确定应该调用哪个具体的虚函数。考虑到程序中的每个函数都在内存中有着唯一的地址，我们可以将具体函数的地址作为成员变量，存放在对象之中，这样就可以在运行时，通过访问这个成员变量，获取到实际类型虚函数的地址。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://haoqinx.github.io/images/003.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/004.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/005.png">
+<meta property="article:published_time" content="2021-08-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-04-07T03:05:40.920Z">
+<meta property="article:author" content="hqin">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="effective c++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://haoqinx.github.io/images/003.png">
+
+<link rel="canonical" href="http://haoqinx.github.io/2021/08/27/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E8%99%9A%E7%BB%A7%E6%89%BF%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>effective-c++系列：单继承、多继承、虚函数、虚继承内存布局 | 面向自由编程</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">面向自由编程</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/27/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E8%99%9A%E7%BB%A7%E6%89%BF%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          effective-c++系列：单继承、多继承、虚函数、虚继承内存布局
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-08-27 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-27T00:00:00+08:00">2021-08-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-04-07 11:05:40" itemprop="dateModified" datetime="2022-04-07T11:05:40+08:00">2022-04-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="虚函数内存模型"><a href="#虚函数内存模型" class="headerlink" title="虚函数内存模型"></a>虚函数内存模型</h3><ul>
+<li>我们可以用基类型A的引用或者指针持有实际类型为派生类B的对象，这意味着，编译时我们无法通过其声明类型来确定其实际类型，也就无法确定应该调用哪个具体的虚函数。考虑到程序中的每个函数都在内存中有着唯一的地址，我们可以将具体函数的地址作为成员变量，存放在对象之中，这样就可以在运行时，通过访问这个成员变量，获取到实际类型虚函数的地址。<span id="more"></span>  </li>
+</ul>
+<h3 id="单继承的内存模型"><a href="#单继承的内存模型" class="headerlink" title="单继承的内存模型"></a>单继承的内存模型</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> x;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f1</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f2</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>:</span> <span class="keyword">public</span> Base&#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">f1</span><span class="params">()</span></span>&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;A&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span>&#125;</span>&#123;</span><br><span class="line">    Base b;</span><br><span class="line">    A a;</span><br><span class="line">    cout &lt;&lt; <span class="built_in"><span class="keyword">sizeof</span></span>(b) &lt;&lt; endl; </span><br><span class="line">    <span class="comment">// 16 = 虚函数指针（8） + int（4）+ 对齐（4）</span></span><br><span class="line">    cout &lt;&lt; <span class="built_in"><span class="keyword">sizeof</span></span>(a) &lt;&lt; endl;</span><br><span class="line">    <span class="comment">// 24 = Base虚函数指针（8）+ Base int(4) + padding（4）</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>使用gdb调试</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">g++ main.cpp -o main -g</span><br><span class="line">gdb main</span><br></pre></td></tr></table></figure>
+
+<p>内存布局为：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 基类内存</span></span><br><span class="line">(gdb) p b</span><br><span class="line">$<span class="number">1</span> = &#123;</span><br><span class="line">  _vptr.Base = <span class="number">0x404580</span> &lt;vtable <span class="keyword">for</span> Base+<span class="number">16</span>&gt;,</span><br><span class="line">  x = <span class="number">16</span></span><br><span class="line">&#125;</span><br><span class="line">(gdb) p &amp;b</span><br><span class="line">$<span class="number">4</span> = (Base *) <span class="number">0x61fe10</span></span><br><span class="line">(gdb) x/<span class="number">16</span>xb <span class="number">0x61fe10</span></span><br><span class="line"><span class="number">0x61fe10</span>:       <span class="number">0x40</span>    <span class="number">0x45</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br><span class="line"><span class="number">0x61fe18</span>:       <span class="number">0x10</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br><span class="line"><span class="comment">// 子类内存</span></span><br><span class="line">(gdb) p a</span><br><span class="line">$<span class="number">2</span> = &#123;</span><br><span class="line">  &lt;Base&gt; = &#123;</span><br><span class="line">    _vptr.Base = <span class="number">0x404520</span> &lt;vtable <span class="keyword">for</span> A+<span class="number">16</span>&gt;, </span><br><span class="line">    x = <span class="number">20</span></span><br><span class="line">  &#125;, &lt;No data fields&gt;&#125;</span><br><span class="line">(gdb) p &amp;a</span><br><span class="line">$<span class="number">5</span> = (A *) <span class="number">0x61fe00</span></span><br><span class="line">(gdb) x/<span class="number">16</span>xb <span class="number">0x61fe00</span></span><br><span class="line"><span class="number">0x61fe00</span>:       <span class="number">0x20</span>    <span class="number">0x45</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br><span class="line"><span class="number">0x61fe08</span>:       <span class="number">0x14</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br></pre></td></tr></table></figure>
+<p>可以看出子类中含有父类的成员变量和一个虚函数指针，虚函数表指针在前。<br>子类覆盖了父类的函数f1()，因此在子类的虚函数表中会将Base::f1()覆盖为A::f1().</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">(gdb) p b.f1</span><br><span class="line">$<span class="number">2</span> = &#123;<span class="built_in"><span class="keyword">void</span></span> (Base * <span class="keyword">const</span>)&#125; <span class="number">0x402d80</span> &lt;Base::<span class="built_in">f1</span>()&gt;</span><br><span class="line">(gdb) p b</span><br><span class="line">$<span class="number">3</span> = &#123;_vptr.Base = <span class="number">0x404540</span> &lt;vtable <span class="keyword">for</span> Base+<span class="number">16</span>&gt;, x = <span class="number">16</span>&#125;</span><br><span class="line">(gdb) x/<span class="number">16</span>xb <span class="number">0x404540</span> <span class="comment">//Base虚函数表</span></span><br><span class="line"><span class="comment">//f1()函数地址</span></span><br><span class="line"><span class="number">0x404540</span> &lt;_ZTV4Base+<span class="number">16</span>&gt;:        <span class="number">0x80</span>    <span class="number">0x2d</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br><span class="line"><span class="number">0x404548</span> &lt;_ZTV4Base+<span class="number">24</span>&gt;:        <span class="number">0x90</span>    <span class="number">0x2d</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br><span class="line"></span><br><span class="line">gdb) p a</span><br><span class="line">$<span class="number">4</span> = &#123;&lt;Base&gt; = &#123;_vptr.Base = <span class="number">0x404520</span> &lt;vtable <span class="keyword">for</span> A+<span class="number">16</span>&gt;, x = <span class="number">20</span>&#125;, &lt;No data fields&gt;&#125;</span><br><span class="line">(gdb) x/<span class="number">16</span>xb <span class="number">0x404520</span> <span class="comment">//A虚函数表</span></span><br><span class="line"><span class="comment">//f1()函数</span></span><br><span class="line"><span class="number">0x404520</span> &lt;_ZTV1A+<span class="number">16</span>&gt;:   <span class="number">0x20</span>    <span class="number">0x2d</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br><span class="line"><span class="number">0x404528</span> &lt;_ZTV1A+<span class="number">24</span>&gt;:   <span class="number">0x90</span>    <span class="number">0x2d</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br></pre></td></tr></table></figure>
+<p>在线性继承关系中，子类只需包含一个虚函数指针和直接父类的所有成员函数即可。  </p>
+<h3 id="多继承内存模型"><a href="#多继承内存模型" class="headerlink" title="多继承内存模型"></a>多继承内存模型</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base1</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> x;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f0</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base2</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> y;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f1</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>:</span> <span class="keyword">public</span> Base1,</span><br><span class="line">        <span class="keyword">public</span> Base2&#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">f1</span><span class="params">()</span></span>&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;A::f1&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">f2</span><span class="params">()</span></span>&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;A::f2&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in"><span class="keyword">sizeof</span></span>(Base1);<span class="comment">//16</span></span><br><span class="line"><span class="built_in"><span class="keyword">sizeof</span></span>(Base2);<span class="comment">//16</span></span><br><span class="line"><span class="built_in"><span class="keyword">sizeof</span></span>(A);<span class="comment">//32</span></span><br></pre></td></tr></table></figure>
+<p>同样使用gdb调试</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">(gdb) p a</span><br><span class="line">$<span class="number">2</span> = &#123;</span><br><span class="line">  &lt;Base1&gt; = &#123;</span><br><span class="line">    _vptr.Base1 = <span class="number">0x404560</span> &lt;vtable <span class="keyword">for</span> A+<span class="number">16</span>&gt;,</span><br><span class="line">    x = <span class="number">20</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &lt;Base2&gt; = &#123;</span><br><span class="line">    _vptr.Base2 = <span class="number">0x404580</span> &lt;vtable <span class="keyword">for</span> A+<span class="number">48</span>&gt;,</span><br><span class="line">    x = <span class="number">16</span></span><br><span class="line">  &#125;, &lt;No data fields&gt;&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看出Base1作为A的主基类，虚函数表从Base1的函数地址开始。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">(gdb) p &amp;a    </span><br><span class="line">$<span class="number">3</span> = (A *) <span class="number">0x61fe00</span></span><br><span class="line">(gdb) x/<span class="number">32</span>xb <span class="number">0x61fe00</span></span><br><span class="line"><span class="number">0x61fe00</span>:       <span class="number">0x60</span>    <span class="number">0x45</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br><span class="line"><span class="number">0x61fe08</span>:       <span class="number">0x14</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br><span class="line"><span class="number">0x61fe10</span>:       <span class="number">0x80</span>    <span class="number">0x45</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br><span class="line"><span class="number">0x61fe18</span>:       <span class="number">0x10</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br></pre></td></tr></table></figure>
+<p>A中存在Base1的虚表指针，Base2的虚表指针。可以看到两个虚表是相连的，如果重写Base1的函数会直接在虚表中覆盖，Base2同理。<br>下面在内存中查看下两个虚表的布局</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">(gdb) x/<span class="number">64</span>xb <span class="number">0x404550</span></span><br><span class="line"><span class="number">0x404550</span> &lt;_ZTV1A&gt;:      <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span> </span><br><span class="line"><span class="number">0x404558</span> &lt;_ZTV1A+<span class="number">8</span>&gt;:    <span class="number">0xc0</span>    <span class="number">0x44</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span> <span class="comment">// RTTI:运行时类型信息(Run-Time Type Identification, RTTI)</span></span><br><span class="line"><span class="number">0x404560</span> &lt;_ZTV1A+<span class="number">16</span>&gt;:   <span class="number">0xa0</span>    <span class="number">0x2d</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span> <span class="comment">// Base1::f0()</span></span><br><span class="line"><span class="number">0x404568</span> &lt;_ZTV1A+<span class="number">24</span>&gt;:   <span class="number">0xf0</span>    <span class="number">0x2c</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span> <span class="comment">// A::f1()</span></span><br><span class="line"><span class="number">0x404570</span> &lt;_ZTV1A+<span class="number">32</span>&gt;:   <span class="number">0xf0</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span> <span class="comment">//offeset</span></span><br><span class="line"><span class="number">0x404578</span> &lt;_ZTV1A+<span class="number">40</span>&gt;:   <span class="number">0xc0</span>    <span class="number">0x44</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span> <span class="comment">// RTTI</span></span><br><span class="line"><span class="number">0x404580</span> &lt;_ZTV1A+<span class="number">48</span>&gt;:   <span class="number">0x00</span>    <span class="number">0x2e</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span> <span class="comment">//chunk A::f1()</span></span><br><span class="line"><span class="number">0x404588</span> &lt;_ZTV1A+<span class="number">56</span>&gt;:   <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br></pre></td></tr></table></figure>
+<p>A将Base1作为主基类，也就是将它虚函数“并入”Base1的虚函数表之中，并将Base1的虚指针作为A的内存起始地址。</p>
+<p>而类型Base2的虚指针_vptr.Base2并不能直接指向虚表中的第4个实体，这是因为_vptr.Base2所指向的虚表区域，在格式上必须也是一个完整的虚表。因此，需要为_vptr.Base2创建对应的虚表放在虚表Base1的部分之后。 </p>
+<p>在多继承中，由于不同的基类起点可能处于不同的位置，因此当需要将它们转化为实际类型时，this指针的偏移量也不相同。由于实际类型在编译时是未知的，这要求偏移量必须能够在运行时获取。实体offset表示的就是实际类型起始地址到当前这个形式类型起始地址的偏移量。在向上动态转换到实际类型时，让this指针加上这个偏移量即可得到实际类型的地址。需要注意的是，由于一个类型即可以被单继承，也可以被多继承，因此即使只有单继承，实体offset也会存在于每一个多态类型之中。</p>
+<p>而实体Thunk又是什么呢？如果不考虑这个Thunk，这里应该存放函数A::f1()的地址。然而，从内存分配可以看出，Thunk A::f1()和A::f1()的地址并不一样。</p>
+<p>为了弄清楚Thunk是什么，我们首先要注意到，如果一个类型Base2 的引用持有了实际类型为A的变量，这个引用的起始地址在A+16处。当它调用由类型A重写的函数f1()时，如果直接使用this指针调用A::f1()会由于this指针的地址多出16字节的偏移量导致错误。 因此在调用之前，this指针必须要被调整至正确的位置 。这里的Thunk起到的就是这个作用：首先将this 指针调整到正确的位置，即减少16字节偏移量，然后再去调用函数A::f1()。 </p>
+<p><font color=orange>简单来说，offerset的作用是编译器绑定对象，如果是Base1指针，就加上Base1对应的偏移量，如果是Base2，就加上Base2的偏移量。<br>而thunk的作用类似于重定位，当用户申请Base2指针指向A对象，并且调用f1()函数，在内存中首先是从0x404580开始找，找到thunk后，里面是一个代码段，首先将this指针向上指，然后再调用this-&gt;f1()</font>。</p>
+<h3 id="虚继承的内存模型"><a href="#虚继承的内存模型" class="headerlink" title="虚继承的内存模型"></a>虚继承的内存模型</h3><p>上述的模型中，对于派生类对象，它的基类相对于它的偏移量总是确定的，因此动态向下转换并不需要依赖额外的运行时信息。</p>
+<p>而虚继承破坏了这一条件。它表示虚基类相对于派生类的偏移量可以依实际类型不同而不同，且仅有一份拷贝，这使得虚基类的偏移量在运行时才可以确定。因此，我们需要对继承了虚基类的类型的虚表进行扩充，使其包含关于虚基类偏移量的信息。</p>
+<p><font color=orange>虚继承最常用的场景是解决菱形继承的问题</font></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> ax;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f0</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f1</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> :</span> <span class="keyword">virtual</span> <span class="keyword">public</span> A&#123;                                     </span><br><span class="line">    <span class="keyword">int</span> bx;                          </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">f0</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123;&#125;             </span><br><span class="line">&#125;;                                     </span><br><span class="line">                                      </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span> :</span> <span class="keyword">virtual</span> <span class="keyword">public</span> A&#123;                                     </span><br><span class="line">    <span class="keyword">int</span> cx;                          </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">f0</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123;&#125;             </span><br><span class="line">&#125;;                                    </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">D</span> :</span> <span class="keyword">public</span> B, <span class="keyword">public</span> C&#123;</span><br><span class="line">    <span class="keyword">int</span> dx;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">f0</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">cout &lt;&lt; <span class="built_in"><span class="keyword">sizeof</span></span>(A) &lt;&lt; endl; <span class="comment">// 16 虚指针A + int + pad</span></span><br><span class="line">cout &lt;&lt; <span class="built_in"><span class="keyword">sizeof</span></span>(B) &lt;&lt; endl; <span class="comment">// 32 A + 虚指针B + int + pad</span></span><br><span class="line">cout &lt;&lt; <span class="built_in"><span class="keyword">sizeof</span></span>(C) &lt;&lt; endl; <span class="comment">// 32 A + 虚指针C + int + pad</span></span><br><span class="line">cout &lt;&lt; <span class="built_in"><span class="keyword">sizeof</span></span>(D) &lt;&lt; endl; <span class="comment">// 48 A + 虚指针D + int + pad</span></span><br></pre></td></tr></table></figure>
+<p>A的内存布局和虚表没有太多变化</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(gdb) p a</span><br><span class="line">$<span class="number">6</span> = &#123;</span><br><span class="line">  _vptr.A = <span class="number">0x4056c0</span> &lt;vtable <span class="keyword">for</span> A+<span class="number">16</span>&gt;,</span><br><span class="line">  x = <span class="number">16</span></span><br><span class="line">&#125;</span><br><span class="line">(gdb) x/<span class="number">16</span>xb <span class="number">0x4056c0</span></span><br><span class="line"><span class="number">0x4056c0</span> &lt;_ZTV1A+<span class="number">16</span>&gt;:   <span class="number">0x70</span>    <span class="number">0x2d</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span> <span class="comment">// A::f0()</span></span><br><span class="line"><span class="number">0x4056c8</span> &lt;_ZTV1A+<span class="number">24</span>&gt;:   <span class="number">0x80</span>    <span class="number">0x2d</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span> <span class="comment">// A::f1()</span></span><br></pre></td></tr></table></figure>
+
+<p>B/C的内存布局</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$<span class="number">7</span> = &#123;</span><br><span class="line">  &lt;A&gt; = &#123;</span><br><span class="line">    _vptr.A = <span class="number">0x405710</span> &lt;vtable <span class="keyword">for</span> B+<span class="number">64</span>&gt;,</span><br><span class="line">    x = <span class="number">20</span></span><br><span class="line">  &#125;,</span><br><span class="line">  members of B:</span><br><span class="line">  _vptr.B = <span class="number">0x4056e8</span> &lt;vtable <span class="keyword">for</span> B+<span class="number">24</span>&gt;,</span><br><span class="line">  y = <span class="number">4199705</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>B/C的虚表内存为</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">(gdb) x/<span class="number">72</span>xb <span class="number">0x4056d0</span></span><br><span class="line"><span class="number">0x4056d0</span> &lt;_ZTV1B&gt;:      <span class="number">0x10</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span> <span class="comment">// vbase_offset</span></span><br><span class="line"><span class="number">0x4056d8</span> &lt;_ZTV1B+<span class="number">8</span>&gt;:    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>  <span class="comment">//offset_to_top</span></span><br><span class="line"><span class="number">0x4056e0</span> &lt;_ZTV1B+<span class="number">16</span>&gt;:   <span class="number">0x70</span>    <span class="number">0x55</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>   <span class="comment">// RTTI of B</span></span><br><span class="line"><span class="number">0x4056e8</span> &lt;_ZTV1B+<span class="number">24</span>&gt;:   <span class="number">0xd0</span>    <span class="number">0x2d</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>   <span class="comment">// B.f0()</span></span><br><span class="line"><span class="number">0x4056f0</span> &lt;_ZTV1B+<span class="number">32</span>&gt;:   <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>   <span class="comment">//vcall_offset</span></span><br><span class="line"><span class="number">0x4056f8</span> &lt;_ZTV1B+<span class="number">40</span>&gt;:   <span class="number">0xf0</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>   <span class="comment">//vcall_offset</span></span><br><span class="line"><span class="number">0x405700</span> &lt;_ZTV1B+<span class="number">48</span>&gt;:   <span class="number">0xf0</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>   <span class="comment">//offset_to_top</span></span><br><span class="line"><span class="number">0x405708</span> &lt;_ZTV1B+<span class="number">56</span>&gt;:   <span class="number">0x70</span>    <span class="number">0x55</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>   <span class="comment">//RTTI for B</span></span><br><span class="line"><span class="number">0x405710</span> &lt;_ZTV1B+<span class="number">64</span>&gt;:   <span class="number">0xb0</span>    <span class="number">0x2f</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>   <span class="comment">//Thunk B::f0()</span></span><br><span class="line"><span class="number">0x405718</span> &lt;_ZTV1B+<span class="number">72</span>&gt;:   <span class="number">0x80</span>    <span class="number">0x2d</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>   <span class="comment">//A::f1()</span></span><br></pre></td></tr></table></figure>
+<p>可以表示为下面这个结构</p>
+<p><img src="/images/003.png"></p>
+<center>B的内存布局</center>
+对于形式类型为B的引用，在编译时，无法确定它的基类A它在内存中的偏移量。 因此，需要在虚表中额外再提供一个实体，表明运行时它的基类所在的位置，这个实体称为vbase_offset，位于offset_to_top上方。  
+
+<p>除此之外，如果在B中调用A声明且B没有重写的函数，由于A的偏移量无法在编译时确定，而这些函数的调用由必须在A的偏移量确定之后进行， 因此这些函数的调用相当于使用A的引用调用。也因此，当使用虚基类A的引用调用重载函数时 ，每一个函数对this指针的偏移量调整都可能不同，它们被记录在镜像位置的vcall_offset中。例如，调用A::bar()时，this指针指向的是vptr_A，正是函数所属的类A的位置，因此不需要调整，即vcall_offset(0)；而B::f0()是由类型B实现的， 因此需要将this指针向前调整16字节。</p>
+<p>D的内存布局 </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">(gdb) p d</span><br><span class="line">$<span class="number">8</span> = &#123;</span><br><span class="line">  &lt;B&gt; = &#123;</span><br><span class="line">    &lt;A&gt; = &#123;</span><br><span class="line">      _vptr.A = <span class="number">0x4057d0</span> &lt;vtable <span class="keyword">for</span> D+<span class="number">96</span>&gt;,</span><br><span class="line">      x = <span class="number">0</span></span><br><span class="line">    &#125;,</span><br><span class="line">    members of B:</span><br><span class="line">    _vptr.B = <span class="number">0x405788</span> &lt;vtable <span class="keyword">for</span> D+<span class="number">24</span>&gt;,</span><br><span class="line">    y = <span class="number">0</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &lt;C&gt; = &#123;</span><br><span class="line">    members of C:</span><br><span class="line">    _vptr.C = <span class="number">0x4057a8</span> &lt;vtable <span class="keyword">for</span> D+<span class="number">56</span>&gt;,</span><br><span class="line">    z = <span class="number">-605902202</span></span><br><span class="line">  &#125;,</span><br><span class="line">  members of D:</span><br><span class="line">  d = <span class="number">32763</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>虚表内存为</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">(gdb) x/<span class="number">176</span>xb <span class="number">0x405770</span></span><br><span class="line"><span class="number">0x405770</span> &lt;_ZTV1D&gt;:      <span class="number">0x20</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br><span class="line"><span class="number">0x405778</span> &lt;_ZTV1D+<span class="number">8</span>&gt;:    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>   </span><br><span class="line"><span class="number">0x405780</span> &lt;_ZTV1D+<span class="number">16</span>&gt;:   <span class="number">0xd0</span>    <span class="number">0x55</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>   </span><br><span class="line"><span class="number">0x405788</span> &lt;_ZTV1D+<span class="number">24</span>&gt;:   <span class="number">0x10</span>    <span class="number">0x2f</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>   </span><br><span class="line"><span class="number">0x405790</span> &lt;_ZTV1D+<span class="number">32</span>&gt;:   <span class="number">0x10</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br><span class="line"><span class="number">0x405798</span> &lt;_ZTV1D+<span class="number">40</span>&gt;:   <span class="number">0xf0</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>   </span><br><span class="line"><span class="number">0x4057a0</span> &lt;_ZTV1D+<span class="number">48</span>&gt;:   <span class="number">0xd0</span>    <span class="number">0x55</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>   </span><br><span class="line"><span class="number">0x4057a8</span> &lt;_ZTV1D+<span class="number">56</span>&gt;:   <span class="number">0xa0</span>    <span class="number">0x2f</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>   </span><br><span class="line"><span class="number">0x4057b0</span> &lt;_ZTV1D+<span class="number">64</span>&gt;:   <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>   </span><br><span class="line"><span class="number">0x4057b8</span> &lt;_ZTV1D+<span class="number">72</span>&gt;:   <span class="number">0xe0</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span></span><br><span class="line"><span class="number">0x4057c0</span> &lt;_ZTV1D+<span class="number">80</span>&gt;:   <span class="number">0xe0</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>    <span class="number">0xff</span>   </span><br><span class="line"><span class="number">0x4057c8</span> &lt;_ZTV1D+<span class="number">88</span>&gt;:   <span class="number">0xd0</span>    <span class="number">0x55</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>   </span><br><span class="line"><span class="number">0x4057d0</span> &lt;_ZTV1D+<span class="number">96</span>&gt;:   <span class="number">0xd0</span>    <span class="number">0x2f</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>   </span><br><span class="line"><span class="number">0x4057d8</span> &lt;_ZTV1D+<span class="number">104</span>&gt;:  <span class="number">0x80</span>    <span class="number">0x2d</span>    <span class="number">0x40</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>    <span class="number">0x00</span>   </span><br><span class="line"><span class="comment">//下面为调试信息</span></span><br><span class="line"><span class="number">0x4057e0</span> &lt;_ZTV1D+<span class="number">112</span>&gt;:  <span class="number">0x47</span>    <span class="number">0x43</span>    <span class="number">0x43</span>    <span class="number">0x3a</span>    <span class="number">0x20</span>    <span class="number">0x28</span>    <span class="number">0x78</span>    <span class="number">0x38</span></span><br><span class="line"><span class="number">0x4057e8</span> &lt;_ZTV1D+<span class="number">120</span>&gt;:  <span class="number">0x36</span>    <span class="number">0x5f</span>    <span class="number">0x36</span>    <span class="number">0x34</span>    <span class="number">0x2d</span>    <span class="number">0x70</span>    <span class="number">0x6f</span>    <span class="number">0x73</span>   </span><br><span class="line"><span class="number">0x4057f0</span> &lt;_ZTV1D+<span class="number">128</span>&gt;:  <span class="number">0x69</span>    <span class="number">0x78</span>    <span class="number">0x2d</span>    <span class="number">0x73</span>    <span class="number">0x65</span>    <span class="number">0x68</span>    <span class="number">0x2d</span>    <span class="number">0x72</span>   </span><br><span class="line"><span class="number">0x4057f8</span> &lt;_ZTV1D+<span class="number">136</span>&gt;:  <span class="number">0x65</span>    <span class="number">0x76</span>    <span class="number">0x30</span>    <span class="number">0x2c</span>    <span class="number">0x20</span>    <span class="number">0x42</span>    <span class="number">0x75</span>    <span class="number">0x69</span>   </span><br><span class="line"><span class="number">0x405800</span> &lt;_ZTV1D+<span class="number">144</span>&gt;:  <span class="number">0x6c</span>    <span class="number">0x74</span>    <span class="number">0x20</span>    <span class="number">0x62</span>    <span class="number">0x79</span>    <span class="number">0x20</span>    <span class="number">0x4d</span>    <span class="number">0x69</span>   </span><br><span class="line"><span class="number">0x405808</span> &lt;_ZTV1D+<span class="number">152</span>&gt;:  <span class="number">0x6e</span>    <span class="number">0x47</span>    <span class="number">0x57</span>    <span class="number">0x2d</span>    <span class="number">0x57</span>    <span class="number">0x36</span>    <span class="number">0x34</span>    <span class="number">0x20</span></span><br><span class="line"><span class="number">0x405810</span> &lt;_ZTV1D+<span class="number">160</span>&gt;:  <span class="number">0x70</span>    <span class="number">0x72</span>    <span class="number">0x6f</span>    <span class="number">0x6a</span>    <span class="number">0x65</span>    <span class="number">0x63</span>    <span class="number">0x74</span>    <span class="number">0x29</span>   </span><br><span class="line"><span class="number">0x405818</span> &lt;_ZTV1D+<span class="number">168</span>&gt;:  <span class="number">0x20</span>    <span class="number">0x38</span>    <span class="number">0x2e</span>    <span class="number">0x31</span>    <span class="number">0x2e</span>    <span class="number">0x30</span>    <span class="number">0x00</span>    <span class="number">0x00</span></span><br></pre></td></tr></table></figure>
+<p>可以表示为下面这个结构</p>
+<p><img src="/images/004.png">  </p>
+<center>D的虚表结构</center>
+
+<p>与非虚继承相似，通过虚继承产生的派生类在构造和析构时，所调用的虚函数只是当前阶段的的虚表中对应的函数。一个问题也就由此产生，由于在虚基类的不同的派生类中，虚基类相对于该类型的偏移量是可以不同的，如果直接使用2.3中的方法，直接用继承虚基类的类型自身的虚表作为构建该类时使用的虚表，会由于偏移量的不同，导致无法正确获取虚基类中的对象。<br>这个描述比较抽象拗口，我们通过3.1中的菱形继承的例子进行解释。四个类型A，B，C和D的继承关系如下所示：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> ax;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f0</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f1</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> :</span> <span class="keyword">virtual</span> <span class="keyword">public</span> A&#123;                                     </span><br><span class="line">    <span class="keyword">int</span> bx;                          </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">f0</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123;&#125;             </span><br><span class="line">&#125;;                                     </span><br><span class="line">                                      </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span> :</span> <span class="keyword">virtual</span> <span class="keyword">public</span> A&#123;                                     </span><br><span class="line">    <span class="keyword">int</span> cx;                          </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">f0</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123;&#125;             </span><br><span class="line">&#125;;                                    </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">D</span> :</span> <span class="keyword">public</span> B, <span class="keyword">public</span> C&#123;</span><br><span class="line">    <span class="keyword">int</span> dx;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">f0</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>观察实际类型为B和实际类型为D对象的内存布局可以发现，如果实际类型为B，虚基类A对B的首地址的偏移量为16；若实际类型为D，则其中A对B首地址的偏移量为32。这明显与B自身的虚表冲突。如果构建D::B时还采用的是B自身的虚表，会由于偏移量的不同导致错误。</p>
+<p>这一问题的解决方法其实很粗暴，那就是在对象构造、析构阶段，会用到多少种虚表，会用到多少种虚指针就生成多少种虚指针。在构造或析构时，“按需分配”。</p>
+<p>例如，这里的类型D是类型B和C的子类，而B和C虚继承了类型A。 这种继承关系会导致D内部含有的B(称作B-in-D)、C(称作C-in-D)的虚表与B、C的虚表不同。 因此，这需要生成两张新的虚表，即B-in-D和C-in-D的虚表。</p>
+<p>由于B-in-D也是B类型的一种布局，B的一个虚表对应两个虚指针，分别是vptr_B和vptr_A，因此它也有两个着两个虚指针。在构造或析构D::B时，其对象的内存布局和虚表布局如图所示：</p>
+<p><img src="/images/005.png">  </p>
+<p>同样的，在C-in-D中也会有两个虚指针，分别是vptr_C和vptr_A。此外，在最终的D中还有三个虚指针，总计7个不同的虚指针，它们指向3张虚表的7个不同位置。因此编译器为类型D总共生成了3个不同的虚表，和7个不同的虚指针。将这7个虚指针合并到一个表中，这个表就是虚表的表(Virtual Table Table, VTT)。显然，只有当一个类的父类是继承了虚基类的类型时，编译器才会为它创建VTT。</p>
+<p>在构造和析构过程中，子类的构造函数或析构函数向基类传递一个合适的、指向VTT某个部分指针，使得父类的构造函数或析构函数获取到正确的虚表。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/effective-c/" rel="tag"># effective c++</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/25/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9Aprivate%E7%BB%A7%E6%89%BF%E5%92%8C%E5%A4%9A%E7%BB%A7%E6%89%BF/" rel="prev" title="effective-c++系列：private继承和多继承">
+      <i class="fa fa-chevron-left"></i> effective-c++系列：private继承和多继承
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Atcmalloc/" rel="next" title="c++内存管理系列：tcmalloc">
+      c++内存管理系列：tcmalloc <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E5%87%BD%E6%95%B0%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">虚函数内存模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E7%BB%A7%E6%89%BF%E7%9A%84%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">单继承的内存模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%BB%A7%E6%89%BF%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text">多继承内存模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E7%BB%A7%E6%89%BF%E7%9A%84%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.</span> <span class="nav-text">虚继承的内存模型</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hqin"
+      src="/images/001.jpg">
+  <p class="site-author-name" itemprop="name">hqin</p>
+  <div class="site-description" itemprop="description">星海横流 岁月成碑</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">126</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hqin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
