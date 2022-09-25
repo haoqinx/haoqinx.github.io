@@ -192,7 +192,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%BC%95%E7%94%A8%E6%B5%85%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -206,7 +206,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88/" class="post-title-link" itemprop="url">effective-c++系列：对象模型杂谈（1）</a>
+            <a href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%BC%95%E7%94%A8%E6%B5%85%E6%9E%90/" class="post-title-link" itemprop="url">effective-c++系列：引用浅析</a>
         </h2>
 
         <div class="post-meta">
@@ -223,7 +223,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:56:57" itemprop="dateModified" datetime="2022-09-25T01:56:57+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:57:13" itemprop="dateModified" datetime="2022-09-25T01:57:13+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -247,29 +247,58 @@
 
       
           <span id="more"></span>
-<h3 id="编译器版本的默认构造-x2F-析构-x2F-赋值-x2F-拷贝构造函数"><a href="#编译器版本的默认构造-x2F-析构-x2F-赋值-x2F-拷贝构造函数" class="headerlink" title="编译器版本的默认构造&#x2F;析构&#x2F;赋值&#x2F;拷贝构造函数"></a>编译器版本的默认构造&#x2F;析构&#x2F;赋值&#x2F;拷贝构造函数</h3><ul>
-<li><p>当用户没有在类内声明上述三个函数时，如果程序中需要调用，编译器会为用户自动编写<font color=green>默认构造&#x2F;析构&#x2F;拷贝构造</font>这三个重要的函数，即所谓的Big Three，和拷贝构造函数，并且这些函数都是<font color=orange>inline</font>的。在c++ 11后编译器新增了move构造和move赋值两个函数：</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">    <span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="title class_">T</span>&gt;</span><br><span class="line">    <span class="keyword">class</span> <span class="title class_">Handle</span> &#123;</span><br><span class="line">        T* p;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="built_in">Handle</span>(T* pp) : p&#123;pp&#125; &#123;&#125;</span><br><span class="line">        <span class="comment">// 用户定义构造函数： 没有隐式的拷贝和移动操作</span></span><br><span class="line">        ~<span class="built_in">Handle</span>() &#123; <span class="keyword">delete</span> p; &#125;</span><br><span class="line">        <span class="built_in">Handle</span>(Handle&amp;&amp; h) :p&#123;h.p&#125;<span class="comment">//移动拷贝</span></span><br><span class="line">            &#123; h.p=<span class="literal">nullptr</span>; &#125;; </span><br><span class="line">        Handle&amp; <span class="keyword">operator</span>=(Handle&amp;&amp; h) <span class="comment">//移动赋值</span></span><br><span class="line">            &#123; <span class="keyword">delete</span> p; p=h.p; h.p=<span class="literal">nullptr</span>; &#125; </span><br><span class="line">        <span class="built_in">Handle</span>(<span class="type">const</span> Handle&amp;) = <span class="keyword">delete</span>;  <span class="comment">//禁用拷贝构造函数</span></span><br><span class="line">        Handle&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Handle&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">    ```  </span><br><span class="line">- 一旦我们显式地指明（ 声明, 定义, =<span class="keyword">default</span>, 或者 =<span class="keyword">delete</span> ）了上述五个函数之中的任意一个，编译器将不会默认自动生成move操作。  </span><br><span class="line">- 一旦我们显式地指明（ 声明, 定义, =<span class="keyword">default</span>, 或者 =<span class="keyword">delete</span> ）了上述五个函数之中的任意一个，编译器将默认自动生成所有的拷贝操作。但是，我们应该尽量避免这种情况的发生，不要依赖于编译器的默认动作。</span><br><span class="line"></span><br><span class="line">### 使用默认版本函数会发生什么？</span><br><span class="line">- 编译器产生的析构函数是none-<span class="keyword">virtual</span>的，除非<span class="keyword">class</span>的base <span class="keyword">class</span>自身声明有<span class="keyword">virtual</span>构造函数。</span><br><span class="line">- 编译器产生的构造函数和拷贝构造函数只是单纯将non-<span class="type">static</span>成员变量拷贝到目标对象，考虑一个对象内部如果存在指针，那么只是单纯地复制指针，对于指针所指的内存区域不进行拷贝，这样的浅拷贝技术可能在后续使用过程中酿成大祸。</span><br><span class="line"></span><br><span class="line">### 如何避免使用编译器自动生成的函数？</span><br><span class="line">- 如果你不想让类支持拷贝构造或者拷贝赋值函数  </span><br><span class="line">    使用<span class="keyword">private</span>关键字</span><br><span class="line">    ```cpp</span><br><span class="line">    <span class="keyword">class</span> A&#123;</span><br><span class="line">        <span class="keyword">private</span>:</span><br><span class="line">        <span class="built_in">A</span>(<span class="type">const</span> A&amp;);</span><br><span class="line">        A&amp; <span class="keyword">operator</span>=(<span class="type">const</span> A&amp;);</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure>
-<p>  继承一个不可拷贝赋值和拷贝构造的类</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Uncopyable</span>&#123;</span><br><span class="line">    <span class="keyword">protected</span>:</span><br><span class="line">    <span class="built_in">Uncopyable</span>()&#123;&#125;</span><br><span class="line">    ~<span class="built_in">Uncopyable</span>()&#123;&#125;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">Uncopyable</span>(<span class="type">const</span> Uncopyable&amp;);</span><br><span class="line">    Uncopyable&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Uncopyable&amp;);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>:<span class="keyword">private</span> Uncopyable&#123;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>  c++11后可以使用delete关键字</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="built_in">A</span>(<span class="type">const</span> A&amp;) =<span class="keyword">delete</span>;</span><br><span class="line">    A&amp; <span class="keyword">operator</span>=(<span class="type">const</span> A&amp;) =<span class="keyword">delete</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><ul>
+<li>引用不是新定义一个变量，而是给一个已经存在的变量取了一个别名，编译器不会为引用变量开辟内存空间，它和它引用的变量共用同一块内存空间。</li>
 </ul>
-<h3 id="基类析构函数可以是none-virtual的吗？"><a href="#基类析构函数可以是none-virtual的吗？" class="headerlink" title="基类析构函数可以是none-virtual的吗？"></a>基类析构函数可以是none-virtual的吗？</h3><ul>
-<li>当基类析构函数带有多态性质，也就是使用基类指针调用子类函数的时候，析构函数必须是virtual类型的。<ul>
-<li>当需要多态的时候，一般情况下需要在堆中分配内存，这样在delete的时候就存在问题：delete的是一个父类指针，但是父类析构函数不是虚函数，那么这个子类对象中子类的部分就无法释放，这样就会存在局部销毁的情况，会导致严重的资源泄露。</li>
+<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><ul>
+<li>引用变量</li>
 </ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> data = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span>&amp; ref = data; <span class="comment">//可读可写</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>常引用变量</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> data = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> <span class="type">const</span>&amp; ref = data;<span class="comment">//只读</span></span><br></pre></td></tr></table></figure>
 </li>
-<li>凡是一个类中带有virtual字样的函数，一般情况下析构函数都要是虚函数。</li>
-<li>当一个类不是父类的时候，析构函数尽量不要设置成虚函数。<ul>
-<li>因为一个类只要有虚函数，就携带虚表指针，占用额外的内存，当类内数据量很小的时候，虚表指针就回造成很大比例的内存浪费。</li>
-</ul>
+<li><p>常引用常量</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">int</span> data = <span class="number">0</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span>&amp; ref = data;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>指针引用</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> data = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> *p = &amp;data;</span><br><span class="line"><span class="type">int</span>* &amp;ref = p;</span><br><span class="line">cout &lt;&lt; data &lt;&lt; endl; <span class="comment">//0</span></span><br><span class="line">cout &lt;&lt; *p &lt;&lt; endl; <span class="comment">//0</span></span><br><span class="line">cout &lt;&lt; *ref &lt;&lt; endl; <span class="comment">//0</span></span><br><span class="line">cout &lt;&lt; p &lt;&lt; endl;<span class="comment">//0x61fe14</span></span><br><span class="line">cout &lt;&lt; ref &lt;&lt; endl;<span class="comment">//0x61fe14</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>引用变量的类型必须与它的实体类型一致（因为取别名要符合引用实体的身份，如果类型不一致则会报错）</p>
+</li>
+<li><p>引用变量使用必须要进行初始化（不然没有实体都不知道给谁取别名）</p>
+</li>
+<li><p>一个变量可以有多个引用（就相当于一个变量有好几个别名，这是可以的）</p>
 </li>
 </ul>
-<h3 id="析构函数可以抛出异常吗？"><a href="#析构函数可以抛出异常吗？" class="headerlink" title="析构函数可以抛出异常吗？"></a>析构函数可以抛出异常吗？</h3><ul>
-<li>一般情况下不要在析构函数中抛异常<br>比如在析构函数中释放多个资源，但是在释放过程中出现异常，那么剩余资源就无法被释放，就会造成内存泄露。  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; data;</span><br><span class="line">    ~<span class="built_in">A</span>()&#123;</span><br><span class="line">        <span class="comment">// throws...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">dosomething</span><span class="params">()</span></span>&#123;</span><br><span class="line">    vector&lt;A&gt; resource;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="comment">//dtor</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li>异常处理<br>  捕捉异常，结束程序  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; data;</span><br><span class="line">    ~<span class="built_in">A</span>()&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            <span class="comment">//do delete</span></span><br><span class="line">        &#125;<span class="built_in">catch</span>()&#123;</span><br><span class="line">            std::<span class="built_in">abort</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-  捕捉异常，不执行任何操作  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; data;</span><br><span class="line">    ~<span class="built_in">A</span>()&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            <span class="comment">//do delete</span></span><br><span class="line">        &#125;<span class="built_in">catch</span>()&#123;</span><br><span class="line">            <span class="comment">//记录</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<h3 id="以pass-by-reference-to-const替换pass-by-value"><a href="#以pass-by-reference-to-const替换pass-by-value" class="headerlink" title="以pass-by-reference-to-const替换pass-by-value"></a>以pass-by-reference-to-const替换pass-by-value</h3><ul>
+<li>通常情况下c++使用值传递，传递对象都是由拷贝构造函数产生，这样做会产生非常昂贵的成本。每对一个对象进行值传递，就会进行一次拷贝构造函数和析构函数。</li>
+<li>考虑上述情况，可以使用<font color=orange>引用传递</font>来避免不必要的运行和内存开销。同时，如果希望在函数中不对对象进行任何改变，可以使用const关键字避免。</li>
+<li><font color=orange>在c++底层，引用是通过指针实现的</font>，因此对于内置类型如int,double,float等使用值传递会有更高的效率。</li>
+</ul>
+<h3 id="必须返回对象时，不要使用引用"><a href="#必须返回对象时，不要使用引用" class="headerlink" title="必须返回对象时，不要使用引用"></a>必须返回对象时，不要使用引用</h3><ul>
+<li><p>考虑如下的例子，考虑在函数内生成一个对象</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="type">int</span> val;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="title">A</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="title">A</span><span class="params">(<span class="type">int</span> x)</span>:val(x)&#123;</span>&#125;;</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="type">int</span> <span class="title">getVal</span><span class="params">()</span><span class="type">const</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> val;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="type">const</span> A&amp; <span class="keyword">operator</span>*(<span class="type">const</span> A&amp; lhs, <span class="type">const</span> A&amp; rhs)&#123;</span><br><span class="line">    A* res = <span class="keyword">new</span> <span class="built_in">A</span>(lhs.<span class="built_in">getVal</span>() * rhs.<span class="built_in">getVal</span>());</span><br><span class="line">    <span class="keyword">return</span> *res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>  operator*函数内生成了一个对象，并在heap上分配了内存，那么这块内存永远不会再外部释放，因为离开函数作用域这个指针将自动销毁。<br>  那么使用下面这个函数生成临时对象也一样不可取，因为离开函数作用域，这个对象将被销毁。</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> A&amp; <span class="keyword">operator</span>*(<span class="type">const</span> A&amp; lhs, <span class="type">const</span> A&amp; rhs)&#123;</span><br><span class="line">    <span class="function">A <span class="title">res</span><span class="params">(lhs.getVal() * rhs.getVal())</span></span>;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  能不能像下面这样声明一个静态对象来保存结果呢？</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> A&amp; <span class="keyword">operator</span>*(<span class="type">const</span> A&amp; lhs, <span class="type">const</span> A&amp; rhs)&#123;</span><br><span class="line">    <span class="type">static</span> A res;</span><br><span class="line">    res = <span class="built_in">A</span>(lhs.<span class="built_in">getVal</span>() * rhs.<span class="built_in">getVal</span>());</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  表面上看没有太大问题，但是在使用中我们常常会像一下这样来使用：</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">bool</span> <span class="keyword">operator</span>==(<span class="type">const</span> A&amp; lhs, <span class="type">const</span> A&amp; rhs);</span><br><span class="line">A r, s, t, x;</span><br><span class="line"><span class="keyword">if</span>((r * s) == (t * x))&#123;</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  如果保存的是静态对象，那么这个表达式永远为真。表达式展开的结果是</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">operator</span>==(<span class="keyword">operator</span>*(r, s), <span class="keyword">operator</span>*(t, x)))&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  在比较时永远比较的是静态对象值，不管执行顺序是什么，对象自身永远相等。</p>
+</li>
+<li><p>正确的做法</p>
+<ul>
+<li>让函数返回一个新对象</li>
+</ul>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="type">const</span> A <span class="keyword">operator</span>*(<span class="type">const</span> A&amp; lhs, <span class="type">const</span> A&amp; rhs)&#123;</span><br><span class="line">    <span class="function">A <span class="title">res</span><span class="params">(lhs.getVal() * rhs.getVal())</span></span>;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 </ul>
 
       
@@ -494,6 +523,91 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/12/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%88%86%E6%AE%B5%E5%88%86%E9%A1%B5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/08/12/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%88%86%E6%AE%B5%E5%88%86%E9%A1%B5/" class="post-title-link" itemprop="url">Linux内核系列：分段分页</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-08-12 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-12T00:00:00+08:00">2021-08-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:58:53" itemprop="dateModified" datetime="2022-09-25T01:58:53+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="内存不够怎么办"><a href="#内存不够怎么办" class="headerlink" title="内存不够怎么办"></a>内存不够怎么办</h3><p>在早起的计算机上，程序是运行在物理内存上的，也就是说，程序在运行时所访问的地址都是物理地址，那么在多个进城同时运行的过程中，如何将计算机上有限的物理内存分配给多个程序使用是一个值得思考的问题。<br>一个比较直接的做法是在物理内存上直接进行分配，例如我们计算机有128M的内存，程序A运行需要10M，程序B需要100M，程序C需要20M，如果我们同时运行A和B，就将内存前10M给A，10~110M给B，但是这种方法存在的隐患却是很大的：  </p>
+<ol>
+<li>地址空间不隔离：任何程序都可以直接访问物理地址，那么恶意的程序很容易修改其他程序的内存数据。</li>
+<li>内存使用率低：没有有效的内存管理机制，需要一个程序执行时，监控程序就将整个程序装入内存中然后开始执行。如果我们忽然需要运行一个程序C，这时候内存空间不够了，我们只释放A的内存空间是不够的，因此需要将B移到磁盘，这中间有大量的数据换入患处，导致效率十分低下。</li>
+<li>程序运行的地址不确定：程序每次需要装入运行时，我们都需要给它在内存中分配一块足够大的空闲区域，每个空闲区域的位置是不确定的，给程序的编写造成了一定的麻烦。因为程序在编写时，访问数据和指令跳转的目标地址都是固定的，这设计到了程序的重定位问题。</li>
+</ol>
+<h3 id="分段"><a href="#分段" class="headerlink" title="分段"></a>分段</h3><p>最开始解决上面这个问题使用的是分段的方法，基本思路是把一段与程序所需要的内存空间大小的虚拟空间映射到某个地址空间。如A需要10M，那我们就假设有个地址从0x00000000到0x00A00000大小的假想的空间。然后从实际的物理内存中分配一个相同大小的空间例如0x00100000到0x00B00000.然后把两个空间做一一映射。这个映射过程由软件来设置，比如操作系统来设置，实际的地址转换由硬件来完成。<br><img src="/images/seg-1.png"></p>
+<p>分段解决了前面提到的问题中的1~3，首先做到了地址隔离，如果A访问B的地址，软件会检测访问越界。并且由于虚拟地址，程序不需要关心物理地址的变化，因此程序也不需要重定位。不过这种方法对内存的使用效率依然很低，因为每次内存的换入换出依然是这个程序。</p>
+<h3 id="分页"><a href="#分页" class="headerlink" title="分页"></a>分页</h3><p>分页的基本思想是将地址空间划为固定大小的页。每一页的大小由硬件支持。<br>现在我们进程的虚拟空间按页分割，常用的数据和代码页装载到内存，不常用的代码和数据保存在磁盘里。在这里，我们把虚拟空间的页叫做虚拟页，物理内存中的页叫做物理页，把磁盘中的页叫做磁盘页。从下图可以看到映射关系，我们可以发现，虚拟空间的有些页被映射到同一个物理页，这样就可以实现内存共享。<br><img src="/images/seg-2.png"></p>
+<p>当进程需要两个页时，硬件会捕获这个消息，也就是产生缺页中断，操作系统会接管进程，将缺页从磁盘中读出来并且装入内存中。虚拟存储实现需要依靠硬件的支持，如下图所示，一般使用MMU单元进行页映射。<br><img src="/images/seg-3.png"></p>
+<p>同时保护也是页映射的目的之一，简单来说就是每个页可以设置权限属性，谁可以修改，谁可以访问等等，只有操作系统有权限修改这些属性。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/12/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%90%84%E7%A7%8D%E9%94%81%E5%A4%A7%E6%80%BB%E7%BB%93/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -578,91 +692,6 @@
 <li>多个线程竞争时要不要排队？排队称为公平锁，先尝试插队，若失败再排队称为非公平锁。</li>
 <li>轻量级锁和重量级锁（待研究）</li>
 </ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/12/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%88%86%E6%AE%B5%E5%88%86%E9%A1%B5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/08/12/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%88%86%E6%AE%B5%E5%88%86%E9%A1%B5/" class="post-title-link" itemprop="url">Linux内核系列：分段分页</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-08-12 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-12T00:00:00+08:00">2021-08-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:58:53" itemprop="dateModified" datetime="2022-09-25T01:58:53+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="内存不够怎么办"><a href="#内存不够怎么办" class="headerlink" title="内存不够怎么办"></a>内存不够怎么办</h3><p>在早起的计算机上，程序是运行在物理内存上的，也就是说，程序在运行时所访问的地址都是物理地址，那么在多个进城同时运行的过程中，如何将计算机上有限的物理内存分配给多个程序使用是一个值得思考的问题。<br>一个比较直接的做法是在物理内存上直接进行分配，例如我们计算机有128M的内存，程序A运行需要10M，程序B需要100M，程序C需要20M，如果我们同时运行A和B，就将内存前10M给A，10~110M给B，但是这种方法存在的隐患却是很大的：  </p>
-<ol>
-<li>地址空间不隔离：任何程序都可以直接访问物理地址，那么恶意的程序很容易修改其他程序的内存数据。</li>
-<li>内存使用率低：没有有效的内存管理机制，需要一个程序执行时，监控程序就将整个程序装入内存中然后开始执行。如果我们忽然需要运行一个程序C，这时候内存空间不够了，我们只释放A的内存空间是不够的，因此需要将B移到磁盘，这中间有大量的数据换入患处，导致效率十分低下。</li>
-<li>程序运行的地址不确定：程序每次需要装入运行时，我们都需要给它在内存中分配一块足够大的空闲区域，每个空闲区域的位置是不确定的，给程序的编写造成了一定的麻烦。因为程序在编写时，访问数据和指令跳转的目标地址都是固定的，这设计到了程序的重定位问题。</li>
-</ol>
-<h3 id="分段"><a href="#分段" class="headerlink" title="分段"></a>分段</h3><p>最开始解决上面这个问题使用的是分段的方法，基本思路是把一段与程序所需要的内存空间大小的虚拟空间映射到某个地址空间。如A需要10M，那我们就假设有个地址从0x00000000到0x00A00000大小的假想的空间。然后从实际的物理内存中分配一个相同大小的空间例如0x00100000到0x00B00000.然后把两个空间做一一映射。这个映射过程由软件来设置，比如操作系统来设置，实际的地址转换由硬件来完成。<br><img src="/images/seg-1.png"></p>
-<p>分段解决了前面提到的问题中的1~3，首先做到了地址隔离，如果A访问B的地址，软件会检测访问越界。并且由于虚拟地址，程序不需要关心物理地址的变化，因此程序也不需要重定位。不过这种方法对内存的使用效率依然很低，因为每次内存的换入换出依然是这个程序。</p>
-<h3 id="分页"><a href="#分页" class="headerlink" title="分页"></a>分页</h3><p>分页的基本思想是将地址空间划为固定大小的页。每一页的大小由硬件支持。<br>现在我们进程的虚拟空间按页分割，常用的数据和代码页装载到内存，不常用的代码和数据保存在磁盘里。在这里，我们把虚拟空间的页叫做虚拟页，物理内存中的页叫做物理页，把磁盘中的页叫做磁盘页。从下图可以看到映射关系，我们可以发现，虚拟空间的有些页被映射到同一个物理页，这样就可以实现内存共享。<br><img src="/images/seg-2.png"></p>
-<p>当进程需要两个页时，硬件会捕获这个消息，也就是产生缺页中断，操作系统会接管进程，将缺页从磁盘中读出来并且装入内存中。虚拟存储实现需要依靠硬件的支持，如下图所示，一般使用MMU单元进行页映射。<br><img src="/images/seg-3.png"></p>
-<p>同时保护也是页映射的目的之一，简单来说就是每个页可以设置权限属性，谁可以修改，谁可以访问等等，只有操作系统有权限修改这些属性。</p>
 
       
     </div>

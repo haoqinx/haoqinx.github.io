@@ -458,6 +458,81 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E7%94%B5%E6%BA%90%E9%94%AE%E5%88%B0%E5%90%AF%E5%8A%A8%E5%85%A8%E8%BF%87%E7%A8%8B%E6%B5%85%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/02/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E7%94%B5%E6%BA%90%E9%94%AE%E5%88%B0%E5%90%AF%E5%8A%A8%E5%85%A8%E8%BF%87%E7%A8%8B%E6%B5%85%E6%9E%90/" class="post-title-link" itemprop="url">Linux内核系列：从按下开机到进入系统，到底经历了什么？</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:58:44" itemprop="dateModified" datetime="2022-09-25T01:58:44+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="开机全程"><a href="#开机全程" class="headerlink" title="开机全程"></a>开机全程</h3><p><a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2013/02/booting.html">参考阮一峰大佬的博客1</a>,<a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2013/08/linux_boot_process.html">博客2</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -557,224 +632,6 @@
 <li>优缺点<br>动态链接的优点显而易见，就是即使需要每个程序都依赖同一个库，但是该库不会像静态链接那样在内存中存在多分，副本，而是这多个程序在执行时共享同一份副本；另一个优点是，更新也比较方便，更新时只需要替换原来的目标文件，而无需将所有的程序再重新链接一遍。当程序下一次运行时，新版本的目标文件会被自动加载到内存并且链接起来，程序就完成了升级的目标。但是动态链接也是有缺点的，因为把链接推迟到了程序运行时，所以每次执行程序都需要进行链接，所以性能会有一定损失。</li>
 <li>如何重定位？<br>前面我们讲过静态链接时地址的重定位，那我们现在就在想动态链接的地址又是如何重定位的呢？虽然动态链接把链接过程推迟到了程序运行时，但是在形成可执行文件时（注意形成可执行文件和执行程序是两个概念），还是需要用到动态链接库。比如我们在形成可执行程序时，发现引用了一个外部的函数，此时会检查动态链接库，发现这个函数名是一个动态链接符号，此时可执行程序就不对这个符号进行重定位，而把这个过程留到装载时再进行。</li>
 </ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/02/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="post-title-link" itemprop="url">Linux内核系列：多线程和线程同步</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:58:46" itemprop="dateModified" datetime="2022-09-25T01:58:46+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="线程间通信"><a href="#线程间通信" class="headerlink" title="线程间通信"></a>线程间通信</h3><ol>
-<li>不同进程的线程之间通信，等同于进程间通信。</li>
-<li>相同进程中不同线程之间通信，主要是线程同步，避免对临界区资源的破坏。</li>
-</ol>
-<h3 id="线程同步"><a href="#线程同步" class="headerlink" title="线程同步"></a>线程同步</h3><ol>
-<li>互斥锁</li>
-</ol>
-<p>互斥量是最简单的同步机制，即互斥锁。多个进程(线程)均可以访问到一个互斥量，通过对互斥量加锁，从而来保护一个临界区,防止其它进程(线程)同时进入临界区，保护临界资源互斥访问。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;error.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">pthread_mutex_t</span> m;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> resource = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span>* <span class="title">func</span><span class="params">(<span class="type">void</span>* args)</span></span>&#123;</span><br><span class="line">     <span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">          <span class="built_in">pthread_mutex_lock</span>(&amp;m);</span><br><span class="line">          <span class="type">pthread_t</span> res = <span class="built_in">pthread_self</span>();</span><br><span class="line">          cout &lt;&lt; <span class="string">&quot;current thread : &quot;</span> &lt;&lt; res &lt;&lt; endl;</span><br><span class="line">          cout &lt;&lt; <span class="string">&quot;resource: &quot;</span> &lt;&lt; resource &lt;&lt; endl;</span><br><span class="line">          ++ resource;</span><br><span class="line">          <span class="built_in">pthread_mutex_unlock</span>(&amp;m);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> handler(msg) \</span></span><br><span class="line"><span class="meta">          perror(msg);\</span></span><br><span class="line"><span class="meta">          exit(-1);</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span>  </span>&#123;  </span><br><span class="line">     <span class="type">pthread_t</span> p1, p2;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">pthread_mutex_init</span>(&amp;m, <span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span>(<span class="built_in">pthread_create</span>(&amp;p1, <span class="literal">nullptr</span>, func, <span class="number">0</span>))&#123;</span><br><span class="line">          <span class="built_in">handler</span>(<span class="string">&quot;thread create error&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">if</span>(<span class="built_in">pthread_create</span>(&amp;p2, <span class="literal">nullptr</span>, func, <span class="number">0</span>))&#123;</span><br><span class="line">          <span class="built_in">handler</span>(<span class="string">&quot;thread create error&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">if</span>(<span class="built_in">pthread_join</span>(p1, <span class="literal">nullptr</span>))&#123;</span><br><span class="line">          <span class="built_in">handler</span>(<span class="string">&quot;error&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">if</span>(<span class="built_in">pthread_join</span>(p2, <span class="literal">nullptr</span>))&#123;</span><br><span class="line">          <span class="built_in">handler</span>(<span class="string">&quot;error&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li>条件变量</li>
-</ol>
-<p>条件变量是并发编程中的一种同步机制。条件变量使得线程能够阻塞到等待某个条件发生后，再继续执行</p>
-<ul>
-<li>条件变量的实现原理：<br>条件变量其实就是一种等待机制，每个条件变量对应一个等待原因和等待队列，通常有两种操作：wait和signal。<br>条件变量的伪代码：<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Condition</span>&#123;</span><br><span class="line">    <span class="type">int</span> waitNum = <span class="number">0</span>;</span><br><span class="line">    WaitQueue q;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待队列中。<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Condition::<span class="built_in">Wait</span>(lock)</span><br><span class="line">&#123;</span><br><span class="line">	++numWaiting;</span><br><span class="line">	Add current thread to WaitQueue q;</span><br><span class="line">	<span class="built_in">release</span>(lock);</span><br><span class="line">	<span class="built_in">schedule</span>(); <span class="comment">//调度机制，让出CPU</span></span><br><span class="line">	<span class="built_in">acquire</span>(lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-对于singal操作来说，则如果等待队列中有线程的话，将它取出唤醒，waitNum减一即可。<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Condition::<span class="built_in">Singal</span>()&#123;</span><br><span class="line">	<span class="keyword">if</span>(waitNum &gt; <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		remove t from q;</span><br><span class="line">		<span class="built_in">wakeup</span>(q);</span><br><span class="line">		--waitNum;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-条件变量的原理虽然很简单，但是使用起来却是比较费脑，还是参考<a target="_blank" rel="noopener" href="https://www.cnblogs.com/Solstice/p/3309089.html">陈硕大佬这篇文章</a>正确使用，下面是一个<font color=orange>保证不会出错的使用方法。</font>经典例子见<a target="_blank" rel="noopener" href="https://github.com/chenshuo/recipes/blob/master/thread/test/Waiter_test.cc">github</a></li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Waiter7</span> : <span class="keyword">public</span> Waiter</span><br><span class="line">&#123;</span><br><span class="line"> <span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">wait</span><span class="params">()</span> <span class="keyword">override</span></span></span><br><span class="line"><span class="function">  </span>&#123;</span><br><span class="line">    <span class="built_in">pthread_mutex_lock</span>(&amp;mutex_);</span><br><span class="line">    <span class="keyword">while</span> (!signaled_)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">pthread_cond_wait</span>(&amp;cond_, &amp;mutex_);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">pthread_mutex_unlock</span>(&amp;mutex_);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">signal</span><span class="params">()</span> <span class="keyword">override</span> <span class="comment">// Sorry, bad name in base class, poor OOP</span></span></span><br><span class="line"><span class="function">  </span>&#123;</span><br><span class="line">    <span class="built_in">broadcast</span>();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">broadcast</span><span class="params">()</span></span></span><br><span class="line"><span class="function">  </span>&#123;</span><br><span class="line">    <span class="built_in">pthread_mutex_lock</span>(&amp;mutex_);</span><br><span class="line">    <span class="built_in">pthread_cond_broadcast</span>(&amp;cond_);</span><br><span class="line">    signaled_ = <span class="literal">true</span>;</span><br><span class="line">    <span class="built_in">pthread_mutex_unlock</span>(&amp;mutex_);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">private</span>:</span><br><span class="line">  <span class="type">bool</span> signaled_ = <span class="literal">false</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>条件变量里面有个经典的假唤醒问题，特别是在广播的时候，一个条件满足了，但是当被唤醒线程拿到资源的时候其实已经被其他线程先行一步消耗了，因此需要在等待时使用while循环判断和等待。<br>这个其实和网络编程里面的惊群现象比较相似。</p>
-<ol start="3">
-<li>读写锁</li>
-</ol>
-<p>读写锁的核心思想是：将线程访问共享数据时发出的请求分为两种，分别是：</p>
-<ul>
-<li>读请求：只读取共享数据，不做任何修改；</li>
-<li>写请求：存在修改共享数据的行为。</li>
-</ul>
-<p>当有多个线程发出读请求时，这些线程可以同时执行，也就是说，共享数据的值可以同时被多个发出读请求的线程获取；当有多个线程发出写请求时，这些线程只能一个一个地执行（同步执行）。此外，当发出读请求的线程正在执行时，发出写请求的线程必须等待前者执行完后才能开始执行；当发出写请求的线程正在执行时，发出读请求的线程也必须等待前者执行完后才能开始执行。</p>
-<p>本质上，读写锁就是一个全局变量，发出读请求和写请求的线程都可以访问它。为了区别线程发出的请求类别，当读写锁被发出读请求的线程占用时，我们称它为“读锁”；当读写锁被发出写请求的线程占用时，称它为“写锁”。  </p>
-<table>
-<thead>
-<tr>
-<th>当前读写锁模式</th>
-<th>读请求</th>
-<th>写请求</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>无锁</td>
-<td>允许占用</td>
-<td>允许占用</td>
-</tr>
-<tr>
-<td>读锁</td>
-<td>允许占用</td>
-<td>阻塞线程执行</td>
-</tr>
-<tr>
-<td>写锁</td>
-<td>阻塞线程执行</td>
-<td>阻塞线程执行</td>
-</tr>
-</tbody></table>
-<ul>
-<li><p>当读写锁未被任何线程占用时，发出读请求和写请求的线程都可以占用它。注意，由于读请求和写请求的线程不能同时执行，读写锁默认会优先分配给发出读请求的线程。</p>
-</li>
-<li><p>当读写锁的状态为“读锁”时，表明当前执行的是发出读请求的线程（可能有多个）。此时如果又有线程发出读请求，该线程不会被阻塞，但如果有线程发出写请求，它就会被阻塞，直到读写锁状态改为“无锁”。</p>
-</li>
-<li><p>当读写锁状态为“写锁”时，表明当前执行的是发出写请求的线程（只能有 1 个）。此时无论其它线程发出的是读请求还是写请求，都必须等待读写锁状态改为“无锁”后才能执行。</p>
-</li>
-</ul>
-<p>总的来说，对于进程空间中的共享资源，读写锁允许发出“读”请求的线程共享资源，发出“写”请求的线程必须独占资源，进而实现线程同步。</p>
-<ol start="4">
-<li>信号量</li>
-</ol>
-<p>在linux中进程和线程相似，参考前面的<a href="https://haoqinx.github.io/2021/09/14/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/">进程间通信</a>。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E7%94%B5%E6%BA%90%E9%94%AE%E5%88%B0%E5%90%AF%E5%8A%A8%E5%85%A8%E8%BF%87%E7%A8%8B%E6%B5%85%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/02/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E7%94%B5%E6%BA%90%E9%94%AE%E5%88%B0%E5%90%AF%E5%8A%A8%E5%85%A8%E8%BF%87%E7%A8%8B%E6%B5%85%E6%9E%90/" class="post-title-link" itemprop="url">Linux内核系列：从按下开机到进入系统，到底经历了什么？</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:58:44" itemprop="dateModified" datetime="2022-09-25T01:58:44+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="开机全程"><a href="#开机全程" class="headerlink" title="开机全程"></a>开机全程</h3><p><a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2013/02/booting.html">参考阮一峰大佬的博客1</a>,<a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2013/08/linux_boot_process.html">博客2</a></p>
 
       
     </div>
@@ -1190,6 +1047,86 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
 <h3 id="map-x2F-multimap"><a href="#map-x2F-multimap" class="headerlink" title="map&#x2F;multimap"></a>map&#x2F;multimap</h3><p>和set不同的是map&#x2F;multimap是以pair的key为排序对象，在G2.9的实现截图如下：<br><img src="/images/map-2.png"></p>
 <p>map&#x2F;multimap给定的默认仿函数为less&lt;_Ty&gt;，默认的取值仿函数是select1st&lt;pair&lt;const int, string&gt;&gt;。<br>map也提供<font color=orange>[]</font>的操作符重载：<br><img src="/images/map-1.png"></p>
 <p>需要注意的是如果存在要查找的值就返回，否则返回要查找的值应该出现的位置。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Astack&&queue/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Astack&&queue/" class="post-title-link" itemprop="url">c++STL系列：stack&&queue</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:56:45" itemprop="dateModified" datetime="2022-09-25T01:56:45+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="stack"><a href="#stack" class="headerlink" title="stack"></a>stack</h3><p><img src="/images/stack-1.png"></p>
+<p>通过模板、has-a方式使用deque，按照栈的特点封装deque的方法。</p>
+<h3 id="queue"><a href="#queue" class="headerlink" title="queue"></a>queue</h3><p><img src="/images/queue-1.png"></p>
+<p>和stack一样，通过模板、has-a方式使用deque，按照队列的特点封装deque的方法。</p>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><p><img src="/images/stack-2.png"></p>
+<p><img src="/images/stack-3.png"></p>
 
       
     </div>
