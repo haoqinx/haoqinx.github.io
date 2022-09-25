@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="星海横流 岁月成碑">
@@ -191,7 +191,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Aset/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Alist/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -205,7 +205,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Aset/" class="post-title-link" itemprop="url">c++STL系列：set & multiset</a>
+            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Alist/" class="post-title-link" itemprop="url">c++STL系列：list</a>
         </h2>
 
         <div class="post-meta">
@@ -222,7 +222,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:56:41" itemprop="dateModified" datetime="2022-09-25T01:56:41+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:56:33" itemprop="dateModified" datetime="2022-09-25T01:56:33+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -246,16 +246,260 @@
 
       
           <span id="more"></span>
-<h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p>set&#x2F;multiset以红黑树为底层结构，因此元素在插入过程中自动排序。<br><img src="/images/rbtree.png"></p>
-<p><img src="/images/rbtree-2.png"></p>
-<p>STL中的红黑树为了方便实现，创建了一个假的header，并使用指针指向真正的红黑树根节点。<br>红黑树使用三个数据记录树结构：</p>
+<h3 id="G2-9源码结构"><a href="#G2-9源码结构" class="headerlink" title="G2.9源码结构"></a>G2.9源码结构</h3><p><img src="/images/list-1.png"></p>
+<p>在低版本下list的结构比较简单，就是一个list模板类和一个node模板类。总体的数据结构事宜个环形双向链表。<br>begin()指向头结点，end()指向尾节点。</p>
 <ul>
-<li>node_count:节点的个数。</li>
-<li>header：指向真正的根节点。</li>
-<li>key_compare:仿函数，如果节点中存储的是一个类&#x2F;对象，使用仿函数来比较元素大小。</li>
+<li>迭代器<br><img src="/images/list-2.png"></li>
 </ul>
-<p>红黑树提供遍历操作和iterator。遍历得到的是元素排列的中序遍历，也就是从大到小或者从小到大的顺序。</p>
-<h3 id="set-x2F-multiset"><a href="#set-x2F-multiset" class="headerlink" title="set&#x2F;multiset"></a>set&#x2F;multiset</h3><p>set的迭代器无法改变元素值（因为需要保持红黑树的性质），实现的技巧是使用const迭代器。</p>
+<p>源码中迭代器的结构如下，迭代器重载了前++,后++，-&gt;,*等一系列操作符，为了达到指针的效果。<br>这里需要注意的第一个是++这个操作符重载，形如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self <span class="keyword">operator</span>++(<span class="type">int</span>)&#123;....&#125;</span><br></pre></td></tr></table></figure>
+<p>的为后置++，而前置++ 不需要形参:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self&amp; <span class="keyword">operator</span>++()&#123;...&#125;</span><br></pre></td></tr></table></figure>
+<p>为什么后置++返回self，而后置返回一个引用呢？<font color=orange>是为了阻止后置++连续使用，也就是下面这种形式:</font></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">i++++;<span class="comment">//错误 self类型不能++</span></span><br><span class="line">++++i;<span class="comment">//正确 </span></span><br></pre></td></tr></table></figure>
+
+<p>另外需要注意的是-&gt;这个操作符重载,下面这个图阐述的很清楚:<br><img src="/images/list-3.png"></p>
+<h3 id="G4-9版本"><a href="#G4-9版本" class="headerlink" title="G4.9版本"></a>G4.9版本</h3><p><img src="/images/list-4.png"></p>
+<p>相对于G2.9版本，4.9版本的list充分利用了面向对象的设计方法，将实现类与基础类分割开，这符合effective c++的设计条款，但是对于源码阅读来说就不是很友好了。但是很庆幸，在基础的设计上新版本并没有特别多的改动，基本思想和原版本一致。<br>list的原理十分简单，下面简单总结一下list的使用。</p>
+<center>
+
+<table>
+<thead>
+<tr>
+<th align="center">方法</th>
+<th align="center">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">erase()</td>
+<td align="center">删除一个元素</td>
+</tr>
+<tr>
+<td align="center">front()</td>
+<td align="center">返回第一个元素</td>
+</tr>
+<tr>
+<td align="center">get_allocator()</td>
+<td align="center">返回list的配置器</td>
+</tr>
+<tr>
+<td align="center">insert()</td>
+<td align="center">插入一个元素到list中</td>
+</tr>
+<tr>
+<td align="center">max_size()</td>
+<td align="center">返回list能容纳的最大元素数量</td>
+</tr>
+<tr>
+<td align="center">merge()</td>
+<td align="center">合并两个list</td>
+</tr>
+<tr>
+<td align="center">pop_back()</td>
+<td align="center">删除最后一个元素</td>
+</tr>
+<tr>
+<td align="center">pop_front()</td>
+<td align="center">删除第一个元素</td>
+</tr>
+<tr>
+<td align="center">push_back()</td>
+<td align="center">在list的末尾添加一个元素</td>
+</tr>
+<tr>
+<td align="center">push_front()</td>
+<td align="center">在list的头部添加一个元素</td>
+</tr>
+<tr>
+<td align="center">remove()</td>
+<td align="center">从list删除元素</td>
+</tr>
+<tr>
+<td align="center">remove_if()</td>
+<td align="center">按指定条件删除元素</td>
+</tr>
+<tr>
+<td align="center">resize()</td>
+<td align="center">改变list的大小</td>
+</tr>
+<tr>
+<td align="center">reverse()</td>
+<td align="center">把list的元素倒转</td>
+</tr>
+<tr>
+<td align="center">sort()</td>
+<td align="center">给list排序</td>
+</tr>
+<tr>
+<td align="center">unique()</td>
+<td align="center">删除list中重复的元素</td>
+</tr>
+<tr>
+<td align="center">splice()</td>
+<td align="center">合并两个list</td>
+</tr>
+</tbody></table>
+</center>
+
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Astack&&queue/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Astack&&queue/" class="post-title-link" itemprop="url">c++STL系列：stack&&queue</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:56:45" itemprop="dateModified" datetime="2022-09-25T01:56:45+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="stack"><a href="#stack" class="headerlink" title="stack"></a>stack</h3><p><img src="/images/stack-1.png"></p>
+<p>通过模板、has-a方式使用deque，按照栈的特点封装deque的方法。</p>
+<h3 id="queue"><a href="#queue" class="headerlink" title="queue"></a>queue</h3><p><img src="/images/queue-1.png"></p>
+<p>和stack一样，通过模板、has-a方式使用deque，按照队列的特点封装deque的方法。</p>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><p><img src="/images/stack-2.png"></p>
+<p><img src="/images/stack-3.png"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Avector/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Avector/" class="post-title-link" itemprop="url">c++STL系列：vector</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:56:53" itemprop="dateModified" datetime="2022-09-25T01:56:53+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="G2-9版本"><a href="#G2-9版本" class="headerlink" title="G2.9版本"></a>G2.9版本</h3><p><img src="/images/vec-1.png"></p>
+<p>上图展示了vector的底层结构和G2.9版本的源码。<br>vector实际上是一个数组，在vector中有一些变量记录了数组的信息，start记录了起始位置，finish记录数据结束位置。<br><font color=orange>当vector用完capacity的空间，vector会两倍增长,增长的方式是寻找一个两倍大小的空间，然后将所有元素拷贝过去。</font><br>对中间和开始处进行添加删除元素操作需要移动内存,如果你的元素是结构或是类,那么移动的同时还会进行拷贝构造和析构操作，所以性能不高 （最好将结构或类的指针放入vector中，而不是结构或类本身，这样可以避免移动时的构造与析构)。</p>
+<h3 id="G4-9版本"><a href="#G4-9版本" class="headerlink" title="G4.9版本"></a>G4.9版本</h3><p><img src="/images/vec-2.png"></p>
+<p>和list一样，G4.9定义和实现分离，遵循面向对象的设计方式。其他并无特别之处。</p>
 
       
     </div>
@@ -361,86 +605,6 @@
 <p>迭代器中存储的是当前node的指针和当前hash bucket的编号。</p>
 <h3 id="hash操作"><a href="#hash操作" class="headerlink" title="hash操作"></a>hash操作</h3><p>STL中使用模板的特化和泛化来hash。STL对内置类型进行了特化，如果需要对自定义类型进行hash，需要写对应的模板函数特化版本。<br><img src="/images/hash-3.png"></p>
 <p><img src="/images/hash-4.png"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Astack&&queue/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Astack&&queue/" class="post-title-link" itemprop="url">c++STL系列：stack&&queue</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:56:45" itemprop="dateModified" datetime="2022-09-25T01:56:45+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="stack"><a href="#stack" class="headerlink" title="stack"></a>stack</h3><p><img src="/images/stack-1.png"></p>
-<p>通过模板、has-a方式使用deque，按照栈的特点封装deque的方法。</p>
-<h3 id="queue"><a href="#queue" class="headerlink" title="queue"></a>queue</h3><p><img src="/images/queue-1.png"></p>
-<p>和stack一样，通过模板、has-a方式使用deque，按照队列的特点封装deque的方法。</p>
-<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><p><img src="/images/stack-2.png"></p>
-<p><img src="/images/stack-3.png"></p>
 
       
     </div>
@@ -638,7 +802,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Avector/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Abitmap-allocator/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -652,7 +816,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Avector/" class="post-title-link" itemprop="url">c++STL系列：vector</a>
+            <a href="/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Abitmap-allocator/" class="post-title-link" itemprop="url">c++内存管理系列：bitmap-allocator</a>
         </h2>
 
         <div class="post-meta">
@@ -669,7 +833,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:56:53" itemprop="dateModified" datetime="2022-09-25T01:56:53+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:55:33" itemprop="dateModified" datetime="2022-09-25T01:55:33+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -677,7 +841,7 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
                 </span>
             </span>
 
@@ -693,10 +857,17 @@
 
       
           <span id="more"></span>
-<h3 id="G2-9版本"><a href="#G2-9版本" class="headerlink" title="G2.9版本"></a>G2.9版本</h3><p><img src="/images/vec-1.png"></p>
-<p>上图展示了vector的底层结构和G2.9版本的源码。<br>vector实际上是一个数组，在vector中有一些变量记录了数组的信息，start记录了起始位置，finish记录数据结束位置。<br><font color=orange>当vector用完capacity的空间，vector会两倍增长,增长的方式是寻找一个两倍大小的空间，然后将所有元素拷贝过去。</font><br>对中间和开始处进行添加删除元素操作需要移动内存,如果你的元素是结构或是类,那么移动的同时还会进行拷贝构造和析构操作，所以性能不高 （最好将结构或类的指针放入vector中，而不是结构或类本身，这样可以避免移动时的构造与析构)。</p>
-<h3 id="G4-9版本"><a href="#G4-9版本" class="headerlink" title="G4.9版本"></a>G4.9版本</h3><p><img src="/images/vec-2.png"></p>
-<p>和list一样，G4.9定义和实现分离，遵循面向对象的设计方式。其他并无特别之处。</p>
+<h3 id="allocate"><a href="#allocate" class="headerlink" title="allocate"></a>allocate</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Tp&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">bitmap_allocator</span>: <span class="keyword">private</span> free_list&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function">pointer </span></span><br><span class="line"><span class="function">    <span class="title">allocate</span><span class="params">(size_type __n)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (__n &gt; <span class="keyword">this</span>-&gt;<span class="built_in">max_size</span>())</span><br><span class="line">            std::__throw_bad_alloc();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (__builtin_expect(__n == <span class="number">1</span>, <span class="literal">true</span>))<span class="comment">//如果数量为1个,则调用_M_allocate_single_object()</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>-&gt;_M_allocate_single_object();</span><br><span class="line">        <span class="keyword">else</span>	<span class="comment">//如果申请的数量大于1个,则直接调用operator new</span></span><br><span class="line">        &#123; </span><br><span class="line">            <span class="type">const</span> size_type __b = __n * <span class="built_in">sizeof</span>(value_type);</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">reinterpret_cast</span>&lt;pointer&gt;(::<span class="keyword">operator</span> <span class="built_in">new</span>(__b));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>图解形式：</p>
+<p><img src="/images/bitmap-1.png"></p>
+<p>首先是64个blocks，每一个对象占用1个block，64个blocks加上bitmap[1]和bitmap[0]再加上use count形成一个super block。即super block &#x3D; 64<em>block + bitmap[1] + bitmap[0];<br>use count表示64个block已经用了几个，如果某一个block被使用了，那么bitmap[1]和bitmap[0]相应bit的数字变为0，bitmap[1]和bitmap[0]均为unsigned int，所以两个加起来共有64比特，也就可以表示64个block的使用情况。<br>在最前面还有一个数字，表示super block的大小，上图中的大小为：4(use count)+4 * 2(bitmap)+64</em>8(单个对象大小)&#x3D;524字节。单个对象的大小只能是8的倍数。</p>
+<p>多个super block是通过__mini_vector管理的，__mini_vector是一个vector，但不是标准库的vector，而是自己写的一个vector，但它与标准库中的vector拥有同样的特性——两倍增长。也就是说，如果64个block用光了，下次会分配128个block。<br>__mini_vector有3个用来管理内存的成员变量。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span>:</span><br><span class="line">pointer _M_start;</span><br><span class="line">pointer _M_finish;</span><br><span class="line">pointer _M_end_of_storage;</span><br></pre></td></tr></table></figure>
+<p>当64个block用光时，会再申请128个，然后bitmap变为4个。和vector的成长一样，会申请另一块内存然后将现在的搬过去：</p>
+<p><img src="/images/bitmap-2.png"><br><img src="/images/bitmap-3.png"><br>每次都这样成长两倍，2的幂次方级别地成长。</p>
+<h3 id="deallocate"><a href="#deallocate" class="headerlink" title="deallocate"></a>deallocate</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Tp&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">bitmap_allocator</span>: <span class="keyword">private</span> free_list&#123;</span><br><span class="line">    <span class="function"><span class="type">void</span> </span></span><br><span class="line"><span class="function">    <span class="title">deallocate</span><span class="params">(pointer __p, size_type __n)</span> <span class="title">throw</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (__builtin_expect(__p != <span class="number">0</span>, <span class="literal">true</span>))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (__builtin_expect(__n == <span class="number">1</span>, <span class="literal">true</span>))<span class="comment">//如果数量为1,则调用_M_deallocate_single_object()释放</span></span><br><span class="line">                <span class="keyword">this</span>-&gt;_M_deallocate_single_object(__p);</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                ::<span class="keyword">operator</span> <span class="built_in">delete</span>(__p);<span class="comment">//数量大于1使用operator delete释放</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/bitmap-4.png"><br><img src="/images/bitmap-6.png"></p>
 
       
     </div>
@@ -832,91 +1003,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Abitmap-allocator/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Abitmap-allocator/" class="post-title-link" itemprop="url">c++内存管理系列：bitmap-allocator</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:55:33" itemprop="dateModified" datetime="2022-09-25T01:55:33+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="allocate"><a href="#allocate" class="headerlink" title="allocate"></a>allocate</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Tp&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">bitmap_allocator</span>: <span class="keyword">private</span> free_list&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function">pointer </span></span><br><span class="line"><span class="function">    <span class="title">allocate</span><span class="params">(size_type __n)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (__n &gt; <span class="keyword">this</span>-&gt;<span class="built_in">max_size</span>())</span><br><span class="line">            std::__throw_bad_alloc();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (__builtin_expect(__n == <span class="number">1</span>, <span class="literal">true</span>))<span class="comment">//如果数量为1个,则调用_M_allocate_single_object()</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>-&gt;_M_allocate_single_object();</span><br><span class="line">        <span class="keyword">else</span>	<span class="comment">//如果申请的数量大于1个,则直接调用operator new</span></span><br><span class="line">        &#123; </span><br><span class="line">            <span class="type">const</span> size_type __b = __n * <span class="built_in">sizeof</span>(value_type);</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">reinterpret_cast</span>&lt;pointer&gt;(::<span class="keyword">operator</span> <span class="built_in">new</span>(__b));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>图解形式：</p>
-<p><img src="/images/bitmap-1.png"></p>
-<p>首先是64个blocks，每一个对象占用1个block，64个blocks加上bitmap[1]和bitmap[0]再加上use count形成一个super block。即super block &#x3D; 64<em>block + bitmap[1] + bitmap[0];<br>use count表示64个block已经用了几个，如果某一个block被使用了，那么bitmap[1]和bitmap[0]相应bit的数字变为0，bitmap[1]和bitmap[0]均为unsigned int，所以两个加起来共有64比特，也就可以表示64个block的使用情况。<br>在最前面还有一个数字，表示super block的大小，上图中的大小为：4(use count)+4 * 2(bitmap)+64</em>8(单个对象大小)&#x3D;524字节。单个对象的大小只能是8的倍数。</p>
-<p>多个super block是通过__mini_vector管理的，__mini_vector是一个vector，但不是标准库的vector，而是自己写的一个vector，但它与标准库中的vector拥有同样的特性——两倍增长。也就是说，如果64个block用光了，下次会分配128个block。<br>__mini_vector有3个用来管理内存的成员变量。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span>:</span><br><span class="line">pointer _M_start;</span><br><span class="line">pointer _M_finish;</span><br><span class="line">pointer _M_end_of_storage;</span><br></pre></td></tr></table></figure>
-<p>当64个block用光时，会再申请128个，然后bitmap变为4个。和vector的成长一样，会申请另一块内存然后将现在的搬过去：</p>
-<p><img src="/images/bitmap-2.png"><br><img src="/images/bitmap-3.png"><br>每次都这样成长两倍，2的幂次方级别地成长。</p>
-<h3 id="deallocate"><a href="#deallocate" class="headerlink" title="deallocate"></a>deallocate</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Tp&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">bitmap_allocator</span>: <span class="keyword">private</span> free_list&#123;</span><br><span class="line">    <span class="function"><span class="type">void</span> </span></span><br><span class="line"><span class="function">    <span class="title">deallocate</span><span class="params">(pointer __p, size_type __n)</span> <span class="title">throw</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (__builtin_expect(__p != <span class="number">0</span>, <span class="literal">true</span>))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (__builtin_expect(__n == <span class="number">1</span>, <span class="literal">true</span>))<span class="comment">//如果数量为1,则调用_M_deallocate_single_object()释放</span></span><br><span class="line">                <span class="keyword">this</span>-&gt;_M_deallocate_single_object(__p);</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                ::<span class="keyword">operator</span> <span class="built_in">delete</span>(__p);<span class="comment">//数量大于1使用operator delete释放</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/bitmap-4.png"><br><img src="/images/bitmap-6.png"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1008,7 +1094,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9AGDT%EF%BC%8CLDT/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9AELF%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -1022,7 +1108,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9AGDT%EF%BC%8CLDT/" class="post-title-link" itemprop="url">Linux内核系列：GDT/LDT</a>
+            <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9AELF%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F/" class="post-title-link" itemprop="url">Linux内核系列：ELF文件格式</a>
         </h2>
 
         <div class="post-meta">
@@ -1039,7 +1125,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:59:32" itemprop="dateModified" datetime="2022-09-25T01:59:32+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:59:27" itemprop="dateModified" datetime="2022-09-25T01:59:27+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1063,31 +1149,59 @@
 
       
           <span id="more"></span>
-<h3 id="GDT"><a href="#GDT" class="headerlink" title="GDT"></a>GDT</h3><p>现代的内存寻址方式一般采用保护模式。    </p>
-<p>Q:什么是保护模式？   </p>
-<p>A:保护模式是相对于实模式来说的，以前的内存寻址是直接由cpu段寄存器+偏移量去实存里面找物理地址，例如在8086的时候，也就是16位cpu的时候，CPU配备了4个16位段寄存器（CS代码段寄存器、DS数据段寄存器、SS堆栈段寄存器和ES附加寄存器），这种方式非常粗暴并且很容易出错，一旦用户修改段寄存的值，就可以随意访问所有内存，到了80296芯片，大家意识到直接访问实地址的危害，intel将寻址方式改为保护模式，保护模式下段寄存器不在指向一个真实地址，而是变成指向一个数据结构的指针，这个数据结构就是<font color = orange>Segment Descripter Table</font>，又根据这个段描述符表里存的是全局共同的，还是进程私有的，分成了全局段描述符表（GDT）和局部段描述符表（LDT）。  </p>
-<p>需要了解的：</p>
-<ol>
-<li>GDT里面具体存的是什么？  <ul>
-<li>段描述符，8字节，包括系统级段描述符和LDT段描述符</li>
+<h3 id="ELF（Executable-Linkable-Format）分类"><a href="#ELF（Executable-Linkable-Format）分类" class="headerlink" title="ELF（Executable Linkable Format）分类"></a>ELF（Executable Linkable Format）分类</h3><ul>
+<li>可重定位文件：包含代码和数据，可以被用来链接成可执行文件或共享目标文件，静态链接库也可以归为这一类。</li>
+<li>可执行文件：包含可以执行的程序，代表ELF可执行文件，没有扩展名。</li>
+<li>共享目标文件：包含代码和数据，可以在两种情况下使用<ul>
+<li>链接器可以使用这种文件跟其他可重定位文件和共享目标文件链接，生成新的目标文件。</li>
+<li>动态链接器将几个共享目标文件与可执行文件结合，作为进程映像的一部分来运行。</li>
 </ul>
 </li>
-<li>我们访问内存的具体步骤是什么？<ul>
-<li>从GDTR中拿到GDT在内存中的基地址，得到段描述符表；</li>
-<li>从段选择子中的前13位得到我们要访问的段的描述符在段描述符表中的索引（需要考虑TI和RPL）；</li>
-<li>从段描述符表中得到要访问的段的描述符，得到其基地址；</li>
-<li>基地址加上偏移地址就是我们要访问的内存地址（当然这里是虚拟地址，接下来是分页机制的功能将虚地址转换为物理地址，不做讨论。）</li>
+<li>核心转储文件（core dump）：进程意外终止，系统可以为该进程地址空间的内存及终止是的一些其他信息转储到核心转储文件。</li>
 </ul>
+<h3 id="目标文件组成"><a href="#目标文件组成" class="headerlink" title="目标文件组成"></a>目标文件组成</h3><p><img src="/images/elf-1.png"></p>
+<p>目标文件不仅包含编译后的代码，数据，还有链接时所需要的一些信息，比如符号表，调试信息，字符串等。目标文件将这些信息按不同的属性，以section（节）的形式存储，有时候也叫segment（段），在一般情况下，它们表示一个一定长度的区域，基本不加以区别。</p>
+<ul>
+<li>源代码的机器指令放在代码段.text.</li>
+<li>初始化的全局变量和局部静态变量放在.data段。</li>
+<li>未初始化的全局变量和局部静态变量放在.bss段。</li>
+<li>ELF文件开头是一个文件头，用来母爱书整个文件的文件属性，文件是否可执行，静态或动态链接等等。</li>
+<li>文件头包含一个段表，段表是一个描述文件中各个段的数组，包括文件中各个段在文件中的偏移位置和段的属性等等。</li>
+<li><font color=orange>bss段只是为未初始化的全局变量和局部静态变量预留位置而已，并没有内容，也不占据空间.</font></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func</span><span class="params">()</span></span>&#123;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;yes&quot;</span> &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="built_in">func</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用objdump -h main main.cpp</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">main:     file format elf64-x86<span class="number">-64</span></span><br><span class="line"></span><br><span class="line">Sections:</span><br><span class="line">Idx Name          Size      VMA               LMA               File off  Algn</span><br><span class="line">  <span class="number">0</span> .interp       <span class="number">0000001</span>c  <span class="number">0000000000400238</span>  <span class="number">0000000000400238</span>  <span class="number">00000238</span>  <span class="number">2</span>**<span class="number">0</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line">  <span class="number">1</span> .note.ABI-tag <span class="number">00000020</span>  <span class="number">0000000000400254</span>  <span class="number">0000000000400254</span>  <span class="number">00000254</span>  <span class="number">2</span>**<span class="number">2</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line">  <span class="number">2</span> .note.gnu.build-id <span class="number">00000024</span>  <span class="number">0000000000400274</span>  <span class="number">0000000000400274</span>  <span class="number">00000274</span>  <span class="number">2</span>**<span class="number">2</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line">  <span class="number">3</span> .gnu.hash     <span class="number">00000030</span>  <span class="number">0000000000400298</span>  <span class="number">0000000000400298</span>  <span class="number">00000298</span>  <span class="number">2</span>**<span class="number">3</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line">  <span class="number">4</span> .dynsym       <span class="number">00000138</span>  <span class="number">00000000004002</span>c8  <span class="number">00000000004002</span>c8  <span class="number">000002</span>c8  <span class="number">2</span>**<span class="number">3</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line">  <span class="number">5</span> .dynstr       <span class="number">00000168</span>  <span class="number">0000000000400400</span>  <span class="number">0000000000400400</span>  <span class="number">00000400</span>  <span class="number">2</span>**<span class="number">0</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line">  <span class="number">6</span> .gnu.version  <span class="number">0000001</span>a  <span class="number">0000000000400568</span>  <span class="number">0000000000400568</span>  <span class="number">00000568</span>  <span class="number">2</span>**<span class="number">1</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line">  <span class="number">7</span> .gnu.version_r <span class="number">00000040</span>  <span class="number">0000000000400588</span>  <span class="number">0000000000400588</span>  <span class="number">00000588</span>  <span class="number">2</span>**<span class="number">3</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line">  <span class="number">8</span> .rela.dyn     <span class="number">00000030</span>  <span class="number">00000000004005</span>c8  <span class="number">00000000004005</span>c8  <span class="number">000005</span>c8  <span class="number">2</span>**<span class="number">3</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line">  <span class="number">9</span> .rela.plt     <span class="number">000000</span>a8  <span class="number">00000000004005f</span>8  <span class="number">00000000004005f</span>8  <span class="number">000005f</span>8  <span class="number">2</span>**<span class="number">3</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line"> <span class="number">10</span> .init         <span class="number">0000001</span>a  <span class="number">00000000004006</span>a0  <span class="number">00000000004006</span>a0  <span class="number">000006</span>a0  <span class="number">2</span>**<span class="number">2</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, CODE</span><br><span class="line"> <span class="number">11</span> .plt          <span class="number">00000080</span>  <span class="number">00000000004006</span>c0  <span class="number">00000000004006</span>c0  <span class="number">000006</span>c0  <span class="number">2</span>**<span class="number">4</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, CODE</span><br><span class="line"> <span class="number">12</span> .plt.got      <span class="number">00000008</span>  <span class="number">0000000000400740</span>  <span class="number">0000000000400740</span>  <span class="number">00000740</span>  <span class="number">2</span>**<span class="number">3</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, CODE</span><br><span class="line"> <span class="number">13</span> .text         <span class="number">000001f</span>2  <span class="number">0000000000400750</span>  <span class="number">0000000000400750</span>  <span class="number">00000750</span>  <span class="number">2</span>**<span class="number">4</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, CODE</span><br><span class="line"> <span class="number">14</span> .fini         <span class="number">00000009</span>  <span class="number">0000000000400944</span>  <span class="number">0000000000400944</span>  <span class="number">00000944</span>  <span class="number">2</span>**<span class="number">2</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, CODE</span><br><span class="line"> <span class="number">15</span> .rodata       <span class="number">00000008</span>  <span class="number">0000000000400950</span>  <span class="number">0000000000400950</span>  <span class="number">00000950</span>  <span class="number">2</span>**<span class="number">2</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line"> <span class="number">16</span> .eh_frame_hdr <span class="number">0000004</span>c  <span class="number">0000000000400958</span>  <span class="number">0000000000400958</span>  <span class="number">00000958</span>  <span class="number">2</span>**<span class="number">2</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line"> <span class="number">17</span> .eh_frame     <span class="number">00000154</span>  <span class="number">00000000004009</span>a8  <span class="number">00000000004009</span>a8  <span class="number">000009</span>a8  <span class="number">2</span>**<span class="number">3</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line"> <span class="number">18</span> .init_array   <span class="number">00000010</span>  <span class="number">0000000000600</span>df8  <span class="number">0000000000600</span>df8  <span class="number">00000</span>df8  <span class="number">2</span>**<span class="number">3</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, DATA</span><br><span class="line"> <span class="number">19</span> .fini_array   <span class="number">00000008</span>  <span class="number">0000000000600e08</span>  <span class="number">0000000000600e08</span>  <span class="number">00000e08</span>  <span class="number">2</span>**<span class="number">3</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, DATA</span><br><span class="line"> <span class="number">20</span> .jcr          <span class="number">00000008</span>  <span class="number">0000000000600e10</span>  <span class="number">0000000000600e10</span>  <span class="number">00000e10</span>  <span class="number">2</span>**<span class="number">3</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, DATA</span><br><span class="line"> <span class="number">21</span> .dynamic      <span class="number">000001e0</span>  <span class="number">0000000000600e18</span>  <span class="number">0000000000600e18</span>  <span class="number">00000e18</span>  <span class="number">2</span>**<span class="number">3</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, DATA</span><br><span class="line"> <span class="number">22</span> .got          <span class="number">00000008</span>  <span class="number">0000000000600f</span>f8  <span class="number">0000000000600f</span>f8  <span class="number">00000f</span>f8  <span class="number">2</span>**<span class="number">3</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, DATA</span><br><span class="line"> <span class="number">23</span> .got.plt      <span class="number">00000050</span>  <span class="number">0000000000601000</span>  <span class="number">0000000000601000</span>  <span class="number">00001000</span>  <span class="number">2</span>**<span class="number">3</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, DATA</span><br><span class="line"> <span class="number">24</span> .data         <span class="number">00000010</span>  <span class="number">0000000000601050</span>  <span class="number">0000000000601050</span>  <span class="number">00001050</span>  <span class="number">2</span>**<span class="number">3</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, DATA</span><br><span class="line"> <span class="number">25</span> .bss          <span class="number">00000118</span>  <span class="number">0000000000601060</span>  <span class="number">0000000000601060</span>  <span class="number">00001060</span>  <span class="number">2</span>**<span class="number">5</span></span><br><span class="line">                  ALLOC</span><br><span class="line"> <span class="number">26</span> .comment      <span class="number">00000035</span>  <span class="number">0000000000000000</span>  <span class="number">0000000000000000</span>  <span class="number">00001060</span>  <span class="number">2</span>**<span class="number">0</span></span><br><span class="line">                  CONTENTS, READONLY</span><br></pre></td></tr></table></figure>
+<p>其中CONTENT表示该段在文件中存在。比较重要的是.text,.data, .rodata和 .comment段。<br>其他段见下表，摘自《程序员的自我修养》<br><img src="/images/elf-2.png"></p>
+<ul>
+<li>自定义段：GCC提供了扩展机制，可以指定变量所处的段。<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">__attribute__((<span class="built_in">section</span>(<span class="string">&quot;foo&quot;</span>))) <span class="type">int</span> a = <span class="number">29</span>;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">main:     file format elf64-x86-64</span><br><span class="line"></span><br><span class="line">Sections:</span><br><span class="line">Idx Name          Size      VMA               LMA               File off  Algn</span><br><span class="line">  0 .interp       0000001c  0000000000400238  0000000000400238  00000238  2**0</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line">  1 .note.ABI-tag 00000020  0000000000400254  0000000000400254  00000254  2**2</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line">  2 .note.gnu.build-id 00000024  0000000000400274  0000000000400274  00000274  2**2</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line">  3 .gnu.hash     0000001c  0000000000400298  0000000000400298  00000298  2**3</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line">  4 .dynsym       00000048  00000000004002b8  00000000004002b8  000002b8  2**3</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line">  5 .dynstr       00000038  0000000000400300  0000000000400300  00000300  2**0</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line">  6 .gnu.version  00000006  0000000000400338  0000000000400338  00000338  2**1</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line">  7 .gnu.version_r 00000020  0000000000400340  0000000000400340  00000340  2**3</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line">  8 .rela.dyn     00000018  0000000000400360  0000000000400360  00000360  2**3</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line">  9 .rela.plt     00000018  0000000000400378  0000000000400378  00000378  2**3</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line"> 10 .init         0000001a  0000000000400390  0000000000400390  00000390  2**2</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, CODE</span><br><span class="line"> 11 .plt          00000020  00000000004003b0  00000000004003b0  000003b0  2**4</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, CODE</span><br><span class="line"> 12 .plt.got      00000008  00000000004003d0  00000000004003d0  000003d0  2**3</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, CODE</span><br><span class="line"> 13 .text         000001a2  00000000004003e0  00000000004003e0  000003e0  2**4</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, CODE</span><br><span class="line"> 14 .fini         00000009  0000000000400584  0000000000400584  00000584  2**2</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, CODE</span><br><span class="line"> 15 .rodata       00000004  0000000000400590  0000000000400590  00000590  2**2</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line"> 16 .eh_frame_hdr 0000003c  0000000000400594  0000000000400594  00000594  2**2</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line"> 17 .eh_frame     00000114  00000000004005d0  00000000004005d0  000005d0  2**3</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line"> 18 .init_array   00000008  0000000000600e10  0000000000600e10  00000e10  2**3</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, DATA</span><br><span class="line"> 19 .fini_array   00000008  0000000000600e18  0000000000600e18  00000e18  2**3</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, DATA</span><br><span class="line"> 20 .jcr          00000008  0000000000600e20  0000000000600e20  00000e20  2**3</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, DATA</span><br><span class="line"> 21 .dynamic      000001d0  0000000000600e28  0000000000600e28  00000e28  2**3</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, DATA</span><br><span class="line"> 22 .got          00000008  0000000000600ff8  0000000000600ff8  00000ff8  2**3</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, DATA</span><br><span class="line"> 23 .got.plt      00000020  0000000000601000  0000000000601000  00001000  2**3</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, DATA</span><br><span class="line"> 24 .data         00000010  0000000000601020  0000000000601020  00001020  2**3</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, DATA</span><br><span class="line"> 25 foo           00000004  0000000000601030  0000000000601030  00001030  2**2</span><br><span class="line">                  CONTENTS, ALLOC, LOAD, DATA</span><br><span class="line"> 26 .bss          00000004  0000000000601034  0000000000601034  00001034  2**0</span><br><span class="line">                  ALLOC</span><br><span class="line"> 27 .comment      00000035  0000000000000000  0000000000000000  00001034  2**0</span><br><span class="line">                  CONTENTS, READONLY</span><br></pre></td></tr></table></figure>
+<p>使用readelf -h main</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">ELF Header:</span><br><span class="line">  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 </span><br><span class="line">  Class:                             ELF64</span><br><span class="line">  Data:                              2&#x27;s complement, little endian</span><br><span class="line">  Version:                           1 (current)</span><br><span class="line">  OS/ABI:                            UNIX - System V</span><br><span class="line">  ABI Version:                       0</span><br><span class="line">  Type:                              EXEC (Executable file)</span><br><span class="line">  Machine:                           Advanced Micro Devices X86-64</span><br><span class="line">  Version:                           0x1</span><br><span class="line">  Entry point address:               0x4003e0</span><br><span class="line">  Start of program headers:          64 (bytes into file)</span><br><span class="line">  Start of section headers:          6664 (bytes into file)</span><br><span class="line">  Flags:                             0x0</span><br><span class="line">  Size of this header:               64 (bytes)</span><br><span class="line">  Size of program headers:           56 (bytes)</span><br><span class="line">  Number of program headers:         9</span><br><span class="line">  Size of section headers:           64 (bytes)</span><br><span class="line">  Number of section headers:         32</span><br><span class="line">  Section header string table index: 29</span><br></pre></td></tr></table></figure>
+<p>上述为ELF文件头存储的信息。</p>
+<ul>
+<li><p>magic：魔数，用来确定文件类型，操作系统在加载可执行文件的时候会确定魔数是否正确。<br>使用</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">readelf -S main</span><br></pre></td></tr></table></figure>
+<p>查看文件段表的内容</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">There are 32 section headers, starting at offset 0x1a08:</span><br><span class="line"></span><br><span class="line">Section Headers:</span><br><span class="line">  [Nr] Name              Type             Address           Offset</span><br><span class="line">       Size              EntSize          Flags  Link  Info  Align</span><br><span class="line">  [ 0]                   NULL             0000000000000000  00000000</span><br><span class="line">       0000000000000000  0000000000000000           0     0     0</span><br><span class="line">  [ 1] .interp           PROGBITS         0000000000400238  00000238</span><br><span class="line">       000000000000001c  0000000000000000   A       0     0     1</span><br><span class="line">  [ 2] .note.ABI-tag     NOTE             0000000000400254  00000254</span><br><span class="line">       0000000000000020  0000000000000000   A       0     0     4</span><br><span class="line">  [ 3] .note.gnu.build-i NOTE             0000000000400274  00000274</span><br><span class="line">       0000000000000024  0000000000000000   A       0     0     4</span><br><span class="line">  [ 4] .gnu.hash         GNU_HASH         0000000000400298  00000298</span><br><span class="line">       000000000000001c  0000000000000000   A       5     0     8</span><br><span class="line">  [ 5] .dynsym           DYNSYM           00000000004002b8  000002b8</span><br><span class="line">       0000000000000048  0000000000000018   A       6     1     8</span><br><span class="line">  [ 6] .dynstr           STRTAB           0000000000400300  00000300</span><br><span class="line">       0000000000000038  0000000000000000   A       0     0     1</span><br><span class="line">  [ 7] .gnu.version      VERSYM           0000000000400338  00000338</span><br><span class="line">       0000000000000006  0000000000000002   A       5     0     2</span><br><span class="line">  [ 8] .gnu.version_r    VERNEED          0000000000400340  00000340</span><br><span class="line">       0000000000000020  0000000000000000   A       6     1     8</span><br><span class="line">  [ 9] .rela.dyn         RELA             0000000000400360  00000360</span><br><span class="line">       0000000000000018  0000000000000018   A       5     0     8</span><br><span class="line">  [10] .rela.plt         RELA             0000000000400378  00000378</span><br><span class="line">       0000000000000018  0000000000000018  AI       5    24     8</span><br><span class="line">  [11] .init             PROGBITS         0000000000400390  00000390</span><br><span class="line">       000000000000001a  0000000000000000  AX       0     0     4</span><br><span class="line">  [12] .plt              PROGBITS         00000000004003b0  000003b0</span><br><span class="line">       0000000000000020  0000000000000010  AX       0     0     16</span><br><span class="line">  [13] .plt.got          PROGBITS         00000000004003d0  000003d0</span><br><span class="line">       0000000000000008  0000000000000000  AX       0     0     8</span><br><span class="line">  [14] .text             PROGBITS         00000000004003e0  000003e0</span><br><span class="line">       00000000000001a2  0000000000000000  AX       0     0     16</span><br><span class="line">  [15] .fini             PROGBITS         0000000000400584  00000584</span><br><span class="line">       0000000000000009  0000000000000000  AX       0     0     4</span><br><span class="line">  [16] .rodata           PROGBITS         0000000000400590  00000590</span><br><span class="line">       0000000000000004  0000000000000004  AM       0     0     4</span><br><span class="line">  [17] .eh_frame_hdr     PROGBITS         0000000000400594  00000594</span><br><span class="line">       000000000000003c  0000000000000000   A       0     0     4</span><br><span class="line">  [18] .eh_frame         PROGBITS         00000000004005d0  000005d0</span><br><span class="line">       0000000000000114  0000000000000000   A       0     0     8</span><br><span class="line">  [19] .init_array       INIT_ARRAY       0000000000600e10  00000e10</span><br><span class="line">       0000000000000008  0000000000000000  WA       0     0     8</span><br><span class="line">  [20] .fini_array       FINI_ARRAY       0000000000600e18  00000e18</span><br><span class="line">       0000000000000008  0000000000000000  WA       0     0     8</span><br><span class="line">  [21] .jcr              PROGBITS         0000000000600e20  00000e20</span><br><span class="line">       0000000000000008  0000000000000000  WA       0     0     8</span><br><span class="line">  [22] .dynamic          DYNAMIC          0000000000600e28  00000e28</span><br><span class="line">       00000000000001d0  0000000000000010  WA       6     0     8</span><br><span class="line">  [23] .got              PROGBITS         0000000000600ff8  00000ff8</span><br><span class="line">       0000000000000008  0000000000000008  WA       0     0     8</span><br><span class="line">  [24] .got.plt          PROGBITS         0000000000601000  00001000</span><br><span class="line">       0000000000000020  0000000000000008  WA       0     0     8</span><br><span class="line">  [25] .data             PROGBITS         0000000000601020  00001020</span><br><span class="line">       0000000000000010  0000000000000000  WA       0     0     8</span><br><span class="line">  [26] foo               PROGBITS         0000000000601030  00001030</span><br><span class="line">       0000000000000004  0000000000000000  WA       0     0     4</span><br><span class="line">  [27] .bss              NOBITS           0000000000601034  00001034</span><br><span class="line">       0000000000000004  0000000000000000  WA       0     0     1</span><br><span class="line">  [28] .comment          PROGBITS         0000000000000000  00001034</span><br><span class="line">       0000000000000035  0000000000000001  MS       0     0     1</span><br><span class="line">  [29] .shstrtab         STRTAB           0000000000000000  000018f5</span><br><span class="line">       0000000000000110  0000000000000000           0     0     1</span><br><span class="line">  [30] .symtab           SYMTAB           0000000000000000  00001070</span><br><span class="line">       0000000000000678  0000000000000018          31    48     8</span><br><span class="line">  [31] .strtab           STRTAB           0000000000000000  000016e8</span><br><span class="line">       000000000000020d  0000000000000000           0     0     1</span><br><span class="line">Key to Flags:</span><br><span class="line">  W (write), A (alloc), X (execute), M (merge), S (strings), l (large)</span><br><span class="line">  I (info), L (link order), G (group), T (TLS), E (exclude), x (unknown)</span><br><span class="line">  O (extra OS processing required) o (OS specific), p (processor specific)</span><br></pre></td></tr></table></figure>
+<p>其中比较重要的是.rela.dyn（重定向表）.rela.plt（重定向表的信息）。</p>
 </li>
-</ol>
-<p>具体参考<a target="_blank" rel="noopener" href="https://www.cnblogs.com/chenwb89/p/operating_system_003.html">这篇文章</a>，<a target="_blank" rel="noopener" href="http://www.techbulo.com/708.html">这篇文章</a></p>
-<h3 id="LDT"><a href="#LDT" class="headerlink" title="LDT"></a>LDT</h3><p>LDT和GDT差不多，区别有：</p>
-<ol>
-<li>LDT是局部段描述符表，GDT是全局段描述符表</li>
-<li>LDT可以有多个，GDT只能有一个</li>
-<li>LDT本身是个段，需要在GDT中保存其自身描述符</li>
-<li>GDT用来描述系统的分段，LDT用来描述某个任务的分段情况，由于每个进程都有自己的一套程序段、数据段、堆栈段，有了局部描述符表则可以将每个进程的程序段、数据段、堆栈段封装在一起，只要改变LDTR就可以实现对不同进程的段进行访问。</li>
-</ol>
+<li><p>字符串表：集中存放然后使用偏移量来引用。<br><img src="/images/elf-3.png"><br><img src="/images/elf-4.png"></p>
+</li>
+<li><p>符号：链接的接口，目标文件之间相互拼合实际上是目标文件之间对地址的引用，即对函数和变量的地址的引用。使用nm查看符号。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">0000000000601030 D a</span><br><span class="line">0000000000601034 B __bss_start</span><br><span class="line">0000000000601034 b completed.7594</span><br><span class="line">0000000000601020 D __data_start</span><br><span class="line">0000000000601020 W data_start</span><br><span class="line">0000000000400410 t deregister_tm_clones</span><br><span class="line">0000000000400490 t __do_global_dtors_aux</span><br><span class="line">0000000000600e18 t __do_global_dtors_aux_fini_array_entry</span><br><span class="line">0000000000601028 D __dso_handle</span><br><span class="line">0000000000600e28 d _DYNAMIC</span><br><span class="line">0000000000601034 D _edata</span><br><span class="line">0000000000601038 B _end</span><br><span class="line">0000000000400584 T _fini</span><br><span class="line">00000000004004b0 t frame_dummy</span><br><span class="line">0000000000600e10 t __frame_dummy_init_array_entry</span><br><span class="line">00000000004006e0 r __FRAME_END__</span><br><span class="line">0000000000601000 d _GLOBAL_OFFSET_TABLE_</span><br><span class="line">                 w __gmon_start__</span><br><span class="line">0000000000400594 r __GNU_EH_FRAME_HDR</span><br><span class="line">0000000000400390 T _init</span><br><span class="line">0000000000600e18 t __init_array_end</span><br><span class="line">0000000000600e10 t __init_array_start</span><br><span class="line">0000000000400590 R _IO_stdin_used</span><br><span class="line">                 w _ITM_deregisterTMCloneTable</span><br><span class="line">                 w _ITM_registerTMCloneTable</span><br><span class="line">0000000000600e20 d __JCR_END__</span><br><span class="line">0000000000600e20 d __JCR_LIST__</span><br><span class="line">                 w _Jv_RegisterClasses</span><br><span class="line">0000000000400580 T __libc_csu_fini</span><br><span class="line">0000000000400510 T __libc_csu_init</span><br><span class="line">                 U __libc_start_main@@GLIBC_2.2.5</span><br><span class="line">00000000004004ea T main</span><br><span class="line">0000000000400450 t register_tm_clones</span><br><span class="line">00000000004003e0 T _start</span><br><span class="line">0000000000601030 D __TMC_END__</span><br><span class="line">00000000004004d6 T _Z4funcii</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="强符号和弱符号"><a href="#强符号和弱符号" class="headerlink" title="强符号和弱符号"></a>强符号和弱符号</h3><ul>
+<li>强符号:函数和初始化的全局变量</li>
+<li>弱符号：未初始化的全局变量，也可以通过GCC的 __attribute ((weak)) 来定义一个强符号为弱符号。</li>
+</ul>
+<h3 id="程序指令和数据为什么分开放"><a href="#程序指令和数据为什么分开放" class="headerlink" title="程序指令和数据为什么分开放"></a>程序指令和数据为什么分开放</h3><ul>
+<li>程序被装载之后，数据和指令分别被映射到两个虚存区域，数据区可读可写，指令区只读。</li>
+<li>指令区和数据区的分离有利于提高程序的局部性，提高缓存命中率。</li>
+<li><font color=orange>系统中运行多个程序的副本时，指令都相同，内存中需要保存一份该程序的指令部分。</font></li>
+</ul>
 
       
     </div>

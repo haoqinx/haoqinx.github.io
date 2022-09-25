@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="lock 和 latch的不同 InnoDB锁的类型 共享锁（S Lock）：允许事务读一行数据。 排他锁（X Lock）：允许事务删除或更新一行数据。  持有共享锁后还能获得共享锁，持有共享不能获得排他，持有排他不能获得其他锁。 还有两种意向锁  意向共享锁（IS Lock）：事务想获得一张表中某几行的共享锁 意向排它锁（IX Lock）：事务想要获得一张表中某几行的排他锁  一致性非锁定读如">
@@ -288,8 +288,8 @@
       <i class="fa fa-chevron-left"></i> Linux内核系列：孤儿进程和僵尸进程
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E7%B4%A2%E5%BC%95/" rel="next" title="InnoDB系列：索引">
-      InnoDB系列：索引 <i class="fa fa-chevron-right"></i>
+    <a href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E8%A1%A8/" rel="next" title="InnoDB系列：表结构">
+      InnoDB系列：表结构 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -500,8 +500,8 @@ document.querySelectorAll('.pdfobject-container').forEach(element => {
 NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
   NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
     var gitalk = new Gitalk({
-      clientID    : 'Iv1.e06527f39fa1f53a',
-      clientSecret: '2499ff98bd07299425e8071b4799362e6bb7dd7d',
+      clientID    : '420faacd1d64f619503d',
+      clientSecret: 'bc95b2447c0062208e3ee13e31a6a1967fb0964a',
       repo        : 'haoqinx.github.io',
       owner       : 'haoqinx',
       admin       : ['haoqinx'],

@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="VC6&#x2F;BC5&#x2F;G2.9(std::allocator)  上面这三个分配器都是基于::operator new和::operator delete实现的，并没有特殊优化. G2.9 __pool_allocG2.9版本实现了一个内存池，用来减小malloc开销和cookie。先说一下cookie：  当我们每次向系统申请一块内存（堆）时，系统会在我们申请的内存两头放两个co">
@@ -303,8 +303,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Avector/" rel="prev" title="c++STL系列：vector">
-      <i class="fa fa-chevron-left"></i> c++STL系列：vector
+    <a href="/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Abitmap-allocator/" rel="prev" title="c++内存管理系列：bitmap-allocator">
+      <i class="fa fa-chevron-left"></i> c++内存管理系列：bitmap-allocator
     </a></div>
       <div class="post-nav-item">
     <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" rel="next" title="c++STL系列：常见问题">
@@ -519,8 +519,8 @@ document.querySelectorAll('.pdfobject-container').forEach(element => {
 NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
   NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
     var gitalk = new Gitalk({
-      clientID    : 'Iv1.e06527f39fa1f53a',
-      clientSecret: '2499ff98bd07299425e8071b4799362e6bb7dd7d',
+      clientID    : '420faacd1d64f619503d',
+      clientSecret: 'bc95b2447c0062208e3ee13e31a6a1967fb0964a',
       repo        : 'haoqinx.github.io',
       owner       : 'haoqinx',
       admin       : ['haoqinx'],

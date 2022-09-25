@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="星海横流 岁月成碑">
@@ -191,7 +191,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E8%87%AA%E9%97%AE%E6%B8%85%E5%8D%95/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E8%99%9A%E6%8B%9F%E5%8C%96%EF%BC%9Adocker%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -205,7 +205,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/14/%E8%87%AA%E9%97%AE%E6%B8%85%E5%8D%95/" class="post-title-link" itemprop="url">大总结</a>
+            <a href="/2021/09/14/%E8%99%9A%E6%8B%9F%E5%8C%96%EF%BC%9Adocker%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">Docker底层原理：CGroup & Namespace</a>
         </h2>
 
         <div class="post-meta">
@@ -222,7 +222,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:54:35" itemprop="dateModified" datetime="2022-09-25T01:54:35+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:54:14" itemprop="dateModified" datetime="2022-09-25T01:54:14+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -230,7 +230,7 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BB%BC%E5%90%88/" itemprop="url" rel="index"><span itemprop="name">综合</span></a>
+                  <a href="/categories/%E5%AE%B9%E5%99%A8/" itemprop="url" rel="index"><span itemprop="name">容器</span></a>
                 </span>
             </span>
 
@@ -246,110 +246,7 @@
 
       
           <span id="more"></span>
-<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/circle/discuss/XXGdoF/">终极总结</a></p>
-<h1 id="C-基础"><a href="#C-基础" class="headerlink" title="C++基础"></a>C++基础</h1><ol>
-<li>对const的理解？const指针和引用的区别？</li>
-<li>#define和const的区别？</li>
-<li>说说static关键字的用法？<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/ypshowm/article/details/89030194">https://blog.csdn.net/ypshowm/article/details/89030194</a></li>
-<li>inline函数的使用？</li>
-<li>知道#pragma pack(n)吗？怎么实现内存对齐的？</li>
-<li>解释下”extern C”，在什么时候会用到？</li>
-<li>用struct实现下继承？</li>
-<li>解释下friend关键字？</li>
-<li>多态的实现方式？</li>
-<li>虚析构函数？虚构造函数？</li>
-<li>说说虚表的内存布局？</li>
-<li>纯虚函数？虚继承？</li>
-<li>模板继承？模板特化&#x2F;偏特化？</li>
-<li>虚函数可以是内联函数吗？</li>
-<li>构造函数能是虚函数吗，析构函数呢？</li>
-<li>c++四大强制类型转换？</li>
-<li>四大类型转换发生的时间？编译&#x2F;执行</li>
-<li>构造函数初始化列表和函数内部赋值的区别？</li>
-</ol>
-<h1 id="C-11"><a href="#C-11" class="headerlink" title="C++11"></a>C++11</h1><ol>
-<li>decltype用过吗?</li>
-<li>左值引用和右值引用是什么？</li>
-<li>移动语义和完美转发说说？</li>
-<li>智能指针有哪些？</li>
-<li>说说每个的实现原理和应用场景？</li>
-<li></li>
-</ol>
-<h1 id="C-内存"><a href="#C-内存" class="headerlink" title="C++内存"></a>C++内存</h1><ol>
-<li>new&#x2F;delete 和malloc&#x2F;free区别？</li>
-<li>ralloc&#x2F;alloca</li>
-<li>双重free会发生什么？</li>
-<li>如何定义一个只能在栈&#x2F;堆上生成的对象？</li>
-<li>讲下ptmalloc？</li>
-<li>讲下tcmalloc？</li>
-<li>讲下jemalloc？</li>
-<li>知道哪些强制类型转换？（static_cast等)</li>
-</ol>
-<h1 id="STL"><a href="#STL" class="headerlink" title="STL"></a>STL</h1><ol>
-<li>五大组成部分？</li>
-<li>有哪些容器？</li>
-<li>vector&#x2F;map&#x2F;哈希&#x2F;deque底层实现？</li>
-<li>sort算法实现是什么？全都是快排吗？</li>
-</ol>
-<h1 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h1><ol>
-<li>TCP三次握手，四次挥手详细流程？</li>
-<li>三次握手两次行不行？</li>
-<li>sock函数和三次握手的对应？</li>
-<li>服务器大量TIME_WAIT怎么办？</li>
-<li>TCP粘包？</li>
-<li>TCP拥塞控制？</li>
-<li>http1.0&#x2F;1.1&#x2F;2.0区别？</li>
-<li>TLS&#x2F;HTTPS握手过程？</li>
-<li>ARP协议？</li>
-<li>PING命令实现原理？</li>
-<li>Traceroute命令实现原理？</li>
-</ol>
-<h1 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h1><ol>
-<li>进程和线程？</li>
-<li>内核态和用户态？</li>
-<li>进程间通信方式每个详细说？优缺点？</li>
-<li>线程间通信方式详细说？</li>
-<li>进程线程拥有的资源集合？</li>
-<li>讲讲死锁？</li>
-<li>线程池实现一下？</li>
-<li>主机字节序和网络字节序？如何判断大端小端？写个程序。</li>
-<li>虚拟内存？</li>
-<li>页表工作原理，MMU底层原理？</li>
-<li>进程虚拟空间地址text段下面保留的128M空间是干嘛的，为什么不能是256M？<ul>
-<li>128M空间是保留的C语言库，至于为啥不是256M，目前未知（节省空间？）.</li>
-</ul>
-</li>
-</ol>
-<h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><ol>
-<li>B树&#x2F;B+树&#x2F;红黑树有什么区别？</li>
-<li>红黑树旋转？</li>
-<li>排序算法复杂度？</li>
-</ol>
-<h1 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h1><ol>
-<li>MYSQL索引作用？索引失效？</li>
-<li>MYSQL引擎？</li>
-<li>MYSQL锁？</li>
-<li>MYSQL事务？</li>
-<li>实现一个堆？</li>
-</ol>
-<h1 id="中间件"><a href="#中间件" class="headerlink" title="中间件"></a>中间件</h1><ol>
-<li>redis基本数据结构？</li>
-<li>redis跳表？具体操作插入删除？</li>
-<li>redis的zset？</li>
-<li>redis缓存策略？</li>
-<li>redis淘汰策略？</li>
-<li>redis哨兵模式、集群模式？</li>
-<li>redis哨兵模式和集群模式优缺点？</li>
-<li>redis持久化？</li>
-<li>redis缓存和主库不一致？</li>
-</ol>
-<h1 id="场景设计"><a href="#场景设计" class="headerlink" title="场景设计"></a>场景设计</h1><h1 id="智力题"><a href="#智力题" class="headerlink" title="智力题"></a>智力题</h1><ol>
-<li>有十个机器，九个生产的金币是5g，只有一个生产是4g，给你一个称，怎么一次找出那个生产4g的机器。</li>
-</ol>
-<p>将机器从1开始编号到10，每个机器取对应编号个硬币，共计55个硬币。<br>假设每个机器生产的硬币都是5g，则这55个硬币总总量为275g；<br>与实际的重量做差值，即为生产4g硬币对应机器的编号。<br>（如果是1号机器，因为只取了1个硬币，重量比2</p>
-<ol start="2">
-<li>给一个硬币，要求生成1&#x2F;5的概率。<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">g1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span> / <span class="built_in">random</span>() &gt; <span class="number">0.5</span> ? <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">ing <span class="title">getAns</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        res = (<span class="built_in">g1</span>() &lt;&lt; <span class="number">2</span>) + (<span class="built_in">g1</span>() &lt;&lt; <span class="number">1</span>) + <span class="built_in">g1</span>();</span><br><span class="line">    &#125; <span class="keyword">while</span> (res == <span class="number">7</span> || res == <span class="number">6</span> || res == <span class="number">5</span>);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ol>
+<h3 id="docker"><a href="#docker" class="headerlink" title="docker"></a>docker</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zhonglinzhang/article/details/64905759">参考这篇文章</a></p>
 
       
     </div>
@@ -545,86 +442,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atemplate-template-parameter/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atemplate-template-parameter/" class="post-title-link" itemprop="url">c++11新特性：template-template-parameter</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-04 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-04T00:00:00+08:00">2021-09-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:55:01" itemprop="dateModified" datetime="2022-09-25T01:55:01+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><p>模板参数就是模板的参数，它是一种模板技巧，形式如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">template</span>&lt;<span class="keyword">typename</span> U&gt; <span class="keyword">typename</span> Container&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Foo</span>&#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        Container&lt;T&gt; c;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="built_in">Foo</span>()&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">long</span> i = <span class="number">0</span>; i &lt; SIZE; ++i)&#123;</span><br><span class="line">                c.<span class="built_in">insert</span>(c.<span class="built_in">end</span>(), <span class="built_in">T</span>());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>当我们需要向模板参数传递参数的时候，例如我需要一个形如Foo&lt;string,list<string>&gt;这样的类，在使用的时候可以这么定义：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//模板别名不能写在函数体内</span></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">using</span> Lst = list&lt;T, allocator&lt;T&gt;&gt;;</span><br><span class="line"><span class="comment">//调用</span></span><br><span class="line">Foo&lt;string, list&gt; mylist1;  <span class="comment">//写法错误</span></span><br><span class="line">Foo&lt;string, Lst&gt; mylist2;</span><br></pre></td></tr></table></figure>
-<p>下面这个不是模板参数，因为list已经绑定了int类型的模板参数.</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="keyword">class</span> <span class="title class_">Sequence</span> = deque&lt;T&gt;&gt;</span><br><span class="line"><span class="keyword">class</span> stack &#123;</span><br><span class="line">    </span><br><span class="line">  <span class="keyword">friend</span> <span class="type">bool</span> operateo== &lt;&gt; (cosnt stack&amp;, <span class="type">const</span> stack&amp;);</span><br><span class="line">  <span class="keyword">friend</span> <span class="type">bool</span> operateo&lt; &lt;&gt; (cosnt stack&amp;, <span class="type">const</span> stack&amp;);</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">  Sequence c;</span><br><span class="line">  ......</span><br><span class="line">&#125;;</span><br><span class="line">stack&lt;<span class="type">int</span>&gt; s1;</span><br><span class="line">stack&lt;<span class="type">int</span>, list&lt;<span class="type">int</span>&gt;&gt; s2;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Alambda/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -740,6 +557,183 @@
 
 <ul>
 <li>外部变量是在lambda匿名类构造时传入的。并且传入的是外部变量的引用（由于C++的引用本身就是语法糖，反汇编层面看到的是指针，但是结合源码分析不难得出这里应该是引用）。<font color = orange>ambda匿名类会将捕获参数中的变量添加到其成员变量中，并设置一个带有该参数引用类型的构造函数，并在构造函数中完成对相应成员变量的赋值。在调用其operator()函数时，如果用到了捕获列表中的局部变量，则从给匿名类对象的成员变量中取出。</font></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atemplate-template-parameter/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atemplate-template-parameter/" class="post-title-link" itemprop="url">c++11新特性：template-template-parameter</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-04 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-04T00:00:00+08:00">2021-09-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:55:01" itemprop="dateModified" datetime="2022-09-25T01:55:01+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><p>模板参数就是模板的参数，它是一种模板技巧，形式如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">template</span>&lt;<span class="keyword">typename</span> U&gt; <span class="keyword">typename</span> Container&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Foo</span>&#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        Container&lt;T&gt; c;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="built_in">Foo</span>()&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">long</span> i = <span class="number">0</span>; i &lt; SIZE; ++i)&#123;</span><br><span class="line">                c.<span class="built_in">insert</span>(c.<span class="built_in">end</span>(), <span class="built_in">T</span>());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当我们需要向模板参数传递参数的时候，例如我需要一个形如Foo&lt;string,list<string>&gt;这样的类，在使用的时候可以这么定义：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//模板别名不能写在函数体内</span></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">using</span> Lst = list&lt;T, allocator&lt;T&gt;&gt;;</span><br><span class="line"><span class="comment">//调用</span></span><br><span class="line">Foo&lt;string, list&gt; mylist1;  <span class="comment">//写法错误</span></span><br><span class="line">Foo&lt;string, Lst&gt; mylist2;</span><br></pre></td></tr></table></figure>
+<p>下面这个不是模板参数，因为list已经绑定了int类型的模板参数.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="keyword">class</span> <span class="title class_">Sequence</span> = deque&lt;T&gt;&gt;</span><br><span class="line"><span class="keyword">class</span> stack &#123;</span><br><span class="line">    </span><br><span class="line">  <span class="keyword">friend</span> <span class="type">bool</span> operateo== &lt;&gt; (cosnt stack&amp;, <span class="type">const</span> stack&amp;);</span><br><span class="line">  <span class="keyword">friend</span> <span class="type">bool</span> operateo&lt; &lt;&gt; (cosnt stack&amp;, <span class="type">const</span> stack&amp;);</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">  Sequence c;</span><br><span class="line">  ......</span><br><span class="line">&#125;;</span><br><span class="line">stack&lt;<span class="type">int</span>&gt; s1;</span><br><span class="line">stack&lt;<span class="type">int</span>, list&lt;<span class="type">int</span>&gt;&gt; s2;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atype-Alias,noexcept,override,final/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atype-Alias,noexcept,override,final/" class="post-title-link" itemprop="url">c++11新特性：type-Alias,noexcept,override,final</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-04 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-04T00:00:00+08:00">2021-09-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:55:06" itemprop="dateModified" datetime="2022-09-25T01:55:06+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="Type-Alias"><a href="#Type-Alias" class="headerlink" title="Type Alias"></a>Type Alias</h3><p>在c++11之前定义函数指针需要typedef或者#define：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span><span class="params">(*func)</span><span class="params">(<span class="type">int</span>,<span class="type">int</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>现在我们可以使用using关键字定义，更加直观：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> func = <span class="built_in">void</span>(*)(<span class="type">int</span>,<span class="type">int</span>)</span><br></pre></td></tr></table></figure>
+
+<p>在STL源码中也大量使用using替换typedef，例如vector的源码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">_Ty</span>, <span class="keyword">class</span> <span class="title class_">_Alloc</span> = allocator&lt;_Ty&gt;&gt;</span><br><span class="line"><span class="keyword">class</span> vector &#123; <span class="comment">// varying size array of values</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">class</span>&gt;</span><br><span class="line">    <span class="keyword">friend</span> <span class="keyword">class</span> _Vb_val;</span><br><span class="line">    <span class="keyword">friend</span> _Tidy_guard&lt;vector&gt;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">using</span> _Alty        = _Rebind_alloc_t&lt;_Alloc, _Ty&gt;;</span><br><span class="line">    <span class="keyword">using</span> _Alty_traits = allocator_traits&lt;_Alty&gt;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">static_assert</span>(!_ENFORCE_MATCHING_ALLOCATORS || is_same_v&lt;_Ty, <span class="keyword">typename</span> _Alloc::value_type&gt;,</span><br><span class="line">        _MISMATCHED_ALLOCATOR_MESSAGE(<span class="string">&quot;vector&lt;T, Allocator&gt;&quot;</span>, <span class="string">&quot;T&quot;</span>));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">using</span> value_type      = _Ty;</span><br><span class="line">    <span class="keyword">using</span> allocator_type  = _Alloc;</span><br><span class="line">    <span class="keyword">using</span> pointer         = <span class="keyword">typename</span> _Alty_traits::pointer;</span><br><span class="line">    <span class="keyword">using</span> const_pointer   = <span class="keyword">typename</span> _Alty_traits::const_pointer;</span><br><span class="line">    <span class="keyword">using</span> reference       = _Ty&amp;;</span><br><span class="line">    <span class="keyword">using</span> const_reference = <span class="type">const</span> _Ty&amp;;</span><br><span class="line">    <span class="keyword">using</span> size_type       = <span class="keyword">typename</span> _Alty_traits::size_type;</span><br><span class="line">    <span class="keyword">using</span> difference_type = <span class="keyword">typename</span> _Alty_traits::difference_type;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">using</span> _Scary_val = _Vector_val&lt;<span class="type">conditional_t</span>&lt;_Is_simple_alloc_v&lt;_Alty&gt;, _Simple_types&lt;_Ty&gt;,</span><br><span class="line">        _Vec_iter_types&lt;_Ty, size_type, difference_type, pointer, const_pointer, _Ty&amp;, <span class="type">const</span> _Ty&amp;&gt;&gt;&gt;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">using</span> iterator               = _Vector_iterator&lt;_Scary_val&gt;;</span><br><span class="line">    <span class="keyword">using</span> const_iterator         = _Vector_const_iterator&lt;_Scary_val&gt;;</span><br><span class="line">    <span class="keyword">using</span> reverse_iterator       = _STD reverse_iterator&lt;iterator&gt;;</span><br><span class="line">    <span class="keyword">using</span> const_reverse_iterator = _STD reverse_iterator&lt;const_iterator&gt;;</span><br><span class="line">    <span class="comment">//......</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>typedef和type alias没有任何区别，两者都可以出现在namespace scope, block scope, class scope.</p>
+<h3 id="noexcept"><a href="#noexcept" class="headerlink" title="noexcept"></a>noexcept</h3><p>定义函数不抛出异常。如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">foo</span><span class="params">()</span><span class="keyword">noexcept</span></span>;</span><br><span class="line"><span class="comment">//等价于</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">foo</span><span class="params">()</span><span class="title">noexcept</span><span class="params">(<span class="literal">true</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>也可以在小括号里面写在某种情况下不抛出异常:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;typaname Type&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">swap</span><span class="params">(Type&amp; x, Type&amp; y)</span><span class="title">noexcept</span><span class="params">(<span class="keyword">noexcept</span>(x.swap(y)))</span></span>;</span><br></pre></td></tr></table></figure>
+<p>如果在swap()内没有处理异常，异常就回随着函数调用向上返回，直到函数abort().<br>特别的，在右值拷贝和右值构造函数中，需要声明不抛出异常。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Mystring</span>&#123;</span><br><span class="line">    <span class="type">char</span>* data;</span><br><span class="line">    <span class="type">size_t</span> len;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">//move constructor</span></span><br><span class="line">    <span class="built_in">Mystring</span>(Mystring&amp;&amp; str)<span class="keyword">noexcept</span>:</span><br><span class="line">    <span class="built_in">data</span>(str.data),<span class="built_in">len</span>(str.len)&#123;&#125;</span><br><span class="line">    <span class="comment">//move assignment</span></span><br><span class="line">    Mystring&amp; <span class="keyword">operator</span>=(Mystring&amp;&amp; str)<span class="keyword">noexcept</span>&#123;</span><br><span class="line">        <span class="comment">//....</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为move constructor在vector扩容的时候会被调用，如果抛出异常，没办法释放空间，就会造成内存泄露。</p>
+<h3 id="override"><a href="#override" class="headerlink" title="override"></a>override</h3><p>字面意思就是覆盖，用在虚函数里面。如果子类需要复写父类的函数，加上这个关键字会比较安全。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">(<span class="type">float</span>)</span></span>&#123;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Derived</span>: <span class="keyword">public</span> Base&#123;</span><br><span class="line">    <span class="comment">//virtual void func(int) override&#123;&#125;; 错误</span></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">(<span class="type">float</span>)</span> <span class="keyword">override</span></span>&#123;&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="final"><a href="#final" class="headerlink" title="final"></a>final</h3><p>可以用在两个地方:</p>
+<ul>
+<li>如果一个类声明final类型，那么就不能被其他类继承。  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> <span class="keyword">final</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">(<span class="type">float</span>)</span></span>&#123;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Derived</span>: <span class="keyword">public</span> Base&#123; <span class="comment">// error</span></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">(<span class="type">float</span>)</span> <span class="keyword">override</span></span>&#123;&#125;;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<li>如果一个虚函数声明final，那么它就不能被复写。<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">(<span class="type">float</span>)</span><span class="keyword">final</span></span>&#123;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Derived</span>: <span class="keyword">public</span> Base&#123;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">(<span class="type">float</span>)</span> <span class="keyword">override</span></span>&#123;&#125;;<span class="comment">//error</span></span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
 </ul>
 
       
@@ -884,176 +878,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atype-Alias,noexcept,override,final/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atype-Alias,noexcept,override,final/" class="post-title-link" itemprop="url">c++11新特性：type-Alias,noexcept,override,final</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-04 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-04T00:00:00+08:00">2021-09-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:55:06" itemprop="dateModified" datetime="2022-09-25T01:55:06+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="Type-Alias"><a href="#Type-Alias" class="headerlink" title="Type Alias"></a>Type Alias</h3><p>在c++11之前定义函数指针需要typedef或者#define：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span><span class="params">(*func)</span><span class="params">(<span class="type">int</span>,<span class="type">int</span>)</span></span>;</span><br></pre></td></tr></table></figure>
-<p>现在我们可以使用using关键字定义，更加直观：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> func = <span class="built_in">void</span>(*)(<span class="type">int</span>,<span class="type">int</span>)</span><br></pre></td></tr></table></figure>
-
-<p>在STL源码中也大量使用using替换typedef，例如vector的源码：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">_Ty</span>, <span class="keyword">class</span> <span class="title class_">_Alloc</span> = allocator&lt;_Ty&gt;&gt;</span><br><span class="line"><span class="keyword">class</span> vector &#123; <span class="comment">// varying size array of values</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">class</span>&gt;</span><br><span class="line">    <span class="keyword">friend</span> <span class="keyword">class</span> _Vb_val;</span><br><span class="line">    <span class="keyword">friend</span> _Tidy_guard&lt;vector&gt;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">using</span> _Alty        = _Rebind_alloc_t&lt;_Alloc, _Ty&gt;;</span><br><span class="line">    <span class="keyword">using</span> _Alty_traits = allocator_traits&lt;_Alty&gt;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">static_assert</span>(!_ENFORCE_MATCHING_ALLOCATORS || is_same_v&lt;_Ty, <span class="keyword">typename</span> _Alloc::value_type&gt;,</span><br><span class="line">        _MISMATCHED_ALLOCATOR_MESSAGE(<span class="string">&quot;vector&lt;T, Allocator&gt;&quot;</span>, <span class="string">&quot;T&quot;</span>));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">using</span> value_type      = _Ty;</span><br><span class="line">    <span class="keyword">using</span> allocator_type  = _Alloc;</span><br><span class="line">    <span class="keyword">using</span> pointer         = <span class="keyword">typename</span> _Alty_traits::pointer;</span><br><span class="line">    <span class="keyword">using</span> const_pointer   = <span class="keyword">typename</span> _Alty_traits::const_pointer;</span><br><span class="line">    <span class="keyword">using</span> reference       = _Ty&amp;;</span><br><span class="line">    <span class="keyword">using</span> const_reference = <span class="type">const</span> _Ty&amp;;</span><br><span class="line">    <span class="keyword">using</span> size_type       = <span class="keyword">typename</span> _Alty_traits::size_type;</span><br><span class="line">    <span class="keyword">using</span> difference_type = <span class="keyword">typename</span> _Alty_traits::difference_type;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">using</span> _Scary_val = _Vector_val&lt;<span class="type">conditional_t</span>&lt;_Is_simple_alloc_v&lt;_Alty&gt;, _Simple_types&lt;_Ty&gt;,</span><br><span class="line">        _Vec_iter_types&lt;_Ty, size_type, difference_type, pointer, const_pointer, _Ty&amp;, <span class="type">const</span> _Ty&amp;&gt;&gt;&gt;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">using</span> iterator               = _Vector_iterator&lt;_Scary_val&gt;;</span><br><span class="line">    <span class="keyword">using</span> const_iterator         = _Vector_const_iterator&lt;_Scary_val&gt;;</span><br><span class="line">    <span class="keyword">using</span> reverse_iterator       = _STD reverse_iterator&lt;iterator&gt;;</span><br><span class="line">    <span class="keyword">using</span> const_reverse_iterator = _STD reverse_iterator&lt;const_iterator&gt;;</span><br><span class="line">    <span class="comment">//......</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>typedef和type alias没有任何区别，两者都可以出现在namespace scope, block scope, class scope.</p>
-<h3 id="noexcept"><a href="#noexcept" class="headerlink" title="noexcept"></a>noexcept</h3><p>定义函数不抛出异常。如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">foo</span><span class="params">()</span><span class="keyword">noexcept</span></span>;</span><br><span class="line"><span class="comment">//等价于</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">foo</span><span class="params">()</span><span class="title">noexcept</span><span class="params">(<span class="literal">true</span>)</span></span>;</span><br></pre></td></tr></table></figure>
-<p>也可以在小括号里面写在某种情况下不抛出异常:</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;typaname Type&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">swap</span><span class="params">(Type&amp; x, Type&amp; y)</span><span class="title">noexcept</span><span class="params">(<span class="keyword">noexcept</span>(x.swap(y)))</span></span>;</span><br></pre></td></tr></table></figure>
-<p>如果在swap()内没有处理异常，异常就回随着函数调用向上返回，直到函数abort().<br>特别的，在右值拷贝和右值构造函数中，需要声明不抛出异常。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Mystring</span>&#123;</span><br><span class="line">    <span class="type">char</span>* data;</span><br><span class="line">    <span class="type">size_t</span> len;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">//move constructor</span></span><br><span class="line">    <span class="built_in">Mystring</span>(Mystring&amp;&amp; str)<span class="keyword">noexcept</span>:</span><br><span class="line">    <span class="built_in">data</span>(str.data),<span class="built_in">len</span>(str.len)&#123;&#125;</span><br><span class="line">    <span class="comment">//move assignment</span></span><br><span class="line">    Mystring&amp; <span class="keyword">operator</span>=(Mystring&amp;&amp; str)<span class="keyword">noexcept</span>&#123;</span><br><span class="line">        <span class="comment">//....</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>因为move constructor在vector扩容的时候会被调用，如果抛出异常，没办法释放空间，就会造成内存泄露。</p>
-<h3 id="override"><a href="#override" class="headerlink" title="override"></a>override</h3><p>字面意思就是覆盖，用在虚函数里面。如果子类需要复写父类的函数，加上这个关键字会比较安全。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">(<span class="type">float</span>)</span></span>&#123;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Derived</span>: <span class="keyword">public</span> Base&#123;</span><br><span class="line">    <span class="comment">//virtual void func(int) override&#123;&#125;; 错误</span></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">(<span class="type">float</span>)</span> <span class="keyword">override</span></span>&#123;&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h3 id="final"><a href="#final" class="headerlink" title="final"></a>final</h3><p>可以用在两个地方:</p>
-<ul>
-<li>如果一个类声明final类型，那么就不能被其他类继承。  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> <span class="keyword">final</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">(<span class="type">float</span>)</span></span>&#123;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Derived</span>: <span class="keyword">public</span> Base&#123; <span class="comment">// error</span></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">(<span class="type">float</span>)</span> <span class="keyword">override</span></span>&#123;&#125;;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
-<li>如果一个虚函数声明final，那么它就不能被复写。<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">(<span class="type">float</span>)</span><span class="keyword">final</span></span>&#123;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Derived</span>: <span class="keyword">public</span> Base&#123;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">func</span><span class="params">(<span class="type">float</span>)</span> <span class="keyword">override</span></span>&#123;&#125;;<span class="comment">//error</span></span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/Go%E8%AF%AD%E8%A8%80%E7%B3%BB%E5%88%97%EF%BC%9AGMP%E6%A8%A1%E5%9E%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/02/Go%E8%AF%AD%E8%A8%80%E7%B3%BB%E5%88%97%EF%BC%9AGMP%E6%A8%A1%E5%9E%8B/" class="post-title-link" itemprop="url">Go语言系列：GMP模型</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:57:40" itemprop="dateModified" datetime="2022-09-25T01:57:40+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/Go%E8%AF%AD%E8%A8%80%E7%B3%BB%E5%88%97%EF%BC%9A%E5%8D%8F%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1159,6 +983,79 @@
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
                 <time title="Modified: 2022-09-25 01:57:38" itemprop="dateModified" datetime="2022-09-25T01:57:38+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Go/" itemprop="url" rel="index"><span itemprop="name">Go</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/Go%E8%AF%AD%E8%A8%80%E7%B3%BB%E5%88%97%EF%BC%9AGMP%E6%A8%A1%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/02/Go%E8%AF%AD%E8%A8%80%E7%B3%BB%E5%88%97%EF%BC%9AGMP%E6%A8%A1%E5%9E%8B/" class="post-title-link" itemprop="url">Go语言系列：GMP模型</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:57:40" itemprop="dateModified" datetime="2022-09-25T01:57:40+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">

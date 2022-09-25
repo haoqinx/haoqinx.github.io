@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="B树B-tree树即B树，B即Balanced，平衡的意思。因为B树的原英文名称为B-tree，而国内很多人喜欢把B-tree译作B-树，其实，这是个非常不好的直译，很容易让人产生误解。如人们可能会以为B-树是一种树，而B树又是另一种树。而事实上是，B-tree就是指的B树。B树的定义如下：  定义任意非叶子结点最多只有M个儿子，且M&gt;2； 根结点的儿子数为[2, M]； 除根结点以外的非">
@@ -309,12 +309,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9AHTTPS&TLS&SSL/" rel="prev" title="网络复习：HTTPS/TLS/SSL">
-      <i class="fa fa-chevron-left"></i> 网络复习：HTTPS/TLS/SSL
+    <a href="/2021/09/14/%E6%97%A0%E9%94%81%E9%98%9F%E5%88%97/" rel="prev" title="无锁队列">
+      <i class="fa fa-chevron-left"></i> 无锁队列
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9APING%E5%91%BD%E4%BB%A4%E5%8E%9F%E7%90%86/" rel="next" title="网络复习：PING & traceroute命令原理">
-      网络复习：PING & traceroute命令原理 <i class="fa fa-chevron-right"></i>
+    <a href="/2021/09/14/ubuntu%E6%B7%B1%E5%9D%91%EF%BC%9A%E6%9D%83%E9%99%90%E5%92%8C%E7%BD%91%E7%BB%9C/" rel="next" title="ubuntu 权限修改错误深坑">
+      ubuntu 权限修改错误深坑 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -525,8 +525,8 @@ document.querySelectorAll('.pdfobject-container').forEach(element => {
 NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
   NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
     var gitalk = new Gitalk({
-      clientID    : 'Iv1.e06527f39fa1f53a',
-      clientSecret: '2499ff98bd07299425e8071b4799362e6bb7dd7d',
+      clientID    : '420faacd1d64f619503d',
+      clientSecret: 'bc95b2447c0062208e3ee13e31a6a1967fb0964a',
       repo        : 'haoqinx.github.io',
       owner       : 'haoqinx',
       admin       : ['haoqinx'],

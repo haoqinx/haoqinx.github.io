@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="MySQL体系结构 从上图可以看出，主要是这几个  连接池组件 管理服务和工具组件 SQL接口组件 查询分析器组件 优化器组件 缓冲组件 插件式存储引擎 物理文件  其中比较重要的就是这个插件式的存储引擎，这个引擎完全是基于表的，而不是基于整个数据库。 InnoDB的优点 插入缓冲：对于非聚集索引的插入或更新操作不是每次直接插入到索引页，先判断插入的非聚集索引页是否在缓冲池中，若在，直接插入，若">
@@ -400,12 +400,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E4%BA%8B%E5%8A%A1/" rel="prev" title="InnoDB系列：事务">
-      <i class="fa fa-chevron-left"></i> InnoDB系列：事务
+    <a href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E7%B4%A2%E5%BC%95/" rel="prev" title="InnoDB系列：索引">
+      <i class="fa fa-chevron-left"></i> InnoDB系列：索引
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/11/06/HTTP3.0/" rel="next" title="HTTP1.0/1.1/2.0/3.0本质对比">
-      HTTP1.0/1.1/2.0/3.0本质对比 <i class="fa fa-chevron-right"></i>
+    <a href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E4%BA%8B%E5%8A%A1/" rel="next" title="InnoDB系列：事务">
+      InnoDB系列：事务 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -616,8 +616,8 @@ document.querySelectorAll('.pdfobject-container').forEach(element => {
 NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
   NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
     var gitalk = new Gitalk({
-      clientID    : 'Iv1.e06527f39fa1f53a',
-      clientSecret: '2499ff98bd07299425e8071b4799362e6bb7dd7d',
+      clientID    : '420faacd1d64f619503d',
+      clientSecret: 'bc95b2447c0062208e3ee13e31a6a1967fb0964a',
       repo        : 'haoqinx.github.io',
       owner       : 'haoqinx',
       admin       : ['haoqinx'],

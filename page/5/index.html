@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="星海横流 岁月成碑">
@@ -768,6 +768,197 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%97%E5%85%B8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%97%E5%85%B8/" class="post-title-link" itemprop="url">redis系列：字典</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 02:01:55" itemprop="dateModified" datetime="2022-09-25T02:01:55+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="3-0哈希表"><a href="#3-0哈希表" class="headerlink" title="3.0哈希表"></a>3.0哈希表</h3><p>下面是哈希表结构：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* This is our hash table structure. Every dictionary has two of this as we</span></span><br><span class="line"><span class="comment"> * implement incremental rehashing, for the old to the new table. */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictht</span> &#123;</span></span><br><span class="line">    dictEntry **table;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> size;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> sizemask;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> used;</span><br><span class="line">&#125; dictht;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>table是一个数组</li>
+<li>size记录哈希表的大小，也就是table数组的大小</li>
+<li>used记录了哈希表目前已有节点的数量</li>
+<li>sizemask &#x3D; size - 1<br>形式如下图所示：<br><img src="/images/redis-ht-1.png"></li>
+</ul>
+<p>哈希表节点：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> &#123;</span></span><br><span class="line">    <span class="type">void</span> *key;</span><br><span class="line">    <span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">        <span class="type">void</span> *val;</span><br><span class="line">        <span class="type">uint64_t</span> u64;</span><br><span class="line">        <span class="type">int64_t</span> s64;</span><br><span class="line">        <span class="type">double</span> d;</span><br><span class="line">    &#125; v;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125; dictEntry;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>key保存键</li>
+<li>v保存键值对的值，可以是指针，或者uint64_t整数或者一个int64_t整数。</li>
+<li>next指向另一个哈希表节点的指针，由此可以看出，redis使用链表法来解决冲突<br>下图展示了一个冲突的哈希表：<br><img src="/images/redis-ht-2.png"></li>
+</ul>
+<h3 id="3-0字典"><a href="#3-0字典" class="headerlink" title="3.0字典"></a>3.0字典</h3><ol>
+<li>基本数据结构<br>数据结构如下：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dict</span> &#123;</span></span><br><span class="line">    dictType *type;</span><br><span class="line">    <span class="type">void</span> *privdata;</span><br><span class="line">    dictht ht[<span class="number">2</span>];</span><br><span class="line">    <span class="type">long</span> rehashidx; <span class="comment">/* rehashing not in progress if rehashidx == -1 */</span></span><br><span class="line">    <span class="type">int</span> iterators; <span class="comment">/* number of iterators currently running */</span></span><br><span class="line">&#125; dict;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictType</span> &#123;</span></span><br><span class="line">    <span class="comment">// 哈希函数</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="title function_">int</span> <span class="params">(*hashFunction)</span><span class="params">(<span class="type">const</span> <span class="type">void</span> *key)</span>;</span><br><span class="line">    <span class="comment">// 复制键的函数</span></span><br><span class="line">    <span class="type">void</span> *(*keyDup)(<span class="type">void</span> *privdata, <span class="type">const</span> <span class="type">void</span> *key);</span><br><span class="line">    <span class="comment">// 复制值的函数 </span></span><br><span class="line">    <span class="type">void</span> *(*valDup)(<span class="type">void</span> *privdata, <span class="type">const</span> <span class="type">void</span> *obj);</span><br><span class="line">    <span class="comment">// 对比键</span></span><br><span class="line">    <span class="type">int</span> (*keyCompare)(<span class="type">void</span> *privdata, <span class="type">const</span> <span class="type">void</span> *key1, <span class="type">const</span> <span class="type">void</span> *key2);</span><br><span class="line">    <span class="comment">//销毁键</span></span><br><span class="line">    <span class="type">void</span> (*keyDestructor)(<span class="type">void</span> *privdata, <span class="type">void</span> *key);</span><br><span class="line">    <span class="comment">// 销毁值</span></span><br><span class="line">    <span class="type">void</span> (*valDestructor)(<span class="type">void</span> *privdata, <span class="type">void</span> *obj);</span><br><span class="line">&#125; dictType;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>type属性和privdata是针对不同类型的键值对，为创建多态字典设置的</li>
+<li>dictType是一族绑定特定类型键值对的函数族，privdata是这些函数的可选参数</li>
+<li>ht是两个哈希表，ht[1]只会在ht[0]rehash的时候使用</li>
+<li>rehashidx 记录rehash进度，如果没有rehash就为-1<br>下面是一个正常状态下的字典<br><img src="/images/redis-ht-3.png"></li>
+</ul>
+<ol start="2">
+<li>插入哈希表</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hash = dict -&gt; type -&gt; hashFunction(key);</span><br><span class="line"></span><br><span class="line">index = hash &amp; dict -&gt; ht[x].sizemask;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>首先使用定义的哈希函数计算键的哈希值</li>
+<li>然后使用与操作将hash掩码到长度范围内</li>
+</ul>
+<ol start="3">
+<li>解决键冲突</li>
+</ol>
+<p>使用链表法解决冲突，一个优化是将新添加的键值对插入到链表的头部。</p>
+<ol start="3">
+<li>rehash</li>
+</ol>
+<ul>
+<li>为字典的ht[1]哈希表分配空间<ul>
+<li>如果是扩展操作，那么sizeof ht[1] &#x3D; min(n),2^n &gt;&#x3D; ht[0].used * 2;</li>
+<li>如果是收缩操作，sizeof ht[1] &#x3D; min(n), 2^n &gt;&#x3D; ht[0].used</li>
+</ul>
+</li>
+<li>将保存在ht[0]的所有键值对重哈希到ht[1]</li>
+<li>释放ht[0]，ht[0] &#x3D; ht[1], h1 &#x3D; empty.</li>
+</ul>
+<ol start="4">
+<li>哈希表的收缩扩张条件（满足下列条件之一即可）<br>负载因子：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">load_factor = ht[<span class="number">0</span>].used / ht[<span class="number">0</span>].size;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>服务器没有在执行BGSAVE或者BGREWRITEAOF命令，并且哈希表的负载因子大于等于1</li>
+<li>服务器目前正在执行这两个命令，并且哈希表的负载因子大于等于5.</li>
+</ul>
+<ol start="4">
+<li>渐进式rehash</li>
+</ol>
+<ul>
+<li>为ht[1]分配空间</li>
+<li>维护rehashidx，并设置为0</li>
+<li>在rehash期间，对字典添加删除，查找或者更新，都在ht[1]中进行，还需要将当前rehashidx对应的ht[0]的所有键值对rehash到ht[1]，然后rehashidx + 1</li>
+<li>当所有键值对完成哈希后，rehashidx设置为-1</li>
+</ul>
+<h3 id="5-0版本"><a href="#5-0版本" class="headerlink" title="5.0版本"></a>5.0版本</h3><ol>
+<li>hash函数</li>
+</ol>
+<ul>
+<li>服务端的hash函数使用的是siphash算法</li>
+<li>客户端使用的是times_33函数</li>
+</ul>
+<ol start="2">
+<li>基本结构和3.0无太大变化，增加了iterators字段<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dict</span> &#123;</span></span><br><span class="line">    dictType *type;</span><br><span class="line">    <span class="type">void</span> *privdata;</span><br><span class="line">    dictht ht[<span class="number">2</span>];</span><br><span class="line">    <span class="type">long</span> rehashidx; <span class="comment">/* rehashing not in progress if rehashidx == -1 */</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> iterators; <span class="comment">/* number of iterators currently running */</span></span><br><span class="line">&#125; dict;</span><br></pre></td></tr></table></figure></li>
+<li>迭代器遍历</li>
+</ol>
+<p>iterators字段，用来记录当前运行的安全迭代器数，当有安全迭代器绑定到该字典时，会暂停rehash操作。Redis很多场景下都会用到迭代器，例如：行keys命令会创建一个安全迭代器，此时iterators会加1，命令执行完毕则减1，而执行sort命令时会创建普通迭代器，该字段不会改变.<br>字典迭代器主要用于迭代字典这个数据结构中的数据，既然是迭代字典中的数据，必然会出现一个问题，迭代过程中，如果发生了数据增删，则可能导致字典触发rehash操作，或迭代开始时字典正在进行rehash操作，从而导致一条数据可能多次遍历到。那Redis如何解决这个问题呢？<br><font color = orange>普通迭代器通过指纹字段，每次迭代就会检查字典是否改变，如果改变（增删改查rehash）直接退出。安全迭代器通过设置标志位，设置完之后，rehash函数检查标志位后不会进行rehash，但是可以进行增删改查操作。</font></p>
+<p>数据结构如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* If safe is set to 1 this is a safe iterator, that means, you can call</span></span><br><span class="line"><span class="comment"> * dictAdd, dictFind, and other functions against the dictionary even while</span></span><br><span class="line"><span class="comment"> * iterating. Otherwise it is a non safe iterator, and only dictNext()</span></span><br><span class="line"><span class="comment"> * should be called while iterating. */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictIterator</span> &#123;</span></span><br><span class="line">    dict *d;</span><br><span class="line">    <span class="type">long</span> index;</span><br><span class="line">    <span class="type">int</span> table, safe;</span><br><span class="line">    dictEntry *entry, *nextEntry;</span><br><span class="line">    <span class="comment">/* unsafe iterator fingerprint for misuse detection. */</span></span><br><span class="line">    <span class="type">long</span> <span class="type">long</span> fingerprint;</span><br><span class="line">&#125; dictIterator;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>d：迭代的字典</li>
+<li>index：当前迭代的索引值</li>
+<li>table，safe：table为正在迭代的Hash表，即ht[0]与ht[1]，safe用于表示当前创建的是否为安全迭代器</li>
+<li>entry，nextentry：当前和下一个节点</li>
+<li>fingerprint：字典的指纹，随字典改变而变</li>
+</ul>
+<p>简单介绍完迭代器的基本结构、字段含义及API，我们来看下Redis如何解决增删数据的同时不出现读取数据重复的问题。Redis为单进程单线程模式，不存在两个命令同时执行的情况，因此只有当执行的命令在遍历的同时删除了数据，才会触发前面的问题。我们把迭代器遍历数据分为两类：</p>
+<ul>
+<li>普通迭代器，只遍历数据:<br>普通迭代器迭代字典中数据时，会对迭代器中fingerprint字段的值作严格的校验，来保证迭代过程中字典结构不发生任何变化，确保读取出的数据不出现重复。主要步骤如下：</li>
+</ul>
+<ol>
+<li>调用dictGetIterator函数初始化一个普通迭代器，此时会把iter-&gt;safe值置为0，表示初始化的迭代器为普通迭代器；</li>
+<li>循环调用dictNext函数依次遍历字典中Hash表的节点，首次遍历时会通过<br>dictFingerprint函数拿到当前字典的指纹值；</li>
+<li>当调用dictNext函数遍历完字典Hash表中节点数据后，释放迭代器时会继续调用dictFingerprint函数计算字典的指纹值，并与首次拿到的指纹值比较，不相等则输出异常”&#x3D;&#x3D;&#x3D;ASSERTION FAILED&#x3D;&#x3D;&#x3D;”，且退出程序执行。</li>
+</ol>
+<ul>
+<li>安全迭代器，遍历的同时删除数据：安全迭代器和普通迭代器迭代数据原理类似，也是通过循环调用dictNext函数依次遍历字典中Hash表的节点。安全迭代器确保读取数据的准确性，不是通过限制字典的部分操作来实现的，而是通过限制rehash的进行来确保数据的准确性，因此迭代过程中可以对字典进行增删改查等操作。主要步骤如下：</li>
+</ul>
+<ol>
+<li>调用dictGetSafeIterator函数初始化一个安全迭代器，此时会把iter-&gt;safe值置为1，表示初始化的迭代器为安全迭代器；</li>
+<li>循环调用dictNext函数依次遍历字典中Hash表的节点，首次遍历时会把字<br>典中iterators字段进行加1操作，确保迭代过程中渐进式rehash操作会被中断执行;</li>
+<li>当调用dictNext函数遍历完字典Hash表中节点数据后，释放迭代器时会把<br>字典中iterators字段进行减1操作，确保迭代后渐进式rehash操作能正常进行。</li>
+</ol>
+<h3 id="间断遍历"><a href="#间断遍历" class="headerlink" title="间断遍历"></a>间断遍历</h3><p>为了解决在海量数据遍历时，造成的短暂的redis不可用。<br>函数原型为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">long</span> <span class="title function_">dictScan</span><span class="params">(dict *d,</span></span><br><span class="line"><span class="params">                       <span class="type">unsigned</span> <span class="type">long</span> v,</span></span><br><span class="line"><span class="params">                       dictScanFunction *fn,</span></span><br><span class="line"><span class="params">                       dictScanBucketFunction* bucketfn,</span></span><br><span class="line"><span class="params">                       <span class="type">void</span> *privdata)</span></span><br></pre></td></tr></table></figure>
+<p>dictScan函数间断遍历字典过程中会遇到如下3种情况。<br>1）从迭代开始到结束，散列表没有进行rehash操作。<br>2）从迭代开始到结束，散列表进行了扩容或缩容操作，且恰好为两次迭代间隔期间完成了rehash操作。<br>3）从迭代开始到结束，某次或某几次迭代时散列表正在进行rehash操作。</p>
+<ol>
+<li>遍历过程中始终未遇到rehash操作</li>
+</ol>
+<p>每次迭代都没有遇到rehash操作，也就是遍历字典只遇到第1或第2种情况。其实第1种情况，只要依次按照顺序遍历Hash表ht[0]中节点即可，第2种情况因为在遍历的整个过程中，期间字典可能发生了扩容或缩容操作，如果依然按照顺序遍历，则可能会出现数据重复读取的现象.<br>Redis为了做到不漏数据且尽量不重复数据，统一采用了一种叫作reverse binary iteration的方法来进行间断数据迭代，接下来看下其主要源码实现，迭代的代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">t0 = &amp;(d-&gt;ht[<span class="number">0</span>]);</span><br><span class="line">m0 = t0-&gt;sizemask;</span><br><span class="line">de = t0-&gt;table[v &amp; m0];<span class="comment">//避免缩容后游标超出Hash表最大值</span></span><br><span class="line"><span class="keyword">while</span> (de) &#123;<span class="comment">//循环遍历当前节点的单链表</span></span><br><span class="line">    next = de-&gt;next;</span><br><span class="line">    fn(privdata, de);<span class="comment">//依次将节点中键值对存入privdata字段中的单链表</span></span><br><span class="line">    de = next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为了兼容迭代间隔期间可能发生的缩容与扩容操作，每次迭代时都会对v变量（游标值）进行修改，以确保迭代出的数据无遗漏，游标具体变更算法为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">v |= ~m0;</span><br><span class="line">v = rev(v);<span class="comment">// 二进制逆转</span></span><br><span class="line">v++;</span><br><span class="line">v = rev(v);<span class="comment">//二进制逆转</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>遍历过程中遇到rehash操作<br>大小两表并存，所以需要从ht[0]和ht[1]中都取出数据，整个遍历过程为：先找到两个散列表中更小的表，先对小的Hash表遍历，然后对大的Hash表遍历，迭代的代码如下：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">t0 = &amp;d-&gt;ht[<span class="number">0</span>];t1 = &amp;d-&gt;ht[<span class="number">1</span>];</span><br><span class="line"><span class="keyword">if</span> (t0-&gt;size &gt; t1-&gt;size) &#123;</span><br><span class="line">t0 = &amp;d-&gt;ht[<span class="number">1</span>];t1 = &amp;d-&gt;ht[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line">m0 = t0-&gt;sizemask;m1 = t1-&gt;sizemask;</span><br><span class="line">de = t0-&gt;table[v &amp; m0];</span><br><span class="line"><span class="keyword">while</span> (de) &#123;<span class="comment">/*迭代第一张小Hash表*/</span></span><br><span class="line">    next = de-&gt;next;</span><br><span class="line">    fn(privdata, de);</span><br><span class="line">    de = next;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">do</span> &#123;<span class="comment">/*迭代第二张大Hash表*/</span></span><br><span class="line">    de = t1-&gt;table[v &amp; m1];</span><br><span class="line">    <span class="keyword">while</span> (de) &#123;</span><br><span class="line">        next = de-&gt;next;</span><br><span class="line">        fn(privdata, de);</span><br><span class="line">        de = next;</span><br><span class="line">    &#125;</span><br><span class="line">    v |= ~m1;v = rev(v); v++; v = rev(v);</span><br><span class="line">&#125; <span class="keyword">while</span> (v &amp; (m0 ^ m1));</span><br></pre></td></tr></table></figure>
+<font color = orange> 这套算法能满足这样的特点，主要是巧妙地利用了扩容及缩容正好为整数倍增长或减<br>少的原理，根据这个特征，很容易就能推导出同一个节点的数据扩容&#x2F;缩容后在新的Hash<br>表中的分布位置，从而避免了重复遍历或漏遍历。</font></li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E5%A4%A7%E6%80%BB%E7%BB%93/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1248,197 +1439,6 @@
 <li>设置span和forward</li>
 </ul>
 <h3 id="跳跃表应用"><a href="#跳跃表应用" class="headerlink" title="跳跃表应用"></a>跳跃表应用</h3><p>跳跃表主要应用于有序集合的底层实现（有序集合的另一种实现方式为压缩列表）。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%97%E5%85%B8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%97%E5%85%B8/" class="post-title-link" itemprop="url">redis系列：字典</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:01:55" itemprop="dateModified" datetime="2022-09-25T02:01:55+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="3-0哈希表"><a href="#3-0哈希表" class="headerlink" title="3.0哈希表"></a>3.0哈希表</h3><p>下面是哈希表结构：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* This is our hash table structure. Every dictionary has two of this as we</span></span><br><span class="line"><span class="comment"> * implement incremental rehashing, for the old to the new table. */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictht</span> &#123;</span></span><br><span class="line">    dictEntry **table;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> size;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> sizemask;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> used;</span><br><span class="line">&#125; dictht;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>table是一个数组</li>
-<li>size记录哈希表的大小，也就是table数组的大小</li>
-<li>used记录了哈希表目前已有节点的数量</li>
-<li>sizemask &#x3D; size - 1<br>形式如下图所示：<br><img src="/images/redis-ht-1.png"></li>
-</ul>
-<p>哈希表节点：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> &#123;</span></span><br><span class="line">    <span class="type">void</span> *key;</span><br><span class="line">    <span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">        <span class="type">void</span> *val;</span><br><span class="line">        <span class="type">uint64_t</span> u64;</span><br><span class="line">        <span class="type">int64_t</span> s64;</span><br><span class="line">        <span class="type">double</span> d;</span><br><span class="line">    &#125; v;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125; dictEntry;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>key保存键</li>
-<li>v保存键值对的值，可以是指针，或者uint64_t整数或者一个int64_t整数。</li>
-<li>next指向另一个哈希表节点的指针，由此可以看出，redis使用链表法来解决冲突<br>下图展示了一个冲突的哈希表：<br><img src="/images/redis-ht-2.png"></li>
-</ul>
-<h3 id="3-0字典"><a href="#3-0字典" class="headerlink" title="3.0字典"></a>3.0字典</h3><ol>
-<li>基本数据结构<br>数据结构如下：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dict</span> &#123;</span></span><br><span class="line">    dictType *type;</span><br><span class="line">    <span class="type">void</span> *privdata;</span><br><span class="line">    dictht ht[<span class="number">2</span>];</span><br><span class="line">    <span class="type">long</span> rehashidx; <span class="comment">/* rehashing not in progress if rehashidx == -1 */</span></span><br><span class="line">    <span class="type">int</span> iterators; <span class="comment">/* number of iterators currently running */</span></span><br><span class="line">&#125; dict;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictType</span> &#123;</span></span><br><span class="line">    <span class="comment">// 哈希函数</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="title function_">int</span> <span class="params">(*hashFunction)</span><span class="params">(<span class="type">const</span> <span class="type">void</span> *key)</span>;</span><br><span class="line">    <span class="comment">// 复制键的函数</span></span><br><span class="line">    <span class="type">void</span> *(*keyDup)(<span class="type">void</span> *privdata, <span class="type">const</span> <span class="type">void</span> *key);</span><br><span class="line">    <span class="comment">// 复制值的函数 </span></span><br><span class="line">    <span class="type">void</span> *(*valDup)(<span class="type">void</span> *privdata, <span class="type">const</span> <span class="type">void</span> *obj);</span><br><span class="line">    <span class="comment">// 对比键</span></span><br><span class="line">    <span class="type">int</span> (*keyCompare)(<span class="type">void</span> *privdata, <span class="type">const</span> <span class="type">void</span> *key1, <span class="type">const</span> <span class="type">void</span> *key2);</span><br><span class="line">    <span class="comment">//销毁键</span></span><br><span class="line">    <span class="type">void</span> (*keyDestructor)(<span class="type">void</span> *privdata, <span class="type">void</span> *key);</span><br><span class="line">    <span class="comment">// 销毁值</span></span><br><span class="line">    <span class="type">void</span> (*valDestructor)(<span class="type">void</span> *privdata, <span class="type">void</span> *obj);</span><br><span class="line">&#125; dictType;</span><br></pre></td></tr></table></figure></li>
-</ol>
-<ul>
-<li>type属性和privdata是针对不同类型的键值对，为创建多态字典设置的</li>
-<li>dictType是一族绑定特定类型键值对的函数族，privdata是这些函数的可选参数</li>
-<li>ht是两个哈希表，ht[1]只会在ht[0]rehash的时候使用</li>
-<li>rehashidx 记录rehash进度，如果没有rehash就为-1<br>下面是一个正常状态下的字典<br><img src="/images/redis-ht-3.png"></li>
-</ul>
-<ol start="2">
-<li>插入哈希表</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hash = dict -&gt; type -&gt; hashFunction(key);</span><br><span class="line"></span><br><span class="line">index = hash &amp; dict -&gt; ht[x].sizemask;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>首先使用定义的哈希函数计算键的哈希值</li>
-<li>然后使用与操作将hash掩码到长度范围内</li>
-</ul>
-<ol start="3">
-<li>解决键冲突</li>
-</ol>
-<p>使用链表法解决冲突，一个优化是将新添加的键值对插入到链表的头部。</p>
-<ol start="3">
-<li>rehash</li>
-</ol>
-<ul>
-<li>为字典的ht[1]哈希表分配空间<ul>
-<li>如果是扩展操作，那么sizeof ht[1] &#x3D; min(n),2^n &gt;&#x3D; ht[0].used * 2;</li>
-<li>如果是收缩操作，sizeof ht[1] &#x3D; min(n), 2^n &gt;&#x3D; ht[0].used</li>
-</ul>
-</li>
-<li>将保存在ht[0]的所有键值对重哈希到ht[1]</li>
-<li>释放ht[0]，ht[0] &#x3D; ht[1], h1 &#x3D; empty.</li>
-</ul>
-<ol start="4">
-<li>哈希表的收缩扩张条件（满足下列条件之一即可）<br>负载因子：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">load_factor = ht[<span class="number">0</span>].used / ht[<span class="number">0</span>].size;</span><br></pre></td></tr></table></figure></li>
-</ol>
-<ul>
-<li>服务器没有在执行BGSAVE或者BGREWRITEAOF命令，并且哈希表的负载因子大于等于1</li>
-<li>服务器目前正在执行这两个命令，并且哈希表的负载因子大于等于5.</li>
-</ul>
-<ol start="4">
-<li>渐进式rehash</li>
-</ol>
-<ul>
-<li>为ht[1]分配空间</li>
-<li>维护rehashidx，并设置为0</li>
-<li>在rehash期间，对字典添加删除，查找或者更新，都在ht[1]中进行，还需要将当前rehashidx对应的ht[0]的所有键值对rehash到ht[1]，然后rehashidx + 1</li>
-<li>当所有键值对完成哈希后，rehashidx设置为-1</li>
-</ul>
-<h3 id="5-0版本"><a href="#5-0版本" class="headerlink" title="5.0版本"></a>5.0版本</h3><ol>
-<li>hash函数</li>
-</ol>
-<ul>
-<li>服务端的hash函数使用的是siphash算法</li>
-<li>客户端使用的是times_33函数</li>
-</ul>
-<ol start="2">
-<li>基本结构和3.0无太大变化，增加了iterators字段<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dict</span> &#123;</span></span><br><span class="line">    dictType *type;</span><br><span class="line">    <span class="type">void</span> *privdata;</span><br><span class="line">    dictht ht[<span class="number">2</span>];</span><br><span class="line">    <span class="type">long</span> rehashidx; <span class="comment">/* rehashing not in progress if rehashidx == -1 */</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> iterators; <span class="comment">/* number of iterators currently running */</span></span><br><span class="line">&#125; dict;</span><br></pre></td></tr></table></figure></li>
-<li>迭代器遍历</li>
-</ol>
-<p>iterators字段，用来记录当前运行的安全迭代器数，当有安全迭代器绑定到该字典时，会暂停rehash操作。Redis很多场景下都会用到迭代器，例如：行keys命令会创建一个安全迭代器，此时iterators会加1，命令执行完毕则减1，而执行sort命令时会创建普通迭代器，该字段不会改变.<br>字典迭代器主要用于迭代字典这个数据结构中的数据，既然是迭代字典中的数据，必然会出现一个问题，迭代过程中，如果发生了数据增删，则可能导致字典触发rehash操作，或迭代开始时字典正在进行rehash操作，从而导致一条数据可能多次遍历到。那Redis如何解决这个问题呢？<br><font color = orange>普通迭代器通过指纹字段，每次迭代就会检查字典是否改变，如果改变（增删改查rehash）直接退出。安全迭代器通过设置标志位，设置完之后，rehash函数检查标志位后不会进行rehash，但是可以进行增删改查操作。</font></p>
-<p>数据结构如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* If safe is set to 1 this is a safe iterator, that means, you can call</span></span><br><span class="line"><span class="comment"> * dictAdd, dictFind, and other functions against the dictionary even while</span></span><br><span class="line"><span class="comment"> * iterating. Otherwise it is a non safe iterator, and only dictNext()</span></span><br><span class="line"><span class="comment"> * should be called while iterating. */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictIterator</span> &#123;</span></span><br><span class="line">    dict *d;</span><br><span class="line">    <span class="type">long</span> index;</span><br><span class="line">    <span class="type">int</span> table, safe;</span><br><span class="line">    dictEntry *entry, *nextEntry;</span><br><span class="line">    <span class="comment">/* unsafe iterator fingerprint for misuse detection. */</span></span><br><span class="line">    <span class="type">long</span> <span class="type">long</span> fingerprint;</span><br><span class="line">&#125; dictIterator;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>d：迭代的字典</li>
-<li>index：当前迭代的索引值</li>
-<li>table，safe：table为正在迭代的Hash表，即ht[0]与ht[1]，safe用于表示当前创建的是否为安全迭代器</li>
-<li>entry，nextentry：当前和下一个节点</li>
-<li>fingerprint：字典的指纹，随字典改变而变</li>
-</ul>
-<p>简单介绍完迭代器的基本结构、字段含义及API，我们来看下Redis如何解决增删数据的同时不出现读取数据重复的问题。Redis为单进程单线程模式，不存在两个命令同时执行的情况，因此只有当执行的命令在遍历的同时删除了数据，才会触发前面的问题。我们把迭代器遍历数据分为两类：</p>
-<ul>
-<li>普通迭代器，只遍历数据:<br>普通迭代器迭代字典中数据时，会对迭代器中fingerprint字段的值作严格的校验，来保证迭代过程中字典结构不发生任何变化，确保读取出的数据不出现重复。主要步骤如下：</li>
-</ul>
-<ol>
-<li>调用dictGetIterator函数初始化一个普通迭代器，此时会把iter-&gt;safe值置为0，表示初始化的迭代器为普通迭代器；</li>
-<li>循环调用dictNext函数依次遍历字典中Hash表的节点，首次遍历时会通过<br>dictFingerprint函数拿到当前字典的指纹值；</li>
-<li>当调用dictNext函数遍历完字典Hash表中节点数据后，释放迭代器时会继续调用dictFingerprint函数计算字典的指纹值，并与首次拿到的指纹值比较，不相等则输出异常”&#x3D;&#x3D;&#x3D;ASSERTION FAILED&#x3D;&#x3D;&#x3D;”，且退出程序执行。</li>
-</ol>
-<ul>
-<li>安全迭代器，遍历的同时删除数据：安全迭代器和普通迭代器迭代数据原理类似，也是通过循环调用dictNext函数依次遍历字典中Hash表的节点。安全迭代器确保读取数据的准确性，不是通过限制字典的部分操作来实现的，而是通过限制rehash的进行来确保数据的准确性，因此迭代过程中可以对字典进行增删改查等操作。主要步骤如下：</li>
-</ul>
-<ol>
-<li>调用dictGetSafeIterator函数初始化一个安全迭代器，此时会把iter-&gt;safe值置为1，表示初始化的迭代器为安全迭代器；</li>
-<li>循环调用dictNext函数依次遍历字典中Hash表的节点，首次遍历时会把字<br>典中iterators字段进行加1操作，确保迭代过程中渐进式rehash操作会被中断执行;</li>
-<li>当调用dictNext函数遍历完字典Hash表中节点数据后，释放迭代器时会把<br>字典中iterators字段进行减1操作，确保迭代后渐进式rehash操作能正常进行。</li>
-</ol>
-<h3 id="间断遍历"><a href="#间断遍历" class="headerlink" title="间断遍历"></a>间断遍历</h3><p>为了解决在海量数据遍历时，造成的短暂的redis不可用。<br>函数原型为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">long</span> <span class="title function_">dictScan</span><span class="params">(dict *d,</span></span><br><span class="line"><span class="params">                       <span class="type">unsigned</span> <span class="type">long</span> v,</span></span><br><span class="line"><span class="params">                       dictScanFunction *fn,</span></span><br><span class="line"><span class="params">                       dictScanBucketFunction* bucketfn,</span></span><br><span class="line"><span class="params">                       <span class="type">void</span> *privdata)</span></span><br></pre></td></tr></table></figure>
-<p>dictScan函数间断遍历字典过程中会遇到如下3种情况。<br>1）从迭代开始到结束，散列表没有进行rehash操作。<br>2）从迭代开始到结束，散列表进行了扩容或缩容操作，且恰好为两次迭代间隔期间完成了rehash操作。<br>3）从迭代开始到结束，某次或某几次迭代时散列表正在进行rehash操作。</p>
-<ol>
-<li>遍历过程中始终未遇到rehash操作</li>
-</ol>
-<p>每次迭代都没有遇到rehash操作，也就是遍历字典只遇到第1或第2种情况。其实第1种情况，只要依次按照顺序遍历Hash表ht[0]中节点即可，第2种情况因为在遍历的整个过程中，期间字典可能发生了扩容或缩容操作，如果依然按照顺序遍历，则可能会出现数据重复读取的现象.<br>Redis为了做到不漏数据且尽量不重复数据，统一采用了一种叫作reverse binary iteration的方法来进行间断数据迭代，接下来看下其主要源码实现，迭代的代码如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">t0 = &amp;(d-&gt;ht[<span class="number">0</span>]);</span><br><span class="line">m0 = t0-&gt;sizemask;</span><br><span class="line">de = t0-&gt;table[v &amp; m0];<span class="comment">//避免缩容后游标超出Hash表最大值</span></span><br><span class="line"><span class="keyword">while</span> (de) &#123;<span class="comment">//循环遍历当前节点的单链表</span></span><br><span class="line">    next = de-&gt;next;</span><br><span class="line">    fn(privdata, de);<span class="comment">//依次将节点中键值对存入privdata字段中的单链表</span></span><br><span class="line">    de = next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>为了兼容迭代间隔期间可能发生的缩容与扩容操作，每次迭代时都会对v变量（游标值）进行修改，以确保迭代出的数据无遗漏，游标具体变更算法为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">v |= ~m0;</span><br><span class="line">v = rev(v);<span class="comment">// 二进制逆转</span></span><br><span class="line">v++;</span><br><span class="line">v = rev(v);<span class="comment">//二进制逆转</span></span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li>遍历过程中遇到rehash操作<br>大小两表并存，所以需要从ht[0]和ht[1]中都取出数据，整个遍历过程为：先找到两个散列表中更小的表，先对小的Hash表遍历，然后对大的Hash表遍历，迭代的代码如下：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">t0 = &amp;d-&gt;ht[<span class="number">0</span>];t1 = &amp;d-&gt;ht[<span class="number">1</span>];</span><br><span class="line"><span class="keyword">if</span> (t0-&gt;size &gt; t1-&gt;size) &#123;</span><br><span class="line">t0 = &amp;d-&gt;ht[<span class="number">1</span>];t1 = &amp;d-&gt;ht[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line">m0 = t0-&gt;sizemask;m1 = t1-&gt;sizemask;</span><br><span class="line">de = t0-&gt;table[v &amp; m0];</span><br><span class="line"><span class="keyword">while</span> (de) &#123;<span class="comment">/*迭代第一张小Hash表*/</span></span><br><span class="line">    next = de-&gt;next;</span><br><span class="line">    fn(privdata, de);</span><br><span class="line">    de = next;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">do</span> &#123;<span class="comment">/*迭代第二张大Hash表*/</span></span><br><span class="line">    de = t1-&gt;table[v &amp; m1];</span><br><span class="line">    <span class="keyword">while</span> (de) &#123;</span><br><span class="line">        next = de-&gt;next;</span><br><span class="line">        fn(privdata, de);</span><br><span class="line">        de = next;</span><br><span class="line">    &#125;</span><br><span class="line">    v |= ~m1;v = rev(v); v++; v = rev(v);</span><br><span class="line">&#125; <span class="keyword">while</span> (v &amp; (m0 ^ m1));</span><br></pre></td></tr></table></figure>
-<font color = orange> 这套算法能满足这样的特点，主要是巧妙地利用了扩容及缩容正好为整数倍增长或减<br>少的原理，根据这个特征，很容易就能推导出同一个节点的数据扩容&#x2F;缩容后在新的Hash<br>表中的分布位置，从而避免了重复遍历或漏遍历。</font></li>
-</ol>
 
       
     </div>

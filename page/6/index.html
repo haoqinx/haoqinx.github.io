@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="星海横流 岁月成碑">
@@ -282,6 +282,119 @@
 <li>使用ctrl + alt + F1进入命令行界面</li>
 <li>进入&#x2F;etc&#x2F;passwd 文件修改用户组为0:0，提升到root权限</li>
 <li>重新登录神奇的好了，但是登录需要选择用户了(以前直接默认普通用户登录，现在可以直接root登录)</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AB%E6%A0%91%EF%BC%8CB+%E6%A0%91%EF%BC%8C%E7%BA%A2%E9%BB%91%E6%A0%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AB%E6%A0%91%EF%BC%8CB+%E6%A0%91%EF%BC%8C%E7%BA%A2%E9%BB%91%E6%A0%91/" class="post-title-link" itemprop="url">数据结构：B树，B+树，B*树，红黑树</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:52:35" itemprop="dateModified" datetime="2022-09-25T01:52:35+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="B树"><a href="#B树" class="headerlink" title="B树"></a>B树</h3><p>B-tree树即B树，B即Balanced，平衡的意思。因为B树的原英文名称为B-tree，而国内很多人喜欢把B-tree译作B-树，其实，这是个非常不好的直译，很容易让人产生误解。如人们可能会以为B-树是一种树，而B树又是另一种树。而事实上是，B-tree就是指的B树。<br>B树的定义如下：</p>
+<ul>
+<li>定义任意非叶子结点最多只有M个儿子，且M&gt;2；</li>
+<li>根结点的儿子数为[2, M]；</li>
+<li>除根结点以外的非叶子结点的儿子数为[M&#x2F;2, M]，向上取整；</li>
+<li>非叶子结点的关键字个数&#x3D;儿子数-1；</li>
+<li>所有叶子结点位于同一层；</li>
+<li>k个关键字把节点拆成k+1段，分别指向k+1个儿子，同时满足查找树的大小关系。</li>
+</ul>
+<p><img src="/images/btree-1.png"><br>优点：<br>可以看到，b树在查询时的比较次数并不比二叉树少，尤其是节点中的数非常多时，但是内存的比较速度非常快，耗时可以忽略，所以只要树的高度低，IO少，就可以提高查询性能，这是b树的优势之一。</p>
+<h3 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h3><p>B+树是B树的一种变体：</p>
+<ul>
+<li>有n棵子树的非叶子结点中含有n个关键字（b树是n-1个），这些关键字不保存数据，只用来索引，所有数据都保存在叶子节点（b树是每个关键字都保存数据）。</li>
+<li>所有的叶子结点中包含了全部关键字的信息，及指向含这些关键字记录的指针，且叶子结点本身依关键字的大小自小而大顺序链接。</li>
+<li>所有的非叶子结点可以看成是索引部分，结点中仅含其子树中的最大（或最小）关键字。</li>
+<li>通常在b+树上有两个头指针，一个指向根结点，一个指向关键字最小的叶子结点。</li>
+<li>同一个数字会在不同节点中重复出现，根节点的最大元素就是b+树的最大元素。<br><img src="/images/b+tree-1.png"><br>优点：</li>
+<li>b+树的中间节点不保存数据，所以磁盘页能容纳更多节点元素，更“矮胖”；</li>
+<li>b+树查询必须查找到叶子节点，b树只要匹配到即可不用管元素位置，因此b+树查找更稳定（并不慢）；</li>
+<li>对于<font color = orange>范围查找</font>来说，b+树只需遍历叶子节点链表即可，b树却需要重复地中序遍历，如下两图：</li>
+</ul>
+<h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p>红黑树是一种含有红黑结点并能自平衡的二叉查找树。它必须满足下面性质：</p>
+<ul>
+<li>性质1：每个节点要么是黑色，要么是红色。</li>
+<li>性质2：根节点是黑色。</li>
+<li>性质3：每个叶子节点（NIL）是黑色。</li>
+<li>性质4：每个红色结点的两个子结点一定都是黑色。</li>
+<li>性质5：任意一结点到每个叶子结点的路径都包含数量相同的黑结点。</li>
+</ul>
+<p>参考<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/e136ec79235c">这篇文章</a>,讲的非常好.还有<a target="_blank" rel="noopener" href="https://www.cnblogs.com/skywang12345/p/3245399.html">这篇</a></p>
+<p>优点：<br>参考<a target="_blank" rel="noopener" href="https://www.cnblogs.com/wuchanming/p/4444961.html">这里</a></p>
+<ol>
+<li><p>红黑树是牺牲了严格的高度平衡的优越条件为代价，它只要求部分地达到平衡要求，降低了对旋转的要求，从而提高了性能。红黑树能够以O(log(n))的时间复杂度进行搜索、插入、删除操作。此外，由于它的设计，任何不平衡都会在三次旋转之内解决。当然，还有一些更好的，但实现起来更复杂的数据结构能够做到一步旋转之内达到平衡，但红黑树能够给我们一个比较“便宜”的解决方案。</p>
+</li>
+<li><p>相比于BST，因为红黑树可以能确保树的最长路径不大于两倍的最短路径的长度，所以可以看出它的查找效果是有最低保证的。在最坏的情况下也可以保证O(logN)的，这是要好于二叉查找树的。因为二叉查找树最坏情况可以让查找达到O(N)。</p>
+</li>
+<li><p>红黑树的算法时间复杂度和AVL相同，但统计性能比AVL树更高，所以在插入和删除中所做的后期维护操作肯定会比红黑树要耗时好多，但是他们的查找效率都是O(logN)，所以红黑树应用还是高于AVL树的. 实际上插入 AVL 树和红黑树的速度取决于你所插入的数据.如果你的数据分布较好,则比较宜于采用 AVL树(例如随机产生系列数),但是如果你想处理比较杂乱的情况,则红黑树是比较快的</p>
+</li>
 </ol>
 
       
@@ -652,198 +765,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9APING%E5%91%BD%E4%BB%A4%E5%8E%9F%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9APING%E5%91%BD%E4%BB%A4%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">网络复习：PING & traceroute命令原理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:53:39" itemprop="dateModified" datetime="2022-09-25T01:53:39+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="ICMP"><a href="#ICMP" class="headerlink" title="ICMP"></a>ICMP</h3><p>ping 基于ICMP协议，ICMP 主要的功能包括：确认 IP 包是否成功送达目标地址、报告发送过程中 IP 包被废弃的原因和改善网络设置等。<br>ICMP报文格式如下，封装在IP包里面，工作在网络层：<br><img src="/images/icmp-1.png"></p>
-<p>ICMP从类别上大概分为查询报文和差错报文。<br><img src="/images/icmp-2.png"></p>
-<h3 id="PING"><a href="#PING" class="headerlink" title="PING"></a>PING</h3><p>ping命令基于ICMP查询报文设计，原理是用类型码为8的ICMP发请 求，受到请求的主机则用类型码为0的ICMP回应。<br>ping首先通过arp协议广播请求目的主机的MAC地址，得到MAC地址之后发送请求报文。<br>回送应答报文格式如下：<br><img src="/images/ping-1.png"><br>和原始ICMP报文不同之处就是新增加了标识符和序号，标识符通常包含PID，序号从0开始，每次发送加1，可以确认网络包是否丢失。<br>PING命令的总体流程如下图所示<br><img src="/images/ping-2.png"></p>
-<h3 id="traceroute"><a href="#traceroute" class="headerlink" title="traceroute"></a>traceroute</h3><p>Traceroute的原理是非常非常的有意思，它受到目的主机的IP后，首先给目的主机发送一个TTL&#x3D;1的UDP数据包，而经过的第一个路由器收到这个数据包以后，就自动把TTL减1，而TTL变为0以后，路由器就把这个包给抛弃了，并同时产生 一个主机不可达的ICMP数据报给主机。主机收到这个数据报以后再发一个TTL&#x3D;2的UDP数据报给目的主机，然后刺激第二个路由器给主机发ICMP数据 报。如此往复直到到达目的主机。这样，traceroute就拿到了所有的路由器ip。从而避开了ip头只能记录有限路由IP的问题。</p>
-<p>有人要问，我怎么知道UDP到没到达目的主机呢？这就涉及一个技巧的问题，TCP和UDP协议有一个端口号定义，而普通的网络程序只监控少数的几个号码较 小的端口，比如说80,比如说23,等等。而traceroute发送的是端口号&gt;30000(真变态)的UDP报，所以到达目的主机的时候，目的 主机只能发送一个端口不可达的ICMP数据报给主机。主机接到这个报告以后就知道，主机到了。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AB%E6%A0%91%EF%BC%8CB+%E6%A0%91%EF%BC%8C%E7%BA%A2%E9%BB%91%E6%A0%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/14/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AB%E6%A0%91%EF%BC%8CB+%E6%A0%91%EF%BC%8C%E7%BA%A2%E9%BB%91%E6%A0%91/" class="post-title-link" itemprop="url">数据结构：B树，B+树，B*树，红黑树</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:52:35" itemprop="dateModified" datetime="2022-09-25T01:52:35+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="B树"><a href="#B树" class="headerlink" title="B树"></a>B树</h3><p>B-tree树即B树，B即Balanced，平衡的意思。因为B树的原英文名称为B-tree，而国内很多人喜欢把B-tree译作B-树，其实，这是个非常不好的直译，很容易让人产生误解。如人们可能会以为B-树是一种树，而B树又是另一种树。而事实上是，B-tree就是指的B树。<br>B树的定义如下：</p>
-<ul>
-<li>定义任意非叶子结点最多只有M个儿子，且M&gt;2；</li>
-<li>根结点的儿子数为[2, M]；</li>
-<li>除根结点以外的非叶子结点的儿子数为[M&#x2F;2, M]，向上取整；</li>
-<li>非叶子结点的关键字个数&#x3D;儿子数-1；</li>
-<li>所有叶子结点位于同一层；</li>
-<li>k个关键字把节点拆成k+1段，分别指向k+1个儿子，同时满足查找树的大小关系。</li>
-</ul>
-<p><img src="/images/btree-1.png"><br>优点：<br>可以看到，b树在查询时的比较次数并不比二叉树少，尤其是节点中的数非常多时，但是内存的比较速度非常快，耗时可以忽略，所以只要树的高度低，IO少，就可以提高查询性能，这是b树的优势之一。</p>
-<h3 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h3><p>B+树是B树的一种变体：</p>
-<ul>
-<li>有n棵子树的非叶子结点中含有n个关键字（b树是n-1个），这些关键字不保存数据，只用来索引，所有数据都保存在叶子节点（b树是每个关键字都保存数据）。</li>
-<li>所有的叶子结点中包含了全部关键字的信息，及指向含这些关键字记录的指针，且叶子结点本身依关键字的大小自小而大顺序链接。</li>
-<li>所有的非叶子结点可以看成是索引部分，结点中仅含其子树中的最大（或最小）关键字。</li>
-<li>通常在b+树上有两个头指针，一个指向根结点，一个指向关键字最小的叶子结点。</li>
-<li>同一个数字会在不同节点中重复出现，根节点的最大元素就是b+树的最大元素。<br><img src="/images/b+tree-1.png"><br>优点：</li>
-<li>b+树的中间节点不保存数据，所以磁盘页能容纳更多节点元素，更“矮胖”；</li>
-<li>b+树查询必须查找到叶子节点，b树只要匹配到即可不用管元素位置，因此b+树查找更稳定（并不慢）；</li>
-<li>对于<font color = orange>范围查找</font>来说，b+树只需遍历叶子节点链表即可，b树却需要重复地中序遍历，如下两图：</li>
-</ul>
-<h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p>红黑树是一种含有红黑结点并能自平衡的二叉查找树。它必须满足下面性质：</p>
-<ul>
-<li>性质1：每个节点要么是黑色，要么是红色。</li>
-<li>性质2：根节点是黑色。</li>
-<li>性质3：每个叶子节点（NIL）是黑色。</li>
-<li>性质4：每个红色结点的两个子结点一定都是黑色。</li>
-<li>性质5：任意一结点到每个叶子结点的路径都包含数量相同的黑结点。</li>
-</ul>
-<p>参考<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/e136ec79235c">这篇文章</a>,讲的非常好.还有<a target="_blank" rel="noopener" href="https://www.cnblogs.com/skywang12345/p/3245399.html">这篇</a></p>
-<p>优点：<br>参考<a target="_blank" rel="noopener" href="https://www.cnblogs.com/wuchanming/p/4444961.html">这里</a></p>
-<ol>
-<li><p>红黑树是牺牲了严格的高度平衡的优越条件为代价，它只要求部分地达到平衡要求，降低了对旋转的要求，从而提高了性能。红黑树能够以O(log(n))的时间复杂度进行搜索、插入、删除操作。此外，由于它的设计，任何不平衡都会在三次旋转之内解决。当然，还有一些更好的，但实现起来更复杂的数据结构能够做到一步旋转之内达到平衡，但红黑树能够给我们一个比较“便宜”的解决方案。</p>
-</li>
-<li><p>相比于BST，因为红黑树可以能确保树的最长路径不大于两倍的最短路径的长度，所以可以看出它的查找效果是有最低保证的。在最坏的情况下也可以保证O(logN)的，这是要好于二叉查找树的。因为二叉查找树最坏情况可以让查找达到O(N)。</p>
-</li>
-<li><p>红黑树的算法时间复杂度和AVL相同，但统计性能比AVL树更高，所以在插入和删除中所做的后期维护操作肯定会比红黑树要耗时好多，但是他们的查找效率都是O(logN)，所以红黑树应用还是高于AVL树的. 实际上插入 AVL 树和红黑树的速度取决于你所插入的数据.如果你的数据分布较好,则比较宜于采用 AVL树(例如随机产生系列数),但是如果你想处理比较杂乱的情况,则红黑树是比较快的</p>
-</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9AHTTPS&TLS&SSL/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -963,7 +884,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E3%80%81%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9APING%E5%91%BD%E4%BB%A4%E5%8E%9F%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -977,7 +898,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E3%80%81%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/" class="post-title-link" itemprop="url">网络复习：TCP滑动窗口、拥塞控制</a>
+            <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9APING%E5%91%BD%E4%BB%A4%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">网络复习：PING & traceroute命令原理</a>
         </h2>
 
         <div class="post-meta">
@@ -994,7 +915,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:53:49" itemprop="dateModified" datetime="2022-09-25T01:53:49+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:53:39" itemprop="dateModified" datetime="2022-09-25T01:53:39+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1018,53 +939,11 @@
 
       
           <span id="more"></span>
-<h3 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h3><h4 id="固定窗口的问题"><a href="#固定窗口的问题" class="headerlink" title="固定窗口的问题"></a>固定窗口的问题</h4><p><img src="/images/tcp-2-1.png"><br>我们假设这个固定窗口的大小为1，也就是每次只能发送一个数据，只有接收方对这个数据进行了确认后才能发送第二个数据。在图中我们可以看到，发送方每发送一个数据接收方就要给发送方一个ACK对这个数据进行确认。只有接收了这个确认数据以后发送方才能传输下个数据。<br>这样大大降低了网络吞吐量。</p>
-<h4 id="滑动窗口-1"><a href="#滑动窗口-1" class="headerlink" title="滑动窗口"></a>滑动窗口</h4><p>为了解决上面这个问题，使用滑动窗口算法：<br><img src="/images/tcp-1-2.png"><br>发送主机在发送了一个段之后不必要一直等，而是继续发送。窗口大小为无需等待可以继续发送数据的最大值。<br>发送窗口的大小是怎么确定的？</p>
-<h4 id="窗口控制和重发控制"><a href="#窗口控制和重发控制" class="headerlink" title="窗口控制和重发控制"></a>窗口控制和重发控制</h4><ol>
-<li>应答丢失<br><img src="/images/tcp-2-2.png"></li>
-</ol>
-<p>某些确认应答丢失也无需重发。<br>2. 报文丢失<br><img src="/images/tcp-2-3.png"><br>发送端收到三个相同的确认应答就对数据进行重发。</p>
-<ol start="3">
-<li>流控制<br>上述模型存在的问题：</li>
-</ol>
-<ul>
-<li><p>如果窗口过小，当传输比较大的数据的时候需要不停的对数据进行确认，这个时候就会造成很大的延迟。</p>
-</li>
-<li><p>如果窗口过大，我们假设发送方一次发送100个数据，但接收方只能处理50个数据，这样每次都只对这50个数据进行确认。发送方下一次还是发送100个数据，但接受方还是只能处理50个数据。这样就避免了不必要的数据来拥塞我们的链路。<br>于是提出流控制方法：<br><img src="/images/tcp-2-4.png"></p>
-</li>
-<li><p>第一部分<br>发送端根据当前链路带宽大小决定发送数据包的窗口大小。这里，窗口大小为 3，表示可以发送 3 个数据包。因此发送端发送了 3 个数据包，分别为 1-1000、1001-2000 和 2001-3000。<br>接收端接收这些数据包，但是只能处理 2 个数据包，第 3 个数据包 2001-3000 没有被处理。因此返回确认应答包，设置窗口大小为 2，告诉发送端自己现在只能处理 2 个数据包，下一次请发送 2 个数据包。</p>
-</li>
-<li><p>第二部分<br>发送端接收到确认应答包，查看到接收端返回窗口大小为 2，知道接收端只处理了 2 个数据包。发过去的第 3 个数据包 2001-3000 没有被处理。这说明此时接收端只能处理 2 个数据包，第 3 个数据包还需要重新发送。因此发送端发送 2 个数据包 2001-3000 和 3001-4000。接收端收到这两个数据包并进行了处理。此时，还是只能处理 2 个窗口，继续向发送端发送确认应答包，设置窗口为 2，告诉发送端，下一个应该接收 4001 的数据包。</p>
-</li>
-<li><p>第三部分<br>发送端接收到确认应答包，查看到接收端返回窗口大小为 2。说明接收端接收了上次发送的 2 个数据包。此时仍然可以处理 2 个数据包，继续发送数据包 4001-5000 和 5001-6000。如果在接收端返回的确认应答包中，窗口设置为 0，则表示现在不能接收任何数据。这时，发送端将不会再发送数据包，只有等待接收端发送窗口更新通知才可以继续发送数据包。如果这个更新通知在传输中丢失了，那么就可能导致无法继续通信。为了避免这样的情况发生，发送端会时不时地发送窗口探测包，该包仅有1个字节，用来获取最新的窗口大小的信息。</p>
-</li>
-</ul>
-<h3 id="拥塞控制"><a href="#拥塞控制" class="headerlink" title="拥塞控制"></a>拥塞控制</h3><p>有了TCP窗口控制，通信双方不再使用数据段为单位发送确认应答，但是如果在通信刚开始就发送大量数据，会引发网络拥堵等其他问题。<br>为了防止上述问题，TCP通过慢启动算法进行拥塞控制。</p>
-<h4 id="慢启动"><a href="#慢启动" class="headerlink" title="慢启动"></a>慢启动</h4><p><img src="/images/tcp-2-5.png"><br>发送个过程中比较接收端窗口和拥塞窗口，选最小值作为窗口大小。<br>下图展示了TCP窗口变化：<br><img src="/images/tcp-2-6.png"></p>
-<ul>
-<li>开始不设置阈值，当超时重发设置为拥塞窗口的一半；</li>
-<li>每经过一个轮次，拥塞窗口 *&#x3D; 2。</li>
-</ul>
-<h4 id="拥塞避免"><a href="#拥塞避免" class="headerlink" title="拥塞避免"></a>拥塞避免</h4><p>为了防止拥塞窗口cwnd增长过大引起网络拥塞，还需要设置一个慢开始门限ssthresh状态变量（如何设置ssthresh）。慢开始门限ssthresh的用法如下：</p>
-<ul>
-<li><p>当 cwnd &lt; ssthresh 时，使用上述的慢开始算法。</p>
-</li>
-<li><p>当 cwnd &gt; ssthresh 时，停止使用慢开始算法而改用拥塞避免算法。</p>
-</li>
-<li><p>当 cwnd &#x3D; ssthresh 时，既可使用慢开始算法，也可使用拥塞控制避免算法。<br><img src="/images/tcp-2-7.png"></p>
-</li>
-<li><p>当TCP连接进行初始化时，把拥塞窗口cwnd置为1。慢启动门限的初始值设置为16个报文段，即 cwnd &#x3D; 16 。</p>
-</li>
-<li><p>在执行慢开始算法时，拥塞窗口 cwnd 的初始值为1。拥塞窗口cwnd 随着传输轮次按指数规律增长。当拥塞窗口cwnd增长到慢开始门限值ssthresh时（即当cwnd&#x3D;16时），就改为执行拥塞控制算法，拥塞窗口按线 性规律增长。</p>
-</li>
-<li><p>假定拥塞窗口的数值增长到24时，网络出现超时（这很可能就是网络发生拥塞了）。更新后的ssthresh值变为12（即变为出现超时时的拥塞窗口数值 24的一半），拥塞窗口再重新设置为1，并执行慢开始算法。当cwnd&#x3D;ssthresh&#x3D;12时改为执行拥塞避免算法，拥塞窗口按线性规律增长，每经过 一个往返时间增加一个MSS的大小。</p>
-</li>
-</ul>
-<h4 id="快恢复"><a href="#快恢复" class="headerlink" title="快恢复"></a>快恢复</h4><p><img src="/images/tcp-2-8.png"></p>
-<ul>
-<li>当发送方连续收到三个重复确认，就执行“乘法减小”算法，把慢开始门限ssthresh减半。这是为了预防网络发生拥塞。请注意：接下去不执行慢开始算法。</li>
-<li>由于发送方现在认为网络很可能没有发生拥塞，因此与慢开始不同之处是现在不执行慢开始算法（即拥塞窗口cwnd现在不设置为1），而是把cwnd值设置为 慢开始门限ssthresh减半后的数值，然后开始执行拥塞避免算法（“加法增大”），使拥塞窗口缓慢地线性增大。</li>
-</ul>
+<h3 id="ICMP"><a href="#ICMP" class="headerlink" title="ICMP"></a>ICMP</h3><p>ping 基于ICMP协议，ICMP 主要的功能包括：确认 IP 包是否成功送达目标地址、报告发送过程中 IP 包被废弃的原因和改善网络设置等。<br>ICMP报文格式如下，封装在IP包里面，工作在网络层：<br><img src="/images/icmp-1.png"></p>
+<p>ICMP从类别上大概分为查询报文和差错报文。<br><img src="/images/icmp-2.png"></p>
+<h3 id="PING"><a href="#PING" class="headerlink" title="PING"></a>PING</h3><p>ping命令基于ICMP查询报文设计，原理是用类型码为8的ICMP发请 求，受到请求的主机则用类型码为0的ICMP回应。<br>ping首先通过arp协议广播请求目的主机的MAC地址，得到MAC地址之后发送请求报文。<br>回送应答报文格式如下：<br><img src="/images/ping-1.png"><br>和原始ICMP报文不同之处就是新增加了标识符和序号，标识符通常包含PID，序号从0开始，每次发送加1，可以确认网络包是否丢失。<br>PING命令的总体流程如下图所示<br><img src="/images/ping-2.png"></p>
+<h3 id="traceroute"><a href="#traceroute" class="headerlink" title="traceroute"></a>traceroute</h3><p>Traceroute的原理是非常非常的有意思，它受到目的主机的IP后，首先给目的主机发送一个TTL&#x3D;1的UDP数据包，而经过的第一个路由器收到这个数据包以后，就自动把TTL减1，而TTL变为0以后，路由器就把这个包给抛弃了，并同时产生 一个主机不可达的ICMP数据报给主机。主机收到这个数据报以后再发一个TTL&#x3D;2的UDP数据报给目的主机，然后刺激第二个路由器给主机发ICMP数据 报。如此往复直到到达目的主机。这样，traceroute就拿到了所有的路由器ip。从而避开了ip头只能记录有限路由IP的问题。</p>
+<p>有人要问，我怎么知道UDP到没到达目的主机呢？这就涉及一个技巧的问题，TCP和UDP协议有一个端口号定义，而普通的网络程序只监控少数的几个号码较 小的端口，比如说80,比如说23,等等。而traceroute发送的是端口号&gt;30000(真变态)的UDP报，所以到达目的主机的时候，目的 主机只能发送一个端口不可达的ICMP数据报给主机。主机接到这个报告以后就知道，主机到了。</p>
 
       
     </div>
@@ -1266,6 +1145,127 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E3%80%81%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E3%80%81%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/" class="post-title-link" itemprop="url">网络复习：TCP滑动窗口、拥塞控制</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:53:49" itemprop="dateModified" datetime="2022-09-25T01:53:49+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h3><h4 id="固定窗口的问题"><a href="#固定窗口的问题" class="headerlink" title="固定窗口的问题"></a>固定窗口的问题</h4><p><img src="/images/tcp-2-1.png"><br>我们假设这个固定窗口的大小为1，也就是每次只能发送一个数据，只有接收方对这个数据进行了确认后才能发送第二个数据。在图中我们可以看到，发送方每发送一个数据接收方就要给发送方一个ACK对这个数据进行确认。只有接收了这个确认数据以后发送方才能传输下个数据。<br>这样大大降低了网络吞吐量。</p>
+<h4 id="滑动窗口-1"><a href="#滑动窗口-1" class="headerlink" title="滑动窗口"></a>滑动窗口</h4><p>为了解决上面这个问题，使用滑动窗口算法：<br><img src="/images/tcp-1-2.png"><br>发送主机在发送了一个段之后不必要一直等，而是继续发送。窗口大小为无需等待可以继续发送数据的最大值。<br>发送窗口的大小是怎么确定的？</p>
+<h4 id="窗口控制和重发控制"><a href="#窗口控制和重发控制" class="headerlink" title="窗口控制和重发控制"></a>窗口控制和重发控制</h4><ol>
+<li>应答丢失<br><img src="/images/tcp-2-2.png"></li>
+</ol>
+<p>某些确认应答丢失也无需重发。<br>2. 报文丢失<br><img src="/images/tcp-2-3.png"><br>发送端收到三个相同的确认应答就对数据进行重发。</p>
+<ol start="3">
+<li>流控制<br>上述模型存在的问题：</li>
+</ol>
+<ul>
+<li><p>如果窗口过小，当传输比较大的数据的时候需要不停的对数据进行确认，这个时候就会造成很大的延迟。</p>
+</li>
+<li><p>如果窗口过大，我们假设发送方一次发送100个数据，但接收方只能处理50个数据，这样每次都只对这50个数据进行确认。发送方下一次还是发送100个数据，但接受方还是只能处理50个数据。这样就避免了不必要的数据来拥塞我们的链路。<br>于是提出流控制方法：<br><img src="/images/tcp-2-4.png"></p>
+</li>
+<li><p>第一部分<br>发送端根据当前链路带宽大小决定发送数据包的窗口大小。这里，窗口大小为 3，表示可以发送 3 个数据包。因此发送端发送了 3 个数据包，分别为 1-1000、1001-2000 和 2001-3000。<br>接收端接收这些数据包，但是只能处理 2 个数据包，第 3 个数据包 2001-3000 没有被处理。因此返回确认应答包，设置窗口大小为 2，告诉发送端自己现在只能处理 2 个数据包，下一次请发送 2 个数据包。</p>
+</li>
+<li><p>第二部分<br>发送端接收到确认应答包，查看到接收端返回窗口大小为 2，知道接收端只处理了 2 个数据包。发过去的第 3 个数据包 2001-3000 没有被处理。这说明此时接收端只能处理 2 个数据包，第 3 个数据包还需要重新发送。因此发送端发送 2 个数据包 2001-3000 和 3001-4000。接收端收到这两个数据包并进行了处理。此时，还是只能处理 2 个窗口，继续向发送端发送确认应答包，设置窗口为 2，告诉发送端，下一个应该接收 4001 的数据包。</p>
+</li>
+<li><p>第三部分<br>发送端接收到确认应答包，查看到接收端返回窗口大小为 2。说明接收端接收了上次发送的 2 个数据包。此时仍然可以处理 2 个数据包，继续发送数据包 4001-5000 和 5001-6000。如果在接收端返回的确认应答包中，窗口设置为 0，则表示现在不能接收任何数据。这时，发送端将不会再发送数据包，只有等待接收端发送窗口更新通知才可以继续发送数据包。如果这个更新通知在传输中丢失了，那么就可能导致无法继续通信。为了避免这样的情况发生，发送端会时不时地发送窗口探测包，该包仅有1个字节，用来获取最新的窗口大小的信息。</p>
+</li>
+</ul>
+<h3 id="拥塞控制"><a href="#拥塞控制" class="headerlink" title="拥塞控制"></a>拥塞控制</h3><p>有了TCP窗口控制，通信双方不再使用数据段为单位发送确认应答，但是如果在通信刚开始就发送大量数据，会引发网络拥堵等其他问题。<br>为了防止上述问题，TCP通过慢启动算法进行拥塞控制。</p>
+<h4 id="慢启动"><a href="#慢启动" class="headerlink" title="慢启动"></a>慢启动</h4><p><img src="/images/tcp-2-5.png"><br>发送个过程中比较接收端窗口和拥塞窗口，选最小值作为窗口大小。<br>下图展示了TCP窗口变化：<br><img src="/images/tcp-2-6.png"></p>
+<ul>
+<li>开始不设置阈值，当超时重发设置为拥塞窗口的一半；</li>
+<li>每经过一个轮次，拥塞窗口 *&#x3D; 2。</li>
+</ul>
+<h4 id="拥塞避免"><a href="#拥塞避免" class="headerlink" title="拥塞避免"></a>拥塞避免</h4><p>为了防止拥塞窗口cwnd增长过大引起网络拥塞，还需要设置一个慢开始门限ssthresh状态变量（如何设置ssthresh）。慢开始门限ssthresh的用法如下：</p>
+<ul>
+<li><p>当 cwnd &lt; ssthresh 时，使用上述的慢开始算法。</p>
+</li>
+<li><p>当 cwnd &gt; ssthresh 时，停止使用慢开始算法而改用拥塞避免算法。</p>
+</li>
+<li><p>当 cwnd &#x3D; ssthresh 时，既可使用慢开始算法，也可使用拥塞控制避免算法。<br><img src="/images/tcp-2-7.png"></p>
+</li>
+<li><p>当TCP连接进行初始化时，把拥塞窗口cwnd置为1。慢启动门限的初始值设置为16个报文段，即 cwnd &#x3D; 16 。</p>
+</li>
+<li><p>在执行慢开始算法时，拥塞窗口 cwnd 的初始值为1。拥塞窗口cwnd 随着传输轮次按指数规律增长。当拥塞窗口cwnd增长到慢开始门限值ssthresh时（即当cwnd&#x3D;16时），就改为执行拥塞控制算法，拥塞窗口按线 性规律增长。</p>
+</li>
+<li><p>假定拥塞窗口的数值增长到24时，网络出现超时（这很可能就是网络发生拥塞了）。更新后的ssthresh值变为12（即变为出现超时时的拥塞窗口数值 24的一半），拥塞窗口再重新设置为1，并执行慢开始算法。当cwnd&#x3D;ssthresh&#x3D;12时改为执行拥塞避免算法，拥塞窗口按线性规律增长，每经过 一个往返时间增加一个MSS的大小。</p>
+</li>
+</ul>
+<h4 id="快恢复"><a href="#快恢复" class="headerlink" title="快恢复"></a>快恢复</h4><p><img src="/images/tcp-2-8.png"></p>
+<ul>
+<li>当发送方连续收到三个重复确认，就执行“乘法减小”算法，把慢开始门限ssthresh减半。这是为了预防网络发生拥塞。请注意：接下去不执行慢开始算法。</li>
+<li>由于发送方现在认为网络很可能没有发生拥塞，因此与慢开始不同之处是现在不执行慢开始算法（即拥塞窗口cwnd现在不设置为1），而是把cwnd值设置为 慢开始门限ssthresh减半后的数值，然后开始执行拥塞避免算法（“加法增大”），使拥塞窗口缓慢地线性增大。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9Ahttp/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1356,7 +1356,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E8%99%9A%E6%8B%9F%E5%8C%96%EF%BC%9Adocker%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E8%87%AA%E9%97%AE%E6%B8%85%E5%8D%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -1370,7 +1370,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/14/%E8%99%9A%E6%8B%9F%E5%8C%96%EF%BC%9Adocker%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">Docker底层原理：CGroup & Namespace</a>
+            <a href="/2021/09/14/%E8%87%AA%E9%97%AE%E6%B8%85%E5%8D%95/" class="post-title-link" itemprop="url">大总结</a>
         </h2>
 
         <div class="post-meta">
@@ -1387,7 +1387,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:54:14" itemprop="dateModified" datetime="2022-09-25T01:54:14+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:54:35" itemprop="dateModified" datetime="2022-09-25T01:54:35+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1395,7 +1395,7 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%AE%B9%E5%99%A8/" itemprop="url" rel="index"><span itemprop="name">容器</span></a>
+                  <a href="/categories/%E7%BB%BC%E5%90%88/" itemprop="url" rel="index"><span itemprop="name">综合</span></a>
                 </span>
             </span>
 
@@ -1411,7 +1411,110 @@
 
       
           <span id="more"></span>
-<h3 id="docker"><a href="#docker" class="headerlink" title="docker"></a>docker</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zhonglinzhang/article/details/64905759">参考这篇文章</a></p>
+<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/circle/discuss/XXGdoF/">终极总结</a></p>
+<h1 id="C-基础"><a href="#C-基础" class="headerlink" title="C++基础"></a>C++基础</h1><ol>
+<li>对const的理解？const指针和引用的区别？</li>
+<li>#define和const的区别？</li>
+<li>说说static关键字的用法？<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/ypshowm/article/details/89030194">https://blog.csdn.net/ypshowm/article/details/89030194</a></li>
+<li>inline函数的使用？</li>
+<li>知道#pragma pack(n)吗？怎么实现内存对齐的？</li>
+<li>解释下”extern C”，在什么时候会用到？</li>
+<li>用struct实现下继承？</li>
+<li>解释下friend关键字？</li>
+<li>多态的实现方式？</li>
+<li>虚析构函数？虚构造函数？</li>
+<li>说说虚表的内存布局？</li>
+<li>纯虚函数？虚继承？</li>
+<li>模板继承？模板特化&#x2F;偏特化？</li>
+<li>虚函数可以是内联函数吗？</li>
+<li>构造函数能是虚函数吗，析构函数呢？</li>
+<li>c++四大强制类型转换？</li>
+<li>四大类型转换发生的时间？编译&#x2F;执行</li>
+<li>构造函数初始化列表和函数内部赋值的区别？</li>
+</ol>
+<h1 id="C-11"><a href="#C-11" class="headerlink" title="C++11"></a>C++11</h1><ol>
+<li>decltype用过吗?</li>
+<li>左值引用和右值引用是什么？</li>
+<li>移动语义和完美转发说说？</li>
+<li>智能指针有哪些？</li>
+<li>说说每个的实现原理和应用场景？</li>
+<li></li>
+</ol>
+<h1 id="C-内存"><a href="#C-内存" class="headerlink" title="C++内存"></a>C++内存</h1><ol>
+<li>new&#x2F;delete 和malloc&#x2F;free区别？</li>
+<li>ralloc&#x2F;alloca</li>
+<li>双重free会发生什么？</li>
+<li>如何定义一个只能在栈&#x2F;堆上生成的对象？</li>
+<li>讲下ptmalloc？</li>
+<li>讲下tcmalloc？</li>
+<li>讲下jemalloc？</li>
+<li>知道哪些强制类型转换？（static_cast等)</li>
+</ol>
+<h1 id="STL"><a href="#STL" class="headerlink" title="STL"></a>STL</h1><ol>
+<li>五大组成部分？</li>
+<li>有哪些容器？</li>
+<li>vector&#x2F;map&#x2F;哈希&#x2F;deque底层实现？</li>
+<li>sort算法实现是什么？全都是快排吗？</li>
+</ol>
+<h1 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h1><ol>
+<li>TCP三次握手，四次挥手详细流程？</li>
+<li>三次握手两次行不行？</li>
+<li>sock函数和三次握手的对应？</li>
+<li>服务器大量TIME_WAIT怎么办？</li>
+<li>TCP粘包？</li>
+<li>TCP拥塞控制？</li>
+<li>http1.0&#x2F;1.1&#x2F;2.0区别？</li>
+<li>TLS&#x2F;HTTPS握手过程？</li>
+<li>ARP协议？</li>
+<li>PING命令实现原理？</li>
+<li>Traceroute命令实现原理？</li>
+</ol>
+<h1 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h1><ol>
+<li>进程和线程？</li>
+<li>内核态和用户态？</li>
+<li>进程间通信方式每个详细说？优缺点？</li>
+<li>线程间通信方式详细说？</li>
+<li>进程线程拥有的资源集合？</li>
+<li>讲讲死锁？</li>
+<li>线程池实现一下？</li>
+<li>主机字节序和网络字节序？如何判断大端小端？写个程序。</li>
+<li>虚拟内存？</li>
+<li>页表工作原理，MMU底层原理？</li>
+<li>进程虚拟空间地址text段下面保留的128M空间是干嘛的，为什么不能是256M？<ul>
+<li>128M空间是保留的C语言库，至于为啥不是256M，目前未知（节省空间？）.</li>
+</ul>
+</li>
+</ol>
+<h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><ol>
+<li>B树&#x2F;B+树&#x2F;红黑树有什么区别？</li>
+<li>红黑树旋转？</li>
+<li>排序算法复杂度？</li>
+</ol>
+<h1 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h1><ol>
+<li>MYSQL索引作用？索引失效？</li>
+<li>MYSQL引擎？</li>
+<li>MYSQL锁？</li>
+<li>MYSQL事务？</li>
+<li>实现一个堆？</li>
+</ol>
+<h1 id="中间件"><a href="#中间件" class="headerlink" title="中间件"></a>中间件</h1><ol>
+<li>redis基本数据结构？</li>
+<li>redis跳表？具体操作插入删除？</li>
+<li>redis的zset？</li>
+<li>redis缓存策略？</li>
+<li>redis淘汰策略？</li>
+<li>redis哨兵模式、集群模式？</li>
+<li>redis哨兵模式和集群模式优缺点？</li>
+<li>redis持久化？</li>
+<li>redis缓存和主库不一致？</li>
+</ol>
+<h1 id="场景设计"><a href="#场景设计" class="headerlink" title="场景设计"></a>场景设计</h1><h1 id="智力题"><a href="#智力题" class="headerlink" title="智力题"></a>智力题</h1><ol>
+<li>有十个机器，九个生产的金币是5g，只有一个生产是4g，给你一个称，怎么一次找出那个生产4g的机器。</li>
+</ol>
+<p>将机器从1开始编号到10，每个机器取对应编号个硬币，共计55个硬币。<br>假设每个机器生产的硬币都是5g，则这55个硬币总总量为275g；<br>与实际的重量做差值，即为生产4g硬币对应机器的编号。<br>（如果是1号机器，因为只取了1个硬币，重量比2</p>
+<ol start="2">
+<li>给一个硬币，要求生成1&#x2F;5的概率。<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">g1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span> / <span class="built_in">random</span>() &gt; <span class="number">0.5</span> ? <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">ing <span class="title">getAns</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        res = (<span class="built_in">g1</span>() &lt;&lt; <span class="number">2</span>) + (<span class="built_in">g1</span>() &lt;&lt; <span class="number">1</span>) + <span class="built_in">g1</span>();</span><br><span class="line">    &#125; <span class="keyword">while</span> (res == <span class="number">7</span> || res == <span class="number">6</span> || res == <span class="number">5</span>);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
 
       
     </div>

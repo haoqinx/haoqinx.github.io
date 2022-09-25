@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="星海横流 岁月成碑">
@@ -874,6 +874,84 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Amap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Amap/" class="post-title-link" itemprop="url">c++STL系列：map & multimap</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:56:38" itemprop="dateModified" datetime="2022-09-25T01:56:38+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p>map&#x2F;multimap 也是以红黑树为底层结构。<br>红黑树的左旋右旋、性质在这里先不深究。</p>
+<h3 id="map-x2F-multimap"><a href="#map-x2F-multimap" class="headerlink" title="map&#x2F;multimap"></a>map&#x2F;multimap</h3><p>和set不同的是map&#x2F;multimap是以pair的key为排序对象，在G2.9的实现截图如下：<br><img src="/images/map-2.png"></p>
+<p>map&#x2F;multimap给定的默认仿函数为less&lt;_Ty&gt;，默认的取值仿函数是select1st&lt;pair&lt;const int, string&gt;&gt;。<br>map也提供<font color=orange>[]</font>的操作符重载：<br><img src="/images/map-1.png"></p>
+<p>需要注意的是如果存在要查找的值就返回，否则返回要查找的值应该出现的位置。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Adeque/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -960,7 +1038,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Amap/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Aset/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -974,7 +1052,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Amap/" class="post-title-link" itemprop="url">c++STL系列：map & multimap</a>
+            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Aset/" class="post-title-link" itemprop="url">c++STL系列：set & multiset</a>
         </h2>
 
         <div class="post-meta">
@@ -991,7 +1069,7 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:56:38" itemprop="dateModified" datetime="2022-09-25T01:56:38+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:56:41" itemprop="dateModified" datetime="2022-09-25T01:56:41+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1015,180 +1093,16 @@ wait操作分为两步，首先对waitNum + 1,然后将当前进程加入等待�
 
       
           <span id="more"></span>
-<h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p>map&#x2F;multimap 也是以红黑树为底层结构。<br>红黑树的左旋右旋、性质在这里先不深究。</p>
-<h3 id="map-x2F-multimap"><a href="#map-x2F-multimap" class="headerlink" title="map&#x2F;multimap"></a>map&#x2F;multimap</h3><p>和set不同的是map&#x2F;multimap是以pair的key为排序对象，在G2.9的实现截图如下：<br><img src="/images/map-2.png"></p>
-<p>map&#x2F;multimap给定的默认仿函数为less&lt;_Ty&gt;，默认的取值仿函数是select1st&lt;pair&lt;const int, string&gt;&gt;。<br>map也提供<font color=orange>[]</font>的操作符重载：<br><img src="/images/map-1.png"></p>
-<p>需要注意的是如果存在要查找的值就返回，否则返回要查找的值应该出现的位置。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Alist/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Alist/" class="post-title-link" itemprop="url">c++STL系列：list</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:56:33" itemprop="dateModified" datetime="2022-09-25T01:56:33+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="G2-9源码结构"><a href="#G2-9源码结构" class="headerlink" title="G2.9源码结构"></a>G2.9源码结构</h3><p><img src="/images/list-1.png"></p>
-<p>在低版本下list的结构比较简单，就是一个list模板类和一个node模板类。总体的数据结构事宜个环形双向链表。<br>begin()指向头结点，end()指向尾节点。</p>
+<h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p>set&#x2F;multiset以红黑树为底层结构，因此元素在插入过程中自动排序。<br><img src="/images/rbtree.png"></p>
+<p><img src="/images/rbtree-2.png"></p>
+<p>STL中的红黑树为了方便实现，创建了一个假的header，并使用指针指向真正的红黑树根节点。<br>红黑树使用三个数据记录树结构：</p>
 <ul>
-<li>迭代器<br><img src="/images/list-2.png"></li>
+<li>node_count:节点的个数。</li>
+<li>header：指向真正的根节点。</li>
+<li>key_compare:仿函数，如果节点中存储的是一个类&#x2F;对象，使用仿函数来比较元素大小。</li>
 </ul>
-<p>源码中迭代器的结构如下，迭代器重载了前++,后++，-&gt;,*等一系列操作符，为了达到指针的效果。<br>这里需要注意的第一个是++这个操作符重载，形如：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self <span class="keyword">operator</span>++(<span class="type">int</span>)&#123;....&#125;</span><br></pre></td></tr></table></figure>
-<p>的为后置++，而前置++ 不需要形参:</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self&amp; <span class="keyword">operator</span>++()&#123;...&#125;</span><br></pre></td></tr></table></figure>
-<p>为什么后置++返回self，而后置返回一个引用呢？<font color=orange>是为了阻止后置++连续使用，也就是下面这种形式:</font></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">i++++;<span class="comment">//错误 self类型不能++</span></span><br><span class="line">++++i;<span class="comment">//正确 </span></span><br></pre></td></tr></table></figure>
-
-<p>另外需要注意的是-&gt;这个操作符重载,下面这个图阐述的很清楚:<br><img src="/images/list-3.png"></p>
-<h3 id="G4-9版本"><a href="#G4-9版本" class="headerlink" title="G4.9版本"></a>G4.9版本</h3><p><img src="/images/list-4.png"></p>
-<p>相对于G2.9版本，4.9版本的list充分利用了面向对象的设计方法，将实现类与基础类分割开，这符合effective c++的设计条款，但是对于源码阅读来说就不是很友好了。但是很庆幸，在基础的设计上新版本并没有特别多的改动，基本思想和原版本一致。<br>list的原理十分简单，下面简单总结一下list的使用。</p>
-<center>
-
-<table>
-<thead>
-<tr>
-<th align="center">方法</th>
-<th align="center">作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">erase()</td>
-<td align="center">删除一个元素</td>
-</tr>
-<tr>
-<td align="center">front()</td>
-<td align="center">返回第一个元素</td>
-</tr>
-<tr>
-<td align="center">get_allocator()</td>
-<td align="center">返回list的配置器</td>
-</tr>
-<tr>
-<td align="center">insert()</td>
-<td align="center">插入一个元素到list中</td>
-</tr>
-<tr>
-<td align="center">max_size()</td>
-<td align="center">返回list能容纳的最大元素数量</td>
-</tr>
-<tr>
-<td align="center">merge()</td>
-<td align="center">合并两个list</td>
-</tr>
-<tr>
-<td align="center">pop_back()</td>
-<td align="center">删除最后一个元素</td>
-</tr>
-<tr>
-<td align="center">pop_front()</td>
-<td align="center">删除第一个元素</td>
-</tr>
-<tr>
-<td align="center">push_back()</td>
-<td align="center">在list的末尾添加一个元素</td>
-</tr>
-<tr>
-<td align="center">push_front()</td>
-<td align="center">在list的头部添加一个元素</td>
-</tr>
-<tr>
-<td align="center">remove()</td>
-<td align="center">从list删除元素</td>
-</tr>
-<tr>
-<td align="center">remove_if()</td>
-<td align="center">按指定条件删除元素</td>
-</tr>
-<tr>
-<td align="center">resize()</td>
-<td align="center">改变list的大小</td>
-</tr>
-<tr>
-<td align="center">reverse()</td>
-<td align="center">把list的元素倒转</td>
-</tr>
-<tr>
-<td align="center">sort()</td>
-<td align="center">给list排序</td>
-</tr>
-<tr>
-<td align="center">unique()</td>
-<td align="center">删除list中重复的元素</td>
-</tr>
-<tr>
-<td align="center">splice()</td>
-<td align="center">合并两个list</td>
-</tr>
-</tbody></table>
-</center>
-
-
+<p>红黑树提供遍历操作和iterator。遍历得到的是元素排列的中序遍历，也就是从大到小或者从小到大的顺序。</p>
+<h3 id="set-x2F-multiset"><a href="#set-x2F-multiset" class="headerlink" title="set&#x2F;multiset"></a>set&#x2F;multiset</h3><p>set的迭代器无法改变元素值（因为需要保持红黑树的性质），实现的技巧是使用const迭代器。</p>
 
       
     </div>
