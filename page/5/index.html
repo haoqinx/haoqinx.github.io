@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="星海横流 岁月成碑">
@@ -192,7 +192,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/muduo%E7%BD%91%E7%BB%9C%E5%BA%93%E7%B3%BB%E5%88%97-%E5%B9%B6%E5%8F%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AE%BE%E8%AE%A1/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9Araft%E5%92%8C%E5%A4%8D%E5%88%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -206,7 +206,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/14/muduo%E7%BD%91%E7%BB%9C%E5%BA%93%E7%B3%BB%E5%88%97-%E5%B9%B6%E5%8F%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AE%BE%E8%AE%A1/" class="post-title-link" itemprop="url">muduo网络库：并发服务器设计</a>
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9Araft%E5%92%8C%E5%A4%8D%E5%88%B6/" class="post-title-link" itemprop="url">redis系列：raft一致性算法</a>
         </h2>
 
         <div class="post-meta">
@@ -223,7 +223,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:00:39" itemprop="dateModified" datetime="2022-09-25T02:00:39+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 02:01:59" itemprop="dateModified" datetime="2022-09-25T02:01:59+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -231,7 +231,7 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/muduo/" itemprop="url" rel="index"><span itemprop="name">muduo</span></a>
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
                 </span>
             </span>
 
@@ -247,62 +247,41 @@
 
       
           <span id="more"></span>
-<h3 id="常见并发服务器方案"><a href="#常见并发服务器方案" class="headerlink" title="常见并发服务器方案"></a>常见并发服务器方案</h3><ol>
-<li>循环式&#x2F;迭代式服务器<br><img src="/images/muduo-1.png"></li>
+<h3 id="Raft算法"><a href="#Raft算法" class="headerlink" title="Raft算法"></a>Raft算法</h3><ol>
+<li>基本概念<br>在任何时刻，服务器节点都处于三个状态之一：leader、follower或者candidate。</li>
 </ol>
-<p>整个服务器的流程是</p>
 <ul>
-<li>创建套接字，绑定监听。</li>
-<li>在一个循环中执行：<ul>
-<li>接受客户端连接</li>
-<li>读</li>
-<li>解码 处理 编码</li>
-<li>写</li>
-<li>关闭连接</li>
+<li>follwer：不会发送任何请求，只相应leader和candidate的请求；</li>
+<li>leader：处理所有客户端请求，如果一个可会断和follower通信，那么follower会重定向给leader；</li>
+<li>candidate：用来选举新leader。<br>下图展示了上面三种状态的转换：<br><img src="/images/redis-raft-1.png"></li>
 </ul>
-</li>
-<li>关闭连接</li>
-</ul>
-<p>这种连接方式实际上是短链接，而循环式服务器只能是短连接。整个程序是一个单线程的应用程序，不能是长连接的原因是因为如果需要进行长链接持续读，那么需要在写后在进行读，此时如果来一个新的连接请求就得不到响应。<br>另外整个连接处理过程不能太长，如果太长就会影响用户的响应时间。<br>总的来说这种方式具有下面几个缺点：</p>
+<p>Raft把时间分割成任意长度的任期，如下图所示：<br><img src="/images/redis-raft-2.png"></p>
+<p>每一个服务器节点存储一个当前任期号，该编号随着时间单调递增。不同的服务器节点观察到的任期转换的次数可能不同，在某些情况下，一个服务器节点可能没有看到 leader 选举过程或者甚至整个任期全程。任期在 Raft 算法中充当逻辑时钟的作用，这使得服务器节点可以发现一些过期的信息比如过时的leader。</p>
 <ul>
-<li>不能进行长连接</li>
-<li>不能处理复杂的业务请求</li>
-<li>不能利用cpu多核优势</li>
+<li>如果一个服务器的当前任期号比其他的小，该服务器会将自己的任期号更新为较大的那个值；</li>
+<li>如果一个 candidate 或者 leader 发现自己的任期号过期了，它会立即回到 follower 状态；</li>
+<li>如果一个节点接收到一个包含过期的任期号的请求，它会直接拒绝这个请求。</li>
 </ul>
 <ol start="2">
-<li>cocurrent服务器<br><img src="/images/muduo-2.png"></li>
+<li>Leader选举</li>
 </ol>
-<p>这个服务器的流程如上图所示，通过多进程的方式来处理多个客户端请求，并且可以处理长连接。</p>
-<ol start="3">
-<li><p>pre-fork or pre threaded<br><img src="/images/muduo-3.png"><br>这种称为预先创建线程或者进程的方式，每个进程或者线程负责一个客户端的请求。这种方式的一个缺点是会出现“惊群”现象。<br>所谓惊群现象，就是父进程创建socket，bind、listen后，通过fork创建多个子进程，每个子进程继承了父进程的socket，调用accpet开始监听等待网络连接。这个时候有多个进程同时等待网络的连接事件，当这个事件发生时，这些进程被同时唤醒，就是“惊群”。这样会导致什么问题呢？我们知道进程被唤醒，需要进行内核重新调度，这样每个进程同时去响应这一个事件，而最终只有一个进程能处理事件成功，其他的进程在处理该事件失败后重新休眠或其他。</p>
-</li>
-<li><p>reactor模式<br><img src="/images/muduo-4.png"></p>
-</li>
-</ol>
+<p>Raft 使用一种心跳机制来触发 leader 选举。<br>当服务器程序启动时，他们都是 follower。<br>如果一个 follower 在一段选举超时时间内没有接收到任何消息，它就假设系统中没有可用的 leader ，然后开始进行选举以选出新的 leader 。<br>选举的流程大概是：  </p>
 <ul>
-<li>reactor可以使用select&#x2F;poll&#x2F;epoll来实现。</li>
-<li>我们首先注册我们关注的监听套接字；</li>
-<li>用客户端发来请求，acceptor来接受连接，然后将对应的文件描述符加入reactor中关注可读事件；</li>
-<li>如果发生可读事件，开始dispatch（分派）；</li>
-<li>然后进行业务逻辑的处理。</li>
+<li>follower 先增加自己的当前任期号并且转换到 candidate 状态。</li>
+<li>投票给自己并且并行地向集群中的其他服务器节点发送 RequestVote RPC。</li>
+<li>当一个 candidate 获得集群中过半服务器节点针对同一个任期的投票，它就赢得了这次选举并成为 leader。（投票按照先来先得的原则）。</li>
+<li>在等待投票期间，candidate 可能会收到另一个声称自己是 leader 的服务器节点发来的 AppendEntries RPC 。如果这个 leader 的任期号（包含在RPC中）不小于 candidate 当前的任期号，那么 candidate 会承认该 leader 的合法地位并回到 follower 状态。 如果 RPC 中的任期号比自己的小，那么 candidate 就会拒绝这次的 RPC 并且继续保持 candidate 状态。</li>
+<li>如果candidate 既没有赢得选举也没有输：如果有多个 follower 同时成为 candidate ，那么选票可能会被瓜分以至于没有 candidate 赢得过半的投票。当这种情况发生时，每一个候选人都会超时，然后通过增加当前任期号来开始一轮新的选举。然而，如果没有其他机制的话，该情况可能会无限重复。<br>为了避免选票瓜分，也就是follower都投票给自己，Raft使用随机选举超时时间来解决。选举超时时间是从一个固定的区间（例如 150-300 毫秒）随机选择。这样可以把服务器都分散开以至于在大多数情况下只有一个服务器会选举超时；然后该服务器赢得选举并在其他服务器超时之前发送心跳。每个 candidate 在开始一次选举的时候会重置一个随机的选举超时时间，然后一直等待直到选举超时。</li>
 </ul>
-<p>以上所有的操作都是在单线程上完成的，因此不能处理较复杂的业务逻辑，也不能利用多核cpu的优势。</p>
-<ol start="5">
-<li>过渡方案</li>
-</ol>
+<h3 id="日志复制"><a href="#日志复制" class="headerlink" title="日志复制"></a>日志复制</h3><p>Leader 一旦被选举出来，就开始为客户端请求提供服务。客户端的每一个请求都包含一条将被复制状态机执行的指令。Leader 把该指令作为一个新的条目追加到日志中去，然后并行的发起 AppendEntries RPC 给其他的服务器，让它们复制该条目。  </p>
+<p>每个日志条目存储一条状态机指令和 leader 收到该指令时的任期号。如下图所示：<br><img src="/images/redis-raft-3.png"><br>Leader 决定什么时候把日志条目应用到状态机中是安全的；这种日志条目被称为已提交的。Raft 算法保证所有已提交的日志条目都是持久化的并且最终会被所有可用的状态机执行。一旦创建该日志条目的 leader 将它复制到过半的服务器上，该日志条目就会被提交（例如在图中的条目 7）。<br>正常操作期间，leader 和 follower 的日志保持一致，所以 AppendEntries RPC 的一致性检查从来不会失败。然而，leader 崩溃的情况会使日志处于不一致的状态：<br><img src="/images/redis-raft-4.png"><br>Follower 可能缺少一些在新 leader 中有的日志条目，也可能拥有一些新 leader 没有的日志条目，或者同时发生。缺失或多出日志条目的情况可能会涉及到多个任期。  </p>
 <ul>
-<li>reactor + thread per request<br>每来一个请求，创建一个线程，在请求较多的情况下系统的负载显著上升。</li>
-<li>reactor + worker thread<br>每个连接在一个工作者线程中完成，这种方式不如cocurrent方式，因为多了reactor。</li>
+<li>要使得 follower 的日志跟自己一致，leader 必须找到两者达成一致的最大的日志条目（索引最大），删除 follower 日志中从那个点之后的所有日志条目，并且将自己从那个点之后的所有日志条目发送给 follower。</li>
+<li>Leader 针对每一个 follower 都维护了一个 nextIndex ，表示 leader 要发送给 follower 的下一个日志条目的索引。当选出一个新 leader 时，该 leader 将所有 nextIndex 的值都初始化为自己最后一个日志条目的 index 加1。如果 follower 的日志和 leader 的不一致，那么下一次 AppendEntries RPC 中的一致性检查就会失败。在被 follower 拒绝之后，leaer 就会减小 nextIndex 值并重试 AppendEntries RPC 。最终 nextIndex 会在某个位置使得 leader 和 follower 的日志达成一致。此时，AppendEntries RPC 就会成功，将 follower 中跟 leader 冲突的日志条目全部删除然后追加 leader 中的日志条目（如果有需要追加的日志条目的话）。一旦 AppendEntries RPC 成功，follower 的日志就和 leader 一致，并且在该任期接下来的时间里保持一致。</li>
 </ul>
-<ol start="6">
-<li><p>reactor + threadpool<br><img src="/images/muduo-5.png"><br>与reactor不同的地方是，将业务代码通过线程池来实现。<br>这种模式适用于计算密集型的业务。</p>
-</li>
-<li><p>mutiple reactors<br><img src="/images/muduo-5.png"><br>如上图所示，拥有一个mainReactor，当acceptor返回已连接套接字，就将活跃的套接字分配给subReactor。如果分配的顺序是按顺序，那么就叫做“轮叫”(round robin)，这种方式能够保证每个reactor都有均匀的任务数量。<br>每个进程或者线程拥有一个事件循环。（reactors in threads or reactors in process）。<br>这种方式能够应对更大的突发IO。<br>一个reactor能够应对一个千兆网卡，我们可以根据网卡数量来设计线程池或者进程池的容量。</p>
-</li>
-<li><p>mutiple reactors + thread pool<br><img src="/images/muduo-7.png"><br>这种方式也叫做one loop per thread + thread pool。<br>实际上在这种模式下，一共有两个线程池，一个是reactor的线程池，一个是业务线程的线程池。</p>
-</li>
-<li><p>proactor服务器（基于异步IO)<br>这种异步方式linux支持不够，暂不考虑。</p>
-</li>
+<h3 id="安全限制"><a href="#安全限制" class="headerlink" title="安全限制"></a>安全限制</h3><ol>
+<li>选举限制<br>Raft 使用投票的方式来阻止 candidate 赢得选举除非该 candidate 包含了所有已经提交的日志条目。候选人为了赢得选举必须与集群中的过半节点通信，这意味着至少其中一个服务器节点包含了所有已提交的日志条目。如果 candidate 的日志至少和过半的服务器节点一样新（接下来会精确地定义“新”），那么他一定包含了所有已经提交的日志条目。RequestVote RPC 执行了这样的限制： RPC 中包含了 candidate 的日志信息，如果投票者自己的日志比 candidate 的还新，它会拒绝掉该投票请求。<br>Raft 通过比较两份日志中最后一条日志条目的索引值和任期号来定义谁的日志比较新。如果两份日志最后条目的任期号不同，那么任期号大的日志更新。如果两份日志最后条目的任期号相同，那么日志较长的那个更新。</li>
+<li>提交之前任期内的日志条目<br>一旦当前任期内的某个日志条目已经存储到过半的服务器节点上，leader 就知道该日志条目已经被提交了。如果某个 leader 在提交某个日志条目之前崩溃了，以后的 leader 会试图完成该日志条目的复制。然而，如果是之前任期内的某个日志条目已经存储到过半的服务器节点上，leader 也无法立即断定该日志条目已经被提交了。图 8 展示了一种情况，一个已经被存储到过半节点上的老日志条目，仍然有可能会被未来的 leader 覆盖掉。<br><img src="/images/redis-raft-4.png"><br>如图的时间序列展示了为什么 leader 无法判断老的任期号内的日志是否已经被提交。在 (a) 中，S1 是 leader ，部分地复制了索引位置 2 的日志条目。在 (b) 中，S1 崩溃了，然后 S5 在任期 3 中通过 S3、S4 和自己的选票赢得选举，然后从客户端接收了一条不一样的日志条目放在了索引 2 处。然后到 (c)，S5 又崩溃了；S1 重新启动，选举成功，继续复制日志。此时，来自任期 2 的那条日志已经被复制到了集群中的大多数机器上，但是还没有被提交。如果 S1 在 (d) 中又崩溃了，S5 可以重新被选举成功（通过来自 S2，S3 和 S4 的选票），然后覆盖了他们在索引 2 处的日志。但是，在崩溃之前，如果 S1 在自己的任期里复制了日志条目到大多数机器上，如 (e) 中，然后这个条目就会被提交（S5 就不可能选举成功）。 在这种情况下，之前的所有日志也被提交了。<br>为了消除图中描述的问题，Raft 永远不会通过计算副本数目的方式来提交之前任期内的日志条目。只有 leader 当前任期内的日志条目才通过计算副本数目的方式来提交；一旦当前任期的某个日志条目以这种方式被提交，那么由于日志匹配特性，之前的所有日志条目也都会被间接地提交。在某些情况下，领导人可以安全地断定一个老的日志条目已经被提交（例如，如果该条目已经存储到所有服务器上），但是 Raft 为了简化问题使用了一种更加保守的方法。<br>Raft 会在提交规则上增加额外的复杂性是因为当 leader 复制之前任期内的日志条目时，这些日志条目都保留原来的任期号。在其他的一致性算法中，如果一个新的 leader 要重新复制之前的任期里的日志时，它必须使用当前新的任期号。Raft 的做法使得更加容易推导出（reason about）日志条目，因为他们自始至终都使用同一个任期号。另外，和其他的算法相比，Raft 中的新 leader 只需要发送更少的日志条目（其他算法中必须在它们被提交之前发送更多的冗余日志条目来给它们重新编号）。</li>
 </ol>
 
       
@@ -519,104 +498,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%8D%E5%88%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%8D%E5%88%B6/" class="post-title-link" itemprop="url">redis系列：复制</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:01:32" itemprop="dateModified" datetime="2022-09-25T02:01:32+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="完全复制"><a href="#完全复制" class="headerlink" title="完全复制"></a>完全复制</h3><ul>
-<li>第一步是同步<br>1）从服务器向主服务器发送SYNC命令。<br>2）收到SYNC命令的主服务器执行BGSAVE命令，在后台生成一个RDB文件，并使用一个缓冲区记录从现在开始执行的所有写命令。<br>3）BGSAVE命令执行完毕后，将生成的RDB文件传输给从服务器，从服务器接收到开始更新。<br>4）主服务器将记录在缓冲区的所有写命令发送给从服务器，从服务器状态更新。<br>如下图示例所示：<br><img src="/images/redis-sync-1.png"></li>
-<li>命令传播<br>主服务器将更改服务器状态的命令发送给从服务器。</li>
-</ul>
-<h3 id="部分复制"><a href="#部分复制" class="headerlink" title="部分复制"></a>部分复制</h3><p>完全复制在效率上比较低，应为每次都需要生成RDB文件，从服务器也需要从RDB恢复数据。因此考虑部分复制，在非第一次同步的情况下，只传播断线过程中执行的更改主服务器状态的命令。如下图所示：<br><img src="/images/redis-sync-2.png"><br>部分同步的实现有三个部分</p>
-<ul>
-<li>主服务器的复制偏移量和从服务器的复制偏移量。</li>
-<li>主服务器的复制积压缓冲区。</li>
-<li>服务器的运行ID。</li>
-</ul>
-<ol>
-<li>复制偏移量<br>主服务器每次传输N个字节数据，就将复制偏移量+N，从服务器收到N个字节，就加N，通过复制偏移量就可以知道是否是同步状态。</li>
-<li>积压缓冲区<br>复制积压缓冲区维护一个固定长度的队列，大小为1MB。固定长度就是说队列的长度是固定的，如果入队后队列长度超过固定值，就将多余的值弹出。队列会保存字节的复制偏移量和字节内容。<br><img src="/images/redis-sync-3.png"></li>
-</ol>
-<h3 id="复制的实现"><a href="#复制的实现" class="headerlink" title="复制的实现"></a>复制的实现</h3><p>通过向从服务器发送SLAVEOF命令，可以让从服务器复制一个主服务器。</p>
-<ul>
-<li>设置主服务器地址和端口<br>从服务器需要首先保存主服务器的地址和端口。</li>
-<li>建立套接字连接</li>
-<li>发送ping命令<br>有两个作用：<br>1）检查套接字读写是否正常。<br>2）检查主服务器是否能正产处理请求。<br>如果返回一个命令回复但从服务器无法在规定时间内读取命令回复的内容，那么表示网络连接异常。如果返回一个错误，那么主服务器无法处理。</li>
-<li>身份验证  </li>
-<li>发送端口数据</li>
-<li>同步</li>
-<li>命令传播</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%93%A8%E5%85%B5%E5%92%8C%E9%9B%86%E7%BE%A4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -770,6 +651,104 @@
 <li>不支持多数据库空间，单机下的 redis 可以支持到 16 个数据库，集群模式下只能使用 1 个数据库空间，即 db 0。</li>
 </ul>
 </li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%8D%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%8D%E5%88%B6/" class="post-title-link" itemprop="url">redis系列：复制</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 02:01:32" itemprop="dateModified" datetime="2022-09-25T02:01:32+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="完全复制"><a href="#完全复制" class="headerlink" title="完全复制"></a>完全复制</h3><ul>
+<li>第一步是同步<br>1）从服务器向主服务器发送SYNC命令。<br>2）收到SYNC命令的主服务器执行BGSAVE命令，在后台生成一个RDB文件，并使用一个缓冲区记录从现在开始执行的所有写命令。<br>3）BGSAVE命令执行完毕后，将生成的RDB文件传输给从服务器，从服务器接收到开始更新。<br>4）主服务器将记录在缓冲区的所有写命令发送给从服务器，从服务器状态更新。<br>如下图示例所示：<br><img src="/images/redis-sync-1.png"></li>
+<li>命令传播<br>主服务器将更改服务器状态的命令发送给从服务器。</li>
+</ul>
+<h3 id="部分复制"><a href="#部分复制" class="headerlink" title="部分复制"></a>部分复制</h3><p>完全复制在效率上比较低，应为每次都需要生成RDB文件，从服务器也需要从RDB恢复数据。因此考虑部分复制，在非第一次同步的情况下，只传播断线过程中执行的更改主服务器状态的命令。如下图所示：<br><img src="/images/redis-sync-2.png"><br>部分同步的实现有三个部分</p>
+<ul>
+<li>主服务器的复制偏移量和从服务器的复制偏移量。</li>
+<li>主服务器的复制积压缓冲区。</li>
+<li>服务器的运行ID。</li>
+</ul>
+<ol>
+<li>复制偏移量<br>主服务器每次传输N个字节数据，就将复制偏移量+N，从服务器收到N个字节，就加N，通过复制偏移量就可以知道是否是同步状态。</li>
+<li>积压缓冲区<br>复制积压缓冲区维护一个固定长度的队列，大小为1MB。固定长度就是说队列的长度是固定的，如果入队后队列长度超过固定值，就将多余的值弹出。队列会保存字节的复制偏移量和字节内容。<br><img src="/images/redis-sync-3.png"></li>
+</ol>
+<h3 id="复制的实现"><a href="#复制的实现" class="headerlink" title="复制的实现"></a>复制的实现</h3><p>通过向从服务器发送SLAVEOF命令，可以让从服务器复制一个主服务器。</p>
+<ul>
+<li>设置主服务器地址和端口<br>从服务器需要首先保存主服务器的地址和端口。</li>
+<li>建立套接字连接</li>
+<li>发送ping命令<br>有两个作用：<br>1）检查套接字读写是否正常。<br>2）检查主服务器是否能正产处理请求。<br>如果返回一个命令回复但从服务器无法在规定时间内读取命令回复的内容，那么表示网络连接异常。如果返回一个错误，那么主服务器无法处理。</li>
+<li>身份验证  </li>
+<li>发送端口数据</li>
+<li>同步</li>
+<li>命令传播</li>
 </ul>
 
       
@@ -962,115 +941,6 @@
 <li>遍历过程中遇到rehash操作<br>大小两表并存，所以需要从ht[0]和ht[1]中都取出数据，整个遍历过程为：先找到两个散列表中更小的表，先对小的Hash表遍历，然后对大的Hash表遍历，迭代的代码如下：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">t0 = &amp;d-&gt;ht[<span class="number">0</span>];t1 = &amp;d-&gt;ht[<span class="number">1</span>];</span><br><span class="line"><span class="keyword">if</span> (t0-&gt;size &gt; t1-&gt;size) &#123;</span><br><span class="line">t0 = &amp;d-&gt;ht[<span class="number">1</span>];t1 = &amp;d-&gt;ht[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line">m0 = t0-&gt;sizemask;m1 = t1-&gt;sizemask;</span><br><span class="line">de = t0-&gt;table[v &amp; m0];</span><br><span class="line"><span class="keyword">while</span> (de) &#123;<span class="comment">/*迭代第一张小Hash表*/</span></span><br><span class="line">    next = de-&gt;next;</span><br><span class="line">    fn(privdata, de);</span><br><span class="line">    de = next;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">do</span> &#123;<span class="comment">/*迭代第二张大Hash表*/</span></span><br><span class="line">    de = t1-&gt;table[v &amp; m1];</span><br><span class="line">    <span class="keyword">while</span> (de) &#123;</span><br><span class="line">        next = de-&gt;next;</span><br><span class="line">        fn(privdata, de);</span><br><span class="line">        de = next;</span><br><span class="line">    &#125;</span><br><span class="line">    v |= ~m1;v = rev(v); v++; v = rev(v);</span><br><span class="line">&#125; <span class="keyword">while</span> (v &amp; (m0 ^ m1));</span><br></pre></td></tr></table></figure>
 <font color = orange> 这套算法能满足这样的特点，主要是巧妙地利用了扩容及缩容正好为整数倍增长或减<br>少的原理，根据这个特征，很容易就能推导出同一个节点的数据扩容&#x2F;缩容后在新的Hash<br>表中的分布位置，从而避免了重复遍历或漏遍历。</font></li>
 </ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B7%B3%E8%B7%83%E8%A1%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B7%B3%E8%B7%83%E8%A1%A8/" class="post-title-link" itemprop="url">redis系列：跳跃表</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:01:47" itemprop="dateModified" datetime="2022-09-25T02:01:47+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p>数据结构如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> &#123;</span></span><br><span class="line">    <span class="comment">//成员对象</span></span><br><span class="line">    robj *obj;</span><br><span class="line">    <span class="comment">//分值</span></span><br><span class="line">    <span class="type">double</span> score;</span><br><span class="line">    <span class="comment">//后退指针</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">backward</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistLevel</span> &#123;</span></span><br><span class="line">        <span class="comment">//前进指针</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">forward</span>;</span></span><br><span class="line">        <span class="comment">//跨度</span></span><br><span class="line">        <span class="type">unsigned</span> <span class="type">int</span> span;</span><br><span class="line">    &#125; level[];</span><br><span class="line">&#125; zskiplistNode;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplist</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">header</span>, *<span class="title">tail</span>;</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> length;</span><br><span class="line">    <span class="type">int</span> level;</span><br><span class="line">&#125; zskiplist;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/redis-zlist-1.png"></p>
-<ul>
-<li>score是一个double类型树，跳表中所有节点按照分值排序</li>
-<li>obj（5.0版本为ele）:存储一个sds类型对象</li>
-</ul>
-<h3 id="内部实现"><a href="#内部实现" class="headerlink" title="内部实现"></a>内部实现</h3><ol>
-<li>节点层高</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> ZSKIPLIST_P 0.25 <span class="comment">/* Skiplist P = 1/4 */</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">zslRandomLevel</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    <span class="type">int</span> level = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> ((random()&amp;<span class="number">0xFFFF</span>) &lt; (ZSKIPLIST_P * <span class="number">0xFFFF</span>))</span><br><span class="line">    level += <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> (level&lt;ZSKIPLIST_MAXLEVEL) ? level : ZSKIPLIST_MAXLEVEL;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>level的初始值为1，通过while循环，每次生成一个随机值，取这个值的低16位作为x，当x小于0.25倍的0xFFFF时，level的值加1；否则退出while循环。最终返回level和ZSKIPLIST_MAXLEVEL两者中的最小值。<br>1）节点层高为1的概率为(1-p)。<br>2）节点层高为2的概率为p(1-p)。<br>3）节点层高为3的概率为p2 (1-p)。<br>4）……<br>5）节点层高为n的概率为pn-1 (1-p)。<br>节点期望层高为<font color = red> E &#x3D; 1 &#x2F; (1 - p) </font>.</p>
-<ol start="2">
-<li>创建跳跃表</li>
-</ol>
-<p>1）创建跳跃表结构体对象zsl。<br>2）将zsl的头节点指针指向新创建的头节点。<br>3）跳跃表层高初始化为1，长度初始化为0，尾节点指向NULL。  </p>
-<ol start="3">
-<li>插入节点</li>
-</ol>
-<ul>
-<li>查找要插入的位置</li>
-<li>调整跳跃表高度</li>
-<li>插入节点</li>
-<li>调整backward</li>
-</ul>
-<p>源代码中的大概思路就是通过for循环来对每个高度进行遍历，找到前驱和后继节点，通过rank和update两个数组记录，最后调整指针。</p>
-<ol start="4">
-<li>删除节点</li>
-</ol>
-<ul>
-<li>查找需要更新的节点</li>
-<li>设置span和forward</li>
-</ul>
-<h3 id="跳跃表应用"><a href="#跳跃表应用" class="headerlink" title="跳跃表应用"></a>跳跃表应用</h3><p>跳跃表主要应用于有序集合的底层实现（有序集合的另一种实现方式为压缩列表）。</p>
 
       
     </div>
@@ -1461,6 +1331,132 @@
   
   
 
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">redis系列：数据库的实现</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 02:01:42" itemprop="dateModified" datetime="2022-09-25T02:01:42+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="服务端数据库"><a href="#服务端数据库" class="headerlink" title="服务端数据库"></a>服务端数据库</h3><p>redis中将所有的数据库信息保存在redisServer结构体中，结构体中的变量有两百多个，这里就不写了。<br>主要的结构成员是：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">redisServer</span>&#123;</span></span><br><span class="line">    redisDb* db;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>db成员指向一个redisDb数组，数组长度有dbnum决定：<br><img src="/images/redis-db-1.png"><br>默认情况下，目标数据库是0号数据库。如果需要更换数据库，修改指针即可。</p>
+<h3 id="数据库键空间"><a href="#数据库键空间" class="headerlink" title="数据库键空间"></a>数据库键空间</h3><p>redisDb结构体中保存了数据库中所有的键值对，因此将这个字典称为键空间：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">redisDb</span>&#123;</span></span><br><span class="line">    dict* dict;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>键空间中的键是数据库的键，每个键都是一个字符串对象</li>
+<li>键空间中的值是数据库的值，每个值可以是一个字符串对象，列表对象，哈希表对象，集合对象，有序集合对象中的一种。<br>表示如下图所示：<br><img src="/images/redis-db-2.png"></li>
+</ul>
+<h3 id="读写键空间时的维护操作"><a href="#读写键空间时的维护操作" class="headerlink" title="读写键空间时的维护操作"></a>读写键空间时的维护操作</h3><ul>
+<li>读取一个键之后，服务器会更新键的LRU时间，这个可以用于计算键的闲置时间。</li>
+<li>如果在读取一个键时发现已经过期，服务器会删除这个过期键然后执行其他操作。</li>
+<li>如果客户端使用watch命令监视了某个键，会将这个键标记为脏，从而让事务程序注意到这个键已经被修改过。</li>
+<li>每次修改键之后，都会对脏键计数器加1，计数器会出发服务器的持久化和复制操作。</li>
+<li>如果开启数据库通知，在对键修改之后，服务器将按配置发送相应的数据库通知。</li>
+</ul>
+<h3 id="过期时间"><a href="#过期时间" class="headerlink" title="过期时间"></a>过期时间</h3><p>redisDb结构的expires字典保存了数据库所有键的过期时间，称为过期字典。<br><img src="/images/redis-db-3.png"></p>
+<ul>
+<li>设置过期时间通过向过期字典添加键值对实现。</li>
+<li>删除过期时间则直接在过期字典中移除，移除策略有三种：</li>
+</ul>
+<ol>
+<li>定时删除，创建过期时间的同时创建一个定时器，让定时器在键的过期时间删除；</li>
+<li>惰性删除，每次获取键的时候检查是否过期；</li>
+<li>定期删除，每隔一段时间主动删除过期键。</li>
+</ol>
+<h3 id="AOF-x2F-RDB和复制功能对过期键的处理"><a href="#AOF-x2F-RDB和复制功能对过期键的处理" class="headerlink" title="AOF&#x2F;RDB和复制功能对过期键的处理"></a>AOF&#x2F;RDB和复制功能对过期键的处理</h3><ol>
+<li>RDB</li>
+</ol>
+<ul>
+<li>生成RDB文件时从数据库检查，过期不写入。</li>
+<li>载入RDB文件时：<ul>
+<li>主服务器模式下会对所有键进行检查，过期忽略。</li>
+<li>从服务器模式会将所有键载入，不检查。</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li>AOF</li>
+</ol>
+<ul>
+<li>生成AOF：当服务器以AOF持久化模式运行时，如果某个键过期，但还没有被删除时，不会对AOF文件产生影响。当过期键被删除之后，程序会向AOF文件追加一条DEL命令，显式地记录该键已被删除。</li>
+<li>重写：进行键过期检查，过期则不写。</li>
+</ul>
+<ol start="3">
+<li>复制</li>
+</ol>
+<ul>
+<li>主服务器删除，向从服务器发送DEL命令。</li>
+<li>从服务器执行读命令，忽略键过期。</li>
+<li>从服务器接到DEL删除键。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
 
   
   <nav class="pagination">
@@ -1659,7 +1655,6 @@ document.querySelectorAll('.pdfobject-container').forEach(element => {
   
 
   
-
 
 </body>
 </html>
