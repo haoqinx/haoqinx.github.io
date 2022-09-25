@@ -290,140 +290,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Ammap%E5%8E%9F%E7%90%86%E6%B5%85%E8%B0%88/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Ammap%E5%8E%9F%E7%90%86%E6%B5%85%E8%B0%88/" class="post-title-link" itemprop="url">c++内存管理系列：mmap原理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-08-29 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-29T00:00:00+08:00">2021-08-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:59:36" itemprop="dateModified" datetime="2022-09-25T01:59:36+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="内存映射"><a href="#内存映射" class="headerlink" title="内存映射"></a>内存映射</h3><p>内存映射，简而言之就是将用户空间的一段内存区域映射到内核空间，映射成功后，用户对这段内存区域的修改可以直接反映到内核空间，同样，内核空间对这段区域的修改也直接反映用户空间。那么对于内核空间&lt;—-&gt;用户空间两者之间需要大量数据传输等操作的话效率是非常高的。</p>
-<h3 id="传统的读写文件"><a href="#传统的读写文件" class="headerlink" title="传统的读写文件"></a>传统的读写文件</h3><p>一般来说，修改一个文件的内容需要如下3个步骤：</p>
-<ul>
-<li>把文件内容读入到内存中。</li>
-<li>修改内存中的内容。</li>
-<li>把内存的数据写入到文件中。</li>
-</ul>
-<p><img src="/images/mmap-1.png"><br>从图中可以看出，页缓存(page cache) 是读写文件时的中间层，内核使用<font color=orange>页缓存</font>与文件的数据块关联起来。所以应用程序读写文件时，实际操作的是页缓存。</p>
-<h3 id="mmap读写文件"><a href="#mmap读写文件" class="headerlink" title="mmap读写文件"></a>mmap读写文件</h3><p>mmap并不分配空间, 只是将文件映射到调用进程的地址空间里（但是会占掉你的 virutal memory）, 然后你就可以用memcpy等操作写文件, 而不用write()了.写完后，内存中的内容并不会立即更新到文件中，而是有一段时间的延迟，你可以调用msync()来显式同步一下, 这样你所写的内容就能立即保存到文件里了.这点应该和驱动相关。 不过通过mmap来写文件这种方式没办法增加文件的长度, 因为要映射的长度在调用mmap()的时候就决定了.如果想取消内存映射，可以调用munmap()来取消内存映射。</p>
-<p>函数调用的格式为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"><span class="type">void</span> *<span class="title function_">mmap</span><span class="params">(<span class="type">void</span> *addr, <span class="type">size_t</span> len, <span class="type">int</span> prot, <span class="type">int</span> flags, <span class="type">int</span> fd, <span class="type">off_t</span> offset)</span>;</span><br><span class="line"><span class="comment">//返回:若成功则为被映射区的起始地址，若出错则为MAP_FAILED</span></span><br></pre></td></tr></table></figure>
-<p>其中addr可以指定描述符fd应该被映射到的进程内空间的起始地址。它通常被指定为一个空指针，这样告诉内核自己去选择起始地址。无论哪种情况下，该函数的返回值都是描述符fd所映射到内存的起始地址。</p>
-<p>len是映射到调用进程地址空间中的字节数，它从被映射文件开头起第offset个字节处开始算。offset通常设置为0。</p>
-<p>内存映射区的保护由prot参数指定，该参数的常见值是代表读写访问的PROT_READ|PROT_WRITE</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">prot          说明</span><br><span class="line">PROT_READ    数据可读</span><br><span class="line">PROT_WRITE   数据可写</span><br><span class="line">PROT_EXEC    数据可执行</span><br><span class="line">PROT_NONE    数据不可访问</span><br></pre></td></tr></table></figure>
-
-<p>从传统读写文件的过程中，我们可以发现有个地方可以优化：如果可以直接在用户空间读写 页缓存，那么就可以免去将 页缓存 的数据复制到用户空间缓冲区的过程。<br>那么，有没有这样的技术能实现上面所说的方式呢？答案是肯定的，就是 mmap。<br>使用 mmap 系统调用可以将用户空间的虚拟内存地址与文件进行映射（绑定），对映射后的虚拟内存地址进行读写操作就如同对文件进行读写操作一样。原理如图所示：</p>
-<p><img src="/images/mmap-2.png"></p>
-<p>前面我们介绍过，读写文件都需要经过 页缓存，所以 mmap 映射的正是文件的 页缓存，而非磁盘中的文件本身。由于 mmap 映射的是文件的 页缓存，所以就涉及到同步的问题，即 页缓存 会在什么时候把数据同步到磁盘。<br>Linux 内核并不会主动把 mmap 映射的 页缓存 同步到磁盘，而是需要用户主动触发。同步 mmap 映射的内存到磁盘有 4 个时机：</p>
-<ul>
-<li>调用 msync 函数主动进行数据同步（主动）。</li>
-<li>调用 munmap 函数对文件进行解除映射关系时（主动）。</li>
-<li>进程退出时（被动）。</li>
-<li>系统关机时（被动）。</li>
-</ul>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>mmap内存映射的实现过程，总的来说可以分为三个阶段：</p>
-<ul>
-<li><p>进程启动映射过程，并在虚拟地址空间中为映射创建虚拟映射区域</p>
-<ul>
-<li><p>进程在用户空间调用库函数mmap;</p>
-  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> *<span class="title function_">mmap</span><span class="params">(<span class="type">void</span> *start, <span class="type">size_t</span> length, <span class="type">int</span> prot, <span class="type">int</span> flags, <span class="type">int</span> fd, <span class="type">off_t</span> offset)</span>;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在当前进程的虚拟地址空间中，寻找一段空闲的满足要求的连续的虚拟地址;</p>
-</li>
-<li><p>为此虚拟区分配一个vmareastruct结构，接着对这个结构的各个域进行了初始化;</p>
-</li>
-<li><p>将新建的虚拟区结构（vmareastruct）插入进程的虚拟地址区域链表或树中</p>
-</li>
-</ul>
-</li>
-<li><p>调用内核空间的系统调用函数 mmap（不同于用户空间函数），实现文件物理地址和进程虚拟地址的一一映射关系</p>
-<ul>
-<li>为映射分配了新的虚拟地址区域后，通过待映射的文件指针，在文件描述符表中找到对应的文件描述符，通过文件描述符，链接到内核“已打开文件集”中该文件的文件结构体（struct file），每个文件结构体维护着和这个已打开文件相关各项信息。</li>
-<li>通过该文件的文件结构体，链接到 file_operations 模块，调用内核函数mmap ：  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">mmap</span><span class="params">(<span class="keyword">struct</span> file *filp, <span class="keyword">struct</span> vm_area_struct *vma)</span></span><br></pre></td></tr></table></figure>
-  不同于用户空间库函数。</li>
-<li>内核mmap函数通过虚拟文件系统inode模块定位到文件磁盘物理地址。</li>
-<li>通过remappfnrange函数建立页表，即实现了文件地址和虚拟地址区域的映射关系。此时，这片虚拟地址并没有任何数据关联到主存中。</li>
-</ul>
-</li>
-<li><p>进程发起对这片映射空间的访问，引发缺页异常，实现文件内容到物理内存（主存）的拷贝</p>
-<ul>
-<li>进程的读或写操作访问虚拟地址空间这一段映射地址，通过查询页表，发现这一段地址并不在物理页面上。因为目前只建立了地址映射，真正的硬盘数据还没有拷贝到内存中，因此引发缺页异常。</li>
-<li>缺页异常进行一系列判断，确定无非法操作后，内核发起请求调页过程。</li>
-<li>调页过程先在交换缓存空间（swap cache）中寻找需要访问的内存页，如果没有则调用nopage函数把所缺的页从磁盘装入到主存中。</li>
-<li>之后进程即可对这片主存进行读或者写的操作，如果写操作改变了其内容，一定时间后系统会自动回写脏页面到对应磁盘地址，也即完成了写入到文件的过程。</li>
-</ul>
-</li>
-<li><p>注：前两个阶段仅在于创建虚拟区间并完成地址映射，但是并没有将任何文件数据的拷贝至主存。真正的文件读取是当进程发起读或写操作时。修改过的脏页面并不会立即更新回文件中，而是有一段时间的延迟，可以调用msync()来强制同步, 这样所写的内容就能立即保存到文件里了。</p>
-</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Aptmalloc/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -627,116 +493,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Ased%E5%92%8Cawk%E5%91%BD%E4%BB%A4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Ased%E5%92%8Cawk%E5%91%BD%E4%BB%A4/" class="post-title-link" itemprop="url">Linux内核系列：awk、sed命令</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-08-29 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-29T00:00:00+08:00">2021-08-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:59:49" itemprop="dateModified" datetime="2022-09-25T01:59:49+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h3><ol>
-<li>命令行格式 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk [-F  field-separator]  &#x27;commands&#x27;  input-file(s)</span><br></pre></td></tr></table></figure></li>
-</ol>
-<ul>
-<li>默认以空格或tab分割域，-F后可以跟一个自定义域分隔符。</li>
-<li>commands表示awk命令，如print。</li>
-<li>input-file表示输入的文件。</li>
-</ul>
-<ol start="2">
-<li>shell脚本方式</li>
-</ol>
-<p>可以将所有awk命令插入一个文件，设置执行权限，然后将awk作为命令解释器（#!&#x2F;bin&#x2F;awk）执行。</p>
-<ol start="3">
-<li>将所有的awk命令插入一个单独文件，然后调用：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -f awk-script-file input-file(s)</span><br></pre></td></tr></table></figure>
-其中，-f选项加载awk-script-file中的awk脚本，input-file(s)跟上面的是一样的。</li>
-</ol>
-<p>详细可以参考<a target="_blank" rel="noopener" href="https://zhang.ge/1939.html">这篇文章</a> 和<a target="_blank" rel="noopener" href="https://www.gnu.org/software/gawk/manual/gawk.html">官方文档</a></p>
-<h3 id="sed"><a href="#sed" class="headerlink" title="sed"></a>sed</h3><ol>
-<li>运行原理</li>
-</ol>
-<ul>
-<li>当用sed命令对文本进行处理的时候，sed先读取对象的文本文件的第一行到模式空间中。</li>
-<li>当有内容进入“模式空间”时，sed的编辑命令对模式空间中的内容进行编辑操作（修改，替换，删除，追加，显示等等）</li>
-<li>模式空间中的内容编辑处理完成之后，sed把此内容通过标准输出（默认为显示器）打印出来，并删除模式空间中的内容。</li>
-<li>第一行处理结束。从新读取第二行的内容进行处理，直到最后一行。</li>
-</ul>
-<ol start="2">
-<li>使用</li>
-</ol>
-<p><a target="_blank" rel="noopener" href="https://coolshell.cn/articles/9104.html">参考这篇文章应该就够了</a></p>
-<h3 id="两者区别和联系"><a href="#两者区别和联系" class="headerlink" title="两者区别和联系"></a>两者区别和联系</h3><ul>
-<li><p>sed的核心是正则，主要处理“行问题”。</p>
-</li>
-<li><p>awk的核心是格式化，主要处理“列问题”。</p>
-</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Aptmalloc%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -889,6 +645,116 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Ased%E5%92%8Cawk%E5%91%BD%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Ased%E5%92%8Cawk%E5%91%BD%E4%BB%A4/" class="post-title-link" itemprop="url">Linux内核系列：awk、sed命令</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-08-29 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-29T00:00:00+08:00">2021-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:59:49" itemprop="dateModified" datetime="2022-09-25T01:59:49+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h3><ol>
+<li>命令行格式 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk [-F  field-separator]  &#x27;commands&#x27;  input-file(s)</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>默认以空格或tab分割域，-F后可以跟一个自定义域分隔符。</li>
+<li>commands表示awk命令，如print。</li>
+<li>input-file表示输入的文件。</li>
+</ul>
+<ol start="2">
+<li>shell脚本方式</li>
+</ol>
+<p>可以将所有awk命令插入一个文件，设置执行权限，然后将awk作为命令解释器（#!&#x2F;bin&#x2F;awk）执行。</p>
+<ol start="3">
+<li>将所有的awk命令插入一个单独文件，然后调用：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -f awk-script-file input-file(s)</span><br></pre></td></tr></table></figure>
+其中，-f选项加载awk-script-file中的awk脚本，input-file(s)跟上面的是一样的。</li>
+</ol>
+<p>详细可以参考<a target="_blank" rel="noopener" href="https://zhang.ge/1939.html">这篇文章</a> 和<a target="_blank" rel="noopener" href="https://www.gnu.org/software/gawk/manual/gawk.html">官方文档</a></p>
+<h3 id="sed"><a href="#sed" class="headerlink" title="sed"></a>sed</h3><ol>
+<li>运行原理</li>
+</ol>
+<ul>
+<li>当用sed命令对文本进行处理的时候，sed先读取对象的文本文件的第一行到模式空间中。</li>
+<li>当有内容进入“模式空间”时，sed的编辑命令对模式空间中的内容进行编辑操作（修改，替换，删除，追加，显示等等）</li>
+<li>模式空间中的内容编辑处理完成之后，sed把此内容通过标准输出（默认为显示器）打印出来，并删除模式空间中的内容。</li>
+<li>第一行处理结束。从新读取第二行的内容进行处理，直到最后一行。</li>
+</ul>
+<ol start="2">
+<li>使用</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://coolshell.cn/articles/9104.html">参考这篇文章应该就够了</a></p>
+<h3 id="两者区别和联系"><a href="#两者区别和联系" class="headerlink" title="两者区别和联系"></a>两者区别和联系</h3><ul>
+<li><p>sed的核心是正则，主要处理“行问题”。</p>
+</li>
+<li><p>awk的核心是格式化，主要处理“列问题”。</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Ashell%E5%91%BD%E4%BB%A4%E5%92%8C%E8%84%9A%E6%9C%AC%E6%89%A7%E8%A1%8C%E5%8E%9F%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -967,6 +833,215 @@
 <li>使用GNU parallel</li>
 </ul>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#/bin/bash</span></span><br><span class="line"></span><br><span class="line">all_num=10</span><br><span class="line">thread_num=6</span><br><span class="line"></span><br><span class="line">a=$(<span class="built_in">date</span> +%H%M%S)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">parallel -j 5 <span class="string">&quot;sleep 1;echo &#123;&#125;&quot;</span> ::: `<span class="built_in">seq</span> 1 10`</span><br><span class="line"></span><br><span class="line">b=$(<span class="built_in">date</span> +%H%M%S)</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> -e <span class="string">&quot;startTime:\t<span class="variable">$a</span>&quot;</span></span><br><span class="line"><span class="built_in">echo</span> -e <span class="string">&quot;endTime:\t<span class="variable">$b</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Ammap%E5%8E%9F%E7%90%86%E6%B5%85%E8%B0%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9Ammap%E5%8E%9F%E7%90%86%E6%B5%85%E8%B0%88/" class="post-title-link" itemprop="url">c++内存管理系列：mmap原理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-08-29 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-29T00:00:00+08:00">2021-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:59:36" itemprop="dateModified" datetime="2022-09-25T01:59:36+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="内存映射"><a href="#内存映射" class="headerlink" title="内存映射"></a>内存映射</h3><p>内存映射，简而言之就是将用户空间的一段内存区域映射到内核空间，映射成功后，用户对这段内存区域的修改可以直接反映到内核空间，同样，内核空间对这段区域的修改也直接反映用户空间。那么对于内核空间&lt;—-&gt;用户空间两者之间需要大量数据传输等操作的话效率是非常高的。</p>
+<h3 id="传统的读写文件"><a href="#传统的读写文件" class="headerlink" title="传统的读写文件"></a>传统的读写文件</h3><p>一般来说，修改一个文件的内容需要如下3个步骤：</p>
+<ul>
+<li>把文件内容读入到内存中。</li>
+<li>修改内存中的内容。</li>
+<li>把内存的数据写入到文件中。</li>
+</ul>
+<p><img src="/images/mmap-1.png"><br>从图中可以看出，页缓存(page cache) 是读写文件时的中间层，内核使用<font color=orange>页缓存</font>与文件的数据块关联起来。所以应用程序读写文件时，实际操作的是页缓存。</p>
+<h3 id="mmap读写文件"><a href="#mmap读写文件" class="headerlink" title="mmap读写文件"></a>mmap读写文件</h3><p>mmap并不分配空间, 只是将文件映射到调用进程的地址空间里（但是会占掉你的 virutal memory）, 然后你就可以用memcpy等操作写文件, 而不用write()了.写完后，内存中的内容并不会立即更新到文件中，而是有一段时间的延迟，你可以调用msync()来显式同步一下, 这样你所写的内容就能立即保存到文件里了.这点应该和驱动相关。 不过通过mmap来写文件这种方式没办法增加文件的长度, 因为要映射的长度在调用mmap()的时候就决定了.如果想取消内存映射，可以调用munmap()来取消内存映射。</p>
+<p>函数调用的格式为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"><span class="type">void</span> *<span class="title function_">mmap</span><span class="params">(<span class="type">void</span> *addr, <span class="type">size_t</span> len, <span class="type">int</span> prot, <span class="type">int</span> flags, <span class="type">int</span> fd, <span class="type">off_t</span> offset)</span>;</span><br><span class="line"><span class="comment">//返回:若成功则为被映射区的起始地址，若出错则为MAP_FAILED</span></span><br></pre></td></tr></table></figure>
+<p>其中addr可以指定描述符fd应该被映射到的进程内空间的起始地址。它通常被指定为一个空指针，这样告诉内核自己去选择起始地址。无论哪种情况下，该函数的返回值都是描述符fd所映射到内存的起始地址。</p>
+<p>len是映射到调用进程地址空间中的字节数，它从被映射文件开头起第offset个字节处开始算。offset通常设置为0。</p>
+<p>内存映射区的保护由prot参数指定，该参数的常见值是代表读写访问的PROT_READ|PROT_WRITE</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">prot          说明</span><br><span class="line">PROT_READ    数据可读</span><br><span class="line">PROT_WRITE   数据可写</span><br><span class="line">PROT_EXEC    数据可执行</span><br><span class="line">PROT_NONE    数据不可访问</span><br></pre></td></tr></table></figure>
+
+<p>从传统读写文件的过程中，我们可以发现有个地方可以优化：如果可以直接在用户空间读写 页缓存，那么就可以免去将 页缓存 的数据复制到用户空间缓冲区的过程。<br>那么，有没有这样的技术能实现上面所说的方式呢？答案是肯定的，就是 mmap。<br>使用 mmap 系统调用可以将用户空间的虚拟内存地址与文件进行映射（绑定），对映射后的虚拟内存地址进行读写操作就如同对文件进行读写操作一样。原理如图所示：</p>
+<p><img src="/images/mmap-2.png"></p>
+<p>前面我们介绍过，读写文件都需要经过 页缓存，所以 mmap 映射的正是文件的 页缓存，而非磁盘中的文件本身。由于 mmap 映射的是文件的 页缓存，所以就涉及到同步的问题，即 页缓存 会在什么时候把数据同步到磁盘。<br>Linux 内核并不会主动把 mmap 映射的 页缓存 同步到磁盘，而是需要用户主动触发。同步 mmap 映射的内存到磁盘有 4 个时机：</p>
+<ul>
+<li>调用 msync 函数主动进行数据同步（主动）。</li>
+<li>调用 munmap 函数对文件进行解除映射关系时（主动）。</li>
+<li>进程退出时（被动）。</li>
+<li>系统关机时（被动）。</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>mmap内存映射的实现过程，总的来说可以分为三个阶段：</p>
+<ul>
+<li><p>进程启动映射过程，并在虚拟地址空间中为映射创建虚拟映射区域</p>
+<ul>
+<li><p>进程在用户空间调用库函数mmap;</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> *<span class="title function_">mmap</span><span class="params">(<span class="type">void</span> *start, <span class="type">size_t</span> length, <span class="type">int</span> prot, <span class="type">int</span> flags, <span class="type">int</span> fd, <span class="type">off_t</span> offset)</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在当前进程的虚拟地址空间中，寻找一段空闲的满足要求的连续的虚拟地址;</p>
+</li>
+<li><p>为此虚拟区分配一个vmareastruct结构，接着对这个结构的各个域进行了初始化;</p>
+</li>
+<li><p>将新建的虚拟区结构（vmareastruct）插入进程的虚拟地址区域链表或树中</p>
+</li>
+</ul>
+</li>
+<li><p>调用内核空间的系统调用函数 mmap（不同于用户空间函数），实现文件物理地址和进程虚拟地址的一一映射关系</p>
+<ul>
+<li>为映射分配了新的虚拟地址区域后，通过待映射的文件指针，在文件描述符表中找到对应的文件描述符，通过文件描述符，链接到内核“已打开文件集”中该文件的文件结构体（struct file），每个文件结构体维护着和这个已打开文件相关各项信息。</li>
+<li>通过该文件的文件结构体，链接到 file_operations 模块，调用内核函数mmap ：  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">mmap</span><span class="params">(<span class="keyword">struct</span> file *filp, <span class="keyword">struct</span> vm_area_struct *vma)</span></span><br></pre></td></tr></table></figure>
+  不同于用户空间库函数。</li>
+<li>内核mmap函数通过虚拟文件系统inode模块定位到文件磁盘物理地址。</li>
+<li>通过remappfnrange函数建立页表，即实现了文件地址和虚拟地址区域的映射关系。此时，这片虚拟地址并没有任何数据关联到主存中。</li>
+</ul>
+</li>
+<li><p>进程发起对这片映射空间的访问，引发缺页异常，实现文件内容到物理内存（主存）的拷贝</p>
+<ul>
+<li>进程的读或写操作访问虚拟地址空间这一段映射地址，通过查询页表，发现这一段地址并不在物理页面上。因为目前只建立了地址映射，真正的硬盘数据还没有拷贝到内存中，因此引发缺页异常。</li>
+<li>缺页异常进行一系列判断，确定无非法操作后，内核发起请求调页过程。</li>
+<li>调页过程先在交换缓存空间（swap cache）中寻找需要访问的内存页，如果没有则调用nopage函数把所缺的页从磁盘装入到主存中。</li>
+<li>之后进程即可对这片主存进行读或者写的操作，如果写操作改变了其内容，一定时间后系统会自动回写脏页面到对应磁盘地址，也即完成了写入到文件的过程。</li>
+</ul>
+</li>
+<li><p>注：前两个阶段仅在于创建虚拟区间并完成地址映射，但是并没有将任何文件数据的拷贝至主存。真正的文件读取是当进程发起读或写操作时。修改过的脏页面并不会立即更新回文件中，而是有一段时间的延迟，可以调用msync()来强制同步, 这样所写的内容就能立即保存到文件里了。</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/" class="post-title-link" itemprop="url">Linux内核系列：文件系统</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-08-29 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-29T00:00:00+08:00">2021-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:59:19" itemprop="dateModified" datetime="2022-09-25T01:59:19+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h3><p>感觉<a target="_blank" rel="noopener" href="https://blog.csdn.net/yuexiaxiaoxi27172319/article/details/45241923">这篇文章</a>已经讲的十分透彻清晰。另外需要掌握细节的话参考《Linux内核设计与实现（第三版）》第十三章：虚拟文件系统。</p>
 
       
     </div>
@@ -1108,81 +1183,6 @@
 <li>两个位于不同 arena 的线程频繁进行内存申请，导致两个 arena 的内存出现大量交叉，但是连续的内存由于在不同 arena 而无法进行合并.</li>
 </ul>
 </font>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/" class="post-title-link" itemprop="url">Linux内核系列：文件系统</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-08-29 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-29T00:00:00+08:00">2021-08-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:59:19" itemprop="dateModified" datetime="2022-09-25T01:59:19+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h3><p>感觉<a target="_blank" rel="noopener" href="https://blog.csdn.net/yuexiaxiaoxi27172319/article/details/45241923">这篇文章</a>已经讲的十分透彻清晰。另外需要掌握细节的话参考《Linux内核设计与实现（第三版）》第十三章：虚拟文件系统。</p>
-
       
     </div>
 

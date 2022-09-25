@@ -191,7 +191,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Alist/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Aset/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -205,7 +205,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Alist/" class="post-title-link" itemprop="url">c++STL系列：list</a>
+            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Aset/" class="post-title-link" itemprop="url">c++STL系列：set & multiset</a>
         </h2>
 
         <div class="post-meta">
@@ -222,7 +222,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:56:33" itemprop="dateModified" datetime="2022-09-25T01:56:33+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:56:41" itemprop="dateModified" datetime="2022-09-25T01:56:41+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -246,102 +246,16 @@
 
       
           <span id="more"></span>
-<h3 id="G2-9源码结构"><a href="#G2-9源码结构" class="headerlink" title="G2.9源码结构"></a>G2.9源码结构</h3><p><img src="/images/list-1.png"></p>
-<p>在低版本下list的结构比较简单，就是一个list模板类和一个node模板类。总体的数据结构事宜个环形双向链表。<br>begin()指向头结点，end()指向尾节点。</p>
+<h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p>set&#x2F;multiset以红黑树为底层结构，因此元素在插入过程中自动排序。<br><img src="/images/rbtree.png"></p>
+<p><img src="/images/rbtree-2.png"></p>
+<p>STL中的红黑树为了方便实现，创建了一个假的header，并使用指针指向真正的红黑树根节点。<br>红黑树使用三个数据记录树结构：</p>
 <ul>
-<li>迭代器<br><img src="/images/list-2.png"></li>
+<li>node_count:节点的个数。</li>
+<li>header：指向真正的根节点。</li>
+<li>key_compare:仿函数，如果节点中存储的是一个类&#x2F;对象，使用仿函数来比较元素大小。</li>
 </ul>
-<p>源码中迭代器的结构如下，迭代器重载了前++,后++，-&gt;,*等一系列操作符，为了达到指针的效果。<br>这里需要注意的第一个是++这个操作符重载，形如：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self <span class="keyword">operator</span>++(<span class="type">int</span>)&#123;....&#125;</span><br></pre></td></tr></table></figure>
-<p>的为后置++，而前置++ 不需要形参:</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self&amp; <span class="keyword">operator</span>++()&#123;...&#125;</span><br></pre></td></tr></table></figure>
-<p>为什么后置++返回self，而后置返回一个引用呢？<font color=orange>是为了阻止后置++连续使用，也就是下面这种形式:</font></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">i++++;<span class="comment">//错误 self类型不能++</span></span><br><span class="line">++++i;<span class="comment">//正确 </span></span><br></pre></td></tr></table></figure>
-
-<p>另外需要注意的是-&gt;这个操作符重载,下面这个图阐述的很清楚:<br><img src="/images/list-3.png"></p>
-<h3 id="G4-9版本"><a href="#G4-9版本" class="headerlink" title="G4.9版本"></a>G4.9版本</h3><p><img src="/images/list-4.png"></p>
-<p>相对于G2.9版本，4.9版本的list充分利用了面向对象的设计方法，将实现类与基础类分割开，这符合effective c++的设计条款，但是对于源码阅读来说就不是很友好了。但是很庆幸，在基础的设计上新版本并没有特别多的改动，基本思想和原版本一致。<br>list的原理十分简单，下面简单总结一下list的使用。</p>
-<center>
-
-<table>
-<thead>
-<tr>
-<th align="center">方法</th>
-<th align="center">作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">erase()</td>
-<td align="center">删除一个元素</td>
-</tr>
-<tr>
-<td align="center">front()</td>
-<td align="center">返回第一个元素</td>
-</tr>
-<tr>
-<td align="center">get_allocator()</td>
-<td align="center">返回list的配置器</td>
-</tr>
-<tr>
-<td align="center">insert()</td>
-<td align="center">插入一个元素到list中</td>
-</tr>
-<tr>
-<td align="center">max_size()</td>
-<td align="center">返回list能容纳的最大元素数量</td>
-</tr>
-<tr>
-<td align="center">merge()</td>
-<td align="center">合并两个list</td>
-</tr>
-<tr>
-<td align="center">pop_back()</td>
-<td align="center">删除最后一个元素</td>
-</tr>
-<tr>
-<td align="center">pop_front()</td>
-<td align="center">删除第一个元素</td>
-</tr>
-<tr>
-<td align="center">push_back()</td>
-<td align="center">在list的末尾添加一个元素</td>
-</tr>
-<tr>
-<td align="center">push_front()</td>
-<td align="center">在list的头部添加一个元素</td>
-</tr>
-<tr>
-<td align="center">remove()</td>
-<td align="center">从list删除元素</td>
-</tr>
-<tr>
-<td align="center">remove_if()</td>
-<td align="center">按指定条件删除元素</td>
-</tr>
-<tr>
-<td align="center">resize()</td>
-<td align="center">改变list的大小</td>
-</tr>
-<tr>
-<td align="center">reverse()</td>
-<td align="center">把list的元素倒转</td>
-</tr>
-<tr>
-<td align="center">sort()</td>
-<td align="center">给list排序</td>
-</tr>
-<tr>
-<td align="center">unique()</td>
-<td align="center">删除list中重复的元素</td>
-</tr>
-<tr>
-<td align="center">splice()</td>
-<td align="center">合并两个list</td>
-</tr>
-</tbody></table>
-</center>
-
-
+<p>红黑树提供遍历操作和iterator。遍历得到的是元素排列的中序遍历，也就是从大到小或者从小到大的顺序。</p>
+<h3 id="set-x2F-multiset"><a href="#set-x2F-multiset" class="headerlink" title="set&#x2F;multiset"></a>set&#x2F;multiset</h3><p>set的迭代器无法改变元素值（因为需要保持红黑树的性质），实现的技巧是使用const迭代器。</p>
 
       
     </div>
@@ -802,91 +716,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Abitmap-allocator/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Abitmap-allocator/" class="post-title-link" itemprop="url">c++内存管理系列：bitmap-allocator</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:55:33" itemprop="dateModified" datetime="2022-09-25T01:55:33+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="allocate"><a href="#allocate" class="headerlink" title="allocate"></a>allocate</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Tp&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">bitmap_allocator</span>: <span class="keyword">private</span> free_list&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function">pointer </span></span><br><span class="line"><span class="function">    <span class="title">allocate</span><span class="params">(size_type __n)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (__n &gt; <span class="keyword">this</span>-&gt;<span class="built_in">max_size</span>())</span><br><span class="line">            std::__throw_bad_alloc();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (__builtin_expect(__n == <span class="number">1</span>, <span class="literal">true</span>))<span class="comment">//如果数量为1个,则调用_M_allocate_single_object()</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>-&gt;_M_allocate_single_object();</span><br><span class="line">        <span class="keyword">else</span>	<span class="comment">//如果申请的数量大于1个,则直接调用operator new</span></span><br><span class="line">        &#123; </span><br><span class="line">            <span class="type">const</span> size_type __b = __n * <span class="built_in">sizeof</span>(value_type);</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">reinterpret_cast</span>&lt;pointer&gt;(::<span class="keyword">operator</span> <span class="built_in">new</span>(__b));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>图解形式：</p>
-<p><img src="/images/bitmap-1.png"></p>
-<p>首先是64个blocks，每一个对象占用1个block，64个blocks加上bitmap[1]和bitmap[0]再加上use count形成一个super block。即super block &#x3D; 64<em>block + bitmap[1] + bitmap[0];<br>use count表示64个block已经用了几个，如果某一个block被使用了，那么bitmap[1]和bitmap[0]相应bit的数字变为0，bitmap[1]和bitmap[0]均为unsigned int，所以两个加起来共有64比特，也就可以表示64个block的使用情况。<br>在最前面还有一个数字，表示super block的大小，上图中的大小为：4(use count)+4 * 2(bitmap)+64</em>8(单个对象大小)&#x3D;524字节。单个对象的大小只能是8的倍数。</p>
-<p>多个super block是通过__mini_vector管理的，__mini_vector是一个vector，但不是标准库的vector，而是自己写的一个vector，但它与标准库中的vector拥有同样的特性——两倍增长。也就是说，如果64个block用光了，下次会分配128个block。<br>__mini_vector有3个用来管理内存的成员变量。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span>:</span><br><span class="line">pointer _M_start;</span><br><span class="line">pointer _M_finish;</span><br><span class="line">pointer _M_end_of_storage;</span><br></pre></td></tr></table></figure>
-<p>当64个block用光时，会再申请128个，然后bitmap变为4个。和vector的成长一样，会申请另一块内存然后将现在的搬过去：</p>
-<p><img src="/images/bitmap-2.png"><br><img src="/images/bitmap-3.png"><br>每次都这样成长两倍，2的幂次方级别地成长。</p>
-<h3 id="deallocate"><a href="#deallocate" class="headerlink" title="deallocate"></a>deallocate</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Tp&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">bitmap_allocator</span>: <span class="keyword">private</span> free_list&#123;</span><br><span class="line">    <span class="function"><span class="type">void</span> </span></span><br><span class="line"><span class="function">    <span class="title">deallocate</span><span class="params">(pointer __p, size_type __n)</span> <span class="title">throw</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (__builtin_expect(__p != <span class="number">0</span>, <span class="literal">true</span>))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (__builtin_expect(__n == <span class="number">1</span>, <span class="literal">true</span>))<span class="comment">//如果数量为1,则调用_M_deallocate_single_object()释放</span></span><br><span class="line">                <span class="keyword">this</span>-&gt;_M_deallocate_single_object(__p);</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                ::<span class="keyword">operator</span> <span class="built_in">delete</span>(__p);<span class="comment">//数量大于1使用operator delete释放</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/bitmap-4.png"><br><img src="/images/bitmap-6.png"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9AVC6-malloc/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -984,6 +813,91 @@
 </ul>
 <p>那么当有相邻的内存被释放，应该怎么合并呢，请看：<br><img src="/images/vc6-9.png"></p>
 <p>这里就凸显了上下cookie的作用，在free 300这块空间，首先往下看（指针+*指针+4）看下方是否为空，再往上看（指针 - 4）是否为空，如果为空，合并成一个大区间。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Abitmap-allocator/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/02/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Abitmap-allocator/" class="post-title-link" itemprop="url">c++内存管理系列：bitmap-allocator</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:55:33" itemprop="dateModified" datetime="2022-09-25T01:55:33+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="allocate"><a href="#allocate" class="headerlink" title="allocate"></a>allocate</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Tp&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">bitmap_allocator</span>: <span class="keyword">private</span> free_list&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function">pointer </span></span><br><span class="line"><span class="function">    <span class="title">allocate</span><span class="params">(size_type __n)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (__n &gt; <span class="keyword">this</span>-&gt;<span class="built_in">max_size</span>())</span><br><span class="line">            std::__throw_bad_alloc();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (__builtin_expect(__n == <span class="number">1</span>, <span class="literal">true</span>))<span class="comment">//如果数量为1个,则调用_M_allocate_single_object()</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>-&gt;_M_allocate_single_object();</span><br><span class="line">        <span class="keyword">else</span>	<span class="comment">//如果申请的数量大于1个,则直接调用operator new</span></span><br><span class="line">        &#123; </span><br><span class="line">            <span class="type">const</span> size_type __b = __n * <span class="built_in">sizeof</span>(value_type);</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">reinterpret_cast</span>&lt;pointer&gt;(::<span class="keyword">operator</span> <span class="built_in">new</span>(__b));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>图解形式：</p>
+<p><img src="/images/bitmap-1.png"></p>
+<p>首先是64个blocks，每一个对象占用1个block，64个blocks加上bitmap[1]和bitmap[0]再加上use count形成一个super block。即super block &#x3D; 64<em>block + bitmap[1] + bitmap[0];<br>use count表示64个block已经用了几个，如果某一个block被使用了，那么bitmap[1]和bitmap[0]相应bit的数字变为0，bitmap[1]和bitmap[0]均为unsigned int，所以两个加起来共有64比特，也就可以表示64个block的使用情况。<br>在最前面还有一个数字，表示super block的大小，上图中的大小为：4(use count)+4 * 2(bitmap)+64</em>8(单个对象大小)&#x3D;524字节。单个对象的大小只能是8的倍数。</p>
+<p>多个super block是通过__mini_vector管理的，__mini_vector是一个vector，但不是标准库的vector，而是自己写的一个vector，但它与标准库中的vector拥有同样的特性——两倍增长。也就是说，如果64个block用光了，下次会分配128个block。<br>__mini_vector有3个用来管理内存的成员变量。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span>:</span><br><span class="line">pointer _M_start;</span><br><span class="line">pointer _M_finish;</span><br><span class="line">pointer _M_end_of_storage;</span><br></pre></td></tr></table></figure>
+<p>当64个block用光时，会再申请128个，然后bitmap变为4个。和vector的成长一样，会申请另一块内存然后将现在的搬过去：</p>
+<p><img src="/images/bitmap-2.png"><br><img src="/images/bitmap-3.png"><br>每次都这样成长两倍，2的幂次方级别地成长。</p>
+<h3 id="deallocate"><a href="#deallocate" class="headerlink" title="deallocate"></a>deallocate</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Tp&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">bitmap_allocator</span>: <span class="keyword">private</span> free_list&#123;</span><br><span class="line">    <span class="function"><span class="type">void</span> </span></span><br><span class="line"><span class="function">    <span class="title">deallocate</span><span class="params">(pointer __p, size_type __n)</span> <span class="title">throw</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (__builtin_expect(__p != <span class="number">0</span>, <span class="literal">true</span>))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (__builtin_expect(__n == <span class="number">1</span>, <span class="literal">true</span>))<span class="comment">//如果数量为1,则调用_M_deallocate_single_object()释放</span></span><br><span class="line">                <span class="keyword">this</span>-&gt;_M_deallocate_single_object(__p);</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                ::<span class="keyword">operator</span> <span class="built_in">delete</span>(__p);<span class="comment">//数量大于1使用operator delete释放</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/bitmap-4.png"><br><img src="/images/bitmap-6.png"></p>
 
       
     </div>

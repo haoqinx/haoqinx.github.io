@@ -191,107 +191,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/" class="post-title-link" itemprop="url">CMU-cs445:Undo && Redo</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-09-25 01:40:36 / Modified: 02:06:29" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="Undo-amp-Redo"><a href="#Undo-amp-Redo" class="headerlink" title="Undo &amp; Redo"></a>Undo &amp; Redo</h3><ul>
-<li><p>Undo:移除一个终止的事务的影响</p>
-</li>
-<li><p>Redo：重新执行一个事务进行持久化</p>
-</li>
-<li><p>Steal Policy<br>允许未提交的事务回写到磁盘</p>
-</li>
-<li><p>Force Policy<br>要求所有事务提交之前必须回写到磁盘</p>
-</li>
-<li><p>No Steal + Force</p>
-<ul>
-<li>Shodow Paging<br><img src="/images/db-43.png"></li>
-</ul>
-</li>
-<li><p>Steal + No Force</p>
-<ul>
-<li>write-ahead log<br><img src="/images/db-44.png"><br> 什么时间提交这些日志条目？<ul>
-<li>事务提交时</li>
-<li>组提交，这时会出现未提交事务的条目，但是不影响。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>Logging Schemes</p>
-<ul>
-<li>Physical</li>
-<li>Logical</li>
-<li>Physiological<br><img src="/images/db-45.png"></li>
-</ul>
-</li>
-<li><p>CheckPoints<br>使用预写日志，为了避免恢复时间过长，在某个时间点将所有脏页面持久化到磁盘。写入一个Checkpoint条目。</p>
-</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E5%BC%95%E6%93%8E%E5%AE%9E%E7%8E%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -401,6 +300,107 @@
 </li>
 </ul>
 <h3 id="表达式评估（Expression-Evaluation）"><a href="#表达式评估（Expression-Evaluation）" class="headerlink" title="表达式评估（Expression Evaluation）"></a>表达式评估（Expression Evaluation）</h3><p>DBMS将WHERE语句转化成一个expression tree<br><img src="/images/db-23.png"><br>每次遇到一个tuple，去匹配这个树，这样的话效率很低。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/" class="post-title-link" itemprop="url">CMU-cs445:Undo && Redo</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-09-25 01:40:36 / Modified: 02:06:29" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="Undo-amp-Redo"><a href="#Undo-amp-Redo" class="headerlink" title="Undo &amp; Redo"></a>Undo &amp; Redo</h3><ul>
+<li><p>Undo:移除一个终止的事务的影响</p>
+</li>
+<li><p>Redo：重新执行一个事务进行持久化</p>
+</li>
+<li><p>Steal Policy<br>允许未提交的事务回写到磁盘</p>
+</li>
+<li><p>Force Policy<br>要求所有事务提交之前必须回写到磁盘</p>
+</li>
+<li><p>No Steal + Force</p>
+<ul>
+<li>Shodow Paging<br><img src="/images/db-43.png"></li>
+</ul>
+</li>
+<li><p>Steal + No Force</p>
+<ul>
+<li>write-ahead log<br><img src="/images/db-44.png"><br> 什么时间提交这些日志条目？<ul>
+<li>事务提交时</li>
+<li>组提交，这时会出现未提交事务的条目，但是不影响。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Logging Schemes</p>
+<ul>
+<li>Physical</li>
+<li>Logical</li>
+<li>Physiological<br><img src="/images/db-45.png"></li>
+</ul>
+</li>
+<li><p>CheckPoints<br>使用预写日志，为了避免恢复时间过长，在某个时间点将所有脏页面持久化到磁盘。写入一个Checkpoint条目。</p>
+</li>
+</ul>
 
       
     </div>
@@ -612,6 +612,119 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C/" class="post-title-link" itemprop="url">CMU-cs445:查询执行</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:53:01" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="并行处理模型"><a href="#并行处理模型" class="headerlink" title="并行处理模型"></a>并行处理模型</h3><ul>
+<li>Process per DBMS Worker<ul>
+<li>使用一个进程处理一个请求</li>
+<li>使用共享内存对全局数据进行共享，如buffer pool，不用将相同的page加载两次</li>
+<li>单进程奔溃不会导致整个系统崩溃</li>
+</ul>
+</li>
+<li>Process Pool<ul>
+<li>使用进程池来处理请求</li>
+<li>对cpu缓存不友好</li>
+<li>减少了创建销毁进程开销</li>
+</ul>
+</li>
+<li>Thread per DBMS Worker<ul>
+<li>单进程多线程</li>
+<li>线程崩溃导致进程崩溃</li>
+<li>上下文切换开销很小</li>
+<li>不需要管理共享内存</li>
+</ul>
+</li>
+</ul>
+<h3 id="并行查询方式"><a href="#并行查询方式" class="headerlink" title="并行查询方式"></a>并行查询方式</h3><ul>
+<li><p>Inter-Query：同时执行多个查询</p>
+</li>
+<li><p>Intra-Query：同时执行一个查询的多个operator，一般有三种，注意下main这三种不是互斥的，他们可以相互组合。</p>
+<ul>
+<li>Intra-Operator（Horizontal）：将完整的操作拆分成多个平行的操作，也就是说把我们要处理的数据分成几段，并行处理，在DBMS中有一个特殊的exchange操作符，将数据分段，分别处理数据，然后最后将数据组合起来。exchange有三种类型：<ul>
+<li>Gather：组合不同worker的数据合并成一个输出流传给上层操作符。</li>
+<li>Repartition：将不同worker的数据分成不同的流，如group by</li>
+<li>Distribute：将一个输入流转化成多个输出流<br>  <img src="/images/db-24.png"></li>
+</ul>
+</li>
+<li>Inter-Operator（Vertical）：不同线程同一时间执行不同的operator.<br>  <img src="/images/db-25.png"></li>
+<li>Bushy</li>
+</ul>
+</li>
+</ul>
+<h3 id="IO并行"><a href="#IO并行" class="headerlink" title="IO并行"></a>IO并行</h3><ul>
+<li>multi-disk 并行：使用多个冗余磁盘存储相同的数据</li>
+<li>database partitioning：将数据分成不相交的子集，分别存储在物理磁盘上单独管理<ul>
+<li>垂直分区：将数据按照列进行分区</li>
+<li>水平分区：将数据按照行进行分区</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -711,119 +824,6 @@
 <li>将内部查询提取出来作为单独查询来执行，将结果缓存起来，这样不用每次执行上层查询都再执行一次子查询</li>
 </ul>
 <p>(<a target="_blank" rel="noopener" href="https://dbdb.io/">https://dbdb.io/</a>)</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C/" class="post-title-link" itemprop="url">CMU-cs445:查询执行</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:53:01" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="并行处理模型"><a href="#并行处理模型" class="headerlink" title="并行处理模型"></a>并行处理模型</h3><ul>
-<li>Process per DBMS Worker<ul>
-<li>使用一个进程处理一个请求</li>
-<li>使用共享内存对全局数据进行共享，如buffer pool，不用将相同的page加载两次</li>
-<li>单进程奔溃不会导致整个系统崩溃</li>
-</ul>
-</li>
-<li>Process Pool<ul>
-<li>使用进程池来处理请求</li>
-<li>对cpu缓存不友好</li>
-<li>减少了创建销毁进程开销</li>
-</ul>
-</li>
-<li>Thread per DBMS Worker<ul>
-<li>单进程多线程</li>
-<li>线程崩溃导致进程崩溃</li>
-<li>上下文切换开销很小</li>
-<li>不需要管理共享内存</li>
-</ul>
-</li>
-</ul>
-<h3 id="并行查询方式"><a href="#并行查询方式" class="headerlink" title="并行查询方式"></a>并行查询方式</h3><ul>
-<li><p>Inter-Query：同时执行多个查询</p>
-</li>
-<li><p>Intra-Query：同时执行一个查询的多个operator，一般有三种，注意下main这三种不是互斥的，他们可以相互组合。</p>
-<ul>
-<li>Intra-Operator（Horizontal）：将完整的操作拆分成多个平行的操作，也就是说把我们要处理的数据分成几段，并行处理，在DBMS中有一个特殊的exchange操作符，将数据分段，分别处理数据，然后最后将数据组合起来。exchange有三种类型：<ul>
-<li>Gather：组合不同worker的数据合并成一个输出流传给上层操作符。</li>
-<li>Repartition：将不同worker的数据分成不同的流，如group by</li>
-<li>Distribute：将一个输入流转化成多个输出流<br>  <img src="/images/db-24.png"></li>
-</ul>
-</li>
-<li>Inter-Operator（Vertical）：不同线程同一时间执行不同的operator.<br>  <img src="/images/db-25.png"></li>
-<li>Bushy</li>
-</ul>
-</li>
-</ul>
-<h3 id="IO并行"><a href="#IO并行" class="headerlink" title="IO并行"></a>IO并行</h3><ul>
-<li>multi-disk 并行：使用多个冗余磁盘存储相同的数据</li>
-<li>database partitioning：将数据分成不相交的子集，分别存储在物理磁盘上单独管理<ul>
-<li>垂直分区：将数据按照列进行分区</li>
-<li>水平分区：将数据按照行进行分区</li>
-</ul>
-</li>
-</ul>
 
       
     </div>

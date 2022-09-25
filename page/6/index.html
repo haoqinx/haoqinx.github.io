@@ -884,85 +884,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9APING%E5%91%BD%E4%BB%A4%E5%8E%9F%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9APING%E5%91%BD%E4%BB%A4%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">网络复习：PING & traceroute命令原理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:53:39" itemprop="dateModified" datetime="2022-09-25T01:53:39+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="ICMP"><a href="#ICMP" class="headerlink" title="ICMP"></a>ICMP</h3><p>ping 基于ICMP协议，ICMP 主要的功能包括：确认 IP 包是否成功送达目标地址、报告发送过程中 IP 包被废弃的原因和改善网络设置等。<br>ICMP报文格式如下，封装在IP包里面，工作在网络层：<br><img src="/images/icmp-1.png"></p>
-<p>ICMP从类别上大概分为查询报文和差错报文。<br><img src="/images/icmp-2.png"></p>
-<h3 id="PING"><a href="#PING" class="headerlink" title="PING"></a>PING</h3><p>ping命令基于ICMP查询报文设计，原理是用类型码为8的ICMP发请 求，受到请求的主机则用类型码为0的ICMP回应。<br>ping首先通过arp协议广播请求目的主机的MAC地址，得到MAC地址之后发送请求报文。<br>回送应答报文格式如下：<br><img src="/images/ping-1.png"><br>和原始ICMP报文不同之处就是新增加了标识符和序号，标识符通常包含PID，序号从0开始，每次发送加1，可以确认网络包是否丢失。<br>PING命令的总体流程如下图所示<br><img src="/images/ping-2.png"></p>
-<h3 id="traceroute"><a href="#traceroute" class="headerlink" title="traceroute"></a>traceroute</h3><p>Traceroute的原理是非常非常的有意思，它受到目的主机的IP后，首先给目的主机发送一个TTL&#x3D;1的UDP数据包，而经过的第一个路由器收到这个数据包以后，就自动把TTL减1，而TTL变为0以后，路由器就把这个包给抛弃了，并同时产生 一个主机不可达的ICMP数据报给主机。主机收到这个数据报以后再发一个TTL&#x3D;2的UDP数据报给目的主机，然后刺激第二个路由器给主机发ICMP数据 报。如此往复直到到达目的主机。这样，traceroute就拿到了所有的路由器ip。从而避开了ip头只能记录有限路由IP的问题。</p>
-<p>有人要问，我怎么知道UDP到没到达目的主机呢？这就涉及一个技巧的问题，TCP和UDP协议有一个端口号定义，而普通的网络程序只监控少数的几个号码较 小的端口，比如说80,比如说23,等等。而traceroute发送的是端口号&gt;30000(真变态)的UDP报，所以到达目的主机的时候，目的 主机只能发送一个端口不可达的ICMP数据报给主机。主机接到这个报告以后就知道，主机到了。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%20&%20UDP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1126,6 +1047,85 @@
 <li>连接迁移。</li>
 <li>前向冗余纠错。<br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/32553477">可以参考这个文章</a></li>
 </ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9APING%E5%91%BD%E4%BB%A4%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9APING%E5%91%BD%E4%BB%A4%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">网络复习：PING & traceroute命令原理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:53:39" itemprop="dateModified" datetime="2022-09-25T01:53:39+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="ICMP"><a href="#ICMP" class="headerlink" title="ICMP"></a>ICMP</h3><p>ping 基于ICMP协议，ICMP 主要的功能包括：确认 IP 包是否成功送达目标地址、报告发送过程中 IP 包被废弃的原因和改善网络设置等。<br>ICMP报文格式如下，封装在IP包里面，工作在网络层：<br><img src="/images/icmp-1.png"></p>
+<p>ICMP从类别上大概分为查询报文和差错报文。<br><img src="/images/icmp-2.png"></p>
+<h3 id="PING"><a href="#PING" class="headerlink" title="PING"></a>PING</h3><p>ping命令基于ICMP查询报文设计，原理是用类型码为8的ICMP发请 求，受到请求的主机则用类型码为0的ICMP回应。<br>ping首先通过arp协议广播请求目的主机的MAC地址，得到MAC地址之后发送请求报文。<br>回送应答报文格式如下：<br><img src="/images/ping-1.png"><br>和原始ICMP报文不同之处就是新增加了标识符和序号，标识符通常包含PID，序号从0开始，每次发送加1，可以确认网络包是否丢失。<br>PING命令的总体流程如下图所示<br><img src="/images/ping-2.png"></p>
+<h3 id="traceroute"><a href="#traceroute" class="headerlink" title="traceroute"></a>traceroute</h3><p>Traceroute的原理是非常非常的有意思，它受到目的主机的IP后，首先给目的主机发送一个TTL&#x3D;1的UDP数据包，而经过的第一个路由器收到这个数据包以后，就自动把TTL减1，而TTL变为0以后，路由器就把这个包给抛弃了，并同时产生 一个主机不可达的ICMP数据报给主机。主机收到这个数据报以后再发一个TTL&#x3D;2的UDP数据报给目的主机，然后刺激第二个路由器给主机发ICMP数据 报。如此往复直到到达目的主机。这样，traceroute就拿到了所有的路由器ip。从而避开了ip头只能记录有限路由IP的问题。</p>
+<p>有人要问，我怎么知道UDP到没到达目的主机呢？这就涉及一个技巧的问题，TCP和UDP协议有一个端口号定义，而普通的网络程序只监控少数的几个号码较 小的端口，比如说80,比如说23,等等。而traceroute发送的是端口号&gt;30000(真变态)的UDP报，所以到达目的主机的时候，目的 主机只能发送一个端口不可达的ICMP数据报给主机。主机接到这个报告以后就知道，主机到了。</p>
 
       
     </div>
