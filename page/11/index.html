@@ -75,6 +75,7 @@
   </style>
 </noscript>
 
+<link rel="alternate" href="/atom.xml" title="面向自由编程" type="application/atom+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -187,6 +188,102 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Ajemalloc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Ajemalloc/" class="post-title-link" itemprop="url">c++内存管理系列：jemalloc</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-08-29 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-29T00:00:00+08:00">2021-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:55:43" itemprop="dateModified" datetime="2022-09-25T01:55:43+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>jemalloc 是由 Jason Evans 在 FreeBSD 项目中引入的新一代内存分配器。它是一个通用的 malloc 实现，侧重于减少内存碎片和提升高并发场景下内存的分配效率，其目标是能够替代 malloc。jemalloc 应用十分广泛，在 Firefox、Redis、Rust、Netty 等出名的产品或者编程语言中都有大量使用。具体细节可以参考 Jason Evans 发表的论文 《A Scalable Concurrent malloc Implementation for FreeBSD》。</p>
+<h3 id="架构设计"><a href="#架构设计" class="headerlink" title="架构设计"></a>架构设计</h3><p>了解了vc6内存管理、ptmalloc、tcmalloc之后，jemalloc理解起来就轻松了不上，因为jemalloc有些地方借鉴了tcmalloc，先pull出整体架构图：<br><img src="/images/jemalloc-1.png"></p>
+<p>图中涉及 jemalloc 的几个核心概念，例如 arena、bin、chunk、run、region、tcache 等，我们下面逐一进行介绍。</p>
+<ul>
+<li><font color=red>arena</font> 是 jemalloc 最重要的部分，内存由一定数量的 arenas 负责管理。每个用户线程都会被绑定到一个 arena 上，线程采用 round-robin 轮询的方式选择可用的 arena 进行内存分配，为了减少线程之间的锁竞争，默认每个 CPU 会分配 4 个 arena。</li>
+<li><font color=red>bin</font> 用于管理不同档位的内存单元，每个 bin 管理的内存大小是按分类依次递增。因为 jemalloc 中小内存的分配是基于 Slab 算法完成的，所以会产生不同类别的内存块。</li>
+<li><font color=red>chunk</font> 是负责管理用户内存块的数据结构，chunk 以 Page 为单位管理内存，默认大小是 4M，即 1024 个连续 Page。每个 chunk 可被用于多次小内存的申请，但是在大内存分配的场景下只能分配一次。</li>
+<li><font color=red>run</font> 实际上是 chunk 中的一块内存区域，每个 bin 管理相同类型的 run，最终通过操作 run 完成内存分配。run 结构具体的大小由不同的 bin 决定，例如 8 字节的 bin 对应的 run 只有一个 Page，可以从中选取 8 字节的块进行分配。</li>
+<li><font color=red>region</font> 是每个 run 中的对应的若干个小内存块，每个 run 会将划分为若干个等长的 region，每次内存分配也是按照 region 进行分发。</li>
+<li><font color=red>tcache</font> 是每个线程私有的缓存，用于 small 和 large 场景下的内存分配，每个 tcahe 会对应一个 arena，tcache 本身也会有一个 bin 数组，称为tbin。与 arena 中 bin 不同的是，它不会有 run 的概念。tcache 每次从 arena 申请一批内存，在分配内存时首先在 tcache 查找，从而避免锁竞争，如果分配失败才会通过 run 执行内存分配。</li>
+</ul>
+<p>jemalloc 的几个核心的概念介绍完了，我们再重新梳理下它们之间的关系：</p>
+<ul>
+<li>内存是由一定数量的 arenas 负责管理，线程均匀分布在 arenas 当中；</li>
+<li>每个 arena 都包含一个 bin 数组，每个 bin 管理不同档位的内存块；</li>
+<li>每个 arena 被划分为若干个 chunks，每个 chunk 又包含若干个 runs，每个 run 由连续的 Page 组成，run 才是实际分配内存的操作对象；</li>
+<li>每个 run 会被划分为一定数量的 regions，在小内存的分配场景，region 相当于用户内存；</li>
+<li>每个 tcache 对应 一个 arena，tcache 中包含多种类型的 bin。</li>
+</ul>
+<p>首先讲下 Samll 场景，如果请求分配内存的大小小于 arena 中的最小的 bin，那么优先从线程中对应的 tcache 中进行分配。首先确定查找对应的 tbin 中是否存在缓存的内存块，如果存在则分配成功，否则找到 tbin 对应的 arena，从 arena 中对应的 bin 中分配 region 保存在 tbin 的 avail 数组中，最终从 availl 数组中选取一个地址进行内存分配，当内存释放时也会将被回收的内存块进行缓存。</p>
+<p>Large 场景的内存分配与 Samll 类似，如果请求分配内存的大小大于 arena 中的最小的 bin，但是不大于 tcache 中能够缓存的最大块，依然会通过 tcache 进行分配，但是不同的是此时会分配 chunk 以及所对应的 run，从 chunk 中找到相应的内存空间进行分配。内存释放时也跟 samll 场景类似，会把释放的内存块缓存在 tacache 的 tbin 中。此外还有一种情况，当请求分配内存的大小大于tcache 中能够缓存的最大块，但是不大于 chunk 的大小，那么将不会采用 tcache 机制，直接在 chunk 中进行内存分配。</p>
+<p>Huge 场景，如果请求分配内存的大小大于 chunk 的大小，那么直接通过 mmap 进行分配，调用 munmap 进行回收。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -503,102 +600,6 @@ CentralFreeList里有两个span链表：nonempty_和empty_，根据span的object
 <li>占用额外空间少(例如，分配N个8字节对象可能要使用大约8N * 1.01字节的空间。即，多用百分之一的空间。Ptmalloc2使用最少8字节描述一个chunk。)</li>
 <li>碎片化控制优越.ThreadCache会阶段性的回收内存到CentralCache里。 解决了ptmalloc2中arena之间不能迁移的问题。</li>
 </ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Ajemalloc/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Ajemalloc/" class="post-title-link" itemprop="url">c++内存管理系列：jemalloc</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-08-29 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-29T00:00:00+08:00">2021-08-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:55:43" itemprop="dateModified" datetime="2022-09-25T01:55:43+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>jemalloc 是由 Jason Evans 在 FreeBSD 项目中引入的新一代内存分配器。它是一个通用的 malloc 实现，侧重于减少内存碎片和提升高并发场景下内存的分配效率，其目标是能够替代 malloc。jemalloc 应用十分广泛，在 Firefox、Redis、Rust、Netty 等出名的产品或者编程语言中都有大量使用。具体细节可以参考 Jason Evans 发表的论文 《A Scalable Concurrent malloc Implementation for FreeBSD》。</p>
-<h3 id="架构设计"><a href="#架构设计" class="headerlink" title="架构设计"></a>架构设计</h3><p>了解了vc6内存管理、ptmalloc、tcmalloc之后，jemalloc理解起来就轻松了不上，因为jemalloc有些地方借鉴了tcmalloc，先pull出整体架构图：<br><img src="/images/jemalloc-1.png"></p>
-<p>图中涉及 jemalloc 的几个核心概念，例如 arena、bin、chunk、run、region、tcache 等，我们下面逐一进行介绍。</p>
-<ul>
-<li><font color=red>arena</font> 是 jemalloc 最重要的部分，内存由一定数量的 arenas 负责管理。每个用户线程都会被绑定到一个 arena 上，线程采用 round-robin 轮询的方式选择可用的 arena 进行内存分配，为了减少线程之间的锁竞争，默认每个 CPU 会分配 4 个 arena。</li>
-<li><font color=red>bin</font> 用于管理不同档位的内存单元，每个 bin 管理的内存大小是按分类依次递增。因为 jemalloc 中小内存的分配是基于 Slab 算法完成的，所以会产生不同类别的内存块。</li>
-<li><font color=red>chunk</font> 是负责管理用户内存块的数据结构，chunk 以 Page 为单位管理内存，默认大小是 4M，即 1024 个连续 Page。每个 chunk 可被用于多次小内存的申请，但是在大内存分配的场景下只能分配一次。</li>
-<li><font color=red>run</font> 实际上是 chunk 中的一块内存区域，每个 bin 管理相同类型的 run，最终通过操作 run 完成内存分配。run 结构具体的大小由不同的 bin 决定，例如 8 字节的 bin 对应的 run 只有一个 Page，可以从中选取 8 字节的块进行分配。</li>
-<li><font color=red>region</font> 是每个 run 中的对应的若干个小内存块，每个 run 会将划分为若干个等长的 region，每次内存分配也是按照 region 进行分发。</li>
-<li><font color=red>tcache</font> 是每个线程私有的缓存，用于 small 和 large 场景下的内存分配，每个 tcahe 会对应一个 arena，tcache 本身也会有一个 bin 数组，称为tbin。与 arena 中 bin 不同的是，它不会有 run 的概念。tcache 每次从 arena 申请一批内存，在分配内存时首先在 tcache 查找，从而避免锁竞争，如果分配失败才会通过 run 执行内存分配。</li>
-</ul>
-<p>jemalloc 的几个核心的概念介绍完了，我们再重新梳理下它们之间的关系：</p>
-<ul>
-<li>内存是由一定数量的 arenas 负责管理，线程均匀分布在 arenas 当中；</li>
-<li>每个 arena 都包含一个 bin 数组，每个 bin 管理不同档位的内存块；</li>
-<li>每个 arena 被划分为若干个 chunks，每个 chunk 又包含若干个 runs，每个 run 由连续的 Page 组成，run 才是实际分配内存的操作对象；</li>
-<li>每个 run 会被划分为一定数量的 regions，在小内存的分配场景，region 相当于用户内存；</li>
-<li>每个 tcache 对应 一个 arena，tcache 中包含多种类型的 bin。</li>
-</ul>
-<p>首先讲下 Samll 场景，如果请求分配内存的大小小于 arena 中的最小的 bin，那么优先从线程中对应的 tcache 中进行分配。首先确定查找对应的 tbin 中是否存在缓存的内存块，如果存在则分配成功，否则找到 tbin 对应的 arena，从 arena 中对应的 bin 中分配 region 保存在 tbin 的 avail 数组中，最终从 availl 数组中选取一个地址进行内存分配，当内存释放时也会将被回收的内存块进行缓存。</p>
-<p>Large 场景的内存分配与 Samll 类似，如果请求分配内存的大小大于 arena 中的最小的 bin，但是不大于 tcache 中能够缓存的最大块，依然会通过 tcache 进行分配，但是不同的是此时会分配 chunk 以及所对应的 run，从 chunk 中找到相应的内存空间进行分配。内存释放时也跟 samll 场景类似，会把释放的内存块缓存在 tacache 的 tbin 中。此外还有一种情况，当请求分配内存的大小大于tcache 中能够缓存的最大块，但是不大于 chunk 的大小，那么将不会采用 tcache 机制，直接在 chunk 中进行内存分配。</p>
-<p>Huge 场景，如果请求分配内存的大小大于 chunk 的大小，那么直接通过 mmap 进行分配，调用 munmap 进行回收。</p>
 
       
     </div>
@@ -1281,7 +1282,7 @@ d1 = d2;             //静态类型为Base*,动态类型为D2*
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%BC%95%E7%94%A8%E6%B5%85%E6%9E%90/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88%EF%BC%882%EF%BC%89/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -1295,7 +1296,7 @@ d1 = d2;             //静态类型为Base*,动态类型为D2*
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%BC%95%E7%94%A8%E6%B5%85%E6%9E%90/" class="post-title-link" itemprop="url">effective-c++系列：引用浅析</a>
+            <a href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88%EF%BC%882%EF%BC%89/" class="post-title-link" itemprop="url">effective-c++系列：对象模型杂谈（2）</a>
         </h2>
 
         <div class="post-meta">
@@ -1312,7 +1313,7 @@ d1 = d2;             //静态类型为Base*,动态类型为D2*
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:57:13" itemprop="dateModified" datetime="2022-09-25T01:57:13+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:57:01" itemprop="dateModified" datetime="2022-09-25T01:57:01+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1336,58 +1337,57 @@ d1 = d2;             //静态类型为Base*,动态类型为D2*
 
       
           <span id="more"></span>
-<h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><ul>
-<li>引用不是新定义一个变量，而是给一个已经存在的变量取了一个别名，编译器不会为引用变量开辟内存空间，它和它引用的变量共用同一块内存空间。</li>
-</ul>
-<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><ul>
-<li>引用变量</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> data = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span>&amp; ref = data; <span class="comment">//可读可写</span></span><br></pre></td></tr></table></figure>
+<h3 id="在构造函数和析构函数中能调用虚函数吗？"><a href="#在构造函数和析构函数中能调用虚函数吗？" class="headerlink" title="在构造函数和析构函数中能调用虚函数吗？"></a>在构造函数和析构函数中能调用虚函数吗？</h3><ul>
+<li><p>严禁在构造函数中调用虚函数</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="type">int</span> data;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">dosome</span><span class="params">()</span><span class="type">const</span></span>&#123;&#125;;</span><br><span class="line">    <span class="built_in">A</span>()&#123;</span><br><span class="line">        <span class="built_in">dosome</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span> : <span class="keyword">public</span> A&#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">dosome</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line">B b;<span class="comment">//往往会出现意想不到的错误</span></span><br></pre></td></tr></table></figure>
 
 <ul>
-<li><p>常引用变量</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> data = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> <span class="type">const</span>&amp; ref = data;<span class="comment">//只读</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>常引用常量</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">int</span> data = <span class="number">0</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span>&amp; ref = data;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>指针引用</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> data = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> *p = &amp;data;</span><br><span class="line"><span class="type">int</span>* &amp;ref = p;</span><br><span class="line">cout &lt;&lt; data &lt;&lt; endl; <span class="comment">//0</span></span><br><span class="line">cout &lt;&lt; *p &lt;&lt; endl; <span class="comment">//0</span></span><br><span class="line">cout &lt;&lt; *ref &lt;&lt; endl; <span class="comment">//0</span></span><br><span class="line">cout &lt;&lt; p &lt;&lt; endl;<span class="comment">//0x61fe14</span></span><br><span class="line">cout &lt;&lt; ref &lt;&lt; endl;<span class="comment">//0x61fe14</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>引用变量的类型必须与它的实体类型一致（因为取别名要符合引用实体的身份，如果类型不一致则会报错）</p>
-</li>
-<li><p>引用变量使用必须要进行初始化（不然没有实体都不知道给谁取别名）</p>
-</li>
-<li><p>一个变量可以有多个引用（就相当于一个变量有好几个别名，这是可以的）</p>
-</li>
+<li>如果在父类的构造函数中调用虚函数，当使用子类对象的时候，会首先调用父类的构造函数。  </li>
+<li>在父类构造函数执行过程中，this指针为base class对象，因此在dosome()函数中的操作是在父类对象中完成的。</li>
+<li><font color=orange>由于虚函数dosome()在父类对象中完成，往往达不到多态（延迟绑定）的目的。</font></li>
 </ul>
-<h3 id="以pass-by-reference-to-const替换pass-by-value"><a href="#以pass-by-reference-to-const替换pass-by-value" class="headerlink" title="以pass-by-reference-to-const替换pass-by-value"></a>以pass-by-reference-to-const替换pass-by-value</h3><ul>
-<li>通常情况下c++使用值传递，传递对象都是由拷贝构造函数产生，这样做会产生非常昂贵的成本。每对一个对象进行值传递，就会进行一次拷贝构造函数和析构函数。</li>
-<li>考虑上述情况，可以使用<font color=orange>引用传递</font>来避免不必要的运行和内存开销。同时，如果希望在函数中不对对象进行任何改变，可以使用const关键字避免。</li>
-<li><font color=orange>在c++底层，引用是通过指针实现的</font>，因此对于内置类型如int,double,float等使用值传递会有更高的效率。</li>
-</ul>
-<h3 id="必须返回对象时，不要使用引用"><a href="#必须返回对象时，不要使用引用" class="headerlink" title="必须返回对象时，不要使用引用"></a>必须返回对象时，不要使用引用</h3><ul>
-<li><p>考虑如下的例子，考虑在函数内生成一个对象</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="type">int</span> val;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="title">A</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="title">A</span><span class="params">(<span class="type">int</span> x)</span>:val(x)&#123;</span>&#125;;</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="type">int</span> <span class="title">getVal</span><span class="params">()</span><span class="type">const</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> val;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="type">const</span> A&amp; <span class="keyword">operator</span>*(<span class="type">const</span> A&amp; lhs, <span class="type">const</span> A&amp; rhs)&#123;</span><br><span class="line">    A* res = <span class="keyword">new</span> <span class="built_in">A</span>(lhs.<span class="built_in">getVal</span>() * rhs.<span class="built_in">getVal</span>());</span><br><span class="line">    <span class="keyword">return</span> *res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>  operator*函数内生成了一个对象，并在heap上分配了内存，那么这块内存永远不会再外部释放，因为离开函数作用域这个指针将自动销毁。<br>  那么使用下面这个函数生成临时对象也一样不可取，因为离开函数作用域，这个对象将被销毁。</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> A&amp; <span class="keyword">operator</span>*(<span class="type">const</span> A&amp; lhs, <span class="type">const</span> A&amp; rhs)&#123;</span><br><span class="line">    <span class="function">A <span class="title">res</span><span class="params">(lhs.getVal() * rhs.getVal())</span></span>;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>  能不能像下面这样声明一个静态对象来保存结果呢？</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> A&amp; <span class="keyword">operator</span>*(<span class="type">const</span> A&amp; lhs, <span class="type">const</span> A&amp; rhs)&#123;</span><br><span class="line">    <span class="type">static</span> A res;</span><br><span class="line">    res = <span class="built_in">A</span>(lhs.<span class="built_in">getVal</span>() * rhs.<span class="built_in">getVal</span>());</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>  表面上看没有太大问题，但是在使用中我们常常会像一下这样来使用：</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">bool</span> <span class="keyword">operator</span>==(<span class="type">const</span> A&amp; lhs, <span class="type">const</span> A&amp; rhs);</span><br><span class="line">A r, s, t, x;</span><br><span class="line"><span class="keyword">if</span>((r * s) == (t * x))&#123;</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>  如果保存的是静态对象，那么这个表达式永远为真。表达式展开的结果是</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">operator</span>==(<span class="keyword">operator</span>*(r, s), <span class="keyword">operator</span>*(t, x)))&#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>  在比较时永远比较的是静态对象值，不管执行顺序是什么，对象自身永远相等。</p>
 </li>
-<li><p>正确的做法</p>
+<li><p>严禁在析构函数中调用虚函数</p>
 <ul>
-<li>让函数返回一个新对象</li>
+<li>在子类对象析构时顺序为先将自身的local data释放，然后调用父类的析构函数，如果父类析构存在虚函数，那么编译器会有两种选择：调用虚函数的基类版本或者调用虚函数的派生类版本。</li>
+<li>如果调用派生类版本的函数，此时子类部分已经释放，会导致严重错误。</li>
+<li><font color=orange>实际情况是编译器会调用基类版本的虚函数，那么和构造函数一样，不会发生多态。</font></li>
 </ul>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="type">const</span> A <span class="keyword">operator</span>*(<span class="type">const</span> A&amp; lhs, <span class="type">const</span> A&amp; rhs)&#123;</span><br><span class="line">    <span class="function">A <span class="title">res</span><span class="params">(lhs.getVal() * rhs.getVal())</span></span>;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</li>
+<li><p>解决方式</p>
+<ul>
+<li>将在构造或析构函数中调用的函数设置为non-virtual，要求子类对象在构造时传递必要的信息。</li>
+</ul>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="type">int</span> data;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">dosome</span><span class="params">(<span class="type">const</span> string&amp; info)</span><span class="type">const</span></span>&#123;&#125;;</span><br><span class="line">    <span class="built_in">A</span>(<span class="type">const</span> string&amp; info)&#123;</span><br><span class="line">        <span class="built_in">dosome</span>(info);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span> : <span class="keyword">public</span> A&#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">    <span class="function"><span class="type">static</span> string <span class="title">createParamter</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">dosome</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line">    <span class="built_in">B</span>():<span class="built_in">A</span>(<span class="built_in">createParamter</span>())&#123;&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="如果new、delete、delete-没有成对使用会发生什么？"><a href="#如果new、delete、delete-没有成对使用会发生什么？" class="headerlink" title="如果new、delete、delete[]没有成对使用会发生什么？"></a>如果new、delete、delete[]没有成对使用会发生什么？</h3><p><img src="/images/001.png">  </p>
+<center>单个对象和对象数组的内存布局</center>
+
+<ul>
+<li><p>使用delete释放对象数组</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">string* s = <span class="keyword">new</span> string[<span class="number">100</span>];</span><br><span class="line"><span class="comment">//do something</span></span><br><span class="line"><span class="keyword">delete</span> s;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>上述情况下，只会调用第一个s的函数，其余99个对象不执行任何操作，后面程序也不会再拿到其句柄，从而会造成内存泄露。</li>
+<li>实际上，对于一组对象，delete[]会寻找数组前的一个count计数来获取数组长度。</li>
+</ul>
+</li>
+<li><p>使用delete[]释放单个对象</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">string* s = <span class="keyword">new</span> string;</span><br><span class="line"><span class="comment">//do something</span></span><br><span class="line"><span class="keyword">delete</span>[] s;<span class="comment">// Exception has occurred.Segmentation fault</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>delete[]在内存中读取s指针前4字节内存作为数组长度，这样做显然是非法的。</li>
+</ul>
+</li>
+</ul>
+<h3 id="设计一个class需要注意什么？"><a href="#设计一个class需要注意什么？" class="headerlink" title="设计一个class需要注意什么？"></a>设计一个class需要注意什么？</h3><ul>
+<li>对象创建和销毁（构造、析构函数、内存分配）</li>
+<li>对象初始化和赋值</li>
+<li>对象如果pass by value应该怎么做？（如果对象内存在指针，是否需要深拷贝）</li>
+<li>定义class约束（数据类型检查）</li>
+<li>继承或者被继承</li>
+<li>类型转换（隐式类型转换）</li>
+<li>操作符重载</li>
+<li>标准函数是否适用（拷贝赋值，拷贝构造）</li>
 </ul>
 
       

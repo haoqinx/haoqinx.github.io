@@ -75,6 +75,7 @@
   </style>
 </noscript>
 
+<link rel="alternate" href="/atom.xml" title="面向自由编程" type="application/atom+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -191,6 +192,107 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/" class="post-title-link" itemprop="url">CMU-cs445:Undo && Redo</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-09-25 01:40:36 / Modified: 02:06:29" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="Undo-amp-Redo"><a href="#Undo-amp-Redo" class="headerlink" title="Undo &amp; Redo"></a>Undo &amp; Redo</h3><ul>
+<li><p>Undo:移除一个终止的事务的影响</p>
+</li>
+<li><p>Redo：重新执行一个事务进行持久化</p>
+</li>
+<li><p>Steal Policy<br>允许未提交的事务回写到磁盘</p>
+</li>
+<li><p>Force Policy<br>要求所有事务提交之前必须回写到磁盘</p>
+</li>
+<li><p>No Steal + Force</p>
+<ul>
+<li>Shodow Paging<br><img src="/images/db-43.png"></li>
+</ul>
+</li>
+<li><p>Steal + No Force</p>
+<ul>
+<li>write-ahead log<br><img src="/images/db-44.png"><br> 什么时间提交这些日志条目？<ul>
+<li>事务提交时</li>
+<li>组提交，这时会出现未提交事务的条目，但是不影响。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Logging Schemes</p>
+<ul>
+<li>Physical</li>
+<li>Logical</li>
+<li>Physiological<br><img src="/images/db-45.png"></li>
+</ul>
+</li>
+<li><p>CheckPoints<br>使用预写日志，为了避免恢复时间过长，在某个时间点将所有脏页面持久化到磁盘。写入一个Checkpoint条目。</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E5%BC%95%E6%93%8E%E5%AE%9E%E7%8E%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -300,107 +402,6 @@
 </li>
 </ul>
 <h3 id="表达式评估（Expression-Evaluation）"><a href="#表达式评估（Expression-Evaluation）" class="headerlink" title="表达式评估（Expression Evaluation）"></a>表达式评估（Expression Evaluation）</h3><p>DBMS将WHERE语句转化成一个expression tree<br><img src="/images/db-23.png"><br>每次遇到一个tuple，去匹配这个树，这样的话效率很低。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/" class="post-title-link" itemprop="url">CMU-cs445:Undo && Redo</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-09-25 01:40:36 / Modified: 02:06:29" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="Undo-amp-Redo"><a href="#Undo-amp-Redo" class="headerlink" title="Undo &amp; Redo"></a>Undo &amp; Redo</h3><ul>
-<li><p>Undo:移除一个终止的事务的影响</p>
-</li>
-<li><p>Redo：重新执行一个事务进行持久化</p>
-</li>
-<li><p>Steal Policy<br>允许未提交的事务回写到磁盘</p>
-</li>
-<li><p>Force Policy<br>要求所有事务提交之前必须回写到磁盘</p>
-</li>
-<li><p>No Steal + Force</p>
-<ul>
-<li>Shodow Paging<br><img src="/images/db-43.png"></li>
-</ul>
-</li>
-<li><p>Steal + No Force</p>
-<ul>
-<li>write-ahead log<br><img src="/images/db-44.png"><br> 什么时间提交这些日志条目？<ul>
-<li>事务提交时</li>
-<li>组提交，这时会出现未提交事务的条目，但是不影响。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>Logging Schemes</p>
-<ul>
-<li>Physical</li>
-<li>Logical</li>
-<li>Physiological<br><img src="/images/db-45.png"></li>
-</ul>
-</li>
-<li><p>CheckPoints<br>使用预写日志，为了避免恢复时间过长，在某个时间点将所有脏页面持久化到磁盘。写入一个Checkpoint条目。</p>
-</li>
-</ul>
 
       
     </div>
@@ -612,6 +613,124 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/" class="post-title-link" itemprop="url">CMU-cs445:查询优化</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:52:59" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="查询优化"><a href="#查询优化" class="headerlink" title="查询优化"></a>查询优化</h3><ul>
+<li>Heuristics&#x2F;Rules 规则&#x2F;静态触发</li>
+</ul>
+<p>当查询中的某些部分满足我们的规则或者条件，我们就重写这部分.这部分需要我们去检查catelog.</p>
+<ul>
+<li>Cost-based Search</li>
+</ul>
+<p>方法的思想是使用一个模型去评估一个查询的负载，然后使用多种不同的查询计划去替换这个查询，找出最小负载的方案。</p>
+<p>下面是整个查询优化过程<br><img src="/images/db-26.png"></p>
+<h3 id="Relational-Algebra-Equivalences-等价关系代数"><a href="#Relational-Algebra-Equivalences-等价关系代数" class="headerlink" title="Relational Algebra Equivalences(等价关系代数)"></a>Relational Algebra Equivalences(等价关系代数)</h3><ul>
+<li>predicate pushdown:在join前尽量过滤数据。</li>
+<li>对过滤条件进行排序，让更具有分辨性的条件排在前面。</li>
+<li>对复杂判断进行简化</li>
+<li>对于行存储类型数据库，projection越早越好。</li>
+</ul>
+<h3 id="Plan-Cost-Estimation"><a href="#Plan-Cost-Estimation" class="headerlink" title="Plan Cost Estimation"></a>Plan Cost Estimation</h3><ul>
+<li>CPU</li>
+<li>磁盘</li>
+<li>内存</li>
+<li>网络</li>
+</ul>
+<p>在数据库的catelog中，会维护相关信息，并且在特定时间或者遍历表的时候更跟这些信息，在执行查询之前，将这些变量带入公式，计算出最小代价的查询。在系统中，我们定义一些统计量：</p>
+<ul>
+<li>$N_R$: 关系R的tuple数量</li>
+<li>V(A,R):属性A不同值的数量</li>
+<li>Selection Cardinality：$N_R$&#x2F;V(A,R)</li>
+<li>selectivity: 选择率，给定一个条件，计算table中符合条件的tuple数量</li>
+<li>Range Predicate：计算范围值的比例，有点像概率计算，因此可以引入概率论中的结论,但是为了计算方便，有下面三个前提：<br><img src="/images/db-27.png"></li>
+</ul>
+<h5 id="直方图法"><a href="#直方图法" class="headerlink" title="直方图法"></a>直方图法</h5><p>对于数据分布不均匀的关系，在一些高端数据库中会使用直方图来跟踪数据的分布。对于数据量极大或者属性值分布很广的情况，我们会使用相同宽度的<strong>bucket</strong>来记录值的分布，但是这种情况会导致某个桶内数据分布极不均匀的情况，我们可以使用<strong>分位数</strong>来解决这个问题，即累计一定比例的数据分桶，桶的宽度可变，但是总体占比大致相当。</p>
+<h5 id="采样法"><a href="#采样法" class="headerlink" title="采样法"></a>采样法</h5><p>对于直方图，其实是对表中数据的一种缩略表达，那么在大数据量的table中，我们可以直接采样来近似代表整个表的数据分布。当表进行大规模更新或者到达一个指定时间点，我们去更新这个采样表。</p>
+<h3 id="Plan-Enumeration"><a href="#Plan-Enumeration" class="headerlink" title="Plan Enumeration"></a>Plan Enumeration</h3><h5 id="单关系查询计划"><a href="#单关系查询计划" class="headerlink" title="单关系查询计划"></a>单关系查询计划</h5><ul>
+<li>循序遍历</li>
+<li>二分查找（对于聚集索引）</li>
+<li>索引遍历</li>
+</ul>
+<h5 id="多关系查询计划"><a href="#多关系查询计划" class="headerlink" title="多关系查询计划"></a>多关系查询计划</h5><ul>
+<li><p>left-deep join tree<br><img src="/images/db-28.png"><br>在上面三个查询树中，System R不考虑后面两个，只考虑第一种。为什么采用第一种？后面两种实现过程中会有大量结果溢出到磁盘，影响性能。</p>
+</li>
+<li><p>步骤（System R based）<br><img src="/images/db-29.png"></p>
+</li>
+<li><p>步骤（遗传算法）<br><img src="/images/db-30.png"></p>
+</li>
+</ul>
+<h3 id="Nested-Sub-queries"><a href="#Nested-Sub-queries" class="headerlink" title="Nested Sub-queries"></a>Nested Sub-queries</h3><p>通常情况下将where作为函数，穿入参数然后返回一组值，有两种方法进行查询优化：</p>
+<ul>
+<li>重写查询，去除关联性，让其扁平化</li>
+<li>将内部查询提取出来作为单独查询来执行，将结果缓存起来，这样不用每次执行上层查询都再执行一次子查询</li>
+</ul>
+<p>(<a target="_blank" rel="noopener" href="https://dbdb.io/">https://dbdb.io/</a>)</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -725,7 +844,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B9%B6%E5%8F%91%E8%AE%BF%E9%97%AE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -739,7 +858,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/" class="post-title-link" itemprop="url">CMU-cs445:查询优化</a>
+            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B9%B6%E5%8F%91%E8%AE%BF%E9%97%AE/" class="post-title-link" itemprop="url">CMU-cs445:并发访问</a>
         </h2>
 
         <div class="post-meta">
@@ -750,7 +869,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:52:59" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:52:46" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -774,56 +893,23 @@
 
       
           <span id="more"></span>
-<h3 id="查询优化"><a href="#查询优化" class="headerlink" title="查询优化"></a>查询优化</h3><ul>
-<li>Heuristics&#x2F;Rules 规则&#x2F;静态触发</li>
+<h3 id="latch和lock"><a href="#latch和lock" class="headerlink" title="latch和lock"></a>latch和lock</h3><p><img src="/images/db-4.png"></p>
+<h3 id="latch"><a href="#latch" class="headerlink" title="latch"></a>latch</h3><ul>
+<li>种类<ul>
+<li>Test-and-Set Spin Latch(TAS)</li>
+<li>读写锁</li>
+<li>乐观&#x2F;悲观锁</li>
 </ul>
-<p>当查询中的某些部分满足我们的规则或者条件，我们就重写这部分.这部分需要我们去检查catelog.</p>
-<ul>
-<li>Cost-based Search</li>
-</ul>
-<p>方法的思想是使用一个模型去评估一个查询的负载，然后使用多种不同的查询计划去替换这个查询，找出最小负载的方案。</p>
-<p>下面是整个查询优化过程<br><img src="/images/db-26.png"></p>
-<h3 id="Relational-Algebra-Equivalences-等价关系代数"><a href="#Relational-Algebra-Equivalences-等价关系代数" class="headerlink" title="Relational Algebra Equivalences(等价关系代数)"></a>Relational Algebra Equivalences(等价关系代数)</h3><ul>
-<li>predicate pushdown:在join前尽量过滤数据。</li>
-<li>对过滤条件进行排序，让更具有分辨性的条件排在前面。</li>
-<li>对复杂判断进行简化</li>
-<li>对于行存储类型数据库，projection越早越好。</li>
-</ul>
-<h3 id="Plan-Cost-Estimation"><a href="#Plan-Cost-Estimation" class="headerlink" title="Plan Cost Estimation"></a>Plan Cost Estimation</h3><ul>
-<li>CPU</li>
-<li>磁盘</li>
-<li>内存</li>
-<li>网络</li>
-</ul>
-<p>在数据库的catelog中，会维护相关信息，并且在特定时间或者遍历表的时候更跟这些信息，在执行查询之前，将这些变量带入公式，计算出最小代价的查询。在系统中，我们定义一些统计量：</p>
-<ul>
-<li>$N_R$: 关系R的tuple数量</li>
-<li>V(A,R):属性A不同值的数量</li>
-<li>Selection Cardinality：$N_R$&#x2F;V(A,R)</li>
-<li>selectivity: 选择率，给定一个条件，计算table中符合条件的tuple数量</li>
-<li>Range Predicate：计算范围值的比例，有点像概率计算，因此可以引入概率论中的结论,但是为了计算方便，有下面三个前提：<br><img src="/images/db-27.png"></li>
-</ul>
-<h5 id="直方图法"><a href="#直方图法" class="headerlink" title="直方图法"></a>直方图法</h5><p>对于数据分布不均匀的关系，在一些高端数据库中会使用直方图来跟踪数据的分布。对于数据量极大或者属性值分布很广的情况，我们会使用相同宽度的<strong>bucket</strong>来记录值的分布，但是这种情况会导致某个桶内数据分布极不均匀的情况，我们可以使用<strong>分位数</strong>来解决这个问题，即累计一定比例的数据分桶，桶的宽度可变，但是总体占比大致相当。</p>
-<h5 id="采样法"><a href="#采样法" class="headerlink" title="采样法"></a>采样法</h5><p>对于直方图，其实是对表中数据的一种缩略表达，那么在大数据量的table中，我们可以直接采样来近似代表整个表的数据分布。当表进行大规模更新或者到达一个指定时间点，我们去更新这个采样表。</p>
-<h3 id="Plan-Enumeration"><a href="#Plan-Enumeration" class="headerlink" title="Plan Enumeration"></a>Plan Enumeration</h3><h5 id="单关系查询计划"><a href="#单关系查询计划" class="headerlink" title="单关系查询计划"></a>单关系查询计划</h5><ul>
-<li>循序遍历</li>
-<li>二分查找（对于聚集索引）</li>
-<li>索引遍历</li>
-</ul>
-<h5 id="多关系查询计划"><a href="#多关系查询计划" class="headerlink" title="多关系查询计划"></a>多关系查询计划</h5><ul>
-<li><p>left-deep join tree<br><img src="/images/db-28.png"><br>在上面三个查询树中，System R不考虑后面两个，只考虑第一种。为什么采用第一种？后面两种实现过程中会有大量结果溢出到磁盘，影响性能。</p>
 </li>
-<li><p>步骤（System R based）<br><img src="/images/db-29.png"></p>
-</li>
-<li><p>步骤（遗传算法）<br><img src="/images/db-30.png"></p>
-</li>
+<li>粒度<ul>
+<li>page latch：锁少，并行度不好</li>
+<li>slot latch：锁多，并行度高</li>
 </ul>
-<h3 id="Nested-Sub-queries"><a href="#Nested-Sub-queries" class="headerlink" title="Nested Sub-queries"></a>Nested Sub-queries</h3><p>通常情况下将where作为函数，穿入参数然后返回一组值，有两种方法进行查询优化：</p>
-<ul>
-<li>重写查询，去除关联性，让其扁平化</li>
-<li>将内部查询提取出来作为单独查询来执行，将结果缓存起来，这样不用每次执行上层查询都再执行一次子查询</li>
+</li>
+<li>latch crabbing&#x2F;coupling</li>
+<li>B+树的死锁问题</li>
+<li>B+树insert，父节点延迟更新</li>
 </ul>
-<p>(<a target="_blank" rel="noopener" href="https://dbdb.io/">https://dbdb.io/</a>)</p>
 
       
     </div>
@@ -1011,91 +1097,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B9%B6%E5%8F%91%E8%AE%BF%E9%97%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B9%B6%E5%8F%91%E8%AE%BF%E9%97%AE/" class="post-title-link" itemprop="url">CMU-cs445:并发访问</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:52:46" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="latch和lock"><a href="#latch和lock" class="headerlink" title="latch和lock"></a>latch和lock</h3><p><img src="/images/db-4.png"></p>
-<h3 id="latch"><a href="#latch" class="headerlink" title="latch"></a>latch</h3><ul>
-<li>种类<ul>
-<li>Test-and-Set Spin Latch(TAS)</li>
-<li>读写锁</li>
-<li>乐观&#x2F;悲观锁</li>
-</ul>
-</li>
-<li>粒度<ul>
-<li>page latch：锁少，并行度不好</li>
-<li>slot latch：锁多，并行度高</li>
-</ul>
-</li>
-<li>latch crabbing&#x2F;coupling</li>
-<li>B+树的死锁问题</li>
-<li>B+树insert，父节点延迟更新</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E9%AB%98%E7%BA%A7SQL/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1179,7 +1180,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9AHashTable&TableIndex/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9Abuffer%E6%B1%A0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -1193,7 +1194,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9AHashTable&TableIndex/" class="post-title-link" itemprop="url">CMU-cs445:HashTable && TableIndex</a>
+            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9Abuffer%E6%B1%A0/" class="post-title-link" itemprop="url">CMU-cs445:buffer pool</a>
         </h2>
 
         <div class="post-meta">
@@ -1204,7 +1205,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:53:19" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:53:16" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1228,33 +1229,32 @@
 
       
           <span id="more"></span>
-<h3 id="我们需要表示的数据"><a href="#我们需要表示的数据" class="headerlink" title="我们需要表示的数据"></a>我们需要表示的数据</h3><pre><code>- Internal Mata-data
-- Core data storage
-- Temporary Data Strutures
-- Table Indexs
+<h2 id="buffer-pool-manager"><a href="#buffer-pool-manager" class="headerlink" title="buffer pool manager"></a>buffer pool manager</h2><pre><code>- buffer池组成
+    - frame：缓冲池由frame组成，每次我们需要一个page，就吧这个page替换进frame
+    - page table：用来记录page到buffer pool的映射关系
+    - 其他元信息：脏页面（页面是否被修改），引用计数（页面被线程正在访问的计数）
+- multiple buffer pools(多个缓冲池，每个池有其策略)
+    - 减少线程竞争
+    - 提供多种策略
+    - 如何实现？根据Object id映射或者哈希
+- pre-fetching(预取)
+    - 提前把一些顺序信息读入buffer pool中  
+    - 可以完成一些操作系统不能完成的预读，如index分支跳转
+- scan sharing(扫描共享)
+    - 查询复用计算结果
+    - 允许多个查询附加到一个游标上
+- buffer pool bypass
+    - 给查询线程分配一小块内存，查询page的时候不经过缓存池，为了不污染缓存
+    - 查询量小的时候使用
+- O_DIRECT
+    - 避免操作系统文件缓存
 </code></pre>
-<h3 id="hash-function"><a href="#hash-function" class="headerlink" title="hash function"></a>hash function</h3><pre><code>- XXHash
-- CityHash
-- FarmHash
+<h2 id="replacement-policies"><a href="#replacement-policies" class="headerlink" title="replacement policies"></a>replacement policies</h2><pre><code>- LRU
+- Clock（LRU近似算法）
+- LRU-K：为了避免遍历对LRU的影响，K次才不会替换
 </code></pre>
-<h3 id="哈希算法"><a href="#哈希算法" class="headerlink" title="哈希算法"></a>哈希算法</h3><pre><code>- 开放地址法
-- robin 开放地址
-- cuckoo hashing
-- 链表法
-- extendible hashing（有些复杂）
-- Linear hashing（循环拆分，有点难以理解）
-</code></pre>
-<h3 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h3><pre><code>- 为什么叶子结点的key和value不放在一起？
-为了cpu缓存，能够快速定位key。
-</code></pre>
-<h3 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h3><pre><code>- 部分索引
-- 覆盖索引
-- 聚集索引
-- Include Columns：在建立索引的时候增加一些额外信息，能够加速查询。
-- 函数式/表达式索引
-- trie index
-- radix tree的垂直压缩
-- 倒排索引
+<h2 id="脏页面"><a href="#脏页面" class="headerlink" title="脏页面"></a>脏页面</h2><pre><code>- 页面有一个标识位，记录某次查询是否更改页面记录
+- 后台写入（background writing）：定时将脏页面写回，避免缓存池中大量脏页面
 </code></pre>
 
       

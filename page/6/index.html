@@ -75,6 +75,7 @@
   </style>
 </noscript>
 
+<link rel="alternate" href="/atom.xml" title="面向自由编程" type="application/atom+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -191,7 +192,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/ubuntu%E6%B7%B1%E5%9D%91%EF%BC%9A%E6%9D%83%E9%99%90%E5%92%8C%E7%BD%91%E7%BB%9C/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -205,7 +206,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/14/ubuntu%E6%B7%B1%E5%9D%91%EF%BC%9A%E6%9D%83%E9%99%90%E5%92%8C%E7%BD%91%E7%BB%9C/" class="post-title-link" itemprop="url">ubuntu 权限修改错误深坑</a>
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">redis系列：常见问题</a>
         </h2>
 
         <div class="post-meta">
@@ -222,7 +223,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:02:59" itemprop="dateModified" datetime="2022-09-25T02:02:59+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 02:01:17" itemprop="dateModified" datetime="2022-09-25T02:01:17+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -246,44 +247,48 @@
 
       
           <span id="more"></span>
-<h3 id="使用vim-修改了-x2F-etc-x2F-sudoers-下的sudoers，导致无法鉴权。"><a href="#使用vim-修改了-x2F-etc-x2F-sudoers-下的sudoers，导致无法鉴权。" class="headerlink" title="使用vim 修改了&#x2F;etc&#x2F;sudoers 下的sudoers，导致无法鉴权。"></a>使用vim 修改了&#x2F;etc&#x2F;sudoers 下的sudoers，导致无法鉴权。</h3><p>这两天在嵌入式linux上搞网络编程，发现ubuntu设置的防火墙把端口屏蔽了，想手动打开，普通用户提权的时候不小心用vim修改了</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/etc/sudoers</span><br></pre></td></tr></table></figure>
-<p>文件，导致内核解析的时候出错了:<br><img src="/images/sudo-1.png"></p>
-<p>这时候出现了一个悖论：</p>
-<ol>
-<li>我想把sudoers修改回去，但是需要sudo权限</li>
-<li>sudoers解析错误，没办法sudo</li>
+<h3 id="Redis常用数据结构和使用场景（Zset中跳表数据结构）"><a href="#Redis常用数据结构和使用场景（Zset中跳表数据结构）" class="headerlink" title="Redis常用数据结构和使用场景（Zset中跳表数据结构）"></a>Redis常用数据结构和使用场景（Zset中跳表数据结构）</h3><h3 id="缓存击穿-缓存穿透-缓存雪崩"><a href="#缓存击穿-缓存穿透-缓存雪崩" class="headerlink" title="缓存击穿 缓存穿透 缓存雪崩"></a>缓存击穿 缓存穿透 缓存雪崩</h3><ol>
+<li>缓存击穿：<br>访问一个缓存和数据库都不存在的 key，此时会直接打到数据库上，并且查不到数据，没法写缓存，所以下一次同样会打到数据库上。<br>此时，缓存起不到作用，请求每次都会走到数据库，流量大时数据库可能会被打挂。此时缓存就好像被“穿透”了一样，起不到任何作用。<br>解决方案：</li>
 </ol>
-<p>造成了死锁…. 于是求助广大网友，万能网友一个骚操作成功化解，其原理至今未解：</p>
-<ol>
-<li><p>使用ctrl+alt+F2 打开另外一个tty</p>
-</li>
-<li><p>在第一个tty执行</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo $$</span><br></pre></td></tr></table></figure>
-<p>获取tty的pid</p>
-</li>
-<li><p>在第二个tty执行 </p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pkttyagent --process &#123;pid&#125; </span><br></pre></td></tr></table></figure>
-<p>这时第二个会卡住</p>
-</li>
-<li><p>返回第一个执行</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pkexec visudo</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>然后，第二个终端也卡主，回到第一个终端，会提示输入当前用户密码</p>
-</li>
-<li><p>输入完密码，第一个终端卡主了，回到第二个终端，会发现，出现了sudoers的内容，编辑出错的地方，保存即可。</p>
-</li>
-<li><p>完成任务，修改完成，发现就可以继续使用sudo命令了，over</p>
-</li>
+<ul>
+<li>接口校验。在正常业务流程中可能会存在少量访问不存在 key 的情况，但是一般不会出现大量的情况，所以这种场景最大的可能性是遭受了非法攻击。可以在最外层先做一层校验：用户鉴权、数据合法性校验等，例如商品查询中，商品的ID是正整数，则可以直接对非正整数直接过滤等等。</li>
+<li>缓存空值。当访问缓存和DB都没有查询到值时，可以将空值写进缓存，但是设置较短的过期时间，该时间需要根据产品业务特性来设置。</li>
+<li>布隆过滤器。使用布隆过滤器存储所有可能访问的 key，不存在的 key 直接被过滤，存在的 key 则再进一步查询缓存和数据库。</li>
+</ul>
+<ol start="2">
+<li>缓存穿透<br>某一个热点 key，在缓存过期的一瞬间，同时有大量的请求打进来，由于此时缓存过期了，所以请求最终都会走到数据库，造成瞬时数据库请求量大、压力骤增，甚至可能打垮数据库。<br>解决方案</li>
 </ol>
-<h3 id="循环登录"><a href="#循环登录" class="headerlink" title="循环登录"></a>循环登录</h3><p>在嵌入式linux系统里面又遇到下面这种情况：输入密码进入ubuntu后不一会闪退，需要重新输入密码，然后陷入循环…</p>
-<p>试了很久，猜想系统扫描某些配置文件需要sudo权限，而普通用户无权限：</p>
-<ol>
-<li>使用ctrl + alt + F1进入命令行界面</li>
-<li>进入&#x2F;etc&#x2F;passwd 文件修改用户组为0:0，提升到root权限</li>
-<li>重新登录神奇的好了，但是登录需要选择用户了(以前直接默认普通用户登录，现在可以直接root登录)</li>
+<ul>
+<li>加互斥锁。在并发的多个请求中，只有第一个请求线程能拿到锁并执行数据库查询操作，其他的线程拿不到锁就阻塞等着，等到第一个线程将数据写入缓存后，直接走缓存。（现在主流的方法就是加Redis分布式锁）</li>
+<li>热点数据不过期。直接将缓存设置为不过期，然后由定时任务去异步加载数据，更新缓存。<br>这种方式适用于比较极端的场景，例如流量特别特别大的场景，使用时需要考虑业务能接受数据不一致的时间，还有就是异常情况的处理，不要到时候缓存刷新不上，一直是脏数据，那就凉了。</li>
+</ul>
+<ol start="3">
+<li>缓存雪崩<br>大量的热点 key 设置了相同的过期时间，导在缓存在同一时刻全部失效，造成瞬时数据库请求量大、压力骤增，引起雪崩，甚至导致数据库被打挂。<br>缓存雪崩其实有点像“升级版的缓存击穿”，缓存击穿是一个热点 key，缓存雪崩是一组热点 key。<br>解决方案</li>
 </ol>
-
+<ul>
+<li><p>过期时间打散。既然是大量缓存集中失效，那最容易想到就是让他们不集中生效。可以给缓存的过期时间时加上一个随机值时间，使得每个 key 的过期时间分布开来，不会集中在同一时刻失效。</p>
+</li>
+<li><p>热点数据不过期。该方式和缓存击穿一样，也是要着重考虑刷新的时间间隔和数据异常如何处理的情况。</p>
+</li>
+<li><p>加互斥锁。该方式和缓存击穿一样，按 key 维度加锁，对于同一个 key，只允许一个线程去计算，其他线程原地阻塞等待第一个线程的计算结果，然后直接走缓存即可。</p>
+</li>
+</ul>
+<h3 id="Redis缓存一致性的解决方案"><a href="#Redis缓存一致性的解决方案" class="headerlink" title="Redis缓存一致性的解决方案"></a>Redis缓存一致性的解决方案</h3><p>解决的办法是，如果服务对耗时不是特别敏感可以增加重试；如果服务对耗时敏感可以通过异步补偿任务来处理失败的更新，或者短期的数据不一致不会影响业务，那么只要下次更新时可以成功，能保证最终一致性就可以。</p>
+<h3 id="持久化机制"><a href="#持久化机制" class="headerlink" title="持久化机制"></a>持久化机制</h3><p>主要是RDB和AOF策略，<a href="https://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/">可以参考这篇文章</a>.</p>
+<h3 id="为什么槽的个数是16384？"><a href="#为什么槽的个数是16384？" class="headerlink" title="为什么槽的个数是16384？"></a>为什么槽的个数是16384？</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/99037321">主要参考这个文章</a><br>总结下来就是：  </p>
+<ol>
+<li>如果槽位为65536，发送心跳信息的消息头达8k，发送的心跳包过于庞大。</li>
+</ol>
+<p>如上所述，在消息头中，最占空间的是 myslots[CLUSTER_SLOTS&#x2F;8]。 当槽位为65536时，这块的大小是: 65536÷8÷1024&#x3D;8kb因为每秒钟，redis节点需要发送一定数量的ping消息作为心跳包，如果槽位为65536，这个ping消息的消息头太大了，浪费带宽。</p>
+<ol start="2">
+<li>redis的集群主节点数量基本不可能超过1000个。</li>
+</ol>
+<p>如上所述，集群节点越多，心跳包的消息体内携带的数据越多。如果节点过1000个，也会导致网络拥堵。因此redis作者，不建议redis cluster节点数量超过1000个。 那么，对于节点数在1000以内的redis cluster集群，16384个槽位够用了。没有必要拓展到65536个。</p>
+<ol start="3">
+<li>槽位越小，节点少的情况下，压缩率高</li>
+</ol>
+<p>Redis主节点的配置信息中，它所负责的哈希槽是通过一张bitmap的形式来保存的，在传输过程中，会对bitmap进行压缩，但是如果bitmap的填充率slots &#x2F; N很高的话(N表示节点数)，bitmap的压缩率就很低。 如果节点数很少，而哈希槽数量很多的话，bitmap的压缩率就很低。<br>而16384÷8÷1024&#x3D;2kb。</p>
+<h3 id="过期策略"><a href="#过期策略" class="headerlink" title="过期策略"></a>过期策略</h3><h3 id="淘汰策略"><a href="#淘汰策略" class="headerlink" title="淘汰策略"></a>淘汰策略</h3><h3 id="Redis为什么那么快"><a href="#Redis为什么那么快" class="headerlink" title="Redis为什么那么快"></a>Redis为什么那么快</h3><h3 id="分布式锁"><a href="#分布式锁" class="headerlink" title="分布式锁"></a>分布式锁</h3>
       
     </div>
 
@@ -884,6 +889,85 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9APING%E5%91%BD%E4%BB%A4%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9APING%E5%91%BD%E4%BB%A4%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">网络复习：PING & traceroute命令原理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:53:39" itemprop="dateModified" datetime="2022-09-25T01:53:39+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="ICMP"><a href="#ICMP" class="headerlink" title="ICMP"></a>ICMP</h3><p>ping 基于ICMP协议，ICMP 主要的功能包括：确认 IP 包是否成功送达目标地址、报告发送过程中 IP 包被废弃的原因和改善网络设置等。<br>ICMP报文格式如下，封装在IP包里面，工作在网络层：<br><img src="/images/icmp-1.png"></p>
+<p>ICMP从类别上大概分为查询报文和差错报文。<br><img src="/images/icmp-2.png"></p>
+<h3 id="PING"><a href="#PING" class="headerlink" title="PING"></a>PING</h3><p>ping命令基于ICMP查询报文设计，原理是用类型码为8的ICMP发请 求，受到请求的主机则用类型码为0的ICMP回应。<br>ping首先通过arp协议广播请求目的主机的MAC地址，得到MAC地址之后发送请求报文。<br>回送应答报文格式如下：<br><img src="/images/ping-1.png"><br>和原始ICMP报文不同之处就是新增加了标识符和序号，标识符通常包含PID，序号从0开始，每次发送加1，可以确认网络包是否丢失。<br>PING命令的总体流程如下图所示<br><img src="/images/ping-2.png"></p>
+<h3 id="traceroute"><a href="#traceroute" class="headerlink" title="traceroute"></a>traceroute</h3><p>Traceroute的原理是非常非常的有意思，它受到目的主机的IP后，首先给目的主机发送一个TTL&#x3D;1的UDP数据包，而经过的第一个路由器收到这个数据包以后，就自动把TTL减1，而TTL变为0以后，路由器就把这个包给抛弃了，并同时产生 一个主机不可达的ICMP数据报给主机。主机收到这个数据报以后再发一个TTL&#x3D;2的UDP数据报给目的主机，然后刺激第二个路由器给主机发ICMP数据 报。如此往复直到到达目的主机。这样，traceroute就拿到了所有的路由器ip。从而避开了ip头只能记录有限路由IP的问题。</p>
+<p>有人要问，我怎么知道UDP到没到达目的主机呢？这就涉及一个技巧的问题，TCP和UDP协议有一个端口号定义，而普通的网络程序只监控少数的几个号码较 小的端口，比如说80,比如说23,等等。而traceroute发送的是端口号&gt;30000(真变态)的UDP报，所以到达目的主机的时候，目的 主机只能发送一个端口不可达的ICMP数据报给主机。主机接到这个报告以后就知道，主机到了。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%20&%20UDP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1047,85 +1131,6 @@
 <li>连接迁移。</li>
 <li>前向冗余纠错。<br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/32553477">可以参考这个文章</a></li>
 </ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9APING%E5%91%BD%E4%BB%A4%E5%8E%9F%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9APING%E5%91%BD%E4%BB%A4%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">网络复习：PING & traceroute命令原理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:53:39" itemprop="dateModified" datetime="2022-09-25T01:53:39+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="ICMP"><a href="#ICMP" class="headerlink" title="ICMP"></a>ICMP</h3><p>ping 基于ICMP协议，ICMP 主要的功能包括：确认 IP 包是否成功送达目标地址、报告发送过程中 IP 包被废弃的原因和改善网络设置等。<br>ICMP报文格式如下，封装在IP包里面，工作在网络层：<br><img src="/images/icmp-1.png"></p>
-<p>ICMP从类别上大概分为查询报文和差错报文。<br><img src="/images/icmp-2.png"></p>
-<h3 id="PING"><a href="#PING" class="headerlink" title="PING"></a>PING</h3><p>ping命令基于ICMP查询报文设计，原理是用类型码为8的ICMP发请 求，受到请求的主机则用类型码为0的ICMP回应。<br>ping首先通过arp协议广播请求目的主机的MAC地址，得到MAC地址之后发送请求报文。<br>回送应答报文格式如下：<br><img src="/images/ping-1.png"><br>和原始ICMP报文不同之处就是新增加了标识符和序号，标识符通常包含PID，序号从0开始，每次发送加1，可以确认网络包是否丢失。<br>PING命令的总体流程如下图所示<br><img src="/images/ping-2.png"></p>
-<h3 id="traceroute"><a href="#traceroute" class="headerlink" title="traceroute"></a>traceroute</h3><p>Traceroute的原理是非常非常的有意思，它受到目的主机的IP后，首先给目的主机发送一个TTL&#x3D;1的UDP数据包，而经过的第一个路由器收到这个数据包以后，就自动把TTL减1，而TTL变为0以后，路由器就把这个包给抛弃了，并同时产生 一个主机不可达的ICMP数据报给主机。主机收到这个数据报以后再发一个TTL&#x3D;2的UDP数据报给目的主机，然后刺激第二个路由器给主机发ICMP数据 报。如此往复直到到达目的主机。这样，traceroute就拿到了所有的路由器ip。从而避开了ip头只能记录有限路由IP的问题。</p>
-<p>有人要问，我怎么知道UDP到没到达目的主机呢？这就涉及一个技巧的问题，TCP和UDP协议有一个端口号定义，而普通的网络程序只监控少数的几个号码较 小的端口，比如说80,比如说23,等等。而traceroute发送的是端口号&gt;30000(真变态)的UDP报，所以到达目的主机的时候，目的 主机只能发送一个端口不可达的ICMP数据报给主机。主机接到这个报告以后就知道，主机到了。</p>
 
       
     </div>
@@ -1356,7 +1361,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E8%87%AA%E9%97%AE%E6%B8%85%E5%8D%95/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E8%99%9A%E6%8B%9F%E5%8C%96%EF%BC%9Adocker%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -1370,7 +1375,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/14/%E8%87%AA%E9%97%AE%E6%B8%85%E5%8D%95/" class="post-title-link" itemprop="url">大总结</a>
+            <a href="/2021/09/14/%E8%99%9A%E6%8B%9F%E5%8C%96%EF%BC%9Adocker%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">Docker底层原理：CGroup & Namespace</a>
         </h2>
 
         <div class="post-meta">
@@ -1387,7 +1392,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:54:35" itemprop="dateModified" datetime="2022-09-25T01:54:35+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:54:14" itemprop="dateModified" datetime="2022-09-25T01:54:14+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1395,7 +1400,7 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BB%BC%E5%90%88/" itemprop="url" rel="index"><span itemprop="name">综合</span></a>
+                  <a href="/categories/%E5%AE%B9%E5%99%A8/" itemprop="url" rel="index"><span itemprop="name">容器</span></a>
                 </span>
             </span>
 
@@ -1411,110 +1416,7 @@
 
       
           <span id="more"></span>
-<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/circle/discuss/XXGdoF/">终极总结</a></p>
-<h1 id="C-基础"><a href="#C-基础" class="headerlink" title="C++基础"></a>C++基础</h1><ol>
-<li>对const的理解？const指针和引用的区别？</li>
-<li>#define和const的区别？</li>
-<li>说说static关键字的用法？<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/ypshowm/article/details/89030194">https://blog.csdn.net/ypshowm/article/details/89030194</a></li>
-<li>inline函数的使用？</li>
-<li>知道#pragma pack(n)吗？怎么实现内存对齐的？</li>
-<li>解释下”extern C”，在什么时候会用到？</li>
-<li>用struct实现下继承？</li>
-<li>解释下friend关键字？</li>
-<li>多态的实现方式？</li>
-<li>虚析构函数？虚构造函数？</li>
-<li>说说虚表的内存布局？</li>
-<li>纯虚函数？虚继承？</li>
-<li>模板继承？模板特化&#x2F;偏特化？</li>
-<li>虚函数可以是内联函数吗？</li>
-<li>构造函数能是虚函数吗，析构函数呢？</li>
-<li>c++四大强制类型转换？</li>
-<li>四大类型转换发生的时间？编译&#x2F;执行</li>
-<li>构造函数初始化列表和函数内部赋值的区别？</li>
-</ol>
-<h1 id="C-11"><a href="#C-11" class="headerlink" title="C++11"></a>C++11</h1><ol>
-<li>decltype用过吗?</li>
-<li>左值引用和右值引用是什么？</li>
-<li>移动语义和完美转发说说？</li>
-<li>智能指针有哪些？</li>
-<li>说说每个的实现原理和应用场景？</li>
-<li></li>
-</ol>
-<h1 id="C-内存"><a href="#C-内存" class="headerlink" title="C++内存"></a>C++内存</h1><ol>
-<li>new&#x2F;delete 和malloc&#x2F;free区别？</li>
-<li>ralloc&#x2F;alloca</li>
-<li>双重free会发生什么？</li>
-<li>如何定义一个只能在栈&#x2F;堆上生成的对象？</li>
-<li>讲下ptmalloc？</li>
-<li>讲下tcmalloc？</li>
-<li>讲下jemalloc？</li>
-<li>知道哪些强制类型转换？（static_cast等)</li>
-</ol>
-<h1 id="STL"><a href="#STL" class="headerlink" title="STL"></a>STL</h1><ol>
-<li>五大组成部分？</li>
-<li>有哪些容器？</li>
-<li>vector&#x2F;map&#x2F;哈希&#x2F;deque底层实现？</li>
-<li>sort算法实现是什么？全都是快排吗？</li>
-</ol>
-<h1 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h1><ol>
-<li>TCP三次握手，四次挥手详细流程？</li>
-<li>三次握手两次行不行？</li>
-<li>sock函数和三次握手的对应？</li>
-<li>服务器大量TIME_WAIT怎么办？</li>
-<li>TCP粘包？</li>
-<li>TCP拥塞控制？</li>
-<li>http1.0&#x2F;1.1&#x2F;2.0区别？</li>
-<li>TLS&#x2F;HTTPS握手过程？</li>
-<li>ARP协议？</li>
-<li>PING命令实现原理？</li>
-<li>Traceroute命令实现原理？</li>
-</ol>
-<h1 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h1><ol>
-<li>进程和线程？</li>
-<li>内核态和用户态？</li>
-<li>进程间通信方式每个详细说？优缺点？</li>
-<li>线程间通信方式详细说？</li>
-<li>进程线程拥有的资源集合？</li>
-<li>讲讲死锁？</li>
-<li>线程池实现一下？</li>
-<li>主机字节序和网络字节序？如何判断大端小端？写个程序。</li>
-<li>虚拟内存？</li>
-<li>页表工作原理，MMU底层原理？</li>
-<li>进程虚拟空间地址text段下面保留的128M空间是干嘛的，为什么不能是256M？<ul>
-<li>128M空间是保留的C语言库，至于为啥不是256M，目前未知（节省空间？）.</li>
-</ul>
-</li>
-</ol>
-<h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><ol>
-<li>B树&#x2F;B+树&#x2F;红黑树有什么区别？</li>
-<li>红黑树旋转？</li>
-<li>排序算法复杂度？</li>
-</ol>
-<h1 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h1><ol>
-<li>MYSQL索引作用？索引失效？</li>
-<li>MYSQL引擎？</li>
-<li>MYSQL锁？</li>
-<li>MYSQL事务？</li>
-<li>实现一个堆？</li>
-</ol>
-<h1 id="中间件"><a href="#中间件" class="headerlink" title="中间件"></a>中间件</h1><ol>
-<li>redis基本数据结构？</li>
-<li>redis跳表？具体操作插入删除？</li>
-<li>redis的zset？</li>
-<li>redis缓存策略？</li>
-<li>redis淘汰策略？</li>
-<li>redis哨兵模式、集群模式？</li>
-<li>redis哨兵模式和集群模式优缺点？</li>
-<li>redis持久化？</li>
-<li>redis缓存和主库不一致？</li>
-</ol>
-<h1 id="场景设计"><a href="#场景设计" class="headerlink" title="场景设计"></a>场景设计</h1><h1 id="智力题"><a href="#智力题" class="headerlink" title="智力题"></a>智力题</h1><ol>
-<li>有十个机器，九个生产的金币是5g，只有一个生产是4g，给你一个称，怎么一次找出那个生产4g的机器。</li>
-</ol>
-<p>将机器从1开始编号到10，每个机器取对应编号个硬币，共计55个硬币。<br>假设每个机器生产的硬币都是5g，则这55个硬币总总量为275g；<br>与实际的重量做差值，即为生产4g硬币对应机器的编号。<br>（如果是1号机器，因为只取了1个硬币，重量比2</p>
-<ol start="2">
-<li>给一个硬币，要求生成1&#x2F;5的概率。<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">g1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span> / <span class="built_in">random</span>() &gt; <span class="number">0.5</span> ? <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">ing <span class="title">getAns</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        res = (<span class="built_in">g1</span>() &lt;&lt; <span class="number">2</span>) + (<span class="built_in">g1</span>() &lt;&lt; <span class="number">1</span>) + <span class="built_in">g1</span>();</span><br><span class="line">    &#125; <span class="keyword">while</span> (res == <span class="number">7</span> || res == <span class="number">6</span> || res == <span class="number">5</span>);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ol>
+<h3 id="docker"><a href="#docker" class="headerlink" title="docker"></a>docker</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zhonglinzhang/article/details/64905759">参考这篇文章</a></p>
 
       
     </div>
