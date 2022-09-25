@@ -858,109 +858,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E4%BA%8B%E5%8A%A1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E4%BA%8B%E5%8A%A1/" class="post-title-link" itemprop="url">InnoDB系列：事务</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-11-06 00:00:00" itemprop="dateCreated datePublished" datetime="2021-11-06T00:00:00+08:00">2021-11-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:57:55" itemprop="dateModified" datetime="2022-09-25T01:57:55+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h2 id="扁平事务"><a href="#扁平事务" class="headerlink" title="扁平事务"></a>扁平事务</h2><p>由begin开始，其中的操作是原子的，要么都执行，要么都回滚。</p>
-<ul>
-<li>缺点：代价大，若中间某个条件不满足，需要全部回滚。</li>
-</ul>
-<h2 id="带有保存点的事务"><a href="#带有保存点的事务" class="headerlink" title="带有保存点的事务"></a>带有保存点的事务</h2><p><a href="/images/mysql-9.png"></a><br>如图所示，保存点是递增的。</p>
-<h2 id="链事务"><a href="#链事务" class="headerlink" title="链事务"></a>链事务</h2><p><a href="/images/mysql-10.png"></a><br>保存点事务的一种变种，带有保存点的扁平事务，当系统发生崩溃时，所有的保存点都将消失，因此在进行恢复时，事务需要从开始处重新执行。<br>链事务：在提交一个事务时，释放不需要的数据对象，将必要的处理上下文隐士传递给下一个要开始的事务。</p>
-<h2 id="嵌套事务"><a href="#嵌套事务" class="headerlink" title="嵌套事务"></a>嵌套事务</h2><p><a href="/images/mysql-11.png"></a><br>如上图所示，嵌套事务是一个层次结构框架，由一个顶层事务控制各个层次的事务，类似一个树形结构。</p>
-<h2 id="分布式事务"><a href="#分布式事务" class="headerlink" title="分布式事务"></a>分布式事务</h2><p>分布式场景下运行扁平事务，需要根据数据所在位置访问网络中的不同节点。</p>
-<h2 id="事务的实现"><a href="#事务的实现" class="headerlink" title="事务的实现"></a>事务的实现</h2><ol>
-<li>redo</li>
-</ol>
-<ul>
-<li>基本概念：用来实现事务的持久性，由两部分组成：内存中的重做日志缓冲（易失性）和重做日志文件（持久性）。每次事务提交之后，需要将所有日志写入重做日志文件中进行持久化，并且写完要调用fsync操作进行磁盘同步。</li>
-<li>存储方式：以512字节的块进行保存（也成为重做日志块），日志块有头12字节，尾8字节的标志位。</li>
-<li>注：redo记录的是物理页上的变化。</li>
-</ul>
-<ol start="2">
-<li>undo</li>
-</ol>
-<ul>
-<li>基本概念：undo存放在数据库内部的一个特殊段中，成为undo段，undo段位于共享表空间中。当存储引擎回滚时，做的是与之前相反的工作，insert对应delete，update对应相反的update。</li>
-<li>存储方式：使用段的方式，每个回滚段中记录1024个undo log 段。</li>
-<li>注：undo记录的是逻辑结构上的变化。<strong>undo log的产生也会造成redo log的产生，因为undo log需要持久性的保护。</strong></li>
-</ul>
-<ol start="3">
-<li>purge</li>
-</ol>
-<p>delete和update可能并不直接删除原有数据，InnoDB存储引擎支持MVCC，所以记录不能再事务提交时立即进行处理，可能其他事务正在引用这行。是否可以删除某条记录可以通过purge来进行判断。</p>
-<p><a target="_blank" rel="noopener" href="https://baijiahao.baidu.com/s?id=1662096005584873447&wfr=spider&for=pc">这个连接文章</a>写的非常好，讲了四种隔离级别和并发控制。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1255,6 +1152,109 @@
 <li>利用 where 语句的剩余条件对行记录进行过滤；</li>
 </ol>
 <h2 id="倒排索引"><a href="#倒排索引" class="headerlink" title="倒排索引"></a>倒排索引</h2><p>使用full inverted index实现，表现形式为{单词，（单词所在文档的ID，在具体文档中的位置）}</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E4%BA%8B%E5%8A%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E4%BA%8B%E5%8A%A1/" class="post-title-link" itemprop="url">InnoDB系列：事务</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-11-06 00:00:00" itemprop="dateCreated datePublished" datetime="2021-11-06T00:00:00+08:00">2021-11-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:57:55" itemprop="dateModified" datetime="2022-09-25T01:57:55+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h2 id="扁平事务"><a href="#扁平事务" class="headerlink" title="扁平事务"></a>扁平事务</h2><p>由begin开始，其中的操作是原子的，要么都执行，要么都回滚。</p>
+<ul>
+<li>缺点：代价大，若中间某个条件不满足，需要全部回滚。</li>
+</ul>
+<h2 id="带有保存点的事务"><a href="#带有保存点的事务" class="headerlink" title="带有保存点的事务"></a>带有保存点的事务</h2><p><a href="/images/mysql-9.png"></a><br>如图所示，保存点是递增的。</p>
+<h2 id="链事务"><a href="#链事务" class="headerlink" title="链事务"></a>链事务</h2><p><a href="/images/mysql-10.png"></a><br>保存点事务的一种变种，带有保存点的扁平事务，当系统发生崩溃时，所有的保存点都将消失，因此在进行恢复时，事务需要从开始处重新执行。<br>链事务：在提交一个事务时，释放不需要的数据对象，将必要的处理上下文隐士传递给下一个要开始的事务。</p>
+<h2 id="嵌套事务"><a href="#嵌套事务" class="headerlink" title="嵌套事务"></a>嵌套事务</h2><p><a href="/images/mysql-11.png"></a><br>如上图所示，嵌套事务是一个层次结构框架，由一个顶层事务控制各个层次的事务，类似一个树形结构。</p>
+<h2 id="分布式事务"><a href="#分布式事务" class="headerlink" title="分布式事务"></a>分布式事务</h2><p>分布式场景下运行扁平事务，需要根据数据所在位置访问网络中的不同节点。</p>
+<h2 id="事务的实现"><a href="#事务的实现" class="headerlink" title="事务的实现"></a>事务的实现</h2><ol>
+<li>redo</li>
+</ol>
+<ul>
+<li>基本概念：用来实现事务的持久性，由两部分组成：内存中的重做日志缓冲（易失性）和重做日志文件（持久性）。每次事务提交之后，需要将所有日志写入重做日志文件中进行持久化，并且写完要调用fsync操作进行磁盘同步。</li>
+<li>存储方式：以512字节的块进行保存（也成为重做日志块），日志块有头12字节，尾8字节的标志位。</li>
+<li>注：redo记录的是物理页上的变化。</li>
+</ul>
+<ol start="2">
+<li>undo</li>
+</ol>
+<ul>
+<li>基本概念：undo存放在数据库内部的一个特殊段中，成为undo段，undo段位于共享表空间中。当存储引擎回滚时，做的是与之前相反的工作，insert对应delete，update对应相反的update。</li>
+<li>存储方式：使用段的方式，每个回滚段中记录1024个undo log 段。</li>
+<li>注：undo记录的是逻辑结构上的变化。<strong>undo log的产生也会造成redo log的产生，因为undo log需要持久性的保护。</strong></li>
+</ul>
+<ol start="3">
+<li>purge</li>
+</ol>
+<p>delete和update可能并不直接删除原有数据，InnoDB存储引擎支持MVCC，所以记录不能再事务提交时立即进行处理，可能其他事务正在引用这行。是否可以删除某条记录可以通过purge来进行判断。</p>
+<p><a target="_blank" rel="noopener" href="https://baijiahao.baidu.com/s?id=1662096005584873447&wfr=spider&for=pc">这个连接文章</a>写的非常好，讲了四种隔离级别和并发控制。</p>
 
       
     </div>

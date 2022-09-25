@@ -288,6 +288,142 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Atcmalloc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Atcmalloc/" class="post-title-link" itemprop="url">c++内存管理系列：tcmalloc</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-08-29 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-29T00:00:00+08:00">2021-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:55:52" itemprop="dateModified" datetime="2022-09-25T01:55:52+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>参考tcmalloc <a target="_blank" rel="noopener" href="https://github.com/google/tcmalloc/blob/master/docs/design.md">github官方文档</a><br>TCMalloc 是一种内存分配器，旨在替代系统默认分配器，具有以下特点：</p>
+<ul>
+<li>可以实现大多数对象的快速、无竞争的分配和释放。 对象被缓存，具体取决于模式，每个线程或每个逻辑 CPU。 大多数分配不需要锁定，因此多线程应用程序争用少，扩展性好。</li>
+<li>灵活使用内存，因此释放的内存可以重新用于不同的对象大小，或返回给操作系统。</li>
+<li>通过分配相同大小的对象的“页面”来降低每个对象的内存开销。小对象的空间损耗很少。</li>
+<li>低开销采样，可以详细了解应用程序内存使用情况。<br>下面的框图显示了 TCMalloc 的粗略内部结构：<br><img src="/images/tcmalloc-1.png"></li>
+</ul>
+<p>我们可以将 TCMalloc 分解为三个组件。前端、中端和后端。职责的粗略分解是：</p>
+<ul>
+<li>前端是一个缓存，为应用程序提供快速的内存分配和释放。  </li>
+<li>中端负责重新填充前端缓存。</li>
+<li>后端处理从操作系统获取内存。<br>请注意，前端可以在 per-CPU 或 legacy per-thread 模式下运行，后端可以支持大页面感知 pageheap 或 legacy pageheap。</li>
+</ul>
+<h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>freelist是tcmalloc的实现基础，只不过tcmalloc采用了三层的架构：TreadCache、CentralCache、PageHeap。每一级的分配单元的粒度不一样。基本的原理就是：分配内存和释放内存都是按照从前到后的顺序，在各个层次中进行尝试，前面的层次分配内存失败，则从下一层分配一批补充上来；前面的层次释放了过多的内存，则回收一批到下一层次。</p>
+<ul>
+<li>tcmalloc有三个层次:<ul>
+<li>TreadCache, 这个内存池是线程私有的, 每个线程一份. 每个线程首先会从这里请求内存. 由于是线程私有的, 不需要加锁同步, 所以非常高效. TreadCache维护一组不同类型的freelist, 基本单位是object, 为了实现变长内存的申请, object预设了一些规格(class), 比如8, 16, 32, 80等等</li>
+<li>CentralCache, 这是第二层线程池, 这是全局的, 当线程在本地请求失败时会从这里请求object. CentralCache也维护一组关联obejct规格的freelist, 基本单位是span, span由多个连续page(物理单位)组成, 可以分隔为多个object(逻辑单位)。</li>
+<li>Pageheap, 这是第三层, 当无法从CentralCache获取到内存时, 会从Pageheap中请求span. 如果PageHeap也没有内存, 则向操作系统请求. Pageheap根据page的数量维护一组freelist, 基本单位是span. 另外还维护这page到span的映射关系.</li>
+</ul>
+</li>
+<li>小对象和大对象: 大于256kb的称为大对象, 大对象会直接向Pageheap申请span, 小对象的申请则需要经过TreadCache申请。</li>
+<li>粒度: tcmalloc, 有两种粒度的内存, object和span. TreadCache维护的粒度是object, PageHeap维护的粒度是span. 而CentralCache是一个中间者, 维护span到object的映射关系.</li>
+</ul>
+<p>数据结构概览如图所示：<br><img src="/images/tcmalloc-3.png"></p>
+<ul>
+<li>TreadCache<br>线程本地缓存, 比较简单, 维护一组freelist, 尺寸小于256K的小对象, 均由它进行分配. 分配过程中不需要加锁<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ThreadCache</span> &#123;</span></span><br><span class="line">private:</span><br><span class="line">     FreeList      list_[kNumClasses];    </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<li>CentralCache<br>对应不同class的object, CentralCache中有多个CentralFreeList. CentralFreeList维护的是span链表, 每个span下有根据object的大小切割组成一个object链. objects链表示未被分配的object, 分配出去的object数量使用span.refcount_ 记录. span 的结构如下:<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Span</span> &#123;</span></span><br><span class="line">  PageID        start;          <span class="comment">// Span描述的内存的起始地址</span></span><br><span class="line">  Length        length;        <span class="comment">// Span页面数量</span></span><br><span class="line">  Span*         next;           <span class="comment">// Span由双向链表组成，PageHeap和CentralFreeList中都用的到</span></span><br><span class="line">  Span*         prev;           <span class="comment">//</span></span><br><span class="line">  <span class="type">void</span>*         objects;        <span class="comment">// Span会在CentralFreeList中拆分成由object组成的free list</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span>  refcount : <span class="number">16</span>;  <span class="comment">// Span的object被引用次数，当refcount=0时，表示此Span没有被使用</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span>  sizeclass : <span class="number">8</span>;  <span class="comment">// Span属于的size class</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span>  location : <span class="number">2</span>;   <span class="comment">// Span在的位置IN_USE？normal？returned？</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span>  sample : <span class="number">1</span>;     <span class="comment">// Sampled object?</span></span><br><span class="line">  <span class="comment">// What freelist the span is on: IN_USE if on none, or normal or returned</span></span><br><span class="line">  <span class="class"><span class="keyword">enum</span> &#123;</span> IN_USE, ON_NORMAL_FREELIST, ON_RETURNED_FREELIST &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+CentralFreeList的结构:<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CentralFreeList</span> &#123;</span></span><br><span class="line">private:</span><br><span class="line">    SpinLock lock_;     <span class="comment">//控制线程访问的锁</span></span><br><span class="line">    <span class="type">size_t</span> size_class_;  <span class="comment">// span对应object的size class, 同上</span></span><br><span class="line">    Span empty_;         <span class="comment">// 放置没有空闲空间的span, 可以避免查找这部分span</span></span><br><span class="line">    Span nonempty_;  <span class="comment">// 和empty相对</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+CentralFreeList里有两个span链表：nonempty_和empty_，根据span的objects链是否有空闲，放入对应链表。</li>
+</ul>
+<p>CentralFreeList里面还有一个cache（tc_slots_），回收回来的一批object先放进cache，存不下了再回收进span的objects链。分配object给ThreadCache时也是先尝试在cache里面拿，没了再去span里面分配。</p>
+<p>TreadCache一般都是以batch_size为一个批次像CentralCache请求, 而为了cache的简单高效，如果批次个数不等于batch_size，则会绕过cache。</p>
+<ul>
+<li>Pageheap</li>
+</ul>
+<p>整体结构如下图所示：<br><img src="/images/tcmalloc-6.png"></p>
+<p>数组中第256个元素是所有大于255个页面都挂到该链表中.用多种定长 Page 来实现变长 Page 的分配，初始时只有 255 Page 的 Span，如果要分配 1 个 Page 的 Span，就把这个 Span 分裂成两个，1 + 254，把254再记录下来。对于 Span 的回收，需要考虑Span的合并问题，否则在分配回收多次之后，就只剩下很小的 Span 了，也就是带来了外部碎片 问题。</p>
+<ul>
+<li>page维护了两样东西: page -&gt; span的映射关系和空闲的span伙伴系统.</li>
+</ul>
+<ol>
+<li><p>page -&gt; span 映射<br> page到span的映射关系通过radix 树来实现, 当释放一段内存时, 通过内存偏移和对齐, 就能计算出对应的page, 拿到page在radix树中查找到对应的span, 拿到span就拿到了sizeclass, 从而可以在CentralCache定位span, 将释放的object添加到span的objects链表. 另外通过radix树还可以找到span的相邻span, 如果相邻的span空闲, 则会合并他们。</p>
+</li>
+<li><p>伙伴系统(span freelist)<br> span的尺寸有从1个page到255个page的所有规格, 大于255个page的span单独归为一类，不作细分. PageHeap维护了这些不同规格的freelist:</p>
+ <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">SpanList</span> &#123;</span></span><br><span class="line">Span        normal;</span><br><span class="line">Span        returned;</span><br><span class="line">&#125;;</span><br><span class="line">SpanList large_;                    <span class="comment">// 超过256k的span链表</span></span><br><span class="line">SpanList free_[kMaxPages]</span><br></pre></td></tr></table></figure>
+
+<p> 在内存分配时, 会根据span的大小在伙伴系统中查找, 如果没有空闲的span时, 会向上层更大尺寸的span链表请求, 再没有, 就需要向系统申请了. span可以根据需要不断组合和分割.   </p>
+<p> freelist其实是有两个链，normal和returned，以区别活跃跟不活跃的内存。    </p>
+<p> PageHeap并不会将内存释放给kernel，因为它们之间的交互都是针对一批连续page的，要想回收到整批的page，可能性很小。在PageHeap里面，多余的内存会放到returned里面去，跟normal做一下隔离。这样一来，normal的内存总是优先被使用，kernel倾向于一直保留它们。而returned的内存则不常被使用，kernel在内存不够的时候会优先将它们swap掉。span进入returned时，tcmalloc还附加了一个操作，madvise(MADV_DONTNEED)，试图告诉kernel这个内存已经不用了</p>
+<p> 其实不用returned也能完成这样的事情，因为normal是个链表，每次分配回收总是作用在链表头上，那么链表内的span本身就按从热到冷的顺序排序了。链表尾部的span如果长期不被使用，不管是否移动到returned链，kernel都会倾向于将它们swap掉</p>
+<p> 为减少查询radix tree的开销，PageHeap还维护了一个最近最常使用的若干个page到class（span.sizeclass）的对应关系cache。为了保持cache的效率，cache只提供64K个固定坑位，旧的对应关系会被新来的对应关系替换掉。</p>
+</li>
+</ol>
+<h3 id="分配和回收流程"><a href="#分配和回收流程" class="headerlink" title="分配和回收流程"></a>分配和回收流程</h3><p>一图胜千言<br><img src="/images/tcmalloc-4.png"></p>
+<p><img src="/images/tcmalloc-5.png"></p>
+<h3 id="与ptmalloc对比的优点"><a href="#与ptmalloc对比的优点" class="headerlink" title="与ptmalloc对比的优点"></a>与ptmalloc对比的优点</h3><p>优点：</p>
+<ul>
+<li>分配更快.小对象几乎无锁， &gt;32KB的对象从CentralCache中分配使用自旋锁。 并且&gt;32KB对象都是页面对齐分配，多线程的时候应尽量避免频繁分配，否则也会造成自旋锁的竞争和页面对齐造成的浪费。</li>
+<li>占用额外空间少(例如，分配N个8字节对象可能要使用大约8N * 1.01字节的空间。即，多用百分之一的空间。Ptmalloc2使用最少8字节描述一个chunk。)</li>
+<li>碎片化控制优越.ThreadCache会阶段性的回收内存到CentralCache里。 解决了ptmalloc2中arena之间不能迁移的问题。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Anew&&delete/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -463,142 +599,6 @@
 </li>
 </ul>
 </li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Atcmalloc/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/08/29/c++%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%B3%BB%E5%88%97%EF%BC%9Atcmalloc/" class="post-title-link" itemprop="url">c++内存管理系列：tcmalloc</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-08-29 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-29T00:00:00+08:00">2021-08-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:55:52" itemprop="dateModified" datetime="2022-09-25T01:55:52+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>参考tcmalloc <a target="_blank" rel="noopener" href="https://github.com/google/tcmalloc/blob/master/docs/design.md">github官方文档</a><br>TCMalloc 是一种内存分配器，旨在替代系统默认分配器，具有以下特点：</p>
-<ul>
-<li>可以实现大多数对象的快速、无竞争的分配和释放。 对象被缓存，具体取决于模式，每个线程或每个逻辑 CPU。 大多数分配不需要锁定，因此多线程应用程序争用少，扩展性好。</li>
-<li>灵活使用内存，因此释放的内存可以重新用于不同的对象大小，或返回给操作系统。</li>
-<li>通过分配相同大小的对象的“页面”来降低每个对象的内存开销。小对象的空间损耗很少。</li>
-<li>低开销采样，可以详细了解应用程序内存使用情况。<br>下面的框图显示了 TCMalloc 的粗略内部结构：<br><img src="/images/tcmalloc-1.png"></li>
-</ul>
-<p>我们可以将 TCMalloc 分解为三个组件。前端、中端和后端。职责的粗略分解是：</p>
-<ul>
-<li>前端是一个缓存，为应用程序提供快速的内存分配和释放。  </li>
-<li>中端负责重新填充前端缓存。</li>
-<li>后端处理从操作系统获取内存。<br>请注意，前端可以在 per-CPU 或 legacy per-thread 模式下运行，后端可以支持大页面感知 pageheap 或 legacy pageheap。</li>
-</ul>
-<h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>freelist是tcmalloc的实现基础，只不过tcmalloc采用了三层的架构：TreadCache、CentralCache、PageHeap。每一级的分配单元的粒度不一样。基本的原理就是：分配内存和释放内存都是按照从前到后的顺序，在各个层次中进行尝试，前面的层次分配内存失败，则从下一层分配一批补充上来；前面的层次释放了过多的内存，则回收一批到下一层次。</p>
-<ul>
-<li>tcmalloc有三个层次:<ul>
-<li>TreadCache, 这个内存池是线程私有的, 每个线程一份. 每个线程首先会从这里请求内存. 由于是线程私有的, 不需要加锁同步, 所以非常高效. TreadCache维护一组不同类型的freelist, 基本单位是object, 为了实现变长内存的申请, object预设了一些规格(class), 比如8, 16, 32, 80等等</li>
-<li>CentralCache, 这是第二层线程池, 这是全局的, 当线程在本地请求失败时会从这里请求object. CentralCache也维护一组关联obejct规格的freelist, 基本单位是span, span由多个连续page(物理单位)组成, 可以分隔为多个object(逻辑单位)。</li>
-<li>Pageheap, 这是第三层, 当无法从CentralCache获取到内存时, 会从Pageheap中请求span. 如果PageHeap也没有内存, 则向操作系统请求. Pageheap根据page的数量维护一组freelist, 基本单位是span. 另外还维护这page到span的映射关系.</li>
-</ul>
-</li>
-<li>小对象和大对象: 大于256kb的称为大对象, 大对象会直接向Pageheap申请span, 小对象的申请则需要经过TreadCache申请。</li>
-<li>粒度: tcmalloc, 有两种粒度的内存, object和span. TreadCache维护的粒度是object, PageHeap维护的粒度是span. 而CentralCache是一个中间者, 维护span到object的映射关系.</li>
-</ul>
-<p>数据结构概览如图所示：<br><img src="/images/tcmalloc-3.png"></p>
-<ul>
-<li>TreadCache<br>线程本地缓存, 比较简单, 维护一组freelist, 尺寸小于256K的小对象, 均由它进行分配. 分配过程中不需要加锁<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ThreadCache</span> &#123;</span></span><br><span class="line">private:</span><br><span class="line">     FreeList      list_[kNumClasses];    </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
-<li>CentralCache<br>对应不同class的object, CentralCache中有多个CentralFreeList. CentralFreeList维护的是span链表, 每个span下有根据object的大小切割组成一个object链. objects链表示未被分配的object, 分配出去的object数量使用span.refcount_ 记录. span 的结构如下:<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Span</span> &#123;</span></span><br><span class="line">  PageID        start;          <span class="comment">// Span描述的内存的起始地址</span></span><br><span class="line">  Length        length;        <span class="comment">// Span页面数量</span></span><br><span class="line">  Span*         next;           <span class="comment">// Span由双向链表组成，PageHeap和CentralFreeList中都用的到</span></span><br><span class="line">  Span*         prev;           <span class="comment">//</span></span><br><span class="line">  <span class="type">void</span>*         objects;        <span class="comment">// Span会在CentralFreeList中拆分成由object组成的free list</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span>  refcount : <span class="number">16</span>;  <span class="comment">// Span的object被引用次数，当refcount=0时，表示此Span没有被使用</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span>  sizeclass : <span class="number">8</span>;  <span class="comment">// Span属于的size class</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span>  location : <span class="number">2</span>;   <span class="comment">// Span在的位置IN_USE？normal？returned？</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span>  sample : <span class="number">1</span>;     <span class="comment">// Sampled object?</span></span><br><span class="line">  <span class="comment">// What freelist the span is on: IN_USE if on none, or normal or returned</span></span><br><span class="line">  <span class="class"><span class="keyword">enum</span> &#123;</span> IN_USE, ON_NORMAL_FREELIST, ON_RETURNED_FREELIST &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-CentralFreeList的结构:<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CentralFreeList</span> &#123;</span></span><br><span class="line">private:</span><br><span class="line">    SpinLock lock_;     <span class="comment">//控制线程访问的锁</span></span><br><span class="line">    <span class="type">size_t</span> size_class_;  <span class="comment">// span对应object的size class, 同上</span></span><br><span class="line">    Span empty_;         <span class="comment">// 放置没有空闲空间的span, 可以避免查找这部分span</span></span><br><span class="line">    Span nonempty_;  <span class="comment">// 和empty相对</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-CentralFreeList里有两个span链表：nonempty_和empty_，根据span的objects链是否有空闲，放入对应链表。</li>
-</ul>
-<p>CentralFreeList里面还有一个cache（tc_slots_），回收回来的一批object先放进cache，存不下了再回收进span的objects链。分配object给ThreadCache时也是先尝试在cache里面拿，没了再去span里面分配。</p>
-<p>TreadCache一般都是以batch_size为一个批次像CentralCache请求, 而为了cache的简单高效，如果批次个数不等于batch_size，则会绕过cache。</p>
-<ul>
-<li>Pageheap</li>
-</ul>
-<p>整体结构如下图所示：<br><img src="/images/tcmalloc-6.png"></p>
-<p>数组中第256个元素是所有大于255个页面都挂到该链表中.用多种定长 Page 来实现变长 Page 的分配，初始时只有 255 Page 的 Span，如果要分配 1 个 Page 的 Span，就把这个 Span 分裂成两个，1 + 254，把254再记录下来。对于 Span 的回收，需要考虑Span的合并问题，否则在分配回收多次之后，就只剩下很小的 Span 了，也就是带来了外部碎片 问题。</p>
-<ul>
-<li>page维护了两样东西: page -&gt; span的映射关系和空闲的span伙伴系统.</li>
-</ul>
-<ol>
-<li><p>page -&gt; span 映射<br> page到span的映射关系通过radix 树来实现, 当释放一段内存时, 通过内存偏移和对齐, 就能计算出对应的page, 拿到page在radix树中查找到对应的span, 拿到span就拿到了sizeclass, 从而可以在CentralCache定位span, 将释放的object添加到span的objects链表. 另外通过radix树还可以找到span的相邻span, 如果相邻的span空闲, 则会合并他们。</p>
-</li>
-<li><p>伙伴系统(span freelist)<br> span的尺寸有从1个page到255个page的所有规格, 大于255个page的span单独归为一类，不作细分. PageHeap维护了这些不同规格的freelist:</p>
- <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">SpanList</span> &#123;</span></span><br><span class="line">Span        normal;</span><br><span class="line">Span        returned;</span><br><span class="line">&#125;;</span><br><span class="line">SpanList large_;                    <span class="comment">// 超过256k的span链表</span></span><br><span class="line">SpanList free_[kMaxPages]</span><br></pre></td></tr></table></figure>
-
-<p> 在内存分配时, 会根据span的大小在伙伴系统中查找, 如果没有空闲的span时, 会向上层更大尺寸的span链表请求, 再没有, 就需要向系统申请了. span可以根据需要不断组合和分割.   </p>
-<p> freelist其实是有两个链，normal和returned，以区别活跃跟不活跃的内存。    </p>
-<p> PageHeap并不会将内存释放给kernel，因为它们之间的交互都是针对一批连续page的，要想回收到整批的page，可能性很小。在PageHeap里面，多余的内存会放到returned里面去，跟normal做一下隔离。这样一来，normal的内存总是优先被使用，kernel倾向于一直保留它们。而returned的内存则不常被使用，kernel在内存不够的时候会优先将它们swap掉。span进入returned时，tcmalloc还附加了一个操作，madvise(MADV_DONTNEED)，试图告诉kernel这个内存已经不用了</p>
-<p> 其实不用returned也能完成这样的事情，因为normal是个链表，每次分配回收总是作用在链表头上，那么链表内的span本身就按从热到冷的顺序排序了。链表尾部的span如果长期不被使用，不管是否移动到returned链，kernel都会倾向于将它们swap掉</p>
-<p> 为减少查询radix tree的开销，PageHeap还维护了一个最近最常使用的若干个page到class（span.sizeclass）的对应关系cache。为了保持cache的效率，cache只提供64K个固定坑位，旧的对应关系会被新来的对应关系替换掉。</p>
-</li>
-</ol>
-<h3 id="分配和回收流程"><a href="#分配和回收流程" class="headerlink" title="分配和回收流程"></a>分配和回收流程</h3><p>一图胜千言<br><img src="/images/tcmalloc-4.png"></p>
-<p><img src="/images/tcmalloc-5.png"></p>
-<h3 id="与ptmalloc对比的优点"><a href="#与ptmalloc对比的优点" class="headerlink" title="与ptmalloc对比的优点"></a>与ptmalloc对比的优点</h3><p>优点：</p>
-<ul>
-<li>分配更快.小对象几乎无锁， &gt;32KB的对象从CentralCache中分配使用自旋锁。 并且&gt;32KB对象都是页面对齐分配，多线程的时候应尽量避免频繁分配，否则也会造成自旋锁的竞争和页面对齐造成的浪费。</li>
-<li>占用额外空间少(例如，分配N个8字节对象可能要使用大约8N * 1.01字节的空间。即，多用百分之一的空间。Ptmalloc2使用最少8字节描述一个chunk。)</li>
-<li>碎片化控制优越.ThreadCache会阶段性的回收内存到CentralCache里。 解决了ptmalloc2中arena之间不能迁移的问题。</li>
 </ul>
 
       
@@ -1184,7 +1184,7 @@ d1 = d2;             //静态类型为Base*,动态类型为D2*
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88%EF%BC%882%EF%BC%89/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -1198,7 +1198,7 @@ d1 = d2;             //静态类型为Base*,动态类型为D2*
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88/" class="post-title-link" itemprop="url">effective-c++系列：对象模型杂谈（1）</a>
+            <a href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88%EF%BC%882%EF%BC%89/" class="post-title-link" itemprop="url">effective-c++系列：对象模型杂谈（2）</a>
         </h2>
 
         <div class="post-meta">
@@ -1215,7 +1215,7 @@ d1 = d2;             //静态类型为Base*,动态类型为D2*
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:56:57" itemprop="dateModified" datetime="2022-09-25T01:56:57+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:57:01" itemprop="dateModified" datetime="2022-09-25T01:57:01+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1239,29 +1239,57 @@ d1 = d2;             //静态类型为Base*,动态类型为D2*
 
       
           <span id="more"></span>
-<h3 id="编译器版本的默认构造-x2F-析构-x2F-赋值-x2F-拷贝构造函数"><a href="#编译器版本的默认构造-x2F-析构-x2F-赋值-x2F-拷贝构造函数" class="headerlink" title="编译器版本的默认构造&#x2F;析构&#x2F;赋值&#x2F;拷贝构造函数"></a>编译器版本的默认构造&#x2F;析构&#x2F;赋值&#x2F;拷贝构造函数</h3><ul>
-<li><p>当用户没有在类内声明上述三个函数时，如果程序中需要调用，编译器会为用户自动编写<font color=green>默认构造&#x2F;析构&#x2F;拷贝构造</font>这三个重要的函数，即所谓的Big Three，和拷贝构造函数，并且这些函数都是<font color=orange>inline</font>的。在c++ 11后编译器新增了move构造和move赋值两个函数：</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">    <span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="title class_">T</span>&gt;</span><br><span class="line">    <span class="keyword">class</span> <span class="title class_">Handle</span> &#123;</span><br><span class="line">        T* p;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="built_in">Handle</span>(T* pp) : p&#123;pp&#125; &#123;&#125;</span><br><span class="line">        <span class="comment">// 用户定义构造函数： 没有隐式的拷贝和移动操作</span></span><br><span class="line">        ~<span class="built_in">Handle</span>() &#123; <span class="keyword">delete</span> p; &#125;</span><br><span class="line">        <span class="built_in">Handle</span>(Handle&amp;&amp; h) :p&#123;h.p&#125;<span class="comment">//移动拷贝</span></span><br><span class="line">            &#123; h.p=<span class="literal">nullptr</span>; &#125;; </span><br><span class="line">        Handle&amp; <span class="keyword">operator</span>=(Handle&amp;&amp; h) <span class="comment">//移动赋值</span></span><br><span class="line">            &#123; <span class="keyword">delete</span> p; p=h.p; h.p=<span class="literal">nullptr</span>; &#125; </span><br><span class="line">        <span class="built_in">Handle</span>(<span class="type">const</span> Handle&amp;) = <span class="keyword">delete</span>;  <span class="comment">//禁用拷贝构造函数</span></span><br><span class="line">        Handle&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Handle&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">    ```  </span><br><span class="line">- 一旦我们显式地指明（ 声明, 定义, =<span class="keyword">default</span>, 或者 =<span class="keyword">delete</span> ）了上述五个函数之中的任意一个，编译器将不会默认自动生成move操作。  </span><br><span class="line">- 一旦我们显式地指明（ 声明, 定义, =<span class="keyword">default</span>, 或者 =<span class="keyword">delete</span> ）了上述五个函数之中的任意一个，编译器将默认自动生成所有的拷贝操作。但是，我们应该尽量避免这种情况的发生，不要依赖于编译器的默认动作。</span><br><span class="line"></span><br><span class="line">### 使用默认版本函数会发生什么？</span><br><span class="line">- 编译器产生的析构函数是none-<span class="keyword">virtual</span>的，除非<span class="keyword">class</span>的base <span class="keyword">class</span>自身声明有<span class="keyword">virtual</span>构造函数。</span><br><span class="line">- 编译器产生的构造函数和拷贝构造函数只是单纯将non-<span class="type">static</span>成员变量拷贝到目标对象，考虑一个对象内部如果存在指针，那么只是单纯地复制指针，对于指针所指的内存区域不进行拷贝，这样的浅拷贝技术可能在后续使用过程中酿成大祸。</span><br><span class="line"></span><br><span class="line">### 如何避免使用编译器自动生成的函数？</span><br><span class="line">- 如果你不想让类支持拷贝构造或者拷贝赋值函数  </span><br><span class="line">    使用<span class="keyword">private</span>关键字</span><br><span class="line">    ```cpp</span><br><span class="line">    <span class="keyword">class</span> A&#123;</span><br><span class="line">        <span class="keyword">private</span>:</span><br><span class="line">        <span class="built_in">A</span>(<span class="type">const</span> A&amp;);</span><br><span class="line">        A&amp; <span class="keyword">operator</span>=(<span class="type">const</span> A&amp;);</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure>
-<p>  继承一个不可拷贝赋值和拷贝构造的类</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Uncopyable</span>&#123;</span><br><span class="line">    <span class="keyword">protected</span>:</span><br><span class="line">    <span class="built_in">Uncopyable</span>()&#123;&#125;</span><br><span class="line">    ~<span class="built_in">Uncopyable</span>()&#123;&#125;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">Uncopyable</span>(<span class="type">const</span> Uncopyable&amp;);</span><br><span class="line">    Uncopyable&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Uncopyable&amp;);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>:<span class="keyword">private</span> Uncopyable&#123;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>  c++11后可以使用delete关键字</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="built_in">A</span>(<span class="type">const</span> A&amp;) =<span class="keyword">delete</span>;</span><br><span class="line">    A&amp; <span class="keyword">operator</span>=(<span class="type">const</span> A&amp;) =<span class="keyword">delete</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="基类析构函数可以是none-virtual的吗？"><a href="#基类析构函数可以是none-virtual的吗？" class="headerlink" title="基类析构函数可以是none-virtual的吗？"></a>基类析构函数可以是none-virtual的吗？</h3><ul>
-<li>当基类析构函数带有多态性质，也就是使用基类指针调用子类函数的时候，析构函数必须是virtual类型的。<ul>
-<li>当需要多态的时候，一般情况下需要在堆中分配内存，这样在delete的时候就存在问题：delete的是一个父类指针，但是父类析构函数不是虚函数，那么这个子类对象中子类的部分就无法释放，这样就会存在局部销毁的情况，会导致严重的资源泄露。</li>
+<h3 id="在构造函数和析构函数中能调用虚函数吗？"><a href="#在构造函数和析构函数中能调用虚函数吗？" class="headerlink" title="在构造函数和析构函数中能调用虚函数吗？"></a>在构造函数和析构函数中能调用虚函数吗？</h3><ul>
+<li><p>严禁在构造函数中调用虚函数</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="type">int</span> data;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">dosome</span><span class="params">()</span><span class="type">const</span></span>&#123;&#125;;</span><br><span class="line">    <span class="built_in">A</span>()&#123;</span><br><span class="line">        <span class="built_in">dosome</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span> : <span class="keyword">public</span> A&#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">dosome</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line">B b;<span class="comment">//往往会出现意想不到的错误</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果在父类的构造函数中调用虚函数，当使用子类对象的时候，会首先调用父类的构造函数。  </li>
+<li>在父类构造函数执行过程中，this指针为base class对象，因此在dosome()函数中的操作是在父类对象中完成的。</li>
+<li><font color=orange>由于虚函数dosome()在父类对象中完成，往往达不到多态（延迟绑定）的目的。</font></li>
 </ul>
 </li>
-<li>凡是一个类中带有virtual字样的函数，一般情况下析构函数都要是虚函数。</li>
-<li>当一个类不是父类的时候，析构函数尽量不要设置成虚函数。<ul>
-<li>因为一个类只要有虚函数，就携带虚表指针，占用额外的内存，当类内数据量很小的时候，虚表指针就回造成很大比例的内存浪费。</li>
+<li><p>严禁在析构函数中调用虚函数</p>
+<ul>
+<li>在子类对象析构时顺序为先将自身的local data释放，然后调用父类的析构函数，如果父类析构存在虚函数，那么编译器会有两种选择：调用虚函数的基类版本或者调用虚函数的派生类版本。</li>
+<li>如果调用派生类版本的函数，此时子类部分已经释放，会导致严重错误。</li>
+<li><font color=orange>实际情况是编译器会调用基类版本的虚函数，那么和构造函数一样，不会发生多态。</font></li>
+</ul>
+</li>
+<li><p>解决方式</p>
+<ul>
+<li>将在构造或析构函数中调用的函数设置为non-virtual，要求子类对象在构造时传递必要的信息。</li>
+</ul>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="type">int</span> data;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">dosome</span><span class="params">(<span class="type">const</span> string&amp; info)</span><span class="type">const</span></span>&#123;&#125;;</span><br><span class="line">    <span class="built_in">A</span>(<span class="type">const</span> string&amp; info)&#123;</span><br><span class="line">        <span class="built_in">dosome</span>(info);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span> : <span class="keyword">public</span> A&#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">    <span class="function"><span class="type">static</span> string <span class="title">createParamter</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">dosome</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line">    <span class="built_in">B</span>():<span class="built_in">A</span>(<span class="built_in">createParamter</span>())&#123;&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="如果new、delete、delete-没有成对使用会发生什么？"><a href="#如果new、delete、delete-没有成对使用会发生什么？" class="headerlink" title="如果new、delete、delete[]没有成对使用会发生什么？"></a>如果new、delete、delete[]没有成对使用会发生什么？</h3><p><img src="/images/001.png">  </p>
+<center>单个对象和对象数组的内存布局</center>
+
+<ul>
+<li><p>使用delete释放对象数组</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">string* s = <span class="keyword">new</span> string[<span class="number">100</span>];</span><br><span class="line"><span class="comment">//do something</span></span><br><span class="line"><span class="keyword">delete</span> s;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>上述情况下，只会调用第一个s的函数，其余99个对象不执行任何操作，后面程序也不会再拿到其句柄，从而会造成内存泄露。</li>
+<li>实际上，对于一组对象，delete[]会寻找数组前的一个count计数来获取数组长度。</li>
+</ul>
+</li>
+<li><p>使用delete[]释放单个对象</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">string* s = <span class="keyword">new</span> string;</span><br><span class="line"><span class="comment">//do something</span></span><br><span class="line"><span class="keyword">delete</span>[] s;<span class="comment">// Exception has occurred.Segmentation fault</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>delete[]在内存中读取s指针前4字节内存作为数组长度，这样做显然是非法的。</li>
 </ul>
 </li>
 </ul>
-<h3 id="析构函数可以抛出异常吗？"><a href="#析构函数可以抛出异常吗？" class="headerlink" title="析构函数可以抛出异常吗？"></a>析构函数可以抛出异常吗？</h3><ul>
-<li>一般情况下不要在析构函数中抛异常<br>比如在析构函数中释放多个资源，但是在释放过程中出现异常，那么剩余资源就无法被释放，就会造成内存泄露。  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; data;</span><br><span class="line">    ~<span class="built_in">A</span>()&#123;</span><br><span class="line">        <span class="comment">// throws...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">dosomething</span><span class="params">()</span></span>&#123;</span><br><span class="line">    vector&lt;A&gt; resource;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="comment">//dtor</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li>异常处理<br>  捕捉异常，结束程序  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; data;</span><br><span class="line">    ~<span class="built_in">A</span>()&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            <span class="comment">//do delete</span></span><br><span class="line">        &#125;<span class="built_in">catch</span>()&#123;</span><br><span class="line">            std::<span class="built_in">abort</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-  捕捉异常，不执行任何操作  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; data;</span><br><span class="line">    ~<span class="built_in">A</span>()&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            <span class="comment">//do delete</span></span><br><span class="line">        &#125;<span class="built_in">catch</span>()&#123;</span><br><span class="line">            <span class="comment">//记录</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<h3 id="设计一个class需要注意什么？"><a href="#设计一个class需要注意什么？" class="headerlink" title="设计一个class需要注意什么？"></a>设计一个class需要注意什么？</h3><ul>
+<li>对象创建和销毁（构造、析构函数、内存分配）</li>
+<li>对象初始化和赋值</li>
+<li>对象如果pass by value应该怎么做？（如果对象内存在指针，是否需要深拷贝）</li>
+<li>定义class约束（数据类型检查）</li>
+<li>继承或者被继承</li>
+<li>类型转换（隐式类型转换）</li>
+<li>操作符重载</li>
+<li>标准函数是否适用（拷贝赋值，拷贝构造）</li>
 </ul>
 
       

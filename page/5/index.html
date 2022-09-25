@@ -192,6 +192,142 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/" class="post-title-link" itemprop="url">redis系列：RDB & AOF</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 02:02:03" itemprop="dateModified" datetime="2022-09-25T02:02:03+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h3><ol>
+<li>文件结构<br><img src="/images/redis-ar-1.png"><br>一个完整的RDB文件包含上面各部分。</li>
+</ol>
+<ul>
+<li>REDIS：5字节，检查是否为RDB文件。</li>
+<li>db_version:4字节，字符串表示的整数，记录版本号。</li>
+<li>database：0或n个数据库的键值对数据。</li>
+<li>EOF：1字节，表示正文结束。</li>
+<li>check_sum：8字节长无符号整数，保存一个校验和，根据前面四个部分计算得到。</li>
+</ul>
+<p>如下是一个有两个数据库的RDB文件。<br><img src="/images/redis-rdb-1.png"><br>每个数据库里面包含下面几个部分：<br><img src="/images/redis-rdb-2.png"></p>
+<ul>
+<li>SELECTDB：1字节，表示接下来是一个数据库号码；</li>
+<li>db_number：数据库号码，1&#x2F;2&#x2F;5字节，当读入时，服务器根据select切换；</li>
+<li>key_value_pairs：保存数据库中所有键值对数据。</li>
+</ul>
+<ol start="2">
+<li>key_value_pairs<br>下图展示了一个不带过期时间的键值对：<br><img src="/images/redis-rdb-3.png"></li>
+</ol>
+<ul>
+<li><p>TYPE：1字节类型</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Dup object types to RDB object types. Only reason is readability (are we</span></span><br><span class="line"><span class="comment"> * dealing with RDB types or with in-memory object types?). */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_STRING 0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_LIST   1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_SET    2</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_ZSET   3</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_HASH   4</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Object types for encoded objects. */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_HASH_ZIPMAP    9</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_LIST_ZIPLIST  10</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_SET_INTSET    11</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_ZSET_ZIPLIST  12</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_HASH_ZIPLIST  13</span></span><br></pre></td></tr></table></figure>
+<p>带有过期时间的键值对：<br><img src="/images/redis-rdb-3.png"></p>
+</li>
+<li><p>EXPIRETIME_MS：1字节，表示接下来是一个时间。</p>
+</li>
+<li><p>ms：8字节带符号整数，过期时间，一个毫秒单位UNIX时间戳。</p>
+</li>
+</ul>
+<ol start="3">
+<li>value的编码</li>
+</ol>
+<ul>
+<li><p>字符串对象：<br>存在压缩版<br><img src="/images/redis-rdb-6.png"><br>无压缩版<br><img src="/images/redis-rdb-5.png"></p>
+</li>
+<li><p>列表对象<br><img src="/images/redis-rdb-7.png"></p>
+</li>
+<li><p>集合对象<br><img src="/images/redis-rdb-8.png"></p>
+</li>
+<li><p>哈希表对象<br><img src="/images/redis-rdb-9.png"></p>
+</li>
+<li><p>有序集合对象<br><img src="/images/redis-rdb-10.png"></p>
+</li>
+<li><p>压缩列表<br>保存这种文件的方法是：（1）将压缩列表转换成一个字符串对象（2）将字符串对象保存到RDB文件。</p>
+</li>
+</ul>
+<h3 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h3><p>简单来说AOF就是讲命令按顺序写入文件来持久化。<br>总的来说分为三个步骤：命令追加，文件写入，文件同步。</p>
+<ul>
+<li><p>命令追加<br>在redisServer结构体重有一个aof_buf缓冲区：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">redisServer</span>&#123;</span></span><br><span class="line">    sds aof_buf;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>AOF文件中是以命令请求协议格式保存的，因此命令追加是如下形式：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">redis&gt;SET KEY VALUE</span><br><span class="line"></span><br><span class="line">*<span class="number">3</span>\r\n$<span class="number">3</span>\r\nSET\r\nKEY\r\n$<span class="number">5</span>\r\nVALUE\r\n</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>文件写入<br>在服务器进程每次时间循环结束之前，可以考虑将aof缓冲区的数据写入文件。写入策略有：（1）always:将缓冲区所有内容写入并同步到AOF文件（2）everysec：将缓冲区所有内存写入AOF，如果上次同步AOF文件的时间超过1s，那么再次对AOF同步，并且由一个线程专门负责执行（3）写入AOF但不同步。<br>所谓同步，就是讲aof_buf拷贝到内核缓冲区，写入就是讲内核缓冲区的数据写入磁盘。这三种方式第一种最耗时但是最安全，第二种保证出现故障最多丢失1s的数据，最后一种方式写入最快但是不安全。</p>
+</li>
+<li><p>载入和数据还原<br>因为本身存的是命令，只需要再执行一遍命令就可以了，在读取AOF文件之后，redis创建一个伪客户端发出命令。</p>
+</li>
+<li><p>AOF重写<br>由于AOF文件记录所有命令，因此文件体积会迅速膨胀，因此redis提供对AOF文件重写功能。<br>核心思想就是，直接从数据库读取键值对，生成一条命令，来替代所记录的所有相关命令。<br>例如：<br><img src="/images/redis-aof-1.png"><br>可以用下面命令代替：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT 0</span><br><span class="line">RPUSH alphabet &quot;a&quot; &quot;b&quot; &quot;c&quot;</span><br><span class="line">EXPIREAT alphabet 1385877600000</span><br><span class="line">HMSET book &quot;name&quot; &quot;Redisin Action&quot; &quot;author&quot; &quot;Josiah L. Carison&quot; &quot;publisher&quot; &quot;Manning&quot;</span><br><span class="line">EXPIREAT book 1388556000000</span><br><span class="line">SET message &quot;hello world&quot;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>如果直接使用主线程来重写，势必会造成主线程长时间繁忙，无法处理用户请求，因此在实际实现中使用子进程来写。<br>使用子进程写的过程中，如果父进程对数据库进行修改，就回造成数据不一致问题，针对这个问题，redis设置了AOF重写缓冲区。<br><img src="/images/redis-aof-2.png"><br>在子进程执行重写的过程中，需要执行下面三个工作：<br>1）执行客户端的命令<br>2）将执行后的命令追加到AOF缓冲区<br>3）执行后的写命令追加到AOF重写缓冲区  </p>
+<p>当子进程完成AOF重写，给父进程发一个信号，父进程接受信号之后，调用信号处理函数：<br>1)将AOF重写缓冲区所有内容写入新AOF，这时新AOF文件与当前数据库数据一致。<br>2）对新的AOF改名，原子性覆盖现有AOF文件。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%8A%A8%E6%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1332,115 +1468,6 @@
 <li>进入&#x2F;etc&#x2F;passwd 文件修改用户组为0:0，提升到root权限</li>
 <li>重新登录神奇的好了，但是登录需要选择用户了(以前直接默认普通用户登录，现在可以直接root登录)</li>
 </ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B7%B3%E8%B7%83%E8%A1%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B7%B3%E8%B7%83%E8%A1%A8/" class="post-title-link" itemprop="url">redis系列：跳跃表</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:01:47" itemprop="dateModified" datetime="2022-09-25T02:01:47+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p>数据结构如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> &#123;</span></span><br><span class="line">    <span class="comment">//成员对象</span></span><br><span class="line">    robj *obj;</span><br><span class="line">    <span class="comment">//分值</span></span><br><span class="line">    <span class="type">double</span> score;</span><br><span class="line">    <span class="comment">//后退指针</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">backward</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistLevel</span> &#123;</span></span><br><span class="line">        <span class="comment">//前进指针</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">forward</span>;</span></span><br><span class="line">        <span class="comment">//跨度</span></span><br><span class="line">        <span class="type">unsigned</span> <span class="type">int</span> span;</span><br><span class="line">    &#125; level[];</span><br><span class="line">&#125; zskiplistNode;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplist</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">header</span>, *<span class="title">tail</span>;</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> length;</span><br><span class="line">    <span class="type">int</span> level;</span><br><span class="line">&#125; zskiplist;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/redis-zlist-1.png"></p>
-<ul>
-<li>score是一个double类型树，跳表中所有节点按照分值排序</li>
-<li>obj（5.0版本为ele）:存储一个sds类型对象</li>
-</ul>
-<h3 id="内部实现"><a href="#内部实现" class="headerlink" title="内部实现"></a>内部实现</h3><ol>
-<li>节点层高</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> ZSKIPLIST_P 0.25 <span class="comment">/* Skiplist P = 1/4 */</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">zslRandomLevel</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    <span class="type">int</span> level = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> ((random()&amp;<span class="number">0xFFFF</span>) &lt; (ZSKIPLIST_P * <span class="number">0xFFFF</span>))</span><br><span class="line">    level += <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> (level&lt;ZSKIPLIST_MAXLEVEL) ? level : ZSKIPLIST_MAXLEVEL;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>level的初始值为1，通过while循环，每次生成一个随机值，取这个值的低16位作为x，当x小于0.25倍的0xFFFF时，level的值加1；否则退出while循环。最终返回level和ZSKIPLIST_MAXLEVEL两者中的最小值。<br>1）节点层高为1的概率为(1-p)。<br>2）节点层高为2的概率为p(1-p)。<br>3）节点层高为3的概率为p2 (1-p)。<br>4）……<br>5）节点层高为n的概率为pn-1 (1-p)。<br>节点期望层高为<font color = red> E &#x3D; 1 &#x2F; (1 - p) </font>.</p>
-<ol start="2">
-<li>创建跳跃表</li>
-</ol>
-<p>1）创建跳跃表结构体对象zsl。<br>2）将zsl的头节点指针指向新创建的头节点。<br>3）跳跃表层高初始化为1，长度初始化为0，尾节点指向NULL。  </p>
-<ol start="3">
-<li>插入节点</li>
-</ol>
-<ul>
-<li>查找要插入的位置</li>
-<li>调整跳跃表高度</li>
-<li>插入节点</li>
-<li>调整backward</li>
-</ul>
-<p>源代码中的大概思路就是通过for循环来对每个高度进行遍历，找到前驱和后继节点，通过rank和update两个数组记录，最后调整指针。</p>
-<ol start="4">
-<li>删除节点</li>
-</ol>
-<ul>
-<li>查找需要更新的节点</li>
-<li>设置span和forward</li>
-</ul>
-<h3 id="跳跃表应用"><a href="#跳跃表应用" class="headerlink" title="跳跃表应用"></a>跳跃表应用</h3><p>跳跃表主要应用于有序集合的底层实现（有序集合的另一种实现方式为压缩列表）。</p>
 
       
     </div>

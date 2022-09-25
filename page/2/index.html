@@ -287,97 +287,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B5%84%E6%BA%90%E5%92%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B5%84%E6%BA%90%E5%92%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" class="post-title-link" itemprop="url">k8s系列：资源和声明周期</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-02-17 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-17T00:00:00+08:00">2022-02-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:58:24" itemprop="dateModified" datetime="2022-09-25T01:58:24+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/K8S/" itemprop="url" rel="index"><span itemprop="name">K8S</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="集群资源分类"><a href="#集群资源分类" class="headerlink" title="集群资源分类"></a>集群资源分类</h3><ol>
-<li>名称空间级别：默认为default</li>
-<li>集群级别：role</li>
-<li>元数据</li>
-</ol>
-<h3 id="pod资源清单"><a href="#pod资源清单" class="headerlink" title="pod资源清单"></a>pod资源清单</h3><p>定义一个pod需要下面这些信息：<br><a href="/images/k8s-8.png"></a></p>
-<h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><p><a href="/images/k8s-8.png"></a></p>
-<ol>
-<li>初始化pause容器</li>
-<li>init C 初始化容器，init容器总是运行到成功为止，并且后面的容器要等到前面的容器运行结束之后才运行。</li>
-<li>进入容器，执行start操作。</li>
-<li>readiness：就绪检测，如果服务就绪，可以暴露给外围。</li>
-<li>liveness：生存检测，发现容器内部有假死（例如僵尸进程）时，进行重启或其他操作。</li>
-<li>stop：结束时执行的一些操作。</li>
-</ol>
-<h3 id="调度器"><a href="#调度器" class="headerlink" title="调度器"></a>调度器</h3><p>调度器负责管理pod的生命周期，在必要的时候重启pod，下图是deployment滚动更新的管理方式，称为命令式管理，在后台其实是通过管理RS来达到目的。<br><a href="/images/k8s-10.png"></a></p>
-<p>这样存在一个问题，假如其中一个pod挂掉，RS重新启动一个pod替代，但是ip地址变了，那么其他pod访问不到怎么办？这个时候需要在pod和上层服务比如nginx中加入一个中间件SVC，SVC会自动进行服务发现，通过标签匹配策略自动获取其关联的pod的信息，然后同步给需要使用的pod。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9Apod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E5%92%8C%E6%8E%A7%E5%88%B6%E5%99%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -574,6 +483,97 @@
 <li>prometheus：提供k8s集群的监控能力。</li>
 <li>ELK：提供k8s日志统一管理平台。</li>
 </ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B5%84%E6%BA%90%E5%92%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B5%84%E6%BA%90%E5%92%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" class="post-title-link" itemprop="url">k8s系列：资源和声明周期</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-02-17 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-17T00:00:00+08:00">2022-02-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:58:24" itemprop="dateModified" datetime="2022-09-25T01:58:24+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/K8S/" itemprop="url" rel="index"><span itemprop="name">K8S</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="集群资源分类"><a href="#集群资源分类" class="headerlink" title="集群资源分类"></a>集群资源分类</h3><ol>
+<li>名称空间级别：默认为default</li>
+<li>集群级别：role</li>
+<li>元数据</li>
+</ol>
+<h3 id="pod资源清单"><a href="#pod资源清单" class="headerlink" title="pod资源清单"></a>pod资源清单</h3><p>定义一个pod需要下面这些信息：<br><a href="/images/k8s-8.png"></a></p>
+<h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><p><a href="/images/k8s-8.png"></a></p>
+<ol>
+<li>初始化pause容器</li>
+<li>init C 初始化容器，init容器总是运行到成功为止，并且后面的容器要等到前面的容器运行结束之后才运行。</li>
+<li>进入容器，执行start操作。</li>
+<li>readiness：就绪检测，如果服务就绪，可以暴露给外围。</li>
+<li>liveness：生存检测，发现容器内部有假死（例如僵尸进程）时，进行重启或其他操作。</li>
+<li>stop：结束时执行的一些操作。</li>
+</ol>
+<h3 id="调度器"><a href="#调度器" class="headerlink" title="调度器"></a>调度器</h3><p>调度器负责管理pod的生命周期，在必要的时候重启pod，下图是deployment滚动更新的管理方式，称为命令式管理，在后台其实是通过管理RS来达到目的。<br><a href="/images/k8s-10.png"></a></p>
+<p>这样存在一个问题，假如其中一个pod挂掉，RS重新启动一个pod替代，但是ip地址变了，那么其他pod访问不到怎么办？这个时候需要在pod和上层服务比如nginx中加入一个中间件SVC，SVC会自动进行服务发现，通过标签匹配策略自动获取其关联的pod的信息，然后同步给需要使用的pod。</p>
 
       
     </div>

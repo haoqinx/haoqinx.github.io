@@ -192,6 +192,115 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B7%B3%E8%B7%83%E8%A1%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B7%B3%E8%B7%83%E8%A1%A8/" class="post-title-link" itemprop="url">redis系列：跳跃表</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 02:01:47" itemprop="dateModified" datetime="2022-09-25T02:01:47+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p>数据结构如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> &#123;</span></span><br><span class="line">    <span class="comment">//成员对象</span></span><br><span class="line">    robj *obj;</span><br><span class="line">    <span class="comment">//分值</span></span><br><span class="line">    <span class="type">double</span> score;</span><br><span class="line">    <span class="comment">//后退指针</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">backward</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistLevel</span> &#123;</span></span><br><span class="line">        <span class="comment">//前进指针</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">forward</span>;</span></span><br><span class="line">        <span class="comment">//跨度</span></span><br><span class="line">        <span class="type">unsigned</span> <span class="type">int</span> span;</span><br><span class="line">    &#125; level[];</span><br><span class="line">&#125; zskiplistNode;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplist</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">header</span>, *<span class="title">tail</span>;</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> length;</span><br><span class="line">    <span class="type">int</span> level;</span><br><span class="line">&#125; zskiplist;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/redis-zlist-1.png"></p>
+<ul>
+<li>score是一个double类型树，跳表中所有节点按照分值排序</li>
+<li>obj（5.0版本为ele）:存储一个sds类型对象</li>
+</ul>
+<h3 id="内部实现"><a href="#内部实现" class="headerlink" title="内部实现"></a>内部实现</h3><ol>
+<li>节点层高</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> ZSKIPLIST_P 0.25 <span class="comment">/* Skiplist P = 1/4 */</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">zslRandomLevel</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    <span class="type">int</span> level = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> ((random()&amp;<span class="number">0xFFFF</span>) &lt; (ZSKIPLIST_P * <span class="number">0xFFFF</span>))</span><br><span class="line">    level += <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> (level&lt;ZSKIPLIST_MAXLEVEL) ? level : ZSKIPLIST_MAXLEVEL;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>level的初始值为1，通过while循环，每次生成一个随机值，取这个值的低16位作为x，当x小于0.25倍的0xFFFF时，level的值加1；否则退出while循环。最终返回level和ZSKIPLIST_MAXLEVEL两者中的最小值。<br>1）节点层高为1的概率为(1-p)。<br>2）节点层高为2的概率为p(1-p)。<br>3）节点层高为3的概率为p2 (1-p)。<br>4）……<br>5）节点层高为n的概率为pn-1 (1-p)。<br>节点期望层高为<font color = red> E &#x3D; 1 &#x2F; (1 - p) </font>.</p>
+<ol start="2">
+<li>创建跳跃表</li>
+</ol>
+<p>1）创建跳跃表结构体对象zsl。<br>2）将zsl的头节点指针指向新创建的头节点。<br>3）跳跃表层高初始化为1，长度初始化为0，尾节点指向NULL。  </p>
+<ol start="3">
+<li>插入节点</li>
+</ol>
+<ul>
+<li>查找要插入的位置</li>
+<li>调整跳跃表高度</li>
+<li>插入节点</li>
+<li>调整backward</li>
+</ul>
+<p>源代码中的大概思路就是通过for循环来对每个高度进行遍历，找到前驱和后继节点，通过rank和update两个数组记录，最后调整指针。</p>
+<ol start="4">
+<li>删除节点</li>
+</ol>
+<ul>
+<li>查找需要更新的节点</li>
+<li>设置span和forward</li>
+</ul>
+<h3 id="跳跃表应用"><a href="#跳跃表应用" class="headerlink" title="跳跃表应用"></a>跳跃表应用</h3><p>跳跃表主要应用于有序集合的底层实现（有序集合的另一种实现方式为压缩列表）。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AB%E6%A0%91%EF%BC%8CB+%E6%A0%91%EF%BC%8C%E7%BA%A2%E9%BB%91%E6%A0%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -539,232 +648,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E6%97%A0%E9%94%81%E9%98%9F%E5%88%97/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/14/%E6%97%A0%E9%94%81%E9%98%9F%E5%88%97/" class="post-title-link" itemprop="url">无锁队列</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:54:05" itemprop="dateModified" datetime="2022-09-25T01:54:05+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">多线程</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-
-<h3 id="CAS原子操作"><a href="#CAS原子操作" class="headerlink" title="CAS原子操作"></a>CAS原子操作</h3><p>CAS英文全称Compare &amp; Set(Swap),也就是原子操作，执行过程中不能被中断，在X86中有相应的汇编指令CMPCHG来实现。<br>CAS机制当中使用了3个基本操作数：内存地址V，旧的预期值A，要修改的新值B。<br>更新一个变量的时候，只有当变量的预期值A和内存地址V当中的实际值相同时，才会将内存地址V对应的值修改为B。</p>
-<p>例如：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> val = <span class="number">10</span>; <span class="comment">// V = 0x423D80</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>线程1想要把val的值加一。在当前状态下，1得到的val &#x3D; 10,期望值为11。即A &#x3D; 10， B &#x3D; 11；</li>
-<li>此时线程2切换时间片，将val更新为11；</li>
-<li>线程1开始提交更新，首先进行比较，A &#x3D; 10 !&#x3D; val &#x3D; 11，提交失败，此时线程1重新获取内存地址V的当前值，A &#x3D; 11， B &#x3D; 12，并且重新开始比较。</li>
-<li>如果相等，那么就把地址V的值替换为B &#x3D; 12。</li>
-</ul>
-<p>从思想上看，CAS属于乐观锁。</p>
-<p>在c中的实现如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">compare_and_swap</span> <span class="params">(<span class="type">int</span>* reg, <span class="type">int</span> oldval, <span class="type">int</span> newval)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> old_reg_val = *reg;</span><br><span class="line">  <span class="keyword">if</span> (old_reg_val == oldval) &#123;</span><br><span class="line">     *reg = newval;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> old_reg_val;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在c++也可以实现为返回bool类型</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">compare_and_swap</span> <span class="params">(<span class="type">int</span> *addr, <span class="type">int</span> oldval, <span class="type">int</span> newval)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">if</span> ( *addr != oldval ) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  *addr = newval;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>CAS的缺点主要有：</p>
-<ol>
-<li>CPU开销较大<br>在并发量比较高的情况下，如果许多线程反复尝试更新某一个变量，却又一直更新不成功，循环往复，会给CPU带来很大的压力。</li>
-<li>不能保证代码块的原子性<br>CAS机制所保证的只是一个变量的原子性操作，而不能保证整个代码块的原子性。比如需要保证3个变量共同进行原子性的更新，就不得不使用Synchronized了。</li>
-<li>ABA问题<br>如果另一个线程修改V值假设原来是A，先修改成B，再修改回成A。当前线程的CAS操作无法分辨当前V值是否发生过变化。</li>
-</ol>
-<h3 id="无锁队列"><a href="#无锁队列" class="headerlink" title="无锁队列"></a>无锁队列</h3><ol>
-<li>初始化队列<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">InitQueue</span>(Q)</span><br><span class="line">&#123;</span><br><span class="line">    node = <span class="keyword">new</span> <span class="built_in">node</span>()</span><br><span class="line">    node-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">    Q-&gt;head = Q-&gt;tail = node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li>入队使用CAS实现</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">EnQueue(Q, data) <span class="comment">//进队列</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//准备新加入的结点数据</span></span><br><span class="line">    n = new node();</span><br><span class="line">    n-&gt;value = data;</span><br><span class="line">    n-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        p = Q-&gt;tail; <span class="comment">//取链表尾指针的快照</span></span><br><span class="line">    &#125; <span class="keyword">while</span>( CAS(p-&gt;next, <span class="literal">NULL</span>, n) != TRUE); </span><br><span class="line">    <span class="comment">//while条件注释：如果没有把结点链在尾指针上，再试</span></span><br><span class="line">    CAS(Q-&gt;tail, p, n); <span class="comment">//置尾结点 tail = n;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我们可以看到，程序中的那个 do-while 的 Retry-Loop 中的 CAS 操作：如果 p-&gt;next 是 NULL，那么，把新结点 n 加到队尾。如果不成功，则重新再来一次！</p>
-<p>就是说，很有可能我在准备在队列尾加入结点时，别的线程已经加成功了，于是tail指针就变了，于是我的CAS返回了false，于是程序再试，直到试成功为止。这个很像我们的抢电话热线的不停重播的情况。</p>
-<p>但是你会看到，为什么我们的“置尾结点”的操作（第13行）不判断是否成功，因为：</p>
-<ol>
-<li>如果有一个线程T1，它的while中的CAS如果成功的话，那么其它所有的 随后线程的CAS都会失败，然后就会再循环，</li>
-<li>此时，如果T1 线程还没有更新tail指针，其它的线程继续失败，因为tail-&gt;next不是NULL了。</li>
-<li>直到T1线程更新完 tail 指针，于是其它的线程中的某个线程就可以得到新的 tail 指针，继续往下走了。</li>
-<li>所以，只要线程能从 while 循环中退出来，意味着，它已经“独占”了，tail 指针必然可以被更新。<br>这里有一个潜在的问题——如果T1线程在用CAS更新tail指针的之前，线程停掉或是挂掉了，那么其它线程就进入死循环了。下面是改良版的EnQueue()<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">EnQueue</span>(Q, data) <span class="comment">//进队列改良版 v1</span></span><br><span class="line">&#123;</span><br><span class="line">    n = <span class="keyword">new</span> <span class="built_in">node</span>();</span><br><span class="line">    n-&gt;value = data;</span><br><span class="line">    n-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">    p = Q-&gt;tail;</span><br><span class="line">    oldp = p</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> (p-&gt;next != <span class="literal">NULL</span>)</span><br><span class="line">            p = p-&gt;next;</span><br><span class="line">    &#125; <span class="keyword">while</span>( <span class="built_in">CAS</span>(p.next, <span class="literal">NULL</span>, n) != TRUE); <span class="comment">//如果没有把结点链在尾上，再试</span></span><br><span class="line">    <span class="built_in">CAS</span>(Q-&gt;tail, oldp, n); <span class="comment">//置尾结点</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ol>
-<p>我们让每个线程，自己fetch 指针 p 到链表尾。但是这样的fetch会很影响性能。而且，如果一个线程不断的EnQueue，会导致所有的其它线程都去 fetch 他们的 p 指针到队尾，能不能不要所有的线程都干同一个事？这样可以节省整体的时间？</p>
-<p>比如：直接 fetch Q-&gt;tail 到队尾？因为，所有的线程都共享着 Q-&gt;tail，所以，一旦有人动了它后，相当于其它的线程也跟着动了，于是，我们的代码可以改进成如下的实现：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">EnQueue</span>(Q, data) <span class="comment">//进队列改良版 v2 </span></span><br><span class="line">&#123;</span><br><span class="line">    n = <span class="keyword">new</span> <span class="built_in">node</span>();</span><br><span class="line">    n-&gt;value = data;</span><br><span class="line">    n-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(TRUE) &#123;</span><br><span class="line">        <span class="comment">//先取一下尾指针和尾指针的next</span></span><br><span class="line">        tail = Q-&gt;tail;</span><br><span class="line">        next = tail-&gt;next;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//如果尾指针已经被移动了，则重新开始</span></span><br><span class="line">        <span class="keyword">if</span> ( tail != Q-&gt;tail ) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//如果尾指针的 next 不为NULL，则 fetch 全局尾指针到next</span></span><br><span class="line">        <span class="keyword">if</span> ( next != <span class="literal">NULL</span> ) &#123;</span><br><span class="line">            <span class="built_in">CAS</span>(Q-&gt;tail, tail, next);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//如果加入结点成功，则退出</span></span><br><span class="line">        <span class="keyword">if</span> ( <span class="built_in">CAS</span>(tail-&gt;next, next, n) == TRUE ) <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">CAS</span>(Q-&gt;tail, tail, n); <span class="comment">//置尾结点</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>好了，我们解决了EnQueue，我们再来看看DeQueue的代码：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">DeQueue</span>(Q) <span class="comment">//出队列</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">do</span>&#123;</span><br><span class="line">        p = Q-&gt;head;</span><br><span class="line">        <span class="keyword">if</span> (p-&gt;next == <span class="literal">NULL</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> ERR_EMPTY_QUEUE;</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">while</span>( <span class="built_in">CAS</span>(Q-&gt;head, p, p-&gt;next) != TRUE );</span><br><span class="line">    <span class="keyword">return</span> p-&gt;next-&gt;value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我们可以看到，DeQueue的代码操作的是 head-&gt;next，而不是 head 本身。这样考虑是因为一个边界条件，我们需要一个dummy的头指针来解决链表中如果只有一个元素，head 和 tail 都指向同一个结点的问题，这样 EnQueue 和 DeQueue 要互相排斥了。</p>
-<p>但是，如果 head 和 tail 都指向同一个结点，这意味着队列为空，应该返回 ERR_EMPTY_QUEUE，但是，在判断 p-&gt;next &#x3D;&#x3D; NULL 时，另外一个EnQueue操作做了一半，此时的 p-&gt;next 不为 NULL了，但是 tail 指针还差最后一步，没有更新到新加的结点，这个时候就会出现，在 EnQueue 并没有完成的时候， DeQueue 已经把新增加的结点给取走了，此时，队列为空，但是，head 与 tail 并没有指向同一个结点。<br>虽然，EnQueue的函数会把 tail 指针置对，但是，这种情况可能还是会导致一些并发问题，所以，严谨来说，我们需要避免这种情况。于是，我们需要加入更多的判断条件，还确保这个问题。下面是相关的改进代码：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">DeQueue</span>(Q) <span class="comment">//出队列，改进版</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(TRUE) &#123;</span><br><span class="line">        <span class="comment">//取出头指针，尾指针，和第一个元素的指针</span></span><br><span class="line">        head = Q-&gt;head;</span><br><span class="line">        tail = Q-&gt;tail;</span><br><span class="line">        next = head-&gt;next;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Q-&gt;head 指针已移动，重新取 head指针</span></span><br><span class="line">        <span class="keyword">if</span> ( head != Q-&gt;head ) <span class="keyword">continue</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 如果是空队列</span></span><br><span class="line">        <span class="keyword">if</span> ( head == tail &amp;&amp; next == <span class="literal">NULL</span> ) &#123;</span><br><span class="line">            <span class="keyword">return</span> ERR_EMPTY_QUEUE;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//如果 tail 指针落后了</span></span><br><span class="line">        <span class="keyword">if</span> ( head == tail &amp;&amp; next == <span class="literal">NULL</span> ) &#123;</span><br><span class="line">            <span class="built_in">CAS</span>(Q-&gt;tail, tail, next);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//移动 head 指针成功后，取出数据</span></span><br><span class="line">        <span class="keyword">if</span> ( <span class="built_in">CAS</span>( Q-&gt;head, head, next) == TRUE)&#123;</span><br><span class="line">            value = next-&gt;value;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(head); <span class="comment">//释放老的dummy结点</span></span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9Araft%E5%92%8C%E5%A4%8D%E5%88%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9Araft%E5%92%8C%E5%A4%8D%E5%88%B6/" class="post-title-link" itemprop="url">redis系列：raft一致性算法</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:01:59" itemprop="dateModified" datetime="2022-09-25T02:01:59+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="Raft算法"><a href="#Raft算法" class="headerlink" title="Raft算法"></a>Raft算法</h3><ol>
-<li>基本概念<br>在任何时刻，服务器节点都处于三个状态之一：leader、follower或者candidate。</li>
-</ol>
-<ul>
-<li>follwer：不会发送任何请求，只相应leader和candidate的请求；</li>
-<li>leader：处理所有客户端请求，如果一个可会断和follower通信，那么follower会重定向给leader；</li>
-<li>candidate：用来选举新leader。<br>下图展示了上面三种状态的转换：<br><img src="/images/redis-raft-1.png"></li>
-</ul>
-<p>Raft把时间分割成任意长度的任期，如下图所示：<br><img src="/images/redis-raft-2.png"></p>
-<p>每一个服务器节点存储一个当前任期号，该编号随着时间单调递增。不同的服务器节点观察到的任期转换的次数可能不同，在某些情况下，一个服务器节点可能没有看到 leader 选举过程或者甚至整个任期全程。任期在 Raft 算法中充当逻辑时钟的作用，这使得服务器节点可以发现一些过期的信息比如过时的leader。</p>
-<ul>
-<li>如果一个服务器的当前任期号比其他的小，该服务器会将自己的任期号更新为较大的那个值；</li>
-<li>如果一个 candidate 或者 leader 发现自己的任期号过期了，它会立即回到 follower 状态；</li>
-<li>如果一个节点接收到一个包含过期的任期号的请求，它会直接拒绝这个请求。</li>
-</ul>
-<ol start="2">
-<li>Leader选举</li>
-</ol>
-<p>Raft 使用一种心跳机制来触发 leader 选举。<br>当服务器程序启动时，他们都是 follower。<br>如果一个 follower 在一段选举超时时间内没有接收到任何消息，它就假设系统中没有可用的 leader ，然后开始进行选举以选出新的 leader 。<br>选举的流程大概是：  </p>
-<ul>
-<li>follower 先增加自己的当前任期号并且转换到 candidate 状态。</li>
-<li>投票给自己并且并行地向集群中的其他服务器节点发送 RequestVote RPC。</li>
-<li>当一个 candidate 获得集群中过半服务器节点针对同一个任期的投票，它就赢得了这次选举并成为 leader。（投票按照先来先得的原则）。</li>
-<li>在等待投票期间，candidate 可能会收到另一个声称自己是 leader 的服务器节点发来的 AppendEntries RPC 。如果这个 leader 的任期号（包含在RPC中）不小于 candidate 当前的任期号，那么 candidate 会承认该 leader 的合法地位并回到 follower 状态。 如果 RPC 中的任期号比自己的小，那么 candidate 就会拒绝这次的 RPC 并且继续保持 candidate 状态。</li>
-<li>如果candidate 既没有赢得选举也没有输：如果有多个 follower 同时成为 candidate ，那么选票可能会被瓜分以至于没有 candidate 赢得过半的投票。当这种情况发生时，每一个候选人都会超时，然后通过增加当前任期号来开始一轮新的选举。然而，如果没有其他机制的话，该情况可能会无限重复。<br>为了避免选票瓜分，也就是follower都投票给自己，Raft使用随机选举超时时间来解决。选举超时时间是从一个固定的区间（例如 150-300 毫秒）随机选择。这样可以把服务器都分散开以至于在大多数情况下只有一个服务器会选举超时；然后该服务器赢得选举并在其他服务器超时之前发送心跳。每个 candidate 在开始一次选举的时候会重置一个随机的选举超时时间，然后一直等待直到选举超时。</li>
-</ul>
-<h3 id="日志复制"><a href="#日志复制" class="headerlink" title="日志复制"></a>日志复制</h3><p>Leader 一旦被选举出来，就开始为客户端请求提供服务。客户端的每一个请求都包含一条将被复制状态机执行的指令。Leader 把该指令作为一个新的条目追加到日志中去，然后并行的发起 AppendEntries RPC 给其他的服务器，让它们复制该条目。  </p>
-<p>每个日志条目存储一条状态机指令和 leader 收到该指令时的任期号。如下图所示：<br><img src="/images/redis-raft-3.png"><br>Leader 决定什么时候把日志条目应用到状态机中是安全的；这种日志条目被称为已提交的。Raft 算法保证所有已提交的日志条目都是持久化的并且最终会被所有可用的状态机执行。一旦创建该日志条目的 leader 将它复制到过半的服务器上，该日志条目就会被提交（例如在图中的条目 7）。<br>正常操作期间，leader 和 follower 的日志保持一致，所以 AppendEntries RPC 的一致性检查从来不会失败。然而，leader 崩溃的情况会使日志处于不一致的状态：<br><img src="/images/redis-raft-4.png"><br>Follower 可能缺少一些在新 leader 中有的日志条目，也可能拥有一些新 leader 没有的日志条目，或者同时发生。缺失或多出日志条目的情况可能会涉及到多个任期。  </p>
-<ul>
-<li>要使得 follower 的日志跟自己一致，leader 必须找到两者达成一致的最大的日志条目（索引最大），删除 follower 日志中从那个点之后的所有日志条目，并且将自己从那个点之后的所有日志条目发送给 follower。</li>
-<li>Leader 针对每一个 follower 都维护了一个 nextIndex ，表示 leader 要发送给 follower 的下一个日志条目的索引。当选出一个新 leader 时，该 leader 将所有 nextIndex 的值都初始化为自己最后一个日志条目的 index 加1。如果 follower 的日志和 leader 的不一致，那么下一次 AppendEntries RPC 中的一致性检查就会失败。在被 follower 拒绝之后，leaer 就会减小 nextIndex 值并重试 AppendEntries RPC 。最终 nextIndex 会在某个位置使得 leader 和 follower 的日志达成一致。此时，AppendEntries RPC 就会成功，将 follower 中跟 leader 冲突的日志条目全部删除然后追加 leader 中的日志条目（如果有需要追加的日志条目的话）。一旦 AppendEntries RPC 成功，follower 的日志就和 leader 一致，并且在该任期接下来的时间里保持一致。</li>
-</ul>
-<h3 id="安全限制"><a href="#安全限制" class="headerlink" title="安全限制"></a>安全限制</h3><ol>
-<li>选举限制<br>Raft 使用投票的方式来阻止 candidate 赢得选举除非该 candidate 包含了所有已经提交的日志条目。候选人为了赢得选举必须与集群中的过半节点通信，这意味着至少其中一个服务器节点包含了所有已提交的日志条目。如果 candidate 的日志至少和过半的服务器节点一样新（接下来会精确地定义“新”），那么他一定包含了所有已经提交的日志条目。RequestVote RPC 执行了这样的限制： RPC 中包含了 candidate 的日志信息，如果投票者自己的日志比 candidate 的还新，它会拒绝掉该投票请求。<br>Raft 通过比较两份日志中最后一条日志条目的索引值和任期号来定义谁的日志比较新。如果两份日志最后条目的任期号不同，那么任期号大的日志更新。如果两份日志最后条目的任期号相同，那么日志较长的那个更新。</li>
-<li>提交之前任期内的日志条目<br>一旦当前任期内的某个日志条目已经存储到过半的服务器节点上，leader 就知道该日志条目已经被提交了。如果某个 leader 在提交某个日志条目之前崩溃了，以后的 leader 会试图完成该日志条目的复制。然而，如果是之前任期内的某个日志条目已经存储到过半的服务器节点上，leader 也无法立即断定该日志条目已经被提交了。图 8 展示了一种情况，一个已经被存储到过半节点上的老日志条目，仍然有可能会被未来的 leader 覆盖掉。<br><img src="/images/redis-raft-4.png"><br>如图的时间序列展示了为什么 leader 无法判断老的任期号内的日志是否已经被提交。在 (a) 中，S1 是 leader ，部分地复制了索引位置 2 的日志条目。在 (b) 中，S1 崩溃了，然后 S5 在任期 3 中通过 S3、S4 和自己的选票赢得选举，然后从客户端接收了一条不一样的日志条目放在了索引 2 处。然后到 (c)，S5 又崩溃了；S1 重新启动，选举成功，继续复制日志。此时，来自任期 2 的那条日志已经被复制到了集群中的大多数机器上，但是还没有被提交。如果 S1 在 (d) 中又崩溃了，S5 可以重新被选举成功（通过来自 S2，S3 和 S4 的选票），然后覆盖了他们在索引 2 处的日志。但是，在崩溃之前，如果 S1 在自己的任期里复制了日志条目到大多数机器上，如 (e) 中，然后这个条目就会被提交（S5 就不可能选举成功）。 在这种情况下，之前的所有日志也被提交了。<br>为了消除图中描述的问题，Raft 永远不会通过计算副本数目的方式来提交之前任期内的日志条目。只有 leader 当前任期内的日志条目才通过计算副本数目的方式来提交；一旦当前任期的某个日志条目以这种方式被提交，那么由于日志匹配特性，之前的所有日志条目也都会被间接地提交。在某些情况下，领导人可以安全地断定一个老的日志条目已经被提交（例如，如果该条目已经存储到所有服务器上），但是 Raft 为了简化问题使用了一种更加保守的方法。<br>Raft 会在提交规则上增加额外的复杂性是因为当 leader 复制之前任期内的日志条目时，这些日志条目都保留原来的任期号。在其他的一致性算法中，如果一个新的 leader 要重新复制之前的任期里的日志时，它必须使用当前新的任期号。Raft 的做法使得更加容易推导出（reason about）日志条目，因为他们自始至终都使用同一个任期号。另外，和其他的算法相比，Raft 中的新 leader 只需要发送更少的日志条目（其他算法中必须在它们被提交之前发送更多的冗余日志条目来给它们重新编号）。</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9AHTTPS&TLS&SSL/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -963,7 +846,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E3%80%81%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E6%97%A0%E9%94%81%E9%98%9F%E5%88%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -977,7 +860,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E3%80%81%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/" class="post-title-link" itemprop="url">网络复习：TCP滑动窗口、拥塞控制</a>
+            <a href="/2021/09/14/%E6%97%A0%E9%94%81%E9%98%9F%E5%88%97/" class="post-title-link" itemprop="url">无锁队列</a>
         </h2>
 
         <div class="post-meta">
@@ -994,7 +877,123 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:53:49" itemprop="dateModified" datetime="2022-09-25T01:53:49+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:54:05" itemprop="dateModified" datetime="2022-09-25T01:54:05+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">多线程</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+
+<h3 id="CAS原子操作"><a href="#CAS原子操作" class="headerlink" title="CAS原子操作"></a>CAS原子操作</h3><p>CAS英文全称Compare &amp; Set(Swap),也就是原子操作，执行过程中不能被中断，在X86中有相应的汇编指令CMPCHG来实现。<br>CAS机制当中使用了3个基本操作数：内存地址V，旧的预期值A，要修改的新值B。<br>更新一个变量的时候，只有当变量的预期值A和内存地址V当中的实际值相同时，才会将内存地址V对应的值修改为B。</p>
+<p>例如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> val = <span class="number">10</span>; <span class="comment">// V = 0x423D80</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>线程1想要把val的值加一。在当前状态下，1得到的val &#x3D; 10,期望值为11。即A &#x3D; 10， B &#x3D; 11；</li>
+<li>此时线程2切换时间片，将val更新为11；</li>
+<li>线程1开始提交更新，首先进行比较，A &#x3D; 10 !&#x3D; val &#x3D; 11，提交失败，此时线程1重新获取内存地址V的当前值，A &#x3D; 11， B &#x3D; 12，并且重新开始比较。</li>
+<li>如果相等，那么就把地址V的值替换为B &#x3D; 12。</li>
+</ul>
+<p>从思想上看，CAS属于乐观锁。</p>
+<p>在c中的实现如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">compare_and_swap</span> <span class="params">(<span class="type">int</span>* reg, <span class="type">int</span> oldval, <span class="type">int</span> newval)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> old_reg_val = *reg;</span><br><span class="line">  <span class="keyword">if</span> (old_reg_val == oldval) &#123;</span><br><span class="line">     *reg = newval;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> old_reg_val;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在c++也可以实现为返回bool类型</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">compare_and_swap</span> <span class="params">(<span class="type">int</span> *addr, <span class="type">int</span> oldval, <span class="type">int</span> newval)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">if</span> ( *addr != oldval ) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  *addr = newval;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>CAS的缺点主要有：</p>
+<ol>
+<li>CPU开销较大<br>在并发量比较高的情况下，如果许多线程反复尝试更新某一个变量，却又一直更新不成功，循环往复，会给CPU带来很大的压力。</li>
+<li>不能保证代码块的原子性<br>CAS机制所保证的只是一个变量的原子性操作，而不能保证整个代码块的原子性。比如需要保证3个变量共同进行原子性的更新，就不得不使用Synchronized了。</li>
+<li>ABA问题<br>如果另一个线程修改V值假设原来是A，先修改成B，再修改回成A。当前线程的CAS操作无法分辨当前V值是否发生过变化。</li>
+</ol>
+<h3 id="无锁队列"><a href="#无锁队列" class="headerlink" title="无锁队列"></a>无锁队列</h3><ol>
+<li>初始化队列<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">InitQueue</span>(Q)</span><br><span class="line">&#123;</span><br><span class="line">    node = <span class="keyword">new</span> <span class="built_in">node</span>()</span><br><span class="line">    node-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">    Q-&gt;head = Q-&gt;tail = node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>入队使用CAS实现</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">EnQueue(Q, data) <span class="comment">//进队列</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//准备新加入的结点数据</span></span><br><span class="line">    n = new node();</span><br><span class="line">    n-&gt;value = data;</span><br><span class="line">    n-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        p = Q-&gt;tail; <span class="comment">//取链表尾指针的快照</span></span><br><span class="line">    &#125; <span class="keyword">while</span>( CAS(p-&gt;next, <span class="literal">NULL</span>, n) != TRUE); </span><br><span class="line">    <span class="comment">//while条件注释：如果没有把结点链在尾指针上，再试</span></span><br><span class="line">    CAS(Q-&gt;tail, p, n); <span class="comment">//置尾结点 tail = n;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以看到，程序中的那个 do-while 的 Retry-Loop 中的 CAS 操作：如果 p-&gt;next 是 NULL，那么，把新结点 n 加到队尾。如果不成功，则重新再来一次！</p>
+<p>就是说，很有可能我在准备在队列尾加入结点时，别的线程已经加成功了，于是tail指针就变了，于是我的CAS返回了false，于是程序再试，直到试成功为止。这个很像我们的抢电话热线的不停重播的情况。</p>
+<p>但是你会看到，为什么我们的“置尾结点”的操作（第13行）不判断是否成功，因为：</p>
+<ol>
+<li>如果有一个线程T1，它的while中的CAS如果成功的话，那么其它所有的 随后线程的CAS都会失败，然后就会再循环，</li>
+<li>此时，如果T1 线程还没有更新tail指针，其它的线程继续失败，因为tail-&gt;next不是NULL了。</li>
+<li>直到T1线程更新完 tail 指针，于是其它的线程中的某个线程就可以得到新的 tail 指针，继续往下走了。</li>
+<li>所以，只要线程能从 while 循环中退出来，意味着，它已经“独占”了，tail 指针必然可以被更新。<br>这里有一个潜在的问题——如果T1线程在用CAS更新tail指针的之前，线程停掉或是挂掉了，那么其它线程就进入死循环了。下面是改良版的EnQueue()<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">EnQueue</span>(Q, data) <span class="comment">//进队列改良版 v1</span></span><br><span class="line">&#123;</span><br><span class="line">    n = <span class="keyword">new</span> <span class="built_in">node</span>();</span><br><span class="line">    n-&gt;value = data;</span><br><span class="line">    n-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">    p = Q-&gt;tail;</span><br><span class="line">    oldp = p</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> (p-&gt;next != <span class="literal">NULL</span>)</span><br><span class="line">            p = p-&gt;next;</span><br><span class="line">    &#125; <span class="keyword">while</span>( <span class="built_in">CAS</span>(p.next, <span class="literal">NULL</span>, n) != TRUE); <span class="comment">//如果没有把结点链在尾上，再试</span></span><br><span class="line">    <span class="built_in">CAS</span>(Q-&gt;tail, oldp, n); <span class="comment">//置尾结点</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>我们让每个线程，自己fetch 指针 p 到链表尾。但是这样的fetch会很影响性能。而且，如果一个线程不断的EnQueue，会导致所有的其它线程都去 fetch 他们的 p 指针到队尾，能不能不要所有的线程都干同一个事？这样可以节省整体的时间？</p>
+<p>比如：直接 fetch Q-&gt;tail 到队尾？因为，所有的线程都共享着 Q-&gt;tail，所以，一旦有人动了它后，相当于其它的线程也跟着动了，于是，我们的代码可以改进成如下的实现：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">EnQueue</span>(Q, data) <span class="comment">//进队列改良版 v2 </span></span><br><span class="line">&#123;</span><br><span class="line">    n = <span class="keyword">new</span> <span class="built_in">node</span>();</span><br><span class="line">    n-&gt;value = data;</span><br><span class="line">    n-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(TRUE) &#123;</span><br><span class="line">        <span class="comment">//先取一下尾指针和尾指针的next</span></span><br><span class="line">        tail = Q-&gt;tail;</span><br><span class="line">        next = tail-&gt;next;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//如果尾指针已经被移动了，则重新开始</span></span><br><span class="line">        <span class="keyword">if</span> ( tail != Q-&gt;tail ) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//如果尾指针的 next 不为NULL，则 fetch 全局尾指针到next</span></span><br><span class="line">        <span class="keyword">if</span> ( next != <span class="literal">NULL</span> ) &#123;</span><br><span class="line">            <span class="built_in">CAS</span>(Q-&gt;tail, tail, next);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//如果加入结点成功，则退出</span></span><br><span class="line">        <span class="keyword">if</span> ( <span class="built_in">CAS</span>(tail-&gt;next, next, n) == TRUE ) <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">CAS</span>(Q-&gt;tail, tail, n); <span class="comment">//置尾结点</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>好了，我们解决了EnQueue，我们再来看看DeQueue的代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">DeQueue</span>(Q) <span class="comment">//出队列</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">do</span>&#123;</span><br><span class="line">        p = Q-&gt;head;</span><br><span class="line">        <span class="keyword">if</span> (p-&gt;next == <span class="literal">NULL</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> ERR_EMPTY_QUEUE;</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">while</span>( <span class="built_in">CAS</span>(Q-&gt;head, p, p-&gt;next) != TRUE );</span><br><span class="line">    <span class="keyword">return</span> p-&gt;next-&gt;value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以看到，DeQueue的代码操作的是 head-&gt;next，而不是 head 本身。这样考虑是因为一个边界条件，我们需要一个dummy的头指针来解决链表中如果只有一个元素，head 和 tail 都指向同一个结点的问题，这样 EnQueue 和 DeQueue 要互相排斥了。</p>
+<p>但是，如果 head 和 tail 都指向同一个结点，这意味着队列为空，应该返回 ERR_EMPTY_QUEUE，但是，在判断 p-&gt;next &#x3D;&#x3D; NULL 时，另外一个EnQueue操作做了一半，此时的 p-&gt;next 不为 NULL了，但是 tail 指针还差最后一步，没有更新到新加的结点，这个时候就会出现，在 EnQueue 并没有完成的时候， DeQueue 已经把新增加的结点给取走了，此时，队列为空，但是，head 与 tail 并没有指向同一个结点。<br>虽然，EnQueue的函数会把 tail 指针置对，但是，这种情况可能还是会导致一些并发问题，所以，严谨来说，我们需要避免这种情况。于是，我们需要加入更多的判断条件，还确保这个问题。下面是相关的改进代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">DeQueue</span>(Q) <span class="comment">//出队列，改进版</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(TRUE) &#123;</span><br><span class="line">        <span class="comment">//取出头指针，尾指针，和第一个元素的指针</span></span><br><span class="line">        head = Q-&gt;head;</span><br><span class="line">        tail = Q-&gt;tail;</span><br><span class="line">        next = head-&gt;next;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Q-&gt;head 指针已移动，重新取 head指针</span></span><br><span class="line">        <span class="keyword">if</span> ( head != Q-&gt;head ) <span class="keyword">continue</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 如果是空队列</span></span><br><span class="line">        <span class="keyword">if</span> ( head == tail &amp;&amp; next == <span class="literal">NULL</span> ) &#123;</span><br><span class="line">            <span class="keyword">return</span> ERR_EMPTY_QUEUE;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//如果 tail 指针落后了</span></span><br><span class="line">        <span class="keyword">if</span> ( head == tail &amp;&amp; next == <span class="literal">NULL</span> ) &#123;</span><br><span class="line">            <span class="built_in">CAS</span>(Q-&gt;tail, tail, next);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//移动 head 指针成功后，取出数据</span></span><br><span class="line">        <span class="keyword">if</span> ( <span class="built_in">CAS</span>( Q-&gt;head, head, next) == TRUE)&#123;</span><br><span class="line">            value = next-&gt;value;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(head); <span class="comment">//释放老的dummy结点</span></span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9Ahttp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9Ahttp/" class="post-title-link" itemprop="url">网络复习：HTTP1.0/1.1/2.0</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:53:26" itemprop="dateModified" datetime="2022-09-25T01:53:26+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1018,52 +1017,21 @@
 
       
           <span id="more"></span>
-<h3 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h3><h4 id="固定窗口的问题"><a href="#固定窗口的问题" class="headerlink" title="固定窗口的问题"></a>固定窗口的问题</h4><p><img src="/images/tcp-2-1.png"><br>我们假设这个固定窗口的大小为1，也就是每次只能发送一个数据，只有接收方对这个数据进行了确认后才能发送第二个数据。在图中我们可以看到，发送方每发送一个数据接收方就要给发送方一个ACK对这个数据进行确认。只有接收了这个确认数据以后发送方才能传输下个数据。<br>这样大大降低了网络吞吐量。</p>
-<h4 id="滑动窗口-1"><a href="#滑动窗口-1" class="headerlink" title="滑动窗口"></a>滑动窗口</h4><p>为了解决上面这个问题，使用滑动窗口算法：<br><img src="/images/tcp-1-2.png"><br>发送主机在发送了一个段之后不必要一直等，而是继续发送。窗口大小为无需等待可以继续发送数据的最大值。<br>发送窗口的大小是怎么确定的？</p>
-<h4 id="窗口控制和重发控制"><a href="#窗口控制和重发控制" class="headerlink" title="窗口控制和重发控制"></a>窗口控制和重发控制</h4><ol>
-<li>应答丢失<br><img src="/images/tcp-2-2.png"></li>
-</ol>
-<p>某些确认应答丢失也无需重发。<br>2. 报文丢失<br><img src="/images/tcp-2-3.png"><br>发送端收到三个相同的确认应答就对数据进行重发。</p>
-<ol start="3">
-<li>流控制<br>上述模型存在的问题：</li>
-</ol>
+<h3 id="HTTP1-0"><a href="#HTTP1-0" class="headerlink" title="HTTP1.0"></a>HTTP1.0</h3><p>每一个请求建立一个TCP连接，请求完成后立马断开连接。这将会导致2个问题：连接无法复用，head of line blocking<br>连接无法复用会导致每次请求都经历三次握手和慢启动。三次握手在高延迟的场景下影响较明显，慢启动则对文件类大请求影响较大。head of line blocking会导致带宽无法被充分利用，以及后续健康请求被阻塞.</p>
+<h3 id="HTTP1-1"><a href="#HTTP1-1" class="headerlink" title="HTTP1.1"></a>HTTP1.1</h3><p>HTTP1.0每次请求都需要建立TCP连接，请求结束之后需要断开连接。为了克服这个缺陷，1.1升级了下面这些功能：</p>
 <ul>
-<li><p>如果窗口过小，当传输比较大的数据的时候需要不停的对数据进行确认，这个时候就会造成很大的延迟。</p>
-</li>
-<li><p>如果窗口过大，我们假设发送方一次发送100个数据，但接收方只能处理50个数据，这样每次都只对这50个数据进行确认。发送方下一次还是发送100个数据，但接受方还是只能处理50个数据。这样就避免了不必要的数据来拥塞我们的链路。<br>于是提出流控制方法：<br><img src="/images/tcp-2-4.png"></p>
-</li>
-<li><p>第一部分<br>发送端根据当前链路带宽大小决定发送数据包的窗口大小。这里，窗口大小为 3，表示可以发送 3 个数据包。因此发送端发送了 3 个数据包，分别为 1-1000、1001-2000 和 2001-3000。<br>接收端接收这些数据包，但是只能处理 2 个数据包，第 3 个数据包 2001-3000 没有被处理。因此返回确认应答包，设置窗口大小为 2，告诉发送端自己现在只能处理 2 个数据包，下一次请发送 2 个数据包。</p>
-</li>
-<li><p>第二部分<br>发送端接收到确认应答包，查看到接收端返回窗口大小为 2，知道接收端只处理了 2 个数据包。发过去的第 3 个数据包 2001-3000 没有被处理。这说明此时接收端只能处理 2 个数据包，第 3 个数据包还需要重新发送。因此发送端发送 2 个数据包 2001-3000 和 3001-4000。接收端收到这两个数据包并进行了处理。此时，还是只能处理 2 个窗口，继续向发送端发送确认应答包，设置窗口为 2，告诉发送端，下一个应该接收 4001 的数据包。</p>
-</li>
-<li><p>第三部分<br>发送端接收到确认应答包，查看到接收端返回窗口大小为 2。说明接收端接收了上次发送的 2 个数据包。此时仍然可以处理 2 个数据包，继续发送数据包 4001-5000 和 5001-6000。如果在接收端返回的确认应答包中，窗口设置为 0，则表示现在不能接收任何数据。这时，发送端将不会再发送数据包，只有等待接收端发送窗口更新通知才可以继续发送数据包。如果这个更新通知在传输中丢失了，那么就可能导致无法继续通信。为了避免这样的情况发生，发送端会时不时地发送窗口探测包，该包仅有1个字节，用来获取最新的窗口大小的信息。</p>
-</li>
+<li>支持长连接：在使用长连接的情况下，当一个网页打开完成后，客户端和服务器之间用于传输HTTP数据的TCP连接不会关闭，客户端再次访问这个服务器时，会继续使用这一条已经建立的连接。Keep-Alive不会永久保持连接，它有一个保持时间，可以在不同的服务器软件（如Apache）中设定这个时间。实现长连接需要客户端和服务端都支持长连接。</li>
+<li>支持虚拟主机（host字段），一个服务器可以放置多个网站，充分利用服务器资源。</li>
+<li>流水线：包含多个请求和应答可以在一个tcp连接中传输。但是线头阻塞可能会影响性能。</li>
+<li>带宽优化：支持断点续传。</li>
+<li>缓存策略：强缓存（ Cache-Control 浏览器命中的缓存），协商缓存（当浏览器没有命中强缓存后，便会命中协商缓存）。</li>
 </ul>
-<h3 id="拥塞控制"><a href="#拥塞控制" class="headerlink" title="拥塞控制"></a>拥塞控制</h3><p>有了TCP窗口控制，通信双方不再使用数据段为单位发送确认应答，但是如果在通信刚开始就发送大量数据，会引发网络拥堵等其他问题。<br>为了防止上述问题，TCP通过慢启动算法进行拥塞控制。</p>
-<h4 id="慢启动"><a href="#慢启动" class="headerlink" title="慢启动"></a>慢启动</h4><p><img src="/images/tcp-2-5.png"><br>发送个过程中比较接收端窗口和拥塞窗口，选最小值作为窗口大小。<br>下图展示了TCP窗口变化：<br><img src="/images/tcp-2-6.png"></p>
+<h3 id="HTTP-2-0"><a href="#HTTP-2-0" class="headerlink" title="HTTP 2.0"></a>HTTP 2.0</h3><p>HTTP2.0的新特性主要有下面几点：</p>
 <ul>
-<li>开始不设置阈值，当超时重发设置为拥塞窗口的一半；</li>
-<li>每经过一个轮次，拥塞窗口 *&#x3D; 2。</li>
-</ul>
-<h4 id="拥塞避免"><a href="#拥塞避免" class="headerlink" title="拥塞避免"></a>拥塞避免</h4><p>为了防止拥塞窗口cwnd增长过大引起网络拥塞，还需要设置一个慢开始门限ssthresh状态变量（如何设置ssthresh）。慢开始门限ssthresh的用法如下：</p>
-<ul>
-<li><p>当 cwnd &lt; ssthresh 时，使用上述的慢开始算法。</p>
-</li>
-<li><p>当 cwnd &gt; ssthresh 时，停止使用慢开始算法而改用拥塞避免算法。</p>
-</li>
-<li><p>当 cwnd &#x3D; ssthresh 时，既可使用慢开始算法，也可使用拥塞控制避免算法。<br><img src="/images/tcp-2-7.png"></p>
-</li>
-<li><p>当TCP连接进行初始化时，把拥塞窗口cwnd置为1。慢启动门限的初始值设置为16个报文段，即 cwnd &#x3D; 16 。</p>
-</li>
-<li><p>在执行慢开始算法时，拥塞窗口 cwnd 的初始值为1。拥塞窗口cwnd 随着传输轮次按指数规律增长。当拥塞窗口cwnd增长到慢开始门限值ssthresh时（即当cwnd&#x3D;16时），就改为执行拥塞控制算法，拥塞窗口按线 性规律增长。</p>
-</li>
-<li><p>假定拥塞窗口的数值增长到24时，网络出现超时（这很可能就是网络发生拥塞了）。更新后的ssthresh值变为12（即变为出现超时时的拥塞窗口数值 24的一半），拥塞窗口再重新设置为1，并执行慢开始算法。当cwnd&#x3D;ssthresh&#x3D;12时改为执行拥塞避免算法，拥塞窗口按线性规律增长，每经过 一个往返时间增加一个MSS的大小。</p>
-</li>
-</ul>
-<h4 id="快恢复"><a href="#快恢复" class="headerlink" title="快恢复"></a>快恢复</h4><p><img src="/images/tcp-2-8.png"></p>
-<ul>
-<li>当发送方连续收到三个重复确认，就执行“乘法减小”算法，把慢开始门限ssthresh减半。这是为了预防网络发生拥塞。请注意：接下去不执行慢开始算法。</li>
-<li>由于发送方现在认为网络很可能没有发生拥塞，因此与慢开始不同之处是现在不执行慢开始算法（即拥塞窗口cwnd现在不设置为1），而是把cwnd值设置为 慢开始门限ssthresh减半后的数值，然后开始执行拥塞避免算法（“加法增大”），使拥塞窗口缓慢地线性增大。</li>
+<li>多路复用：做到同一个连接并发处理多个请求，而且并发请求的数量比HTTP1.1大了好几个数量级。</li>
+<li>数据压缩：使用HPACK算法对header的数据进行压缩，这样数据体积小了，在网络上传输就会更快。</li>
+<li>服务器推送：对支持HTTP2.0的web server请求数据的时候，服务器会顺便把一些客户端需要的资源一起推送到客户端，免得客户端再次创建连接发送请求到服务器端获取。这种方式非常合适加载静态资源。</li>
+<li>二进制分帧：应用层(HTTP&#x2F;2)和传输层(TCP or UDP)之间增加一个二进制分帧层。（HTTP 1.X 是基于文本的，因为是文本，就导致了它必须是个整体，在传输是不可切割的，只能整体去传。但 HTTP 2.0 是基于二进制流的。）</li>
 </ul>
 
       
@@ -1266,7 +1234,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9Ahttp/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E3%80%81%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -1280,7 +1248,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9Ahttp/" class="post-title-link" itemprop="url">网络复习：HTTP1.0/1.1/2.0</a>
+            <a href="/2021/09/14/%E7%BD%91%E7%BB%9C%EF%BC%9ATCP%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E3%80%81%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/" class="post-title-link" itemprop="url">网络复习：TCP滑动窗口、拥塞控制</a>
         </h2>
 
         <div class="post-meta">
@@ -1297,7 +1265,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:53:26" itemprop="dateModified" datetime="2022-09-25T01:53:26+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 01:53:49" itemprop="dateModified" datetime="2022-09-25T01:53:49+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1321,21 +1289,52 @@
 
       
           <span id="more"></span>
-<h3 id="HTTP1-0"><a href="#HTTP1-0" class="headerlink" title="HTTP1.0"></a>HTTP1.0</h3><p>每一个请求建立一个TCP连接，请求完成后立马断开连接。这将会导致2个问题：连接无法复用，head of line blocking<br>连接无法复用会导致每次请求都经历三次握手和慢启动。三次握手在高延迟的场景下影响较明显，慢启动则对文件类大请求影响较大。head of line blocking会导致带宽无法被充分利用，以及后续健康请求被阻塞.</p>
-<h3 id="HTTP1-1"><a href="#HTTP1-1" class="headerlink" title="HTTP1.1"></a>HTTP1.1</h3><p>HTTP1.0每次请求都需要建立TCP连接，请求结束之后需要断开连接。为了克服这个缺陷，1.1升级了下面这些功能：</p>
+<h3 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h3><h4 id="固定窗口的问题"><a href="#固定窗口的问题" class="headerlink" title="固定窗口的问题"></a>固定窗口的问题</h4><p><img src="/images/tcp-2-1.png"><br>我们假设这个固定窗口的大小为1，也就是每次只能发送一个数据，只有接收方对这个数据进行了确认后才能发送第二个数据。在图中我们可以看到，发送方每发送一个数据接收方就要给发送方一个ACK对这个数据进行确认。只有接收了这个确认数据以后发送方才能传输下个数据。<br>这样大大降低了网络吞吐量。</p>
+<h4 id="滑动窗口-1"><a href="#滑动窗口-1" class="headerlink" title="滑动窗口"></a>滑动窗口</h4><p>为了解决上面这个问题，使用滑动窗口算法：<br><img src="/images/tcp-1-2.png"><br>发送主机在发送了一个段之后不必要一直等，而是继续发送。窗口大小为无需等待可以继续发送数据的最大值。<br>发送窗口的大小是怎么确定的？</p>
+<h4 id="窗口控制和重发控制"><a href="#窗口控制和重发控制" class="headerlink" title="窗口控制和重发控制"></a>窗口控制和重发控制</h4><ol>
+<li>应答丢失<br><img src="/images/tcp-2-2.png"></li>
+</ol>
+<p>某些确认应答丢失也无需重发。<br>2. 报文丢失<br><img src="/images/tcp-2-3.png"><br>发送端收到三个相同的确认应答就对数据进行重发。</p>
+<ol start="3">
+<li>流控制<br>上述模型存在的问题：</li>
+</ol>
 <ul>
-<li>支持长连接：在使用长连接的情况下，当一个网页打开完成后，客户端和服务器之间用于传输HTTP数据的TCP连接不会关闭，客户端再次访问这个服务器时，会继续使用这一条已经建立的连接。Keep-Alive不会永久保持连接，它有一个保持时间，可以在不同的服务器软件（如Apache）中设定这个时间。实现长连接需要客户端和服务端都支持长连接。</li>
-<li>支持虚拟主机（host字段），一个服务器可以放置多个网站，充分利用服务器资源。</li>
-<li>流水线：包含多个请求和应答可以在一个tcp连接中传输。但是线头阻塞可能会影响性能。</li>
-<li>带宽优化：支持断点续传。</li>
-<li>缓存策略：强缓存（ Cache-Control 浏览器命中的缓存），协商缓存（当浏览器没有命中强缓存后，便会命中协商缓存）。</li>
+<li><p>如果窗口过小，当传输比较大的数据的时候需要不停的对数据进行确认，这个时候就会造成很大的延迟。</p>
+</li>
+<li><p>如果窗口过大，我们假设发送方一次发送100个数据，但接收方只能处理50个数据，这样每次都只对这50个数据进行确认。发送方下一次还是发送100个数据，但接受方还是只能处理50个数据。这样就避免了不必要的数据来拥塞我们的链路。<br>于是提出流控制方法：<br><img src="/images/tcp-2-4.png"></p>
+</li>
+<li><p>第一部分<br>发送端根据当前链路带宽大小决定发送数据包的窗口大小。这里，窗口大小为 3，表示可以发送 3 个数据包。因此发送端发送了 3 个数据包，分别为 1-1000、1001-2000 和 2001-3000。<br>接收端接收这些数据包，但是只能处理 2 个数据包，第 3 个数据包 2001-3000 没有被处理。因此返回确认应答包，设置窗口大小为 2，告诉发送端自己现在只能处理 2 个数据包，下一次请发送 2 个数据包。</p>
+</li>
+<li><p>第二部分<br>发送端接收到确认应答包，查看到接收端返回窗口大小为 2，知道接收端只处理了 2 个数据包。发过去的第 3 个数据包 2001-3000 没有被处理。这说明此时接收端只能处理 2 个数据包，第 3 个数据包还需要重新发送。因此发送端发送 2 个数据包 2001-3000 和 3001-4000。接收端收到这两个数据包并进行了处理。此时，还是只能处理 2 个窗口，继续向发送端发送确认应答包，设置窗口为 2，告诉发送端，下一个应该接收 4001 的数据包。</p>
+</li>
+<li><p>第三部分<br>发送端接收到确认应答包，查看到接收端返回窗口大小为 2。说明接收端接收了上次发送的 2 个数据包。此时仍然可以处理 2 个数据包，继续发送数据包 4001-5000 和 5001-6000。如果在接收端返回的确认应答包中，窗口设置为 0，则表示现在不能接收任何数据。这时，发送端将不会再发送数据包，只有等待接收端发送窗口更新通知才可以继续发送数据包。如果这个更新通知在传输中丢失了，那么就可能导致无法继续通信。为了避免这样的情况发生，发送端会时不时地发送窗口探测包，该包仅有1个字节，用来获取最新的窗口大小的信息。</p>
+</li>
 </ul>
-<h3 id="HTTP-2-0"><a href="#HTTP-2-0" class="headerlink" title="HTTP 2.0"></a>HTTP 2.0</h3><p>HTTP2.0的新特性主要有下面几点：</p>
+<h3 id="拥塞控制"><a href="#拥塞控制" class="headerlink" title="拥塞控制"></a>拥塞控制</h3><p>有了TCP窗口控制，通信双方不再使用数据段为单位发送确认应答，但是如果在通信刚开始就发送大量数据，会引发网络拥堵等其他问题。<br>为了防止上述问题，TCP通过慢启动算法进行拥塞控制。</p>
+<h4 id="慢启动"><a href="#慢启动" class="headerlink" title="慢启动"></a>慢启动</h4><p><img src="/images/tcp-2-5.png"><br>发送个过程中比较接收端窗口和拥塞窗口，选最小值作为窗口大小。<br>下图展示了TCP窗口变化：<br><img src="/images/tcp-2-6.png"></p>
 <ul>
-<li>多路复用：做到同一个连接并发处理多个请求，而且并发请求的数量比HTTP1.1大了好几个数量级。</li>
-<li>数据压缩：使用HPACK算法对header的数据进行压缩，这样数据体积小了，在网络上传输就会更快。</li>
-<li>服务器推送：对支持HTTP2.0的web server请求数据的时候，服务器会顺便把一些客户端需要的资源一起推送到客户端，免得客户端再次创建连接发送请求到服务器端获取。这种方式非常合适加载静态资源。</li>
-<li>二进制分帧：应用层(HTTP&#x2F;2)和传输层(TCP or UDP)之间增加一个二进制分帧层。（HTTP 1.X 是基于文本的，因为是文本，就导致了它必须是个整体，在传输是不可切割的，只能整体去传。但 HTTP 2.0 是基于二进制流的。）</li>
+<li>开始不设置阈值，当超时重发设置为拥塞窗口的一半；</li>
+<li>每经过一个轮次，拥塞窗口 *&#x3D; 2。</li>
+</ul>
+<h4 id="拥塞避免"><a href="#拥塞避免" class="headerlink" title="拥塞避免"></a>拥塞避免</h4><p>为了防止拥塞窗口cwnd增长过大引起网络拥塞，还需要设置一个慢开始门限ssthresh状态变量（如何设置ssthresh）。慢开始门限ssthresh的用法如下：</p>
+<ul>
+<li><p>当 cwnd &lt; ssthresh 时，使用上述的慢开始算法。</p>
+</li>
+<li><p>当 cwnd &gt; ssthresh 时，停止使用慢开始算法而改用拥塞避免算法。</p>
+</li>
+<li><p>当 cwnd &#x3D; ssthresh 时，既可使用慢开始算法，也可使用拥塞控制避免算法。<br><img src="/images/tcp-2-7.png"></p>
+</li>
+<li><p>当TCP连接进行初始化时，把拥塞窗口cwnd置为1。慢启动门限的初始值设置为16个报文段，即 cwnd &#x3D; 16 。</p>
+</li>
+<li><p>在执行慢开始算法时，拥塞窗口 cwnd 的初始值为1。拥塞窗口cwnd 随着传输轮次按指数规律增长。当拥塞窗口cwnd增长到慢开始门限值ssthresh时（即当cwnd&#x3D;16时），就改为执行拥塞控制算法，拥塞窗口按线 性规律增长。</p>
+</li>
+<li><p>假定拥塞窗口的数值增长到24时，网络出现超时（这很可能就是网络发生拥塞了）。更新后的ssthresh值变为12（即变为出现超时时的拥塞窗口数值 24的一半），拥塞窗口再重新设置为1，并执行慢开始算法。当cwnd&#x3D;ssthresh&#x3D;12时改为执行拥塞避免算法，拥塞窗口按线性规律增长，每经过 一个往返时间增加一个MSS的大小。</p>
+</li>
+</ul>
+<h4 id="快恢复"><a href="#快恢复" class="headerlink" title="快恢复"></a>快恢复</h4><p><img src="/images/tcp-2-8.png"></p>
+<ul>
+<li>当发送方连续收到三个重复确认，就执行“乘法减小”算法，把慢开始门限ssthresh减半。这是为了预防网络发生拥塞。请注意：接下去不执行慢开始算法。</li>
+<li>由于发送方现在认为网络很可能没有发生拥塞，因此与慢开始不同之处是现在不执行慢开始算法（即拥塞窗口cwnd现在不设置为1），而是把cwnd值设置为 慢开始门限ssthresh减半后的数值，然后开始执行拥塞避免算法（“加法增大”），使拥塞窗口缓慢地线性增大。</li>
 </ul>
 
       
