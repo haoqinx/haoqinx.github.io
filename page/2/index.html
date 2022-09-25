@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="星海横流 岁月成碑">
@@ -192,7 +192,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9AHashTable&TableIndex/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9Abuffer%E6%B1%A0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -206,7 +206,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9AHashTable&TableIndex/" class="post-title-link" itemprop="url">CMU-cs445:HashTable && TableIndex</a>
+            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9Abuffer%E6%B1%A0/" class="post-title-link" itemprop="url">CMU-cs445:buffer pool</a>
         </h2>
 
         <div class="post-meta">
@@ -217,7 +217,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:53:19" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+              <time title="Created: 2022-09-25 01:40:36 / Modified: 01:53:16" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -241,34 +241,124 @@
 
       
           <span id="more"></span>
-<h3 id="我们需要表示的数据"><a href="#我们需要表示的数据" class="headerlink" title="我们需要表示的数据"></a>我们需要表示的数据</h3><pre><code>- Internal Mata-data
-- Core data storage
-- Temporary Data Strutures
-- Table Indexs
+<h2 id="buffer-pool-manager"><a href="#buffer-pool-manager" class="headerlink" title="buffer pool manager"></a>buffer pool manager</h2><pre><code>- buffer池组成
+    - frame：缓冲池由frame组成，每次我们需要一个page，就吧这个page替换进frame
+    - page table：用来记录page到buffer pool的映射关系
+    - 其他元信息：脏页面（页面是否被修改），引用计数（页面被线程正在访问的计数）
+- multiple buffer pools(多个缓冲池，每个池有其策略)
+    - 减少线程竞争
+    - 提供多种策略
+    - 如何实现？根据Object id映射或者哈希
+- pre-fetching(预取)
+    - 提前把一些顺序信息读入buffer pool中  
+    - 可以完成一些操作系统不能完成的预读，如index分支跳转
+- scan sharing(扫描共享)
+    - 查询复用计算结果
+    - 允许多个查询附加到一个游标上
+- buffer pool bypass
+    - 给查询线程分配一小块内存，查询page的时候不经过缓存池，为了不污染缓存
+    - 查询量小的时候使用
+- O_DIRECT
+    - 避免操作系统文件缓存
 </code></pre>
-<h3 id="hash-function"><a href="#hash-function" class="headerlink" title="hash function"></a>hash function</h3><pre><code>- XXHash
-- CityHash
-- FarmHash
+<h2 id="replacement-policies"><a href="#replacement-policies" class="headerlink" title="replacement policies"></a>replacement policies</h2><pre><code>- LRU
+- Clock（LRU近似算法）
+- LRU-K：为了避免遍历对LRU的影响，K次才不会替换
 </code></pre>
-<h3 id="哈希算法"><a href="#哈希算法" class="headerlink" title="哈希算法"></a>哈希算法</h3><pre><code>- 开放地址法
-- robin 开放地址
-- cuckoo hashing
-- 链表法
-- extendible hashing（有些复杂）
-- Linear hashing（循环拆分，有点难以理解）
+<h2 id="脏页面"><a href="#脏页面" class="headerlink" title="脏页面"></a>脏页面</h2><pre><code>- 页面有一个标识位，记录某次查询是否更改页面记录
+- 后台写入（background writing）：定时将脏页面写回，避免缓存池中大量脏页面
 </code></pre>
-<h3 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h3><pre><code>- 为什么叶子结点的key和value不放在一起？
-为了cpu缓存，能够快速定位key。
-</code></pre>
-<h3 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h3><pre><code>- 部分索引
-- 覆盖索引
-- 聚集索引
-- Include Columns：在建立索引的时候增加一些额外信息，能够加速查询。
-- 函数式/表达式索引
-- trie index
-- radix tree的垂直压缩
-- 倒排索引
-</code></pre>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B5%84%E6%BA%90%E5%92%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B5%84%E6%BA%90%E5%92%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" class="post-title-link" itemprop="url">k8s系列：资源和声明周期</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-02-17 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-17T00:00:00+08:00">2022-02-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:58:24" itemprop="dateModified" datetime="2022-09-25T01:58:24+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/K8S/" itemprop="url" rel="index"><span itemprop="name">K8S</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="集群资源分类"><a href="#集群资源分类" class="headerlink" title="集群资源分类"></a>集群资源分类</h3><ol>
+<li>名称空间级别：默认为default</li>
+<li>集群级别：role</li>
+<li>元数据</li>
+</ol>
+<h3 id="pod资源清单"><a href="#pod资源清单" class="headerlink" title="pod资源清单"></a>pod资源清单</h3><p>定义一个pod需要下面这些信息：<br><a href="/images/k8s-8.png"></a></p>
+<h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><p><a href="/images/k8s-8.png"></a></p>
+<ol>
+<li>初始化pause容器</li>
+<li>init C 初始化容器，init容器总是运行到成功为止，并且后面的容器要等到前面的容器运行结束之后才运行。</li>
+<li>进入容器，执行start操作。</li>
+<li>readiness：就绪检测，如果服务就绪，可以暴露给外围。</li>
+<li>liveness：生存检测，发现容器内部有假死（例如僵尸进程）时，进行重启或其他操作。</li>
+<li>stop：结束时执行的一些操作。</li>
+</ol>
+<h3 id="调度器"><a href="#调度器" class="headerlink" title="调度器"></a>调度器</h3><p>调度器负责管理pod的生命周期，在必要的时候重启pod，下图是deployment滚动更新的管理方式，称为命令式管理，在后台其实是通过管理RS来达到目的。<br><a href="/images/k8s-10.png"></a></p>
+<p>这样存在一个问题，假如其中一个pod挂掉，RS重新启动一个pod替代，但是ip地址变了，那么其他pod访问不到怎么办？这个时候需要在pod和上层服务比如nginx中加入一个中间件SVC，SVC会自动进行服务发现，通过标签匹配策略自动获取其关联的pod的信息，然后同步给需要使用的pod。</p>
 
       
     </div>
@@ -484,97 +574,6 @@
 <li>prometheus：提供k8s集群的监控能力。</li>
 <li>ELK：提供k8s日志统一管理平台。</li>
 </ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B5%84%E6%BA%90%E5%92%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B5%84%E6%BA%90%E5%92%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" class="post-title-link" itemprop="url">k8s系列：资源和声明周期</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-02-17 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-17T00:00:00+08:00">2022-02-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:58:24" itemprop="dateModified" datetime="2022-09-25T01:58:24+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/K8S/" itemprop="url" rel="index"><span itemprop="name">K8S</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="集群资源分类"><a href="#集群资源分类" class="headerlink" title="集群资源分类"></a>集群资源分类</h3><ol>
-<li>名称空间级别：默认为default</li>
-<li>集群级别：role</li>
-<li>元数据</li>
-</ol>
-<h3 id="pod资源清单"><a href="#pod资源清单" class="headerlink" title="pod资源清单"></a>pod资源清单</h3><p>定义一个pod需要下面这些信息：<br><a href="/images/k8s-8.png"></a></p>
-<h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><p><a href="/images/k8s-8.png"></a></p>
-<ol>
-<li>初始化pause容器</li>
-<li>init C 初始化容器，init容器总是运行到成功为止，并且后面的容器要等到前面的容器运行结束之后才运行。</li>
-<li>进入容器，执行start操作。</li>
-<li>readiness：就绪检测，如果服务就绪，可以暴露给外围。</li>
-<li>liveness：生存检测，发现容器内部有假死（例如僵尸进程）时，进行重启或其他操作。</li>
-<li>stop：结束时执行的一些操作。</li>
-</ol>
-<h3 id="调度器"><a href="#调度器" class="headerlink" title="调度器"></a>调度器</h3><p>调度器负责管理pod的生命周期，在必要的时候重启pod，下图是deployment滚动更新的管理方式，称为命令式管理，在后台其实是通过管理RS来达到目的。<br><a href="/images/k8s-10.png"></a></p>
-<p>这样存在一个问题，假如其中一个pod挂掉，RS重新启动一个pod替代，但是ip地址变了，那么其他pod访问不到怎么办？这个时候需要在pod和上层服务比如nginx中加入一个中间件SVC，SVC会自动进行服务发现，通过标签匹配策略自动获取其关联的pod的信息，然后同步给需要使用的pod。</p>
 
       
     </div>

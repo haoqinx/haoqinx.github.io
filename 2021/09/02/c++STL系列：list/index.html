@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="G2.9源码结构 在低版本下list的结构比较简单，就是一个list模板类和一个node模板类。总体的数据结构事宜个环形双向链表。begin()指向头结点，end()指向尾节点。  迭代器  源码中迭代器的结构如下，迭代器重载了前++,后++，-&gt;,*等一系列操作符，为了达到指针的效果。这里需要注意的第一个是++这个操作符重载，形如： 1self operator++(int)&amp;#123;">
@@ -371,8 +371,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Amap/" rel="prev" title="c++STL系列：map & multimap">
-      <i class="fa fa-chevron-left"></i> c++STL系列：map & multimap
+    <a href="/2021/09/02/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9AVariadic-Templates/" rel="prev" title="c++11新特性：Variadic Templates">
+      <i class="fa fa-chevron-left"></i> c++11新特性：Variadic Templates
     </a></div>
       <div class="post-nav-item">
     <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Adeque/" rel="next" title="c++STL系列：deque">
