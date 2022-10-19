@@ -192,116 +192,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9Araft%E5%92%8C%E5%A4%8D%E5%88%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9Araft%E5%92%8C%E5%A4%8D%E5%88%B6/" class="post-title-link" itemprop="url">redis系列：raft一致性算法</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:01:59" itemprop="dateModified" datetime="2022-09-25T02:01:59+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="Raft算法"><a href="#Raft算法" class="headerlink" title="Raft算法"></a>Raft算法</h3><ol>
-<li>基本概念<br>在任何时刻，服务器节点都处于三个状态之一：leader、follower或者candidate。</li>
-</ol>
-<ul>
-<li>follwer：不会发送任何请求，只相应leader和candidate的请求；</li>
-<li>leader：处理所有客户端请求，如果一个可会断和follower通信，那么follower会重定向给leader；</li>
-<li>candidate：用来选举新leader。<br>下图展示了上面三种状态的转换：<br><img src="/images/redis-raft-1.png"></li>
-</ul>
-<p>Raft把时间分割成任意长度的任期，如下图所示：<br><img src="/images/redis-raft-2.png"></p>
-<p>每一个服务器节点存储一个当前任期号，该编号随着时间单调递增。不同的服务器节点观察到的任期转换的次数可能不同，在某些情况下，一个服务器节点可能没有看到 leader 选举过程或者甚至整个任期全程。任期在 Raft 算法中充当逻辑时钟的作用，这使得服务器节点可以发现一些过期的信息比如过时的leader。</p>
-<ul>
-<li>如果一个服务器的当前任期号比其他的小，该服务器会将自己的任期号更新为较大的那个值；</li>
-<li>如果一个 candidate 或者 leader 发现自己的任期号过期了，它会立即回到 follower 状态；</li>
-<li>如果一个节点接收到一个包含过期的任期号的请求，它会直接拒绝这个请求。</li>
-</ul>
-<ol start="2">
-<li>Leader选举</li>
-</ol>
-<p>Raft 使用一种心跳机制来触发 leader 选举。<br>当服务器程序启动时，他们都是 follower。<br>如果一个 follower 在一段选举超时时间内没有接收到任何消息，它就假设系统中没有可用的 leader ，然后开始进行选举以选出新的 leader 。<br>选举的流程大概是：  </p>
-<ul>
-<li>follower 先增加自己的当前任期号并且转换到 candidate 状态。</li>
-<li>投票给自己并且并行地向集群中的其他服务器节点发送 RequestVote RPC。</li>
-<li>当一个 candidate 获得集群中过半服务器节点针对同一个任期的投票，它就赢得了这次选举并成为 leader。（投票按照先来先得的原则）。</li>
-<li>在等待投票期间，candidate 可能会收到另一个声称自己是 leader 的服务器节点发来的 AppendEntries RPC 。如果这个 leader 的任期号（包含在RPC中）不小于 candidate 当前的任期号，那么 candidate 会承认该 leader 的合法地位并回到 follower 状态。 如果 RPC 中的任期号比自己的小，那么 candidate 就会拒绝这次的 RPC 并且继续保持 candidate 状态。</li>
-<li>如果candidate 既没有赢得选举也没有输：如果有多个 follower 同时成为 candidate ，那么选票可能会被瓜分以至于没有 candidate 赢得过半的投票。当这种情况发生时，每一个候选人都会超时，然后通过增加当前任期号来开始一轮新的选举。然而，如果没有其他机制的话，该情况可能会无限重复。<br>为了避免选票瓜分，也就是follower都投票给自己，Raft使用随机选举超时时间来解决。选举超时时间是从一个固定的区间（例如 150-300 毫秒）随机选择。这样可以把服务器都分散开以至于在大多数情况下只有一个服务器会选举超时；然后该服务器赢得选举并在其他服务器超时之前发送心跳。每个 candidate 在开始一次选举的时候会重置一个随机的选举超时时间，然后一直等待直到选举超时。</li>
-</ul>
-<h3 id="日志复制"><a href="#日志复制" class="headerlink" title="日志复制"></a>日志复制</h3><p>Leader 一旦被选举出来，就开始为客户端请求提供服务。客户端的每一个请求都包含一条将被复制状态机执行的指令。Leader 把该指令作为一个新的条目追加到日志中去，然后并行的发起 AppendEntries RPC 给其他的服务器，让它们复制该条目。  </p>
-<p>每个日志条目存储一条状态机指令和 leader 收到该指令时的任期号。如下图所示：<br><img src="/images/redis-raft-3.png"><br>Leader 决定什么时候把日志条目应用到状态机中是安全的；这种日志条目被称为已提交的。Raft 算法保证所有已提交的日志条目都是持久化的并且最终会被所有可用的状态机执行。一旦创建该日志条目的 leader 将它复制到过半的服务器上，该日志条目就会被提交（例如在图中的条目 7）。<br>正常操作期间，leader 和 follower 的日志保持一致，所以 AppendEntries RPC 的一致性检查从来不会失败。然而，leader 崩溃的情况会使日志处于不一致的状态：<br><img src="/images/redis-raft-4.png"><br>Follower 可能缺少一些在新 leader 中有的日志条目，也可能拥有一些新 leader 没有的日志条目，或者同时发生。缺失或多出日志条目的情况可能会涉及到多个任期。  </p>
-<ul>
-<li>要使得 follower 的日志跟自己一致，leader 必须找到两者达成一致的最大的日志条目（索引最大），删除 follower 日志中从那个点之后的所有日志条目，并且将自己从那个点之后的所有日志条目发送给 follower。</li>
-<li>Leader 针对每一个 follower 都维护了一个 nextIndex ，表示 leader 要发送给 follower 的下一个日志条目的索引。当选出一个新 leader 时，该 leader 将所有 nextIndex 的值都初始化为自己最后一个日志条目的 index 加1。如果 follower 的日志和 leader 的不一致，那么下一次 AppendEntries RPC 中的一致性检查就会失败。在被 follower 拒绝之后，leaer 就会减小 nextIndex 值并重试 AppendEntries RPC 。最终 nextIndex 会在某个位置使得 leader 和 follower 的日志达成一致。此时，AppendEntries RPC 就会成功，将 follower 中跟 leader 冲突的日志条目全部删除然后追加 leader 中的日志条目（如果有需要追加的日志条目的话）。一旦 AppendEntries RPC 成功，follower 的日志就和 leader 一致，并且在该任期接下来的时间里保持一致。</li>
-</ul>
-<h3 id="安全限制"><a href="#安全限制" class="headerlink" title="安全限制"></a>安全限制</h3><ol>
-<li>选举限制<br>Raft 使用投票的方式来阻止 candidate 赢得选举除非该 candidate 包含了所有已经提交的日志条目。候选人为了赢得选举必须与集群中的过半节点通信，这意味着至少其中一个服务器节点包含了所有已提交的日志条目。如果 candidate 的日志至少和过半的服务器节点一样新（接下来会精确地定义“新”），那么他一定包含了所有已经提交的日志条目。RequestVote RPC 执行了这样的限制： RPC 中包含了 candidate 的日志信息，如果投票者自己的日志比 candidate 的还新，它会拒绝掉该投票请求。<br>Raft 通过比较两份日志中最后一条日志条目的索引值和任期号来定义谁的日志比较新。如果两份日志最后条目的任期号不同，那么任期号大的日志更新。如果两份日志最后条目的任期号相同，那么日志较长的那个更新。</li>
-<li>提交之前任期内的日志条目<br>一旦当前任期内的某个日志条目已经存储到过半的服务器节点上，leader 就知道该日志条目已经被提交了。如果某个 leader 在提交某个日志条目之前崩溃了，以后的 leader 会试图完成该日志条目的复制。然而，如果是之前任期内的某个日志条目已经存储到过半的服务器节点上，leader 也无法立即断定该日志条目已经被提交了。图 8 展示了一种情况，一个已经被存储到过半节点上的老日志条目，仍然有可能会被未来的 leader 覆盖掉。<br><img src="/images/redis-raft-4.png"><br>如图的时间序列展示了为什么 leader 无法判断老的任期号内的日志是否已经被提交。在 (a) 中，S1 是 leader ，部分地复制了索引位置 2 的日志条目。在 (b) 中，S1 崩溃了，然后 S5 在任期 3 中通过 S3、S4 和自己的选票赢得选举，然后从客户端接收了一条不一样的日志条目放在了索引 2 处。然后到 (c)，S5 又崩溃了；S1 重新启动，选举成功，继续复制日志。此时，来自任期 2 的那条日志已经被复制到了集群中的大多数机器上，但是还没有被提交。如果 S1 在 (d) 中又崩溃了，S5 可以重新被选举成功（通过来自 S2，S3 和 S4 的选票），然后覆盖了他们在索引 2 处的日志。但是，在崩溃之前，如果 S1 在自己的任期里复制了日志条目到大多数机器上，如 (e) 中，然后这个条目就会被提交（S5 就不可能选举成功）。 在这种情况下，之前的所有日志也被提交了。<br>为了消除图中描述的问题，Raft 永远不会通过计算副本数目的方式来提交之前任期内的日志条目。只有 leader 当前任期内的日志条目才通过计算副本数目的方式来提交；一旦当前任期的某个日志条目以这种方式被提交，那么由于日志匹配特性，之前的所有日志条目也都会被间接地提交。在某些情况下，领导人可以安全地断定一个老的日志条目已经被提交（例如，如果该条目已经存储到所有服务器上），但是 Raft 为了简化问题使用了一种更加保守的方法。<br>Raft 会在提交规则上增加额外的复杂性是因为当 leader 复制之前任期内的日志条目时，这些日志条目都保留原来的任期号。在其他的一致性算法中，如果一个新的 leader 要重新复制之前的任期里的日志时，它必须使用当前新的任期号。Raft 的做法使得更加容易推导出（reason about）日志条目，因为他们自始至终都使用同一个任期号。另外，和其他的算法相比，Raft 中的新 leader 只需要发送更少的日志条目（其他算法中必须在它们被提交之前发送更多的冗余日志条目来给它们重新编号）。</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%8A%A8%E6%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -406,6 +296,142 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/" class="post-title-link" itemprop="url">redis系列：RDB & AOF</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 02:02:03" itemprop="dateModified" datetime="2022-09-25T02:02:03+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h3><ol>
+<li>文件结构<br><img src="/images/redis-ar-1.png"><br>一个完整的RDB文件包含上面各部分。</li>
+</ol>
+<ul>
+<li>REDIS：5字节，检查是否为RDB文件。</li>
+<li>db_version:4字节，字符串表示的整数，记录版本号。</li>
+<li>database：0或n个数据库的键值对数据。</li>
+<li>EOF：1字节，表示正文结束。</li>
+<li>check_sum：8字节长无符号整数，保存一个校验和，根据前面四个部分计算得到。</li>
+</ul>
+<p>如下是一个有两个数据库的RDB文件。<br><img src="/images/redis-rdb-1.png"><br>每个数据库里面包含下面几个部分：<br><img src="/images/redis-rdb-2.png"></p>
+<ul>
+<li>SELECTDB：1字节，表示接下来是一个数据库号码；</li>
+<li>db_number：数据库号码，1&#x2F;2&#x2F;5字节，当读入时，服务器根据select切换；</li>
+<li>key_value_pairs：保存数据库中所有键值对数据。</li>
+</ul>
+<ol start="2">
+<li>key_value_pairs<br>下图展示了一个不带过期时间的键值对：<br><img src="/images/redis-rdb-3.png"></li>
+</ol>
+<ul>
+<li><p>TYPE：1字节类型</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Dup object types to RDB object types. Only reason is readability (are we</span></span><br><span class="line"><span class="comment"> * dealing with RDB types or with in-memory object types?). */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_STRING 0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_LIST   1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_SET    2</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_ZSET   3</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_HASH   4</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Object types for encoded objects. */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_HASH_ZIPMAP    9</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_LIST_ZIPLIST  10</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_SET_INTSET    11</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_ZSET_ZIPLIST  12</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_HASH_ZIPLIST  13</span></span><br></pre></td></tr></table></figure>
+<p>带有过期时间的键值对：<br><img src="/images/redis-rdb-3.png"></p>
+</li>
+<li><p>EXPIRETIME_MS：1字节，表示接下来是一个时间。</p>
+</li>
+<li><p>ms：8字节带符号整数，过期时间，一个毫秒单位UNIX时间戳。</p>
+</li>
+</ul>
+<ol start="3">
+<li>value的编码</li>
+</ol>
+<ul>
+<li><p>字符串对象：<br>存在压缩版<br><img src="/images/redis-rdb-6.png"><br>无压缩版<br><img src="/images/redis-rdb-5.png"></p>
+</li>
+<li><p>列表对象<br><img src="/images/redis-rdb-7.png"></p>
+</li>
+<li><p>集合对象<br><img src="/images/redis-rdb-8.png"></p>
+</li>
+<li><p>哈希表对象<br><img src="/images/redis-rdb-9.png"></p>
+</li>
+<li><p>有序集合对象<br><img src="/images/redis-rdb-10.png"></p>
+</li>
+<li><p>压缩列表<br>保存这种文件的方法是：（1）将压缩列表转换成一个字符串对象（2）将字符串对象保存到RDB文件。</p>
+</li>
+</ul>
+<h3 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h3><p>简单来说AOF就是讲命令按顺序写入文件来持久化。<br>总的来说分为三个步骤：命令追加，文件写入，文件同步。</p>
+<ul>
+<li><p>命令追加<br>在redisServer结构体重有一个aof_buf缓冲区：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">redisServer</span>&#123;</span></span><br><span class="line">    sds aof_buf;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>AOF文件中是以命令请求协议格式保存的，因此命令追加是如下形式：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">redis&gt;SET KEY VALUE</span><br><span class="line"></span><br><span class="line">*<span class="number">3</span>\r\n$<span class="number">3</span>\r\nSET\r\nKEY\r\n$<span class="number">5</span>\r\nVALUE\r\n</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>文件写入<br>在服务器进程每次时间循环结束之前，可以考虑将aof缓冲区的数据写入文件。写入策略有：（1）always:将缓冲区所有内容写入并同步到AOF文件（2）everysec：将缓冲区所有内存写入AOF，如果上次同步AOF文件的时间超过1s，那么再次对AOF同步，并且由一个线程专门负责执行（3）写入AOF但不同步。<br>所谓同步，就是讲aof_buf拷贝到内核缓冲区，写入就是讲内核缓冲区的数据写入磁盘。这三种方式第一种最耗时但是最安全，第二种保证出现故障最多丢失1s的数据，最后一种方式写入最快但是不安全。</p>
+</li>
+<li><p>载入和数据还原<br>因为本身存的是命令，只需要再执行一遍命令就可以了，在读取AOF文件之后，redis创建一个伪客户端发出命令。</p>
+</li>
+<li><p>AOF重写<br>由于AOF文件记录所有命令，因此文件体积会迅速膨胀，因此redis提供对AOF文件重写功能。<br>核心思想就是，直接从数据库读取键值对，生成一条命令，来替代所记录的所有相关命令。<br>例如：<br><img src="/images/redis-aof-1.png"><br>可以用下面命令代替：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT 0</span><br><span class="line">RPUSH alphabet &quot;a&quot; &quot;b&quot; &quot;c&quot;</span><br><span class="line">EXPIREAT alphabet 1385877600000</span><br><span class="line">HMSET book &quot;name&quot; &quot;Redisin Action&quot; &quot;author&quot; &quot;Josiah L. Carison&quot; &quot;publisher&quot; &quot;Manning&quot;</span><br><span class="line">EXPIREAT book 1388556000000</span><br><span class="line">SET message &quot;hello world&quot;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>如果直接使用主线程来重写，势必会造成主线程长时间繁忙，无法处理用户请求，因此在实际实现中使用子进程来写。<br>使用子进程写的过程中，如果父进程对数据库进行修改，就回造成数据不一致问题，针对这个问题，redis设置了AOF重写缓冲区。<br><img src="/images/redis-aof-2.png"><br>在子进程执行重写的过程中，需要执行下面三个工作：<br>1）执行客户端的命令<br>2）将执行后的命令追加到AOF缓冲区<br>3）执行后的写命令追加到AOF重写缓冲区  </p>
+<p>当子进程完成AOF重写，给父进程发一个信号，父进程接受信号之后，调用信号处理函数：<br>1)将AOF重写缓冲区所有内容写入新AOF，这时新AOF文件与当前数据库数据一致。<br>2）对新的AOF改名，原子性覆盖现有AOF文件。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -479,277 +505,6 @@
 回顾压缩列表元素的编码结构，可变因素实际上不止3个：previous_entry_length字段的长度（prevrawlensize）、previous_entry_length字段存储的内容（prevrawlen）、encoding字段的长度（lensize）、encoding字段的内容（len表示元素数据内容的长度，encoding表示数据类型）和当前元素首地址（p）；而headersize则表示当前元素的首部长度，previous_entry_length字段长度与encoding字段长度之和.</li>
 </ul>
 <h3 id="连锁更新"><a href="#连锁更新" class="headerlink" title="连锁更新"></a>连锁更新</h3><p><img src="/images/redis-zl-2.png"><br>简单来说就是增加或者删除元素的时候，对应的previous_entry_length会发生变化，当元素长度处于临界值的时候 </p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%93%A8%E5%85%B5%E5%92%8C%E9%9B%86%E7%BE%A4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%93%A8%E5%85%B5%E5%92%8C%E9%9B%86%E7%BE%A4/" class="post-title-link" itemprop="url">redis系列：哨兵和集群</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:01:37" itemprop="dateModified" datetime="2022-09-25T02:01:37+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="哨兵模式"><a href="#哨兵模式" class="headerlink" title="哨兵模式"></a>哨兵模式</h3><p>基本概念和详细流程见《Redis设计与实现》、《Redis5设计与源码分析》，只说下自己的理解。<br>下图是一个基本的主从复制的哨兵系统：<br><img src="/images/sen-1.png"><br>主要有三种角色：哨兵、主服务器，从服务器。</p>
-<ul>
-<li>哨兵：一种特殊的redis服务端，使用哨兵专用命令。用来监控主从状态，执行故障转移等。</li>
-<li>主服务器：执行客户端请求，同步自身数据到从服务器。</li>
-<li>从服务器：从主服务器同步数据。</li>
-</ul>
-<p>系统的重要逻辑点有：</p>
-<ol>
-<li>哨兵读入用户指定的配置文件，对每个要被监视的主服务器建立一个示例结构，然后创建连向主服务器的命令连接和订阅连接，命令用来向主服务器发送命令请求，订阅用来接受指定频道的消息。</li>
-<li>哨兵向服务器发送INFO命令来获得主服务器及所有从服务器的地址信息，然后创建对应的实例。</li>
-<li>哨兵每10s向主服务器和从服务器方发送INFO命令，如果判定主服务器下线，或者正在执行故障转移，频率增大到1s一次。</li>
-<li>哨兵会对和自己同时监视主服务器的哨兵每2s通信一次（通信通过服务器的__sentinel__:hello中转传播），表示自己存在，同时也会接受其他哨兵的消息。</li>
-<li>哨兵之间只有命令连接，哨兵和服务器之间有命令和订阅连接。</li>
-<li>哨兵1s一次向主服务器，从服务器，哨兵节点发PING命令，根据回复判断在线状态，如果收到无效回复或没有回复，就判断此节点为主观下线。</li>
-<li>判断主观下线之后，向其他哨兵询问，如果超过半数确认则判定为客观下线。</li>
-<li>哨兵通过raft一致性算法选举出头哨兵，头哨兵执行故障转移操作。</li>
-<li>故障转移通过在下线的主服务器的从服务器列表中来选择，选择状态良好，和主服务器通信时间最新，复制偏移量更大，ID更小的节点。</li>
-<li>将此从服务器置为主服务器，原主服务器若上线则置为从服务器。</li>
-</ol>
-<h3 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h3><p>基本概念和详细流程见《Redis设计与实现》、《Redis5设计与源码分析》，只说下自己的理解。<br>只阐述下主要流程：</p>
-<ol>
-<li>节点之间通过两两握手来讲其他节点添加到自己的集群中。其实就是在自己的数据结构上初始化节点结构体。</li>
-<li>集群中的16384个槽分派给节点（<a href="https://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">为什么是16384个节点</a>）。</li>
-<li>节点接受到一个命令请求，会使用CRC16(key) % 16384 来确定槽，如果不是自己负责，会自动重定向到正确的节点（怎么重定向？其实就是有一个数据，记录了每个槽对应的节点指针）。</li>
-<li>重新分片的原理：见《Redis设计与实现》p266.</li>
-<li>集群中的节点通过gossip协议通信，常见的消息有MEET,PING,PONG,PUBLISH,FAIL等。</li>
-</ol>
-<h3 id="单机模式，主从模式，哨兵模式，集群模式优缺点："><a href="#单机模式，主从模式，哨兵模式，集群模式优缺点：" class="headerlink" title="单机模式，主从模式，哨兵模式，集群模式优缺点："></a>单机模式，主从模式，哨兵模式，集群模式优缺点：</h3><ol>
-<li>单机模式</li>
-</ol>
-<ul>
-<li>优点：<ul>
-<li>架构简单，部署方便</li>
-<li>性价比高</li>
-<li>性能高</li>
-</ul>
-</li>
-<li>缺点：<ul>
-<li>不保证数据可靠性</li>
-<li>在缓存使用，进程重启之后容易丢失数据，不能解决缓存预热问题。（ps:缓存预热：新的缓存系统没有任何缓存数据，在缓存重建数据的过程中，系统性能和数据库负载都不太好，所以最好是在系统上线之前就把要缓存的热点数据加载到缓存中，这种缓存预加载手段就是预热。）</li>
-</ul>
-</li>
-</ul>
-<ol start="2">
-<li>主从模式</li>
-</ol>
-<ul>
-<li>优点：<ul>
-<li>高可靠行：能够在主库主张自动切换从库</li>
-<li>读写分离：从节点扩展读数据库的压力，只有主节点才能写</li>
-</ul>
-</li>
-<li>缺点：<ul>
-<li>故障恢复复杂，主节点出现异常，需要手动将从节点配置为主节点</li>
-<li>主节点写能力有限，大量写容易宕机</li>
-<li>主机单机存储有限</li>
-<li>原生复制弊端（早期版本）：如：Redis 复制中断后，Slave 会发起 psync，此时如果同步不成功，则会进行全量同步，主库执行全量备份的同时可能会造成毫秒或秒级的卡顿;又由于 COW 机制，导致极端情况下的主库内存溢出，程序异常退出或宕机;主库节点生成备份文件导致服务器磁盘 IO 和 CPU(压缩)资源消耗;发送数 GB 大小的备份文件导致服务器出口带宽暴增，阻塞请求，建议升级到最新版本。</li>
-</ul>
-</li>
-</ul>
-<ol start="3">
-<li>哨兵模式：</li>
-</ol>
-<ul>
-<li><p>优点：</p>
-<ul>
-<li>Redis Sentinel 集群部署简单。</li>
-<li>能够解决 Redis 主从模式下的高可用切换问题。</li>
-<li>很方便实现 Redis 数据节点的线形扩展，轻松突破 Redis 自身单线程瓶颈，可极大满足 Redis 大容量或高性能的业务需求。</li>
-<li>可以实现一套 Sentinel 监控一组 Redis 数据节点或多组数据节点。</li>
-</ul>
-</li>
-<li><p>缺点：</p>
-<ul>
-<li>是一种中心化的集群实现方案：始终只有一个Redis主机来接收和处理写请求，写操作受单机瓶颈影响。</li>
-<li>集群里所有节点保存的都是全量数据，浪费内存空间，没有真正实现分布式存储。数据量过大时，主从同步严重影响master的性能。</li>
-<li>Redis主机宕机后，哨兵模式正在投票选举的情况之外，因为投票选举结束之前，谁也不知道主机和从机是谁，此时Redis也会开启保护机制，禁止写操作，直到选举出了新的Redis主机。</li>
-</ul>
-</li>
-</ul>
-<ol start="4">
-<li>集群模式</li>
-</ol>
-<ul>
-<li><p>优点：</p>
-<ul>
-<li>无中心架构。数据按照 slot 存储分布在多个节点，节点间数据共享，可动态调整数据分布。</li>
-<li>可扩展性：可线性扩展到 1000 多个节点，节点可动态添加或删除。</li>
-<li>高可用性：部分节点不可用时，集群仍可用。通过增加 Slave 做 standby 数据副本，能够实现故障自动 failover，节点之间通过 gossip 协议交换状态信息，用投票机制完成 Slave 到 Master 的角色提升。</li>
-</ul>
-</li>
-<li><p>缺点：</p>
-<ul>
-<li>Key 事务操作支持有限，只支持多 key 在同一节点上的事务操作，当多个 Key 分布于不同的节点上时无法使用事务功能。</li>
-<li>Key 作为数据分区的最小粒度，不能将一个很大的键值对象如 hash、list 等映射到不同的节点。</li>
-<li>不支持多数据库空间，单机下的 redis 可以支持到 16 个数据库，集群模式下只能使用 1 个数据库空间，即 db 0。</li>
-</ul>
-</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%8D%E5%88%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%8D%E5%88%B6/" class="post-title-link" itemprop="url">redis系列：复制</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:01:32" itemprop="dateModified" datetime="2022-09-25T02:01:32+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="完全复制"><a href="#完全复制" class="headerlink" title="完全复制"></a>完全复制</h3><ul>
-<li>第一步是同步<br>1）从服务器向主服务器发送SYNC命令。<br>2）收到SYNC命令的主服务器执行BGSAVE命令，在后台生成一个RDB文件，并使用一个缓冲区记录从现在开始执行的所有写命令。<br>3）BGSAVE命令执行完毕后，将生成的RDB文件传输给从服务器，从服务器接收到开始更新。<br>4）主服务器将记录在缓冲区的所有写命令发送给从服务器，从服务器状态更新。<br>如下图示例所示：<br><img src="/images/redis-sync-1.png"></li>
-<li>命令传播<br>主服务器将更改服务器状态的命令发送给从服务器。</li>
-</ul>
-<h3 id="部分复制"><a href="#部分复制" class="headerlink" title="部分复制"></a>部分复制</h3><p>完全复制在效率上比较低，应为每次都需要生成RDB文件，从服务器也需要从RDB恢复数据。因此考虑部分复制，在非第一次同步的情况下，只传播断线过程中执行的更改主服务器状态的命令。如下图所示：<br><img src="/images/redis-sync-2.png"><br>部分同步的实现有三个部分</p>
-<ul>
-<li>主服务器的复制偏移量和从服务器的复制偏移量。</li>
-<li>主服务器的复制积压缓冲区。</li>
-<li>服务器的运行ID。</li>
-</ul>
-<ol>
-<li>复制偏移量<br>主服务器每次传输N个字节数据，就将复制偏移量+N，从服务器收到N个字节，就加N，通过复制偏移量就可以知道是否是同步状态。</li>
-<li>积压缓冲区<br>复制积压缓冲区维护一个固定长度的队列，大小为1MB。固定长度就是说队列的长度是固定的，如果入队后队列长度超过固定值，就将多余的值弹出。队列会保存字节的复制偏移量和字节内容。<br><img src="/images/redis-sync-3.png"></li>
-</ol>
-<h3 id="复制的实现"><a href="#复制的实现" class="headerlink" title="复制的实现"></a>复制的实现</h3><p>通过向从服务器发送SLAVEOF命令，可以让从服务器复制一个主服务器。</p>
-<ul>
-<li>设置主服务器地址和端口<br>从服务器需要首先保存主服务器的地址和端口。</li>
-<li>建立套接字连接</li>
-<li>发送ping命令<br>有两个作用：<br>1）检查套接字读写是否正常。<br>2）检查主服务器是否能正产处理请求。<br>如果返回一个命令回复但从服务器无法在规定时间内读取命令回复的内容，那么表示网络连接异常。如果返回一个错误，那么主服务器无法处理。</li>
-<li>身份验证  </li>
-<li>发送端口数据</li>
-<li>同步</li>
-<li>命令传播</li>
-</ul>
 
       
     </div>
@@ -1109,7 +864,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -1123,7 +878,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">redis系列：常见问题</a>
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">redis系列：数据库的实现</a>
         </h2>
 
         <div class="post-meta">
@@ -1140,7 +895,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:01:17" itemprop="dateModified" datetime="2022-09-25T02:01:17+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 02:01:42" itemprop="dateModified" datetime="2022-09-25T02:01:42+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1164,48 +919,266 @@
 
       
           <span id="more"></span>
-<h3 id="Redis常用数据结构和使用场景（Zset中跳表数据结构）"><a href="#Redis常用数据结构和使用场景（Zset中跳表数据结构）" class="headerlink" title="Redis常用数据结构和使用场景（Zset中跳表数据结构）"></a>Redis常用数据结构和使用场景（Zset中跳表数据结构）</h3><h3 id="缓存击穿-缓存穿透-缓存雪崩"><a href="#缓存击穿-缓存穿透-缓存雪崩" class="headerlink" title="缓存击穿 缓存穿透 缓存雪崩"></a>缓存击穿 缓存穿透 缓存雪崩</h3><ol>
-<li>缓存击穿：<br>访问一个缓存和数据库都不存在的 key，此时会直接打到数据库上，并且查不到数据，没法写缓存，所以下一次同样会打到数据库上。<br>此时，缓存起不到作用，请求每次都会走到数据库，流量大时数据库可能会被打挂。此时缓存就好像被“穿透”了一样，起不到任何作用。<br>解决方案：</li>
-</ol>
+<h3 id="服务端数据库"><a href="#服务端数据库" class="headerlink" title="服务端数据库"></a>服务端数据库</h3><p>redis中将所有的数据库信息保存在redisServer结构体中，结构体中的变量有两百多个，这里就不写了。<br>主要的结构成员是：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">redisServer</span>&#123;</span></span><br><span class="line">    redisDb* db;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>db成员指向一个redisDb数组，数组长度有dbnum决定：<br><img src="/images/redis-db-1.png"><br>默认情况下，目标数据库是0号数据库。如果需要更换数据库，修改指针即可。</p>
+<h3 id="数据库键空间"><a href="#数据库键空间" class="headerlink" title="数据库键空间"></a>数据库键空间</h3><p>redisDb结构体中保存了数据库中所有的键值对，因此将这个字典称为键空间：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">redisDb</span>&#123;</span></span><br><span class="line">    dict* dict;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
-<li>接口校验。在正常业务流程中可能会存在少量访问不存在 key 的情况，但是一般不会出现大量的情况，所以这种场景最大的可能性是遭受了非法攻击。可以在最外层先做一层校验：用户鉴权、数据合法性校验等，例如商品查询中，商品的ID是正整数，则可以直接对非正整数直接过滤等等。</li>
-<li>缓存空值。当访问缓存和DB都没有查询到值时，可以将空值写进缓存，但是设置较短的过期时间，该时间需要根据产品业务特性来设置。</li>
-<li>布隆过滤器。使用布隆过滤器存储所有可能访问的 key，不存在的 key 直接被过滤，存在的 key 则再进一步查询缓存和数据库。</li>
+<li>键空间中的键是数据库的键，每个键都是一个字符串对象</li>
+<li>键空间中的值是数据库的值，每个值可以是一个字符串对象，列表对象，哈希表对象，集合对象，有序集合对象中的一种。<br>表示如下图所示：<br><img src="/images/redis-db-2.png"></li>
 </ul>
-<ol start="2">
-<li>缓存穿透<br>某一个热点 key，在缓存过期的一瞬间，同时有大量的请求打进来，由于此时缓存过期了，所以请求最终都会走到数据库，造成瞬时数据库请求量大、压力骤增，甚至可能打垮数据库。<br>解决方案</li>
-</ol>
+<h3 id="读写键空间时的维护操作"><a href="#读写键空间时的维护操作" class="headerlink" title="读写键空间时的维护操作"></a>读写键空间时的维护操作</h3><ul>
+<li>读取一个键之后，服务器会更新键的LRU时间，这个可以用于计算键的闲置时间。</li>
+<li>如果在读取一个键时发现已经过期，服务器会删除这个过期键然后执行其他操作。</li>
+<li>如果客户端使用watch命令监视了某个键，会将这个键标记为脏，从而让事务程序注意到这个键已经被修改过。</li>
+<li>每次修改键之后，都会对脏键计数器加1，计数器会出发服务器的持久化和复制操作。</li>
+<li>如果开启数据库通知，在对键修改之后，服务器将按配置发送相应的数据库通知。</li>
+</ul>
+<h3 id="过期时间"><a href="#过期时间" class="headerlink" title="过期时间"></a>过期时间</h3><p>redisDb结构的expires字典保存了数据库所有键的过期时间，称为过期字典。<br><img src="/images/redis-db-3.png"></p>
 <ul>
-<li>加互斥锁。在并发的多个请求中，只有第一个请求线程能拿到锁并执行数据库查询操作，其他的线程拿不到锁就阻塞等着，等到第一个线程将数据写入缓存后，直接走缓存。（现在主流的方法就是加Redis分布式锁）</li>
-<li>热点数据不过期。直接将缓存设置为不过期，然后由定时任务去异步加载数据，更新缓存。<br>这种方式适用于比较极端的场景，例如流量特别特别大的场景，使用时需要考虑业务能接受数据不一致的时间，还有就是异常情况的处理，不要到时候缓存刷新不上，一直是脏数据，那就凉了。</li>
+<li>设置过期时间通过向过期字典添加键值对实现。</li>
+<li>删除过期时间则直接在过期字典中移除，移除策略有三种：</li>
 </ul>
-<ol start="3">
-<li>缓存雪崩<br>大量的热点 key 设置了相同的过期时间，导在缓存在同一时刻全部失效，造成瞬时数据库请求量大、压力骤增，引起雪崩，甚至导致数据库被打挂。<br>缓存雪崩其实有点像“升级版的缓存击穿”，缓存击穿是一个热点 key，缓存雪崩是一组热点 key。<br>解决方案</li>
-</ol>
-<ul>
-<li><p>过期时间打散。既然是大量缓存集中失效，那最容易想到就是让他们不集中生效。可以给缓存的过期时间时加上一个随机值时间，使得每个 key 的过期时间分布开来，不会集中在同一时刻失效。</p>
-</li>
-<li><p>热点数据不过期。该方式和缓存击穿一样，也是要着重考虑刷新的时间间隔和数据异常如何处理的情况。</p>
-</li>
-<li><p>加互斥锁。该方式和缓存击穿一样，按 key 维度加锁，对于同一个 key，只允许一个线程去计算，其他线程原地阻塞等待第一个线程的计算结果，然后直接走缓存即可。</p>
-</li>
-</ul>
-<h3 id="Redis缓存一致性的解决方案"><a href="#Redis缓存一致性的解决方案" class="headerlink" title="Redis缓存一致性的解决方案"></a>Redis缓存一致性的解决方案</h3><p>解决的办法是，如果服务对耗时不是特别敏感可以增加重试；如果服务对耗时敏感可以通过异步补偿任务来处理失败的更新，或者短期的数据不一致不会影响业务，那么只要下次更新时可以成功，能保证最终一致性就可以。</p>
-<h3 id="持久化机制"><a href="#持久化机制" class="headerlink" title="持久化机制"></a>持久化机制</h3><p>主要是RDB和AOF策略，<a href="https://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/">可以参考这篇文章</a>.</p>
-<h3 id="为什么槽的个数是16384？"><a href="#为什么槽的个数是16384？" class="headerlink" title="为什么槽的个数是16384？"></a>为什么槽的个数是16384？</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/99037321">主要参考这个文章</a><br>总结下来就是：  </p>
 <ol>
-<li>如果槽位为65536，发送心跳信息的消息头达8k，发送的心跳包过于庞大。</li>
+<li>定时删除，创建过期时间的同时创建一个定时器，让定时器在键的过期时间删除；</li>
+<li>惰性删除，每次获取键的时候检查是否过期；</li>
+<li>定期删除，每隔一段时间主动删除过期键。</li>
 </ol>
-<p>如上所述，在消息头中，最占空间的是 myslots[CLUSTER_SLOTS&#x2F;8]。 当槽位为65536时，这块的大小是: 65536÷8÷1024&#x3D;8kb因为每秒钟，redis节点需要发送一定数量的ping消息作为心跳包，如果槽位为65536，这个ping消息的消息头太大了，浪费带宽。</p>
+<h3 id="AOF-x2F-RDB和复制功能对过期键的处理"><a href="#AOF-x2F-RDB和复制功能对过期键的处理" class="headerlink" title="AOF&#x2F;RDB和复制功能对过期键的处理"></a>AOF&#x2F;RDB和复制功能对过期键的处理</h3><ol>
+<li>RDB</li>
+</ol>
+<ul>
+<li>生成RDB文件时从数据库检查，过期不写入。</li>
+<li>载入RDB文件时：<ul>
+<li>主服务器模式下会对所有键进行检查，过期忽略。</li>
+<li>从服务器模式会将所有键载入，不检查。</li>
+</ul>
+</li>
+</ul>
 <ol start="2">
-<li>redis的集群主节点数量基本不可能超过1000个。</li>
+<li>AOF</li>
 </ol>
-<p>如上所述，集群节点越多，心跳包的消息体内携带的数据越多。如果节点过1000个，也会导致网络拥堵。因此redis作者，不建议redis cluster节点数量超过1000个。 那么，对于节点数在1000以内的redis cluster集群，16384个槽位够用了。没有必要拓展到65536个。</p>
+<ul>
+<li>生成AOF：当服务器以AOF持久化模式运行时，如果某个键过期，但还没有被删除时，不会对AOF文件产生影响。当过期键被删除之后，程序会向AOF文件追加一条DEL命令，显式地记录该键已被删除。</li>
+<li>重写：进行键过期检查，过期则不写。</li>
+</ul>
 <ol start="3">
-<li>槽位越小，节点少的情况下，压缩率高</li>
+<li>复制</li>
 </ol>
-<p>Redis主节点的配置信息中，它所负责的哈希槽是通过一张bitmap的形式来保存的，在传输过程中，会对bitmap进行压缩，但是如果bitmap的填充率slots &#x2F; N很高的话(N表示节点数)，bitmap的压缩率就很低。 如果节点数很少，而哈希槽数量很多的话，bitmap的压缩率就很低。<br>而16384÷8÷1024&#x3D;2kb。</p>
-<h3 id="过期策略"><a href="#过期策略" class="headerlink" title="过期策略"></a>过期策略</h3><h3 id="淘汰策略"><a href="#淘汰策略" class="headerlink" title="淘汰策略"></a>淘汰策略</h3><h3 id="Redis为什么那么快"><a href="#Redis为什么那么快" class="headerlink" title="Redis为什么那么快"></a>Redis为什么那么快</h3><h3 id="分布式锁"><a href="#分布式锁" class="headerlink" title="分布式锁"></a>分布式锁</h3>
+<ul>
+<li>主服务器删除，向从服务器发送DEL命令。</li>
+<li>从服务器执行读命令，忽略键过期。</li>
+<li>从服务器接到DEL删除键。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B7%B3%E8%B7%83%E8%A1%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B7%B3%E8%B7%83%E8%A1%A8/" class="post-title-link" itemprop="url">redis系列：跳跃表</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 02:01:47" itemprop="dateModified" datetime="2022-09-25T02:01:47+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p>数据结构如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> &#123;</span></span><br><span class="line">    <span class="comment">//成员对象</span></span><br><span class="line">    robj *obj;</span><br><span class="line">    <span class="comment">//分值</span></span><br><span class="line">    <span class="type">double</span> score;</span><br><span class="line">    <span class="comment">//后退指针</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">backward</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistLevel</span> &#123;</span></span><br><span class="line">        <span class="comment">//前进指针</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">forward</span>;</span></span><br><span class="line">        <span class="comment">//跨度</span></span><br><span class="line">        <span class="type">unsigned</span> <span class="type">int</span> span;</span><br><span class="line">    &#125; level[];</span><br><span class="line">&#125; zskiplistNode;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplist</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">header</span>, *<span class="title">tail</span>;</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> length;</span><br><span class="line">    <span class="type">int</span> level;</span><br><span class="line">&#125; zskiplist;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/redis-zlist-1.png"></p>
+<ul>
+<li>score是一个double类型树，跳表中所有节点按照分值排序</li>
+<li>obj（5.0版本为ele）:存储一个sds类型对象</li>
+</ul>
+<h3 id="内部实现"><a href="#内部实现" class="headerlink" title="内部实现"></a>内部实现</h3><ol>
+<li>节点层高</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> ZSKIPLIST_P 0.25 <span class="comment">/* Skiplist P = 1/4 */</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">zslRandomLevel</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    <span class="type">int</span> level = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> ((random()&amp;<span class="number">0xFFFF</span>) &lt; (ZSKIPLIST_P * <span class="number">0xFFFF</span>))</span><br><span class="line">    level += <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> (level&lt;ZSKIPLIST_MAXLEVEL) ? level : ZSKIPLIST_MAXLEVEL;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>level的初始值为1，通过while循环，每次生成一个随机值，取这个值的低16位作为x，当x小于0.25倍的0xFFFF时，level的值加1；否则退出while循环。最终返回level和ZSKIPLIST_MAXLEVEL两者中的最小值。<br>1）节点层高为1的概率为(1-p)。<br>2）节点层高为2的概率为p(1-p)。<br>3）节点层高为3的概率为p2 (1-p)。<br>4）……<br>5）节点层高为n的概率为pn-1 (1-p)。<br>节点期望层高为<font color = red> E &#x3D; 1 &#x2F; (1 - p) </font>.</p>
+<ol start="2">
+<li>创建跳跃表</li>
+</ol>
+<p>1）创建跳跃表结构体对象zsl。<br>2）将zsl的头节点指针指向新创建的头节点。<br>3）跳跃表层高初始化为1，长度初始化为0，尾节点指向NULL。  </p>
+<ol start="3">
+<li>插入节点</li>
+</ol>
+<ul>
+<li>查找要插入的位置</li>
+<li>调整跳跃表高度</li>
+<li>插入节点</li>
+<li>调整backward</li>
+</ul>
+<p>源代码中的大概思路就是通过for循环来对每个高度进行遍历，找到前驱和后继节点，通过rank和update两个数组记录，最后调整指针。</p>
+<ol start="4">
+<li>删除节点</li>
+</ol>
+<ul>
+<li>查找需要更新的节点</li>
+<li>设置span和forward</li>
+</ul>
+<h3 id="跳跃表应用"><a href="#跳跃表应用" class="headerlink" title="跳跃表应用"></a>跳跃表应用</h3><p>跳跃表主要应用于有序集合的底层实现（有序集合的另一种实现方式为压缩列表）。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%8D%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%8D%E5%88%B6/" class="post-title-link" itemprop="url">redis系列：复制</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 02:01:32" itemprop="dateModified" datetime="2022-09-25T02:01:32+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="完全复制"><a href="#完全复制" class="headerlink" title="完全复制"></a>完全复制</h3><ul>
+<li>第一步是同步<br>1）从服务器向主服务器发送SYNC命令。<br>2）收到SYNC命令的主服务器执行BGSAVE命令，在后台生成一个RDB文件，并使用一个缓冲区记录从现在开始执行的所有写命令。<br>3）BGSAVE命令执行完毕后，将生成的RDB文件传输给从服务器，从服务器接收到开始更新。<br>4）主服务器将记录在缓冲区的所有写命令发送给从服务器，从服务器状态更新。<br>如下图示例所示：<br><img src="/images/redis-sync-1.png"></li>
+<li>命令传播<br>主服务器将更改服务器状态的命令发送给从服务器。</li>
+</ul>
+<h3 id="部分复制"><a href="#部分复制" class="headerlink" title="部分复制"></a>部分复制</h3><p>完全复制在效率上比较低，应为每次都需要生成RDB文件，从服务器也需要从RDB恢复数据。因此考虑部分复制，在非第一次同步的情况下，只传播断线过程中执行的更改主服务器状态的命令。如下图所示：<br><img src="/images/redis-sync-2.png"><br>部分同步的实现有三个部分</p>
+<ul>
+<li>主服务器的复制偏移量和从服务器的复制偏移量。</li>
+<li>主服务器的复制积压缓冲区。</li>
+<li>服务器的运行ID。</li>
+</ul>
+<ol>
+<li>复制偏移量<br>主服务器每次传输N个字节数据，就将复制偏移量+N，从服务器收到N个字节，就加N，通过复制偏移量就可以知道是否是同步状态。</li>
+<li>积压缓冲区<br>复制积压缓冲区维护一个固定长度的队列，大小为1MB。固定长度就是说队列的长度是固定的，如果入队后队列长度超过固定值，就将多余的值弹出。队列会保存字节的复制偏移量和字节内容。<br><img src="/images/redis-sync-3.png"></li>
+</ol>
+<h3 id="复制的实现"><a href="#复制的实现" class="headerlink" title="复制的实现"></a>复制的实现</h3><p>通过向从服务器发送SLAVEOF命令，可以让从服务器复制一个主服务器。</p>
+<ul>
+<li>设置主服务器地址和端口<br>从服务器需要首先保存主服务器的地址和端口。</li>
+<li>建立套接字连接</li>
+<li>发送ping命令<br>有两个作用：<br>1）检查套接字读写是否正常。<br>2）检查主服务器是否能正产处理请求。<br>如果返回一个命令回复但从服务器无法在规定时间内读取命令回复的内容，那么表示网络连接异常。如果返回一个错误，那么主服务器无法处理。</li>
+<li>身份验证  </li>
+<li>发送端口数据</li>
+<li>同步</li>
+<li>命令传播</li>
+</ul>
+
       
     </div>
 
@@ -1335,7 +1308,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -1349,7 +1322,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">redis系列：数据库的实现</a>
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">redis系列：常见问题</a>
         </h2>
 
         <div class="post-meta">
@@ -1366,7 +1339,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:01:42" itemprop="dateModified" datetime="2022-09-25T02:01:42+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 02:01:17" itemprop="dateModified" datetime="2022-09-25T02:01:17+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1390,59 +1363,48 @@
 
       
           <span id="more"></span>
-<h3 id="服务端数据库"><a href="#服务端数据库" class="headerlink" title="服务端数据库"></a>服务端数据库</h3><p>redis中将所有的数据库信息保存在redisServer结构体中，结构体中的变量有两百多个，这里就不写了。<br>主要的结构成员是：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">redisServer</span>&#123;</span></span><br><span class="line">    redisDb* db;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>db成员指向一个redisDb数组，数组长度有dbnum决定：<br><img src="/images/redis-db-1.png"><br>默认情况下，目标数据库是0号数据库。如果需要更换数据库，修改指针即可。</p>
-<h3 id="数据库键空间"><a href="#数据库键空间" class="headerlink" title="数据库键空间"></a>数据库键空间</h3><p>redisDb结构体中保存了数据库中所有的键值对，因此将这个字典称为键空间：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">redisDb</span>&#123;</span></span><br><span class="line">    dict* dict;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>键空间中的键是数据库的键，每个键都是一个字符串对象</li>
-<li>键空间中的值是数据库的值，每个值可以是一个字符串对象，列表对象，哈希表对象，集合对象，有序集合对象中的一种。<br>表示如下图所示：<br><img src="/images/redis-db-2.png"></li>
-</ul>
-<h3 id="读写键空间时的维护操作"><a href="#读写键空间时的维护操作" class="headerlink" title="读写键空间时的维护操作"></a>读写键空间时的维护操作</h3><ul>
-<li>读取一个键之后，服务器会更新键的LRU时间，这个可以用于计算键的闲置时间。</li>
-<li>如果在读取一个键时发现已经过期，服务器会删除这个过期键然后执行其他操作。</li>
-<li>如果客户端使用watch命令监视了某个键，会将这个键标记为脏，从而让事务程序注意到这个键已经被修改过。</li>
-<li>每次修改键之后，都会对脏键计数器加1，计数器会出发服务器的持久化和复制操作。</li>
-<li>如果开启数据库通知，在对键修改之后，服务器将按配置发送相应的数据库通知。</li>
-</ul>
-<h3 id="过期时间"><a href="#过期时间" class="headerlink" title="过期时间"></a>过期时间</h3><p>redisDb结构的expires字典保存了数据库所有键的过期时间，称为过期字典。<br><img src="/images/redis-db-3.png"></p>
-<ul>
-<li>设置过期时间通过向过期字典添加键值对实现。</li>
-<li>删除过期时间则直接在过期字典中移除，移除策略有三种：</li>
-</ul>
-<ol>
-<li>定时删除，创建过期时间的同时创建一个定时器，让定时器在键的过期时间删除；</li>
-<li>惰性删除，每次获取键的时候检查是否过期；</li>
-<li>定期删除，每隔一段时间主动删除过期键。</li>
-</ol>
-<h3 id="AOF-x2F-RDB和复制功能对过期键的处理"><a href="#AOF-x2F-RDB和复制功能对过期键的处理" class="headerlink" title="AOF&#x2F;RDB和复制功能对过期键的处理"></a>AOF&#x2F;RDB和复制功能对过期键的处理</h3><ol>
-<li>RDB</li>
+<h3 id="Redis常用数据结构和使用场景（Zset中跳表数据结构）"><a href="#Redis常用数据结构和使用场景（Zset中跳表数据结构）" class="headerlink" title="Redis常用数据结构和使用场景（Zset中跳表数据结构）"></a>Redis常用数据结构和使用场景（Zset中跳表数据结构）</h3><h3 id="缓存击穿-缓存穿透-缓存雪崩"><a href="#缓存击穿-缓存穿透-缓存雪崩" class="headerlink" title="缓存击穿 缓存穿透 缓存雪崩"></a>缓存击穿 缓存穿透 缓存雪崩</h3><ol>
+<li>缓存击穿：<br>访问一个缓存和数据库都不存在的 key，此时会直接打到数据库上，并且查不到数据，没法写缓存，所以下一次同样会打到数据库上。<br>此时，缓存起不到作用，请求每次都会走到数据库，流量大时数据库可能会被打挂。此时缓存就好像被“穿透”了一样，起不到任何作用。<br>解决方案：</li>
 </ol>
 <ul>
-<li>生成RDB文件时从数据库检查，过期不写入。</li>
-<li>载入RDB文件时：<ul>
-<li>主服务器模式下会对所有键进行检查，过期忽略。</li>
-<li>从服务器模式会将所有键载入，不检查。</li>
-</ul>
-</li>
+<li>接口校验。在正常业务流程中可能会存在少量访问不存在 key 的情况，但是一般不会出现大量的情况，所以这种场景最大的可能性是遭受了非法攻击。可以在最外层先做一层校验：用户鉴权、数据合法性校验等，例如商品查询中，商品的ID是正整数，则可以直接对非正整数直接过滤等等。</li>
+<li>缓存空值。当访问缓存和DB都没有查询到值时，可以将空值写进缓存，但是设置较短的过期时间，该时间需要根据产品业务特性来设置。</li>
+<li>布隆过滤器。使用布隆过滤器存储所有可能访问的 key，不存在的 key 直接被过滤，存在的 key 则再进一步查询缓存和数据库。</li>
 </ul>
 <ol start="2">
-<li>AOF</li>
+<li>缓存穿透<br>某一个热点 key，在缓存过期的一瞬间，同时有大量的请求打进来，由于此时缓存过期了，所以请求最终都会走到数据库，造成瞬时数据库请求量大、压力骤增，甚至可能打垮数据库。<br>解决方案</li>
 </ol>
 <ul>
-<li>生成AOF：当服务器以AOF持久化模式运行时，如果某个键过期，但还没有被删除时，不会对AOF文件产生影响。当过期键被删除之后，程序会向AOF文件追加一条DEL命令，显式地记录该键已被删除。</li>
-<li>重写：进行键过期检查，过期则不写。</li>
+<li>加互斥锁。在并发的多个请求中，只有第一个请求线程能拿到锁并执行数据库查询操作，其他的线程拿不到锁就阻塞等着，等到第一个线程将数据写入缓存后，直接走缓存。（现在主流的方法就是加Redis分布式锁）</li>
+<li>热点数据不过期。直接将缓存设置为不过期，然后由定时任务去异步加载数据，更新缓存。<br>这种方式适用于比较极端的场景，例如流量特别特别大的场景，使用时需要考虑业务能接受数据不一致的时间，还有就是异常情况的处理，不要到时候缓存刷新不上，一直是脏数据，那就凉了。</li>
 </ul>
 <ol start="3">
-<li>复制</li>
+<li>缓存雪崩<br>大量的热点 key 设置了相同的过期时间，导在缓存在同一时刻全部失效，造成瞬时数据库请求量大、压力骤增，引起雪崩，甚至导致数据库被打挂。<br>缓存雪崩其实有点像“升级版的缓存击穿”，缓存击穿是一个热点 key，缓存雪崩是一组热点 key。<br>解决方案</li>
 </ol>
 <ul>
-<li>主服务器删除，向从服务器发送DEL命令。</li>
-<li>从服务器执行读命令，忽略键过期。</li>
-<li>从服务器接到DEL删除键。</li>
+<li><p>过期时间打散。既然是大量缓存集中失效，那最容易想到就是让他们不集中生效。可以给缓存的过期时间时加上一个随机值时间，使得每个 key 的过期时间分布开来，不会集中在同一时刻失效。</p>
+</li>
+<li><p>热点数据不过期。该方式和缓存击穿一样，也是要着重考虑刷新的时间间隔和数据异常如何处理的情况。</p>
+</li>
+<li><p>加互斥锁。该方式和缓存击穿一样，按 key 维度加锁，对于同一个 key，只允许一个线程去计算，其他线程原地阻塞等待第一个线程的计算结果，然后直接走缓存即可。</p>
+</li>
 </ul>
-
+<h3 id="Redis缓存一致性的解决方案"><a href="#Redis缓存一致性的解决方案" class="headerlink" title="Redis缓存一致性的解决方案"></a>Redis缓存一致性的解决方案</h3><p>解决的办法是，如果服务对耗时不是特别敏感可以增加重试；如果服务对耗时敏感可以通过异步补偿任务来处理失败的更新，或者短期的数据不一致不会影响业务，那么只要下次更新时可以成功，能保证最终一致性就可以。</p>
+<h3 id="持久化机制"><a href="#持久化机制" class="headerlink" title="持久化机制"></a>持久化机制</h3><p>主要是RDB和AOF策略，<a href="https://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/">可以参考这篇文章</a>.</p>
+<h3 id="为什么槽的个数是16384？"><a href="#为什么槽的个数是16384？" class="headerlink" title="为什么槽的个数是16384？"></a>为什么槽的个数是16384？</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/99037321">主要参考这个文章</a><br>总结下来就是：  </p>
+<ol>
+<li>如果槽位为65536，发送心跳信息的消息头达8k，发送的心跳包过于庞大。</li>
+</ol>
+<p>如上所述，在消息头中，最占空间的是 myslots[CLUSTER_SLOTS&#x2F;8]。 当槽位为65536时，这块的大小是: 65536÷8÷1024&#x3D;8kb因为每秒钟，redis节点需要发送一定数量的ping消息作为心跳包，如果槽位为65536，这个ping消息的消息头太大了，浪费带宽。</p>
+<ol start="2">
+<li>redis的集群主节点数量基本不可能超过1000个。</li>
+</ol>
+<p>如上所述，集群节点越多，心跳包的消息体内携带的数据越多。如果节点过1000个，也会导致网络拥堵。因此redis作者，不建议redis cluster节点数量超过1000个。 那么，对于节点数在1000以内的redis cluster集群，16384个槽位够用了。没有必要拓展到65536个。</p>
+<ol start="3">
+<li>槽位越小，节点少的情况下，压缩率高</li>
+</ol>
+<p>Redis主节点的配置信息中，它所负责的哈希槽是通过一张bitmap的形式来保存的，在传输过程中，会对bitmap进行压缩，但是如果bitmap的填充率slots &#x2F; N很高的话(N表示节点数)，bitmap的压缩率就很低。 如果节点数很少，而哈希槽数量很多的话，bitmap的压缩率就很低。<br>而16384÷8÷1024&#x3D;2kb。</p>
+<h3 id="过期策略"><a href="#过期策略" class="headerlink" title="过期策略"></a>过期策略</h3><h3 id="淘汰策略"><a href="#淘汰策略" class="headerlink" title="淘汰策略"></a>淘汰策略</h3><h3 id="Redis为什么那么快"><a href="#Redis为什么那么快" class="headerlink" title="Redis为什么那么快"></a>Redis为什么那么快</h3><h3 id="分布式锁"><a href="#分布式锁" class="headerlink" title="分布式锁"></a>分布式锁</h3>
       
     </div>
 
@@ -1528,7 +1490,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">137</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1578,6 +1540,26 @@
   </div>
 
         
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
 
 
 

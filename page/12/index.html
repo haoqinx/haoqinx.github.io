@@ -192,6 +192,132 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88%EF%BC%882%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%E6%9D%82%E8%B0%88%EF%BC%882%EF%BC%89/" class="post-title-link" itemprop="url">effective-c++系列：对象模型杂谈（2）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-08-20 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-20T00:00:00+08:00">2021-08-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-09-25 01:57:01" itemprop="dateModified" datetime="2022-09-25T01:57:01+08:00">2022-09-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="在构造函数和析构函数中能调用虚函数吗？"><a href="#在构造函数和析构函数中能调用虚函数吗？" class="headerlink" title="在构造函数和析构函数中能调用虚函数吗？"></a>在构造函数和析构函数中能调用虚函数吗？</h3><ul>
+<li><p>严禁在构造函数中调用虚函数</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="type">int</span> data;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">dosome</span><span class="params">()</span><span class="type">const</span></span>&#123;&#125;;</span><br><span class="line">    <span class="built_in">A</span>()&#123;</span><br><span class="line">        <span class="built_in">dosome</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span> : <span class="keyword">public</span> A&#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">dosome</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line">B b;<span class="comment">//往往会出现意想不到的错误</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果在父类的构造函数中调用虚函数，当使用子类对象的时候，会首先调用父类的构造函数。  </li>
+<li>在父类构造函数执行过程中，this指针为base class对象，因此在dosome()函数中的操作是在父类对象中完成的。</li>
+<li><font color=orange>由于虚函数dosome()在父类对象中完成，往往达不到多态（延迟绑定）的目的。</font></li>
+</ul>
+</li>
+<li><p>严禁在析构函数中调用虚函数</p>
+<ul>
+<li>在子类对象析构时顺序为先将自身的local data释放，然后调用父类的析构函数，如果父类析构存在虚函数，那么编译器会有两种选择：调用虚函数的基类版本或者调用虚函数的派生类版本。</li>
+<li>如果调用派生类版本的函数，此时子类部分已经释放，会导致严重错误。</li>
+<li><font color=orange>实际情况是编译器会调用基类版本的虚函数，那么和构造函数一样，不会发生多态。</font></li>
+</ul>
+</li>
+<li><p>解决方式</p>
+<ul>
+<li>将在构造或析构函数中调用的函数设置为non-virtual，要求子类对象在构造时传递必要的信息。</li>
+</ul>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="type">int</span> data;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">dosome</span><span class="params">(<span class="type">const</span> string&amp; info)</span><span class="type">const</span></span>&#123;&#125;;</span><br><span class="line">    <span class="built_in">A</span>(<span class="type">const</span> string&amp; info)&#123;</span><br><span class="line">        <span class="built_in">dosome</span>(info);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span> : <span class="keyword">public</span> A&#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">    <span class="function"><span class="type">static</span> string <span class="title">createParamter</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">dosome</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line">    <span class="built_in">B</span>():<span class="built_in">A</span>(<span class="built_in">createParamter</span>())&#123;&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="如果new、delete、delete-没有成对使用会发生什么？"><a href="#如果new、delete、delete-没有成对使用会发生什么？" class="headerlink" title="如果new、delete、delete[]没有成对使用会发生什么？"></a>如果new、delete、delete[]没有成对使用会发生什么？</h3><p><img src="/images/001.png">  </p>
+<center>单个对象和对象数组的内存布局</center>
+
+<ul>
+<li><p>使用delete释放对象数组</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">string* s = <span class="keyword">new</span> string[<span class="number">100</span>];</span><br><span class="line"><span class="comment">//do something</span></span><br><span class="line"><span class="keyword">delete</span> s;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>上述情况下，只会调用第一个s的函数，其余99个对象不执行任何操作，后面程序也不会再拿到其句柄，从而会造成内存泄露。</li>
+<li>实际上，对于一组对象，delete[]会寻找数组前的一个count计数来获取数组长度。</li>
+</ul>
+</li>
+<li><p>使用delete[]释放单个对象</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">string* s = <span class="keyword">new</span> string;</span><br><span class="line"><span class="comment">//do something</span></span><br><span class="line"><span class="keyword">delete</span>[] s;<span class="comment">// Exception has occurred.Segmentation fault</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>delete[]在内存中读取s指针前4字节内存作为数组长度，这样做显然是非法的。</li>
+</ul>
+</li>
+</ul>
+<h3 id="设计一个class需要注意什么？"><a href="#设计一个class需要注意什么？" class="headerlink" title="设计一个class需要注意什么？"></a>设计一个class需要注意什么？</h3><ul>
+<li>对象创建和销毁（构造、析构函数、内存分配）</li>
+<li>对象初始化和赋值</li>
+<li>对象如果pass by value应该怎么做？（如果对象内存在指针，是否需要深拷贝）</li>
+<li>定义class约束（数据类型检查）</li>
+<li>继承或者被继承</li>
+<li>类型转换（隐式类型转换）</li>
+<li>操作符重载</li>
+<li>标准函数是否适用（拷贝赋值，拷贝构造）</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/08/20/effective-cpp%E7%B3%BB%E5%88%97%EF%BC%9A%E5%BC%95%E7%94%A8%E6%B5%85%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1002,87 +1128,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2020/10/31/%E5%AF%B9%E7%A7%B0%E5%8D%8F%E7%A8%8B%E5%92%8C%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8D%8F%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/10/31/%E5%AF%B9%E7%A7%B0%E5%8D%8F%E7%A8%8B%E5%92%8C%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8D%8F%E7%A8%8B/" class="post-title-link" itemprop="url">对称协程和非对称协程</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-10-31 00:00:00" itemprop="dateCreated datePublished" datetime="2020-10-31T00:00:00+08:00">2020-10-31</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:05:27" itemprop="dateModified" datetime="2022-09-25T02:05:27+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%8D%8F%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">协程</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>对称协程和非对称协程</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/10/31/%E5%AF%B9%E7%A7%B0%E5%8D%8F%E7%A8%8B%E5%92%8C%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8D%8F%E7%A8%8B/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2020/10/31/%E5%BD%BB%E5%BA%95%E5%BC%84%E6%B8%85%E5%B0%BE%E9%80%92%E5%BD%92/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1164,7 +1209,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2020/10/26/C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%EF%BC%9A%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2020/10/31/%E5%AF%B9%E7%A7%B0%E5%8D%8F%E7%A8%8B%E5%92%8C%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8D%8F%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -1178,7 +1223,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/10/26/C++%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B%EF%BC%9A%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/" class="post-title-link" itemprop="url">C++对象模型：构造函数</a>
+            <a href="/2020/10/31/%E5%AF%B9%E7%A7%B0%E5%8D%8F%E7%A8%8B%E5%92%8C%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8D%8F%E7%A8%8B/" class="post-title-link" itemprop="url">对称协程和非对称协程</a>
         </h2>
 
         <div class="post-meta">
@@ -1188,14 +1233,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-10-26 00:00:00" itemprop="dateCreated datePublished" datetime="2020-10-26T00:00:00+08:00">2020-10-26</time>
+              <time title="Created: 2020-10-31 00:00:00" itemprop="dateCreated datePublished" datetime="2020-10-31T00:00:00+08:00">2020-10-31</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:55:20" itemprop="dateModified" datetime="2022-09-25T01:55:20+08:00">2022-09-25</time>
+                <time title="Modified: 2022-09-25 02:05:27" itemprop="dateModified" datetime="2022-09-25T02:05:27+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1203,7 +1248,7 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                  <a href="/categories/%E5%8D%8F%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">协程</span></a>
                 </span>
             </span>
 
@@ -1218,53 +1263,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h3 id="编译器何时生成默认构造函数？"><a href="#编译器何时生成默认构造函数？" class="headerlink" title="编译器何时生成默认构造函数？"></a>编译器何时生成默认构造函数？</h3><p><font color = orange>编译器生成的构造函数只适用于编译器的正确性，类内的数据初始化不由编译器负责!</font></p>
-<ol>
-<li>如果一个class内部含有一个成员对象，并且这个对象有默认构造函数，那么编译器就会为这个class生成默认构造函数。</li>
-<li>此class继承自一个含有默认构造函数的基类。</li>
-<li>带有virtual function的Class或者继承了一个含有virtual fuction的父类。</li>
-<li>使用了虚继承的类。<br>存在两个误解：  </li>
-<li>任何class如果没有定义默认构造，编译器会生成。（错，编译器只会在需要的时候生成）</li>
-<li>编译器生成的默认构造会明确初始化。（错，编译器不会初始化成员变量，这是程序设计者的活！)</li>
-</ol>
-<h3 id="拷贝构造函数"><a href="#拷贝构造函数" class="headerlink" title="拷贝构造函数"></a>拷贝构造函数</h3><ol>
-<li><p>何时会用到拷贝构造？</p>
-<ul>
-<li>明确初始化</li>
-</ul>
- <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">X</span>&#123;&#125;;</span><br><span class="line">X xx;</span><br><span class="line">X xxx = xx; <span class="comment">// 拷贝构造</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>函数值传递</li>
-</ul>
- <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">X xx;</span><br><span class="line"><span class="built_in">func</span>(xx); <span class="comment">// 函数内部拷贝副本</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>函数内对象返回(此处在g++7.5版本中没有调用拷贝构造，直接返回了对象，属于编译优化)</li>
-</ul>
- <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">X</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">X</span>()&#123;&#125;</span><br><span class="line">    <span class="built_in">X</span>(<span class="type">const</span> X&amp; x)&#123;</span><br><span class="line">        i = x.i;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;copy&quot;</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">X <span class="title">func</span><span class="params">()</span></span>&#123;</span><br><span class="line">    X xx;</span><br><span class="line">    xx.i = <span class="number">10</span>;</span><br><span class="line">    cout &lt;&lt; (<span class="type">int</span> *)&amp;xx &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> xx;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    X x = <span class="built_in">func</span>();</span><br><span class="line">    cout &lt;&lt; (<span class="type">int</span> *)&amp;x;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//0x7ffffe3b1284</span></span><br><span class="line"><span class="comment">//0x7ffffe3b1284</span></span><br></pre></td></tr></table></figure></li>
-<li><p>编译器什么时候为我们生成拷贝构造？<br><font color = orange> 决定一个拷贝构造是否被合成取决于class是否展现 bitwise copy semantics. 当展现了bitwise copy semantics，编译器不会合成默认拷贝构造。</font></p>
-</li>
-</ol>
-<ul>
-<li><p>什么时候不展现所谓逐位拷贝？</p>
-<ul>
-<li>class内部的member object有拷贝构造。</li>
-<li>class继承自一个具有拷贝构造的父类。</li>
-<li>class含有虚函数。</li>
-<li>class的继承链上有基类含有虚函数。</li>
-</ul>
-</li>
-</ul>
-<ol start="3">
-<li>初始化列表</li>
-</ol>
-<ul>
-<li>使用初始化列表可以避免一次不必要的赋值拷贝</li>
-<li>记住初始化列表的初始化顺序是按照类内声明顺序就可以了，在初始化列表里如果某变量初始化依赖其他变量，在定义的时候记得调整先后顺序。</li>
-</ul>
-
+          <p>对称协程和非对称协程</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/10/31/%E5%AF%B9%E7%A7%B0%E5%8D%8F%E7%A8%8B%E5%92%8C%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8D%8F%E7%A8%8B/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1350,7 +1357,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">137</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1400,6 +1407,26 @@
   </div>
 
         
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
 
 
 
