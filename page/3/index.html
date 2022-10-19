@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideDownBigOut"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="星海横流 岁月成碑">
@@ -954,7 +954,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E7%B4%A2%E5%BC%95/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E8%A1%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -968,7 +968,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E7%B4%A2%E5%BC%95/" class="post-title-link" itemprop="url">InnoDB系列：索引</a>
+            <a href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E8%A1%A8/" class="post-title-link" itemprop="url">InnoDB系列：表结构</a>
         </h2>
 
         <div class="post-meta">
@@ -985,7 +985,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-10-19 17:33:22" itemprop="dateModified" datetime="2022-10-19T17:33:22+08:00">2022-10-19</time>
+                <time title="Modified: 2022-10-19 17:33:12" itemprop="dateModified" datetime="2022-10-19T17:33:12+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1008,14 +1008,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="B-树索引"><a href="#B-树索引" class="headerlink" title="B+树索引"></a>B+树索引</h2><ul>
-<li>聚集索引</li>
-<li>非聚集索引（辅助索引）</li>
-<li>Cardinality<ul>
-<li>获取B+树叶子节点的数据，记为A<br>  随机获得B+树索引中8个叶子节点。统计每个页不同记录的个数，分别记为P1,P2…P8<br>  计算cardinality &#x3D; (P1+P2+…P8)A&#x2F;8
+          <h2 id="表结构"><a href="#表结构" class="headerlink" title="表结构"></a>表结构</h2><p><a href="/images/mysql-4.png"></a><br>如图所示，Innodb表结构由表空间，段，区，页组成。<br>默认所有数据在共享表空间ibdata1.</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E7%B4%A2%E5%BC%95/#more" rel="contents">
+              <a class="btn" href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E8%A1%A8/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>

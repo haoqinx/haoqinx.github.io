@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideDownBigOut"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="3.0版本redis的动态字符串在3.0中的实现如下： 12345struct sdshdr &amp;#123;    unsigned int len;    unsigned int free;    char buf[];&amp;#125;;">
@@ -307,12 +307,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%8D%E5%88%B6/" rel="prev" title="redis系列：复制">
-      <i class="fa fa-chevron-left"></i> redis系列：复制
+    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9Araft%E5%92%8C%E5%A4%8D%E5%88%B6/" rel="prev" title="redis系列：raft一致性算法">
+      <i class="fa fa-chevron-left"></i> redis系列：raft一致性算法
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%93%A8%E5%85%B5%E5%92%8C%E9%9B%86%E7%BE%A4/" rel="next" title="redis系列：哨兵和集群">
-      redis系列：哨兵和集群 <i class="fa fa-chevron-right"></i>
+    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/" rel="next" title="redis系列：RDB & AOF">
+      redis系列：RDB & AOF <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
