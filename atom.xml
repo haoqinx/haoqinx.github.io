@@ -303,16 +303,20 @@
   </entry>
   
   <entry>
-    <title>k8s系列：基础概念</title>
-    <link href="http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/"/>
-    <id>http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</id>
+    <title>k8s系列：pod</title>
+    <link href="http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9Apod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E5%92%8C%E6%8E%A7%E5%88%B6%E5%99%A8/"/>
+    <id>http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9Apod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E5%92%8C%E6%8E%A7%E5%88%B6%E5%99%A8/</id>
     <published>2022-02-16T16:00:00.000Z</published>
-    <updated>2022-10-19T09:33:35.969Z</updated>
+    <updated>2022-10-19T09:33:44.135Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="borg系统"><a href="#borg系统" class="headerlink" title="borg系统"></a>borg系统</h3><p><a href="/images/k8s-1.png"></a></p><span id="more"></span><p>Master节点为奇数，scheduler向paxos写入数据，然后borglet监听到右自己的消息，就会执行命令。</p><h3 id="k8s架构"><a href="#k8s架构" class="headerlink" title="k8s架构"></a>k8s架构</h3><p><a href="/images/k8s-2.png"></a></p><p>和borg一样，但是中间加了一个apiserver层，etcd约等于paxos。</p><ul><li>scheduler：负责接收任务，选择合适的节点进行分配任务.</li><li>replication controller：负责控制node的副本数量，也就是删除或者创建pod.</li><li>apiserver：所有外界输入的入口，包括kubelet、kube proxy、replication controller、scheduler.</li><li>etcd：可信赖的分布式键值对数据库，存储k8s集群的所有重要信息，其内部结构如下图所示：<br><a href="/images/k8s-3.png"></a></li></ul><p>etcd使用http协议的c&#x2F;s架构，WAL是一种持久化策略，简单来说就是增量+完整备份，每一小段时间进行一个增量备份，每隔一大段时间进行完整备份，数据写入store中.</p><ul><li>kubelet：(CRI：container runtime interface)，操作docker，维护Pod的生命周期（pod运行在docker中）.</li><li>kube proxy：负责写入ipvs和iptables，执行负载均衡，实现pod和pod之间的通信.</li></ul><h3 id="其他概念"><a href="#其他概念" class="headerlink" title="其他概念"></a>其他概念</h3><ul><li>coreDNS：为集群中的SVC创建一个域名IP的对应关系解析。</li><li>dashboard：给k8s集群提供的B&#x2F;S访问体系。</li><li>ingress controller：官方只实现四层代理，ingress实现七层代理。</li><li>federation：提供一个可以跨集群中心多k8s统一管理功能。</li><li>prometheus：提供k8s集群的监控能力。</li><li>ELK：提供k8s日志统一管理平台。</li></ul>]]></content>
+    <content type="html"><![CDATA[<h3 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h3><ul><li>概念：多个docker的集合，有一个pause容器，其他容器共享这个容器的网络栈和存储，这样多个应用可以实现本地访问其他应用。</li><li>分类<ul><li>自主式pod（不是被控制器管理的pod）</li><li>控制器管理的pod<span id="more"></span></li></ul></li></ul><h3 id="Pod控制器"><a href="#Pod控制器" class="headerlink" title="Pod控制器"></a>Pod控制器</h3><ul><li>Replication Controller&#x2F; ReplicaSet &#x2F; Deployment</li></ul><p>RC保证容器应用的副本始终保持在用户定义的副本数，如果容器异常，自动创建新的pod替代，异常多出来的容器也会自动回收。  </p><p>RS相比RC多了集合式的selector。  </p><p>Deployment支持滚动更新。</p><ul><li>StatefullSet<br><a href="/images/k8s-5.png"></a></li><li>DaemonSet<br><a href="/images/k8s-6.png"></a></li></ul><h3 id="pod网络通讯模式"><a href="#pod网络通讯模式" class="headerlink" title="pod网络通讯模式"></a>pod网络通讯模式</h3><ul><li>同个pod多个容器之间：同过共享pause容器，使用lo回环网卡即可。</li><li>pod之间：overlay network。</li><li>pod与service之间：节点之间的iptable规则。</li></ul><p>下图展示了利用flann eld组件进行转发的原理图，flanneld可以使整个网络扁平化：<br><a href="/images/k8s-7.png"></a></p><ol><li>假如webapp2想要访问backend，怎么同过内网ip进行通信？</li></ol><ul><li>首先webApp2发送数据到docker0</li><li>docker0数据经过flannel0网桥转发</li><li>flanneld存放有etcd的数据信息，会对数据包进行封装，如右图所示，首先写入目标主机mac地址，然后写入目标主机和本机的内网ip，通过udp协议传输到目标主机。</li><li>目标flanneld接受到数据包，进行逆向解封</li></ul><p>Q：etcd想flannel提供了什么数据？<br>A：1.存储管理flannel可分配的ip地址段资源。2.flannel监控每个pod的实际地址，在内存中建立维护pod节点路由表。</p><ol start="2"><li><p>pod到Service的网络<br>目前基于性能考虑。全部为LVS维护和转发。</p></li><li><p>pod到外网</p></li></ol><p>pod向外网发送请求，查找路由表，转发数据包到宿主机网卡，宿主机网卡完成路由选择后，iptables执行masquerade，把源ip更改为宿主网卡的ip，然后向往往服务器发送请求。</p><ol start="4"><li>外网访问pod：通过Service</li></ol>]]></content>
     
     
-    <summary type="html">&lt;h3 id=&quot;borg系统&quot;&gt;&lt;a href=&quot;#borg系统&quot; class=&quot;headerlink&quot; title=&quot;borg系统&quot;&gt;&lt;/a&gt;borg系统&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;/images/k8s-1.png&quot;&gt;&lt;/a&gt;&lt;/p&gt;</summary>
+    <summary type="html">&lt;h3 id=&quot;Pod&quot;&gt;&lt;a href=&quot;#Pod&quot; class=&quot;headerlink&quot; title=&quot;Pod&quot;&gt;&lt;/a&gt;Pod&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;概念：多个docker的集合，有一个pause容器，其他容器共享这个容器的网络栈和存储，这样多个应用可以实现本地访问其他应用。&lt;/li&gt;
+&lt;li&gt;分类&lt;ul&gt;
+&lt;li&gt;自主式pod（不是被控制器管理的pod）&lt;/li&gt;
+&lt;li&gt;控制器管理的pod</summary>
     
     
     
@@ -348,20 +352,16 @@
   </entry>
   
   <entry>
-    <title>k8s系列：pod</title>
-    <link href="http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9Apod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E5%92%8C%E6%8E%A7%E5%88%B6%E5%99%A8/"/>
-    <id>http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9Apod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E5%92%8C%E6%8E%A7%E5%88%B6%E5%99%A8/</id>
+    <title>k8s系列：基础概念</title>
+    <link href="http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/"/>
+    <id>http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</id>
     <published>2022-02-16T16:00:00.000Z</published>
-    <updated>2022-10-19T09:33:44.135Z</updated>
+    <updated>2022-10-19T09:33:35.969Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h3><ul><li>概念：多个docker的集合，有一个pause容器，其他容器共享这个容器的网络栈和存储，这样多个应用可以实现本地访问其他应用。</li><li>分类<ul><li>自主式pod（不是被控制器管理的pod）</li><li>控制器管理的pod<span id="more"></span></li></ul></li></ul><h3 id="Pod控制器"><a href="#Pod控制器" class="headerlink" title="Pod控制器"></a>Pod控制器</h3><ul><li>Replication Controller&#x2F; ReplicaSet &#x2F; Deployment</li></ul><p>RC保证容器应用的副本始终保持在用户定义的副本数，如果容器异常，自动创建新的pod替代，异常多出来的容器也会自动回收。  </p><p>RS相比RC多了集合式的selector。  </p><p>Deployment支持滚动更新。</p><ul><li>StatefullSet<br><a href="/images/k8s-5.png"></a></li><li>DaemonSet<br><a href="/images/k8s-6.png"></a></li></ul><h3 id="pod网络通讯模式"><a href="#pod网络通讯模式" class="headerlink" title="pod网络通讯模式"></a>pod网络通讯模式</h3><ul><li>同个pod多个容器之间：同过共享pause容器，使用lo回环网卡即可。</li><li>pod之间：overlay network。</li><li>pod与service之间：节点之间的iptable规则。</li></ul><p>下图展示了利用flann eld组件进行转发的原理图，flanneld可以使整个网络扁平化：<br><a href="/images/k8s-7.png"></a></p><ol><li>假如webapp2想要访问backend，怎么同过内网ip进行通信？</li></ol><ul><li>首先webApp2发送数据到docker0</li><li>docker0数据经过flannel0网桥转发</li><li>flanneld存放有etcd的数据信息，会对数据包进行封装，如右图所示，首先写入目标主机mac地址，然后写入目标主机和本机的内网ip，通过udp协议传输到目标主机。</li><li>目标flanneld接受到数据包，进行逆向解封</li></ul><p>Q：etcd想flannel提供了什么数据？<br>A：1.存储管理flannel可分配的ip地址段资源。2.flannel监控每个pod的实际地址，在内存中建立维护pod节点路由表。</p><ol start="2"><li><p>pod到Service的网络<br>目前基于性能考虑。全部为LVS维护和转发。</p></li><li><p>pod到外网</p></li></ol><p>pod向外网发送请求，查找路由表，转发数据包到宿主机网卡，宿主机网卡完成路由选择后，iptables执行masquerade，把源ip更改为宿主网卡的ip，然后向往往服务器发送请求。</p><ol start="4"><li>外网访问pod：通过Service</li></ol>]]></content>
+    <content type="html"><![CDATA[<h3 id="borg系统"><a href="#borg系统" class="headerlink" title="borg系统"></a>borg系统</h3><p><a href="/images/k8s-1.png"></a></p><span id="more"></span><p>Master节点为奇数，scheduler向paxos写入数据，然后borglet监听到右自己的消息，就会执行命令。</p><h3 id="k8s架构"><a href="#k8s架构" class="headerlink" title="k8s架构"></a>k8s架构</h3><p><a href="/images/k8s-2.png"></a></p><p>和borg一样，但是中间加了一个apiserver层，etcd约等于paxos。</p><ul><li>scheduler：负责接收任务，选择合适的节点进行分配任务.</li><li>replication controller：负责控制node的副本数量，也就是删除或者创建pod.</li><li>apiserver：所有外界输入的入口，包括kubelet、kube proxy、replication controller、scheduler.</li><li>etcd：可信赖的分布式键值对数据库，存储k8s集群的所有重要信息，其内部结构如下图所示：<br><a href="/images/k8s-3.png"></a></li></ul><p>etcd使用http协议的c&#x2F;s架构，WAL是一种持久化策略，简单来说就是增量+完整备份，每一小段时间进行一个增量备份，每隔一大段时间进行完整备份，数据写入store中.</p><ul><li>kubelet：(CRI：container runtime interface)，操作docker，维护Pod的生命周期（pod运行在docker中）.</li><li>kube proxy：负责写入ipvs和iptables，执行负载均衡，实现pod和pod之间的通信.</li></ul><h3 id="其他概念"><a href="#其他概念" class="headerlink" title="其他概念"></a>其他概念</h3><ul><li>coreDNS：为集群中的SVC创建一个域名IP的对应关系解析。</li><li>dashboard：给k8s集群提供的B&#x2F;S访问体系。</li><li>ingress controller：官方只实现四层代理，ingress实现七层代理。</li><li>federation：提供一个可以跨集群中心多k8s统一管理功能。</li><li>prometheus：提供k8s集群的监控能力。</li><li>ELK：提供k8s日志统一管理平台。</li></ul>]]></content>
     
     
-    <summary type="html">&lt;h3 id=&quot;Pod&quot;&gt;&lt;a href=&quot;#Pod&quot; class=&quot;headerlink&quot; title=&quot;Pod&quot;&gt;&lt;/a&gt;Pod&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;概念：多个docker的集合，有一个pause容器，其他容器共享这个容器的网络栈和存储，这样多个应用可以实现本地访问其他应用。&lt;/li&gt;
-&lt;li&gt;分类&lt;ul&gt;
-&lt;li&gt;自主式pod（不是被控制器管理的pod）&lt;/li&gt;
-&lt;li&gt;控制器管理的pod</summary>
+    <summary type="html">&lt;h3 id=&quot;borg系统&quot;&gt;&lt;a href=&quot;#borg系统&quot; class=&quot;headerlink&quot; title=&quot;borg系统&quot;&gt;&lt;/a&gt;borg系统&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;/images/k8s-1.png&quot;&gt;&lt;/a&gt;&lt;/p&gt;</summary>
     
     
     
