@@ -6,7 +6,7 @@
   <link href="http://haoqinx.github.io/atom.xml" rel="self"/>
   
   <link href="http://haoqinx.github.io/"/>
-  <updated>2022-10-19T08:39:56.874Z</updated>
+  <updated>2022-10-19T09:12:46.726Z</updated>
   <id>http://haoqinx.github.io/</id>
   
   <author>
@@ -17,41 +17,18 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title></title>
-    <link href="http://haoqinx.github.io/2022/10/19/MapReduce%E8%AE%BA%E6%96%87%E7%BF%BB%E8%AF%91/"/>
-    <id>http://haoqinx.github.io/2022/10/19/MapReduce%E8%AE%BA%E6%96%87%E7%BF%BB%E8%AF%91/</id>
-    <published>2022-10-19T08:38:28.076Z</published>
-    <updated>2022-10-19T08:39:56.874Z</updated>
-    
-    <content type="html"><![CDATA[<p>##MapReduce论文翻译</p><h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;##MapReduce论文翻译&lt;/p&gt;
-&lt;h3 id=&quot;Abstract&quot;&gt;&lt;a href=&quot;#Abstract&quot; class=&quot;headerlink&quot; title=&quot;Abstract&quot;&gt;&lt;/a&gt;Abstract&lt;/h3&gt;</summary>
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
     <title>CMU-cs445:Undo &amp;&amp; Redo</title>
     <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/"/>
     <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/</id>
     <published>2022-09-24T17:40:36.326Z</published>
-    <updated>2022-09-24T18:06:29.463Z</updated>
+    <updated>2022-10-19T09:12:46.726Z</updated>
     
-    <content type="html"><![CDATA[<span id="more"></span><h3 id="Undo-amp-Redo"><a href="#Undo-amp-Redo" class="headerlink" title="Undo &amp; Redo"></a>Undo &amp; Redo</h3><ul><li><p>Undo:移除一个终止的事务的影响</p></li><li><p>Redo：重新执行一个事务进行持久化</p></li><li><p>Steal Policy<br>允许未提交的事务回写到磁盘</p></li><li><p>Force Policy<br>要求所有事务提交之前必须回写到磁盘</p></li><li><p>No Steal + Force</p><ul><li>Shodow Paging<br><img src="/images/db-43.png"></li></ul></li><li><p>Steal + No Force</p><ul><li>write-ahead log<br><img src="/images/db-44.png"><br> 什么时间提交这些日志条目？<ul><li>事务提交时</li><li>组提交，这时会出现未提交事务的条目，但是不影响。</li></ul></li></ul></li><li><p>Logging Schemes</p><ul><li>Physical</li><li>Logical</li><li>Physiological<br><img src="/images/db-45.png"></li></ul></li><li><p>CheckPoints<br>使用预写日志，为了避免恢复时间过长，在某个时间点将所有脏页面持久化到磁盘。写入一个Checkpoint条目。</p></li></ul>]]></content>
+    <content type="html"><![CDATA[<h3 id="Undo-amp-Redo"><a href="#Undo-amp-Redo" class="headerlink" title="Undo &amp; Redo"></a>Undo &amp; Redo</h3><ul><li>Undo:移除一个终止的事务的影响</li><li>Redo：重新执行一个事务进行持久化<span id="more"></span></li><li>Steal Policy<br>允许未提交的事务回写到磁盘</li><li>Force Policy<br>要求所有事务提交之前必须回写到磁盘</li><li>No Steal + Force<ul><li>Shodow Paging<br><img src="/images/db-43.png"></li></ul></li><li>Steal + No Force<ul><li>write-ahead log<br><img src="/images/db-44.png"><br> 什么时间提交这些日志条目？<ul><li>事务提交时</li><li>组提交，这时会出现未提交事务的条目，但是不影响。</li></ul></li></ul></li><li>Logging Schemes<ul><li>Physical</li><li>Logical</li><li>Physiological<br><img src="/images/db-45.png"></li></ul></li><li>CheckPoints<br>使用预写日志，为了避免恢复时间过长，在某个时间点将所有脏页面持久化到磁盘。写入一个Checkpoint条目。</li></ul>]]></content>
     
     
-      
-      
-    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
-&lt;h3 id=&quot;Undo-amp-Redo&quot;&gt;&lt;a href=&quot;#Undo-amp-Redo&quot; class=&quot;headerlink&quot; title=&quot;Undo &amp;amp; Redo&quot;&gt;&lt;/a&gt;Undo &amp;amp; Redo&lt;/h3&gt;&lt;</summary>
-      
+    <summary type="html">&lt;h3 id=&quot;Undo-amp-Redo&quot;&gt;&lt;a href=&quot;#Undo-amp-Redo&quot; class=&quot;headerlink&quot; title=&quot;Undo &amp;amp; Redo&quot;&gt;&lt;/a&gt;Undo &amp;amp; Redo&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Undo:移除一个终止的事务的影响&lt;/li&gt;
+&lt;li&gt;Redo：重新执行一个事务进行持久化</summary>
     
     
     
@@ -67,95 +44,14 @@
     <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E5%BC%95%E6%93%8E%E5%AE%9E%E7%8E%B0/"/>
     <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E5%BC%95%E6%93%8E%E5%AE%9E%E7%8E%B0/</id>
     <published>2022-09-24T17:40:36.326Z</published>
-    <updated>2022-09-24T17:52:54.940Z</updated>
+    <updated>2022-10-19T09:12:14.349Z</updated>
     
-    <content type="html"><![CDATA[<span id="more"></span><h3 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h3><ul><li>数据库中的table不能完全放到内存中</li><li>计算得到的中间结果不能完全放入内存中</li></ul><h3 id="排序算法"><a href="#排序算法" class="headerlink" title="排序算法"></a>排序算法</h3><ul><li>外部排序（多路归并排序）<ul><li>读取B个page到内存，对page排序并且回写到磁盘</li><li>使用prefetch预读加速</li></ul></li><li>B+树<ul><li>如果需要排序的key作为b+树存储，可以复用b+树</li><li>只能在聚簇索引（物理相邻）的b+树上使用，因为如果不是聚簇索引，每次获得数据都需要一次磁盘io</li></ul></li></ul><h3 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h3><ul><li>排序聚合</li><li>非排序聚合<ul><li>external hashing aggregate<br>  <img src="/images/db-7.png"></li></ul></li></ul><h3 id="Join操作"><a href="#Join操作" class="headerlink" title="Join操作"></a>Join操作</h3><ul><li><p>data在查询语法树中的传递</p><ul><li>一个常规做法是将两个表所有属性拷贝到新表中，这样下面的操作不必再考虑前面的数据，也就是不用再到磁盘中进行retrieve.</li><li>另一种方法是指穿入我们所需的最小限度信息（join keys）.然后根据这些信息在后面的操作总从数据库中获取tuple的其他数据.这种方法叫做late materialization，对于列式存储比较友好，因为不用将其他列的信息粘合起来，这些信息通常位于不同的page中。现在这种优化很少，因为数据的获取（第一阶段）的代价通常很大。</li></ul></li><li><p>Nested Loop Join<br>  <img src="/images/db-8.png"><br>  <img src="/images/db-9.png"><br>  这是一种非常暴力的方法，一种优化手段是block nested loop join，这种方法把outter table的tuple缓存，减少了对inner table的io次数。<br>  <img src="/images/db-10.png"><br>  <img src="/images/db-11.png"><br>  另一种优化手段是index nested loop join，在内循环中去查询索引，这样避免了遍历操作，是O（logn）的复杂度，但是如果要查询的索引不是聚簇索引，还需要一次回表操作。<br>  <img src="/images/db-12.png"></p></li><li><p>Sort-Merge Join<br>  首先是对需要join的key(s)进行排序，然后利用两个游标在两个有序表上进行匹配。<br>  <img src="/images/db-13.png"></p></li><li><p>Hash Join<br>  原理就是对两个表中需要join的那个值进行hash操作，那么相同的值肯定会映射到一个partition中，我们每次只需要在一个partition中进行比较就行了。<br>  <img src="/images/db-14.png"><br>  在分布式场景下，可能两个表存在不同的主机上，那么传递哈希表是一个非常消耗资源的事，一个优化手段是使用布隆过滤器，布隆过滤器通常只有几kb大小，非常容易在主机之间进行网络通信，在建立第一个表的哈希表的时候填充布隆过滤器，那么我们对第二个表进行哈希的时候，可以直接判断是否存在。<br>  哈希之后的数据量可能非常大，不能放在内存中，因此我们可以使用Grace Hash Join优化。<br>  <img src="/images/db-15.png1"><br>  也就是分别对两个表进行哈希，然后对每对bucket进行Nested Loop Join，如果bucket也不能完全放到内存中，那就再进行一次哈希，递归进行。<br>  <img src="/images/db-16.png"></p></li><li><p>总结<br>  <img src="/images/db-17.png"></p></li></ul><h3 id="处理模型（processing-model）"><a href="#处理模型（processing-model）" class="headerlink" title="处理模型（processing model）"></a>处理模型（processing model）</h3><ul><li><p>迭代模型（Iterator Model）<br>  <img src="/images/db-18.png"><br>  每一个查询操作符都实现一个Next函数，函数调用其子节点的Next函数。Next每次处理一个tuple数据，需要迭代所有tuple才能完成所有操作。<br>  一些操作符必须获得所有子节点的tuple，例如Joins，Subqueries，Order By</p></li><li><p>Materialization Model<br>  不同于迭代模型，每次子节点都将整个结果传递给上层<br>  <img src="/images/db-19.png"><br>  在OLTP中进行点查询，这种方式比较高效，但是在OLAP中存在大量的中间结果，会产生锁延时，并且对于含有LIMIT的查询，如果数据量很大，每次传递给上层所有数据，这种资源消耗是不必要的。</p></li><li><p>Vectorization Model<br>  对迭代模型的优化，每次不是产生一个tuple，而是产生一个batch的tuple.<br>  <img src="/images/db-20.png"><br>  这种方式能够使用SIMD技术对数据进行分析计算，对于OLAP非常友好</p></li></ul><h3 id="Access-Method"><a href="#Access-Method" class="headerlink" title="Access Method"></a>Access Method</h3><ul><li>Sequential Scan<br>  普通遍历，对每页的tuple基于cursor做遍历，这通常效率非常低，有一些优化：预读，Buffer Pool Bypass，并行化，Zone Maps，Late Materialization，Heap CLustering<ul><li>Zone Maps：预先对page中的数据做聚合计算，DBMS在访问page的时候先去检查这些字段，如果不需要访问就直接跳过这个page<br>  <img src="/images/db-21.png"></li><li>Late Materialization：在列式存储数据库中，由于数据被按列存储到不同的page中，那么在每次opertaor之后，不用将整个tuple传给上层，直接传tuple对应的offset值，然后到root节点再到不同page中获取每一列的值。</li></ul></li><li>Index Scan<ul><li>Multi-Index Scan：通过不同的索引进行多次查找，基于我们的判断在对结果进行合并<br>  <img src="/images/db-22.png"></li><li>非聚簇索引的随机IO问题：对于非聚簇索引，我们可以不去一一随机IO，我们先将要访问的page id记录下来排序然后去一次访问page，拿到所有需要的tuple.</li></ul></li></ul><h3 id="表达式评估（Expression-Evaluation）"><a href="#表达式评估（Expression-Evaluation）" class="headerlink" title="表达式评估（Expression Evaluation）"></a>表达式评估（Expression Evaluation）</h3><p>DBMS将WHERE语句转化成一个expression tree<br><img src="/images/db-23.png"><br>每次遇到一个tuple，去匹配这个树，这样的话效率很低。</p>]]></content>
+    <content type="html"><![CDATA[<h3 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h3><ul><li>数据库中的table不能完全放到内存中</li><li>计算得到的中间结果不能完全放入内存中<span id="more"></span></li></ul><h3 id="排序算法"><a href="#排序算法" class="headerlink" title="排序算法"></a>排序算法</h3><ul><li>外部排序（多路归并排序）<ul><li>读取B个page到内存，对page排序并且回写到磁盘</li><li>使用prefetch预读加速</li></ul></li><li>B+树<ul><li>如果需要排序的key作为b+树存储，可以复用b+树</li><li>只能在聚簇索引（物理相邻）的b+树上使用，因为如果不是聚簇索引，每次获得数据都需要一次磁盘io</li></ul></li></ul><h3 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h3><ul><li>排序聚合</li><li>非排序聚合<ul><li>external hashing aggregate<br>  <img src="/images/db-7.png"></li></ul></li></ul><h3 id="Join操作"><a href="#Join操作" class="headerlink" title="Join操作"></a>Join操作</h3><ul><li><p>data在查询语法树中的传递</p><ul><li>一个常规做法是将两个表所有属性拷贝到新表中，这样下面的操作不必再考虑前面的数据，也就是不用再到磁盘中进行retrieve.</li><li>另一种方法是指穿入我们所需的最小限度信息（join keys）.然后根据这些信息在后面的操作总从数据库中获取tuple的其他数据.这种方法叫做late materialization，对于列式存储比较友好，因为不用将其他列的信息粘合起来，这些信息通常位于不同的page中。现在这种优化很少，因为数据的获取（第一阶段）的代价通常很大。</li></ul></li><li><p>Nested Loop Join<br>  <img src="/images/db-8.png"><br>  <img src="/images/db-9.png"><br>  这是一种非常暴力的方法，一种优化手段是block nested loop join，这种方法把outter table的tuple缓存，减少了对inner table的io次数。<br>  <img src="/images/db-10.png"><br>  <img src="/images/db-11.png"><br>  另一种优化手段是index nested loop join，在内循环中去查询索引，这样避免了遍历操作，是O（logn）的复杂度，但是如果要查询的索引不是聚簇索引，还需要一次回表操作。<br>  <img src="/images/db-12.png"></p></li><li><p>Sort-Merge Join<br>  首先是对需要join的key(s)进行排序，然后利用两个游标在两个有序表上进行匹配。<br>  <img src="/images/db-13.png"></p></li><li><p>Hash Join<br>  原理就是对两个表中需要join的那个值进行hash操作，那么相同的值肯定会映射到一个partition中，我们每次只需要在一个partition中进行比较就行了。<br>  <img src="/images/db-14.png"><br>  在分布式场景下，可能两个表存在不同的主机上，那么传递哈希表是一个非常消耗资源的事，一个优化手段是使用布隆过滤器，布隆过滤器通常只有几kb大小，非常容易在主机之间进行网络通信，在建立第一个表的哈希表的时候填充布隆过滤器，那么我们对第二个表进行哈希的时候，可以直接判断是否存在。<br>  哈希之后的数据量可能非常大，不能放在内存中，因此我们可以使用Grace Hash Join优化。<br>  <img src="/images/db-15.png1"><br>  也就是分别对两个表进行哈希，然后对每对bucket进行Nested Loop Join，如果bucket也不能完全放到内存中，那就再进行一次哈希，递归进行。<br>  <img src="/images/db-16.png"></p></li><li><p>总结<br>  <img src="/images/db-17.png"></p></li></ul><h3 id="处理模型（processing-model）"><a href="#处理模型（processing-model）" class="headerlink" title="处理模型（processing model）"></a>处理模型（processing model）</h3><ul><li><p>迭代模型（Iterator Model）<br>  <img src="/images/db-18.png"><br>  每一个查询操作符都实现一个Next函数，函数调用其子节点的Next函数。Next每次处理一个tuple数据，需要迭代所有tuple才能完成所有操作。<br>  一些操作符必须获得所有子节点的tuple，例如Joins，Subqueries，Order By</p></li><li><p>Materialization Model<br>  不同于迭代模型，每次子节点都将整个结果传递给上层<br>  <img src="/images/db-19.png"><br>  在OLTP中进行点查询，这种方式比较高效，但是在OLAP中存在大量的中间结果，会产生锁延时，并且对于含有LIMIT的查询，如果数据量很大，每次传递给上层所有数据，这种资源消耗是不必要的。</p></li><li><p>Vectorization Model<br>  对迭代模型的优化，每次不是产生一个tuple，而是产生一个batch的tuple.<br>  <img src="/images/db-20.png"><br>  这种方式能够使用SIMD技术对数据进行分析计算，对于OLAP非常友好</p></li></ul><h3 id="Access-Method"><a href="#Access-Method" class="headerlink" title="Access Method"></a>Access Method</h3><ul><li>Sequential Scan<br>  普通遍历，对每页的tuple基于cursor做遍历，这通常效率非常低，有一些优化：预读，Buffer Pool Bypass，并行化，Zone Maps，Late Materialization，Heap CLustering<ul><li>Zone Maps：预先对page中的数据做聚合计算，DBMS在访问page的时候先去检查这些字段，如果不需要访问就直接跳过这个page<br>  <img src="/images/db-21.png"></li><li>Late Materialization：在列式存储数据库中，由于数据被按列存储到不同的page中，那么在每次opertaor之后，不用将整个tuple传给上层，直接传tuple对应的offset值，然后到root节点再到不同page中获取每一列的值。</li></ul></li><li>Index Scan<ul><li>Multi-Index Scan：通过不同的索引进行多次查找，基于我们的判断在对结果进行合并<br>  <img src="/images/db-22.png"></li><li>非聚簇索引的随机IO问题：对于非聚簇索引，我们可以不去一一随机IO，我们先将要访问的page id记录下来排序然后去一次访问page，拿到所有需要的tuple.</li></ul></li></ul><h3 id="表达式评估（Expression-Evaluation）"><a href="#表达式评估（Expression-Evaluation）" class="headerlink" title="表达式评估（Expression Evaluation）"></a>表达式评估（Expression Evaluation）</h3><p>DBMS将WHERE语句转化成一个expression tree<br><img src="/images/db-23.png"><br>每次遇到一个tuple，去匹配这个树，这样的话效率很低。</p>]]></content>
     
     
-      
-      
-    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
-&lt;h3 id=&quot;关键点&quot;&gt;&lt;a href=&quot;#关键点&quot; class=&quot;headerlink&quot; title=&quot;关键点&quot;&gt;&lt;/a&gt;关键点&lt;/h3&gt;&lt;ul&gt;
+    <summary type="html">&lt;h3 id=&quot;关键点&quot;&gt;&lt;a href=&quot;#关键点&quot; class=&quot;headerlink&quot; title=&quot;关键点&quot;&gt;&lt;/a&gt;关键点&lt;/h3&gt;&lt;ul&gt;
 &lt;li&gt;数据库中的table不能完全放到内存中&lt;/li&gt;
-&lt;li&gt;计算得到的中间</summary>
-      
-    
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CMU-cs445:数据存储表示</title>
-    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%BA%8C%E8%A1%A8%E7%A4%BA/"/>
-    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%BA%8C%E8%A1%A8%E7%A4%BA/</id>
-    <published>2022-09-24T17:40:36.325Z</published>
-    <updated>2022-09-24T17:53:05.206Z</updated>
-    
-    <content type="html"><![CDATA[<span id="more"></span><h2 id="数据表示"><a href="#数据表示" class="headerlink" title="数据表示"></a>数据表示</h2><pre><code>涉及浮点数和定点数的存储，不同的是我们需要更多的信息去记录浮点数，包括字符串形式的数据以及其他辅助信息，运算过程为字符串相加相乘类似。</code></pre><h2 id="大数据表示"><a href="#大数据表示" class="headerlink" title="大数据表示"></a>大数据表示</h2><pre><code>当需要存储的数据大于单页大小，有以下解决方案- overflow page：存储指向overflow page的指针，如果仍然无法全部存储，就形成链表结构。通常比较难以维护，包括overflow page上的元信息。- 外部存储：数据库存一个文件路径。缺点是无法受到数据库保护。</code></pre><h2 id="catalogs"><a href="#catalogs" class="headerlink" title="catalogs"></a>catalogs</h2><pre><code>存储表，列，索引，视图，用户，权限，内部的统计信息等</code></pre><h2 id="workload"><a href="#workload" class="headerlink" title="workload"></a>workload</h2><pre><code>- OLTP(On-line Transaction Processing)    简单查询，每次读取或者更新数据库中很小一部分数据-  OLAP(On-line Analytical Processing)复杂查询，常常读取分析大批量数据</code></pre><h2 id="tuple存储形式"><a href="#tuple存储形式" class="headerlink" title="tuple存储形式"></a>tuple存储形式</h2><pre><code>- N-array tuple以行的形式存储    - 优点:插入更新删除快，对需要整个tuple的查询友好    - 缺点:对于全表扫描或者tuple一部分字段的查询不友好- Column store：每页存储相同字段的值。    - 优点:可以对数据进行压缩，降低字段查询时的系统io。    - 缺点:小数据的增删改查比较费时</code></pre>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
-&lt;h2 id=&quot;数据表示&quot;&gt;&lt;a href=&quot;#数据表示&quot; class=&quot;headerlink&quot; title=&quot;数据表示&quot;&gt;&lt;/a&gt;数据表示&lt;/h2&gt;&lt;pre&gt;&lt;code&gt;涉及浮点数和定点数的存储，不同的是我们需要更多的信息去记录浮</summary>
-      
-    
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CMU-cs445:查询优化</title>
-    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/"/>
-    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/</id>
-    <published>2022-09-24T17:40:36.325Z</published>
-    <updated>2022-09-24T17:52:59.079Z</updated>
-    
-    <content type="html"><![CDATA[<span id="more"></span><h3 id="查询优化"><a href="#查询优化" class="headerlink" title="查询优化"></a>查询优化</h3><ul><li>Heuristics&#x2F;Rules 规则&#x2F;静态触发</li></ul><p>当查询中的某些部分满足我们的规则或者条件，我们就重写这部分.这部分需要我们去检查catelog.</p><ul><li>Cost-based Search</li></ul><p>方法的思想是使用一个模型去评估一个查询的负载，然后使用多种不同的查询计划去替换这个查询，找出最小负载的方案。</p><p>下面是整个查询优化过程<br><img src="/images/db-26.png"></p><h3 id="Relational-Algebra-Equivalences-等价关系代数"><a href="#Relational-Algebra-Equivalences-等价关系代数" class="headerlink" title="Relational Algebra Equivalences(等价关系代数)"></a>Relational Algebra Equivalences(等价关系代数)</h3><ul><li>predicate pushdown:在join前尽量过滤数据。</li><li>对过滤条件进行排序，让更具有分辨性的条件排在前面。</li><li>对复杂判断进行简化</li><li>对于行存储类型数据库，projection越早越好。</li></ul><h3 id="Plan-Cost-Estimation"><a href="#Plan-Cost-Estimation" class="headerlink" title="Plan Cost Estimation"></a>Plan Cost Estimation</h3><ul><li>CPU</li><li>磁盘</li><li>内存</li><li>网络</li></ul><p>在数据库的catelog中，会维护相关信息，并且在特定时间或者遍历表的时候更跟这些信息，在执行查询之前，将这些变量带入公式，计算出最小代价的查询。在系统中，我们定义一些统计量：</p><ul><li>$N_R$: 关系R的tuple数量</li><li>V(A,R):属性A不同值的数量</li><li>Selection Cardinality：$N_R$&#x2F;V(A,R)</li><li>selectivity: 选择率，给定一个条件，计算table中符合条件的tuple数量</li><li>Range Predicate：计算范围值的比例，有点像概率计算，因此可以引入概率论中的结论,但是为了计算方便，有下面三个前提：<br><img src="/images/db-27.png"></li></ul><h5 id="直方图法"><a href="#直方图法" class="headerlink" title="直方图法"></a>直方图法</h5><p>对于数据分布不均匀的关系，在一些高端数据库中会使用直方图来跟踪数据的分布。对于数据量极大或者属性值分布很广的情况，我们会使用相同宽度的<strong>bucket</strong>来记录值的分布，但是这种情况会导致某个桶内数据分布极不均匀的情况，我们可以使用<strong>分位数</strong>来解决这个问题，即累计一定比例的数据分桶，桶的宽度可变，但是总体占比大致相当。</p><h5 id="采样法"><a href="#采样法" class="headerlink" title="采样法"></a>采样法</h5><p>对于直方图，其实是对表中数据的一种缩略表达，那么在大数据量的table中，我们可以直接采样来近似代表整个表的数据分布。当表进行大规模更新或者到达一个指定时间点，我们去更新这个采样表。</p><h3 id="Plan-Enumeration"><a href="#Plan-Enumeration" class="headerlink" title="Plan Enumeration"></a>Plan Enumeration</h3><h5 id="单关系查询计划"><a href="#单关系查询计划" class="headerlink" title="单关系查询计划"></a>单关系查询计划</h5><ul><li>循序遍历</li><li>二分查找（对于聚集索引）</li><li>索引遍历</li></ul><h5 id="多关系查询计划"><a href="#多关系查询计划" class="headerlink" title="多关系查询计划"></a>多关系查询计划</h5><ul><li><p>left-deep join tree<br><img src="/images/db-28.png"><br>在上面三个查询树中，System R不考虑后面两个，只考虑第一种。为什么采用第一种？后面两种实现过程中会有大量结果溢出到磁盘，影响性能。</p></li><li><p>步骤（System R based）<br><img src="/images/db-29.png"></p></li><li><p>步骤（遗传算法）<br><img src="/images/db-30.png"></p></li></ul><h3 id="Nested-Sub-queries"><a href="#Nested-Sub-queries" class="headerlink" title="Nested Sub-queries"></a>Nested Sub-queries</h3><p>通常情况下将where作为函数，穿入参数然后返回一组值，有两种方法进行查询优化：</p><ul><li>重写查询，去除关联性，让其扁平化</li><li>将内部查询提取出来作为单独查询来执行，将结果缓存起来，这样不用每次执行上层查询都再执行一次子查询</li></ul><p>(<a href="https://dbdb.io/">https://dbdb.io/</a>)</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
-&lt;h3 id=&quot;查询优化&quot;&gt;&lt;a href=&quot;#查询优化&quot; class=&quot;headerlink&quot; title=&quot;查询优化&quot;&gt;&lt;/a&gt;查询优化&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;Heuristics&amp;#x2F;Rules 规则&amp;#x2F;静态</summary>
-      
-    
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CMU-cs445:查询执行</title>
-    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C/"/>
-    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C/</id>
-    <published>2022-09-24T17:40:36.325Z</published>
-    <updated>2022-09-24T17:53:01.932Z</updated>
-    
-    <content type="html"><![CDATA[<span id="more"></span><h3 id="并行处理模型"><a href="#并行处理模型" class="headerlink" title="并行处理模型"></a>并行处理模型</h3><ul><li>Process per DBMS Worker<ul><li>使用一个进程处理一个请求</li><li>使用共享内存对全局数据进行共享，如buffer pool，不用将相同的page加载两次</li><li>单进程奔溃不会导致整个系统崩溃</li></ul></li><li>Process Pool<ul><li>使用进程池来处理请求</li><li>对cpu缓存不友好</li><li>减少了创建销毁进程开销</li></ul></li><li>Thread per DBMS Worker<ul><li>单进程多线程</li><li>线程崩溃导致进程崩溃</li><li>上下文切换开销很小</li><li>不需要管理共享内存</li></ul></li></ul><h3 id="并行查询方式"><a href="#并行查询方式" class="headerlink" title="并行查询方式"></a>并行查询方式</h3><ul><li><p>Inter-Query：同时执行多个查询</p></li><li><p>Intra-Query：同时执行一个查询的多个operator，一般有三种，注意下main这三种不是互斥的，他们可以相互组合。</p><ul><li>Intra-Operator（Horizontal）：将完整的操作拆分成多个平行的操作，也就是说把我们要处理的数据分成几段，并行处理，在DBMS中有一个特殊的exchange操作符，将数据分段，分别处理数据，然后最后将数据组合起来。exchange有三种类型：<ul><li>Gather：组合不同worker的数据合并成一个输出流传给上层操作符。</li><li>Repartition：将不同worker的数据分成不同的流，如group by</li><li>Distribute：将一个输入流转化成多个输出流<br>  <img src="/images/db-24.png"></li></ul></li><li>Inter-Operator（Vertical）：不同线程同一时间执行不同的operator.<br>  <img src="/images/db-25.png"></li><li>Bushy</li></ul></li></ul><h3 id="IO并行"><a href="#IO并行" class="headerlink" title="IO并行"></a>IO并行</h3><ul><li>multi-disk 并行：使用多个冗余磁盘存储相同的数据</li><li>database partitioning：将数据分成不相交的子集，分别存储在物理磁盘上单独管理<ul><li>垂直分区：将数据按照列进行分区</li><li>水平分区：将数据按照行进行分区</li></ul></li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
-&lt;h3 id=&quot;并行处理模型&quot;&gt;&lt;a href=&quot;#并行处理模型&quot; class=&quot;headerlink&quot; title=&quot;并行处理模型&quot;&gt;&lt;/a&gt;并行处理模型&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;Process per DBMS Worker&lt;</summary>
-      
+&lt;li&gt;计算得到的中间结果不能完全放入内存中</summary>
     
     
     
@@ -171,18 +67,14 @@
     <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%B8%80%E5%B8%83%E5%B1%80/"/>
     <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%B8%80%E5%B8%83%E5%B1%80/</id>
     <published>2022-09-24T17:40:36.325Z</published>
-    <updated>2022-09-24T17:53:08.840Z</updated>
+    <updated>2022-10-19T09:12:36.914Z</updated>
     
-    <content type="html"><![CDATA[<span id="more"></span><h2 id="存储层次"><a href="#存储层次" class="headerlink" title="存储层次"></a>存储层次</h2><p><img src="/images/db-1.png"></p><ul><li>tips：在数据库存储上尽量不要使用mmap，这会带来内存&#x2F;并发等一系列问题，会成为系统瓶颈。</li></ul><h2 id="页式存储引擎"><a href="#页式存储引擎" class="headerlink" title="页式存储引擎"></a>页式存储引擎</h2><ol><li>页<br> a. 数据往往存储在以页为单位的空间中，页中包含元数据&#x2F;索引&#x2F;表数据，有的数据库将元数据和对应的表数据存放在一起，为了保证其他页丢失的情况下本页不受影响。<br> b. 通常一页不会存放不同类型的数据，例如某页都是tuple，另一页全都是索引数据.<br> c. 每个page会被赋予一个唯一的内部标识符，系统会生成属于page的ID.<br> d. indirection层会吧page id映射到某个文件的某个位置（也就是记录一个相对位置，当文件整体移动后，使用相对位置+偏移量就能重新找到page）<br> e. 物理页和操作系统页都在4kb左右，数据库的页在512b～16kb</li><li>管理页的方式<br> a. Heap File Organization<br> b. Sequential&#x2F;sorted File Organization<br> c. Hashing File Organization</li><li>Heap File管理方式<br> heap file是许多页的无序集合，有两种组织形式：链表和页目录<ul><li>链表管理就是定义两个链表，一个数据链表表示都是存满的数据页，另一个时空闲链表，用来新写入数据。</li><li>页目录管理：使用一些特殊的页记录数据页page id和他的位置的映射关系，甚至可以记录页的剩余空间的大小。</li></ul></li><li>页头（page header）<ul><li>page size</li><li>checksum</li><li>DBMS version</li><li>transaction Visibility</li><li>压缩信息</li></ul></li><li>页内tuple布局<ul><li>长度固定方法：每个tuple固定长度</li><li>slotted pages：如下图所示，为了支持可变长度的记录作出的妥协。<br> <img src="/images/db-2.png"></li></ul></li><li>tuple布局<br> <img src="/images/db-3.png"><ul><li>header：Visibility info（并发控制信息），Bit Map for NULL values.header并不需要存储数据的元数据，因为他们都是按顺序记录的。</li><li>record数据按定义时顺序写入</li></ul></li></ol><h2 id="日志式文件布局"><a href="#日志式文件布局" class="headerlink" title="日志式文件布局"></a>日志式文件布局</h2><pre><code>![](/images/db-3.png)通过追加命令的方式记录信息，有点像redis的rdb模式比较出名的有leveldb，基于leveldb，移除其mmap的rocksdb等。</code></pre>]]></content>
+    <content type="html"><![CDATA[<h2 id="存储层次"><a href="#存储层次" class="headerlink" title="存储层次"></a>存储层次</h2><p><img src="/images/db-1.png"></p><ul><li>tips：在数据库存储上尽量不要使用mmap，这会带来内存&#x2F;并发等一系列问题，会成为系统瓶颈。<span id="more"></span></li></ul><h2 id="页式存储引擎"><a href="#页式存储引擎" class="headerlink" title="页式存储引擎"></a>页式存储引擎</h2><ol><li>页<br> a. 数据往往存储在以页为单位的空间中，页中包含元数据&#x2F;索引&#x2F;表数据，有的数据库将元数据和对应的表数据存放在一起，为了保证其他页丢失的情况下本页不受影响。<br> b. 通常一页不会存放不同类型的数据，例如某页都是tuple，另一页全都是索引数据.<br> c. 每个page会被赋予一个唯一的内部标识符，系统会生成属于page的ID.<br> d. indirection层会吧page id映射到某个文件的某个位置（也就是记录一个相对位置，当文件整体移动后，使用相对位置+偏移量就能重新找到page）<br> e. 物理页和操作系统页都在4kb左右，数据库的页在512b～16kb</li><li>管理页的方式<br> a. Heap File Organization<br> b. Sequential&#x2F;sorted File Organization<br> c. Hashing File Organization</li><li>Heap File管理方式<br> heap file是许多页的无序集合，有两种组织形式：链表和页目录<ul><li>链表管理就是定义两个链表，一个数据链表表示都是存满的数据页，另一个时空闲链表，用来新写入数据。</li><li>页目录管理：使用一些特殊的页记录数据页page id和他的位置的映射关系，甚至可以记录页的剩余空间的大小。</li></ul></li><li>页头（page header）<ul><li>page size</li><li>checksum</li><li>DBMS version</li><li>transaction Visibility</li><li>压缩信息</li></ul></li><li>页内tuple布局<ul><li>长度固定方法：每个tuple固定长度</li><li>slotted pages：如下图所示，为了支持可变长度的记录作出的妥协。<br> <img src="/images/db-2.png"></li></ul></li><li>tuple布局<br> <img src="/images/db-3.png"><ul><li>header：Visibility info（并发控制信息），Bit Map for NULL values.header并不需要存储数据的元数据，因为他们都是按顺序记录的。</li><li>record数据按定义时顺序写入</li></ul></li></ol><h2 id="日志式文件布局"><a href="#日志式文件布局" class="headerlink" title="日志式文件布局"></a>日志式文件布局</h2><pre><code>![](/images/db-3.png)通过追加命令的方式记录信息，有点像redis的rdb模式比较出名的有leveldb，基于leveldb，移除其mmap的rocksdb等。</code></pre>]]></content>
     
     
-      
-      
-    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
-&lt;h2 id=&quot;存储层次&quot;&gt;&lt;a href=&quot;#存储层次&quot; class=&quot;headerlink&quot; title=&quot;存储层次&quot;&gt;&lt;/a&gt;存储层次&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;/images/db-1.png&quot;&gt;&lt;/p&gt;
+    <summary type="html">&lt;h2 id=&quot;存储层次&quot;&gt;&lt;a href=&quot;#存储层次&quot; class=&quot;headerlink&quot; title=&quot;存储层次&quot;&gt;&lt;/a&gt;存储层次&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;/images/db-1.png&quot;&gt;&lt;/p&gt;
 &lt;ul&gt;
-</summary>
-      
+&lt;li&gt;tips：在数据库存储上尽量不要使用mmap，这会带来内存&amp;#x2F;并发等一系列问题，会成为系统瓶颈。</summary>
     
     
     
@@ -194,22 +86,77 @@
   </entry>
   
   <entry>
-    <title>CMU-cs445:并发控制</title>
-    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6/"/>
-    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6/</id>
-    <published>2022-09-24T17:40:36.324Z</published>
-    <updated>2022-09-24T17:52:50.734Z</updated>
+    <title>CMU-cs445:数据存储表示</title>
+    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%BA%8C%E8%A1%A8%E7%A4%BA/"/>
+    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%BA%8C%E8%A1%A8%E7%A4%BA/</id>
+    <published>2022-09-24T17:40:36.325Z</published>
+    <updated>2022-10-19T09:12:32.418Z</updated>
     
-    <content type="html"><![CDATA[<span id="more"></span><h3 id="ACID"><a href="#ACID" class="headerlink" title="ACID"></a>ACID</h3><ul><li>A:原子性</li><li>C:如果事务是一致的，数据库是一致的，那么结束时也必须是一致的</li><li>I:隔离性</li><li>D:事务提交之后会持久化</li></ul><h3 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h3><ul><li>Logging<br>记录所有动作到undo log</li><li>Shadow Paging<br>事务运行的时候，拷贝那些用到的page，然后在上面执行事务，当事务提交后，用这些page替换原来的page</li></ul><h3 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h3><ul><li>数据库一致性</li><li>事务一致性<br><a href="https://www.zhihu.com/question/31346392">https://www.zhihu.com/question/31346392</a></li></ul><h3 id="隔离性"><a href="#隔离性" class="headerlink" title="隔离性"></a>隔离性</h3><p>多个事务同时执行时，每个事务无法读到别的事务的中间结果。</p><ul><li>不可重复读</li><li>脏读</li><li>Overwriting Uncommited Data<br><img src="/images/db-31.png"></li></ul><p>如何判断两个事务存在冲突？</p><ul><li>依赖图</li></ul><h3 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h3><ul><li>锁的类型<ul><li>共享锁</li><li>排他锁</li></ul></li><li>锁控制协议：两阶段锁<ul><li>Growing（增长阶段）<br>每个事务被允许从锁管理器中获得锁。</li><li>Shrinking（收缩阶段）<br>事务只被允许释放前面获得的锁，不能申请新的锁。<br>两阶段锁可以消除序列化矛盾，但是会存在级联终止问题。如下图<br><img src="/images/db-32.png"><br>要解决上面这个问题，需要使用强严格两阶段锁，也就是说我们必须在事务提交的时候才能释放之前获得的锁，这样就能避main脏读和级联终止。<br>两阶段锁也会导致死锁，如下图：<br><img src="/images/db-33.png"><br>有两种方法解决死锁问题</li></ul></li><li>检测<br>锁管理器维护一个waits-for图，用来追踪每个事务等待要获取的锁，每个节点是一个事务，如果事务A正在等待事务B的锁，他们之间就有一个箭头，当存在环形结构就说明存在死锁。<br><img src="/images/db-34.png"><br>检测周期可以设置一个可容忍的系统值。</li><li>处理<br>选择一个事务，回滚，选择的标准可以是：<ul><li>时间戳</li><li>查询数</li><li>被锁住的item数量</li><li>需要回滚的事务数量</li></ul></li><li>预防<br>根据时间来确定优先级<ul><li>Wait-Die<br>如果请求锁的事务优先级高于持有锁的事务，那么等待持有锁的事务，否则终止。</li><li>Wound-Wait<br>如果请求锁的事务优先级高于持有锁的事务，那么持有锁的事务终止并且释放锁，否则请求锁的事务等待。<br><img src="/images/db-35.png"><br>当事务重启之后，其优先级（也就是时间戳）是它原本的时间戳，这有助于避免此事务饥饿。</li></ul></li><li>锁的层次<br><img src="/images/db-36.png"><br>数据库中有成千上万个tuple，我们不能直接管理这些，因此我们需要一些更高层次的抽象锁，让我们同一时间管理更少的锁。<ul><li>意向锁<ul><li>意向共享锁（IS）</li><li>意向排他锁（IX）</li><li>共享锁（S）</li><li>排他锁（X）</li><li>共享意向排他锁（SIX）<br><img src="/images/db-37.png"></li></ul></li></ul></li></ul><h3 id="基于时间戳顺序的控制"><a href="#基于时间戳顺序的控制" class="headerlink" title="基于时间戳顺序的控制"></a>基于时间戳顺序的控制</h3><p>基于两阶段锁是一种悲观锁，基于时间戳顺序是一种乐观锁。<br>我们需要向每个tuple添加两个时间戳：</p><ul><li>写时间戳：最近对tuple写的事务的时间戳</li><li>读时间戳：最近对tuple读的事务的时间戳<br>在读阶段，确保自己的时间戳不小于tuple的写时间戳，在写阶段，要确保事务的时间戳小于tuple的写时间戳和读时间戳。有一种优化叫做托马斯写入规则：<br><img src="/images/db-38.png"></li></ul><p>基于时间戳的并发控制是不可恢复的。如果事务大多时间很短并且不会发生冲突，那么可以考虑这种病发控制协议。</p><ul><li>乐观并发控制协议<br><a href="https://blog.csdn.net/BOBOyspa/article/details/121131474">偷懒，看下别人的总结</a></li></ul><h3 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h3><ul><li>并发控制协议<ul><li>基于时间戳的控制</li><li>乐观并发控制</li><li>两阶段锁</li></ul></li><li>版本存储<br>通过版本链（version chain）存储，索引指向链表头，有三种方法：<ul><li>Append-Only<br><img src="/images/db-39.png"><br>每更新一次，作为一个新的tuple插入到表中，并更新链表指针。</li><li>Time-Traval<br><img src="/images/db-40.png"><br>每次更新将旧数据拷贝到time-travel表中，并更新指针。</li><li>Delta Storage<br><img src="/images/db-41.png"><br>每次更新不用将整个tuple拷贝，只需要拷贝delta值即可</li></ul></li><li>垃圾回收<ul><li>tuple级别的回收<ul><li>后台处理：后台线程对表进行定期扫描，查看开始时间戳和结束时间戳，不在活跃线程范围内就可以清除,一个优化是设置脏页面bitmap<br><img src="/images/db-42.png"></li><li>合作清理：当执行事务的线程在扫表的时候判断历史数据，只适用于从旧到新的版本数据存储方式</li></ul></li><li>事务级别的回收</li></ul></li><li>索引管理<ul><li>辅助索引的更新<ul><li>逻辑指针：每个tuple对应一个固定的id，这个id不变，我们去改变中间层，也就是将逻辑指针映射到物理指针的这一层，辅助索引保存的是主键索引的副本，每次去查找的时候实际上做两次操作，一次去查找主键，一次根据主键去查找这是的物理数据。</li><li>物理指针：直接修改物理指针去更新链表头</li></ul></li></ul></li></ul>]]></content>
+    <content type="html"><![CDATA[<h2 id="数据表示"><a href="#数据表示" class="headerlink" title="数据表示"></a>数据表示</h2><pre><code>涉及浮点数和定点数的存储，不同的是我们需要更多的信息去记录浮点数，包括字符串形式的数据以及其他辅助信息，运算过程为字符串相加相乘类似。</code></pre><span id="more"></span><h2 id="大数据表示"><a href="#大数据表示" class="headerlink" title="大数据表示"></a>大数据表示</h2><pre><code>当需要存储的数据大于单页大小，有以下解决方案- overflow page：存储指向overflow page的指针，如果仍然无法全部存储，就形成链表结构。通常比较难以维护，包括overflow page上的元信息。- 外部存储：数据库存一个文件路径。缺点是无法受到数据库保护。</code></pre><h2 id="catalogs"><a href="#catalogs" class="headerlink" title="catalogs"></a>catalogs</h2><pre><code>存储表，列，索引，视图，用户，权限，内部的统计信息等</code></pre><h2 id="workload"><a href="#workload" class="headerlink" title="workload"></a>workload</h2><pre><code>- OLTP(On-line Transaction Processing)    简单查询，每次读取或者更新数据库中很小一部分数据-  OLAP(On-line Analytical Processing)复杂查询，常常读取分析大批量数据</code></pre><h2 id="tuple存储形式"><a href="#tuple存储形式" class="headerlink" title="tuple存储形式"></a>tuple存储形式</h2><pre><code>- N-array tuple以行的形式存储    - 优点:插入更新删除快，对需要整个tuple的查询友好    - 缺点:对于全表扫描或者tuple一部分字段的查询不友好- Column store：每页存储相同字段的值。    - 优点:可以对数据进行压缩，降低字段查询时的系统io。    - 缺点:小数据的增删改查比较费时</code></pre>]]></content>
     
     
-      
-      
-    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
-&lt;h3 id=&quot;ACID&quot;&gt;&lt;a href=&quot;#ACID&quot; class=&quot;headerlink&quot; title=&quot;ACID&quot;&gt;&lt;/a&gt;ACID&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;A:原子性&lt;/li&gt;
-&lt;li&gt;C:如果事务是一致的，数据库是一致</summary>
-      
+    <summary type="html">&lt;h2 id=&quot;数据表示&quot;&gt;&lt;a href=&quot;#数据表示&quot; class=&quot;headerlink&quot; title=&quot;数据表示&quot;&gt;&lt;/a&gt;数据表示&lt;/h2&gt;&lt;pre&gt;&lt;code&gt;涉及浮点数和定点数的存储，不同的是我们需要更多的信息去记录浮点数，包括字符串形式的数据以及其他辅助信息，运算过程为字符串相加相乘类似。
+&lt;/code&gt;&lt;/pre&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CMU-cs445:查询优化</title>
+    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/"/>
+    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/</id>
+    <published>2022-09-24T17:40:36.325Z</published>
+    <updated>2022-10-19T09:12:19.501Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="查询优化"><a href="#查询优化" class="headerlink" title="查询优化"></a>查询优化</h3><ul><li><p>Heuristics&#x2F;Rules 规则&#x2F;静态触发</p><span id="more"></span><p>当查询中的某些部分满足我们的规则或者条件，我们就重写这部分.这部分需要我们去检查catelog.</p></li><li><p>Cost-based Search</p></li></ul><p>方法的思想是使用一个模型去评估一个查询的负载，然后使用多种不同的查询计划去替换这个查询，找出最小负载的方案。</p><p>下面是整个查询优化过程<br><img src="/images/db-26.png"></p><h3 id="Relational-Algebra-Equivalences-等价关系代数"><a href="#Relational-Algebra-Equivalences-等价关系代数" class="headerlink" title="Relational Algebra Equivalences(等价关系代数)"></a>Relational Algebra Equivalences(等价关系代数)</h3><ul><li>predicate pushdown:在join前尽量过滤数据。</li><li>对过滤条件进行排序，让更具有分辨性的条件排在前面。</li><li>对复杂判断进行简化</li><li>对于行存储类型数据库，projection越早越好。</li></ul><h3 id="Plan-Cost-Estimation"><a href="#Plan-Cost-Estimation" class="headerlink" title="Plan Cost Estimation"></a>Plan Cost Estimation</h3><ul><li>CPU</li><li>磁盘</li><li>内存</li><li>网络</li></ul><p>在数据库的catelog中，会维护相关信息，并且在特定时间或者遍历表的时候更跟这些信息，在执行查询之前，将这些变量带入公式，计算出最小代价的查询。在系统中，我们定义一些统计量：</p><ul><li>$N_R$: 关系R的tuple数量</li><li>V(A,R):属性A不同值的数量</li><li>Selection Cardinality：$N_R$&#x2F;V(A,R)</li><li>selectivity: 选择率，给定一个条件，计算table中符合条件的tuple数量</li><li>Range Predicate：计算范围值的比例，有点像概率计算，因此可以引入概率论中的结论,但是为了计算方便，有下面三个前提：<br><img src="/images/db-27.png"></li></ul><h5 id="直方图法"><a href="#直方图法" class="headerlink" title="直方图法"></a>直方图法</h5><p>对于数据分布不均匀的关系，在一些高端数据库中会使用直方图来跟踪数据的分布。对于数据量极大或者属性值分布很广的情况，我们会使用相同宽度的<strong>bucket</strong>来记录值的分布，但是这种情况会导致某个桶内数据分布极不均匀的情况，我们可以使用<strong>分位数</strong>来解决这个问题，即累计一定比例的数据分桶，桶的宽度可变，但是总体占比大致相当。</p><h5 id="采样法"><a href="#采样法" class="headerlink" title="采样法"></a>采样法</h5><p>对于直方图，其实是对表中数据的一种缩略表达，那么在大数据量的table中，我们可以直接采样来近似代表整个表的数据分布。当表进行大规模更新或者到达一个指定时间点，我们去更新这个采样表。</p><h3 id="Plan-Enumeration"><a href="#Plan-Enumeration" class="headerlink" title="Plan Enumeration"></a>Plan Enumeration</h3><h5 id="单关系查询计划"><a href="#单关系查询计划" class="headerlink" title="单关系查询计划"></a>单关系查询计划</h5><ul><li>循序遍历</li><li>二分查找（对于聚集索引）</li><li>索引遍历</li></ul><h5 id="多关系查询计划"><a href="#多关系查询计划" class="headerlink" title="多关系查询计划"></a>多关系查询计划</h5><ul><li><p>left-deep join tree<br><img src="/images/db-28.png"><br>在上面三个查询树中，System R不考虑后面两个，只考虑第一种。为什么采用第一种？后面两种实现过程中会有大量结果溢出到磁盘，影响性能。</p></li><li><p>步骤（System R based）<br><img src="/images/db-29.png"></p></li><li><p>步骤（遗传算法）<br><img src="/images/db-30.png"></p></li></ul><h3 id="Nested-Sub-queries"><a href="#Nested-Sub-queries" class="headerlink" title="Nested Sub-queries"></a>Nested Sub-queries</h3><p>通常情况下将where作为函数，穿入参数然后返回一组值，有两种方法进行查询优化：</p><ul><li>重写查询，去除关联性，让其扁平化</li><li>将内部查询提取出来作为单独查询来执行，将结果缓存起来，这样不用每次执行上层查询都再执行一次子查询</li></ul><p>(<a href="https://dbdb.io/">https://dbdb.io/</a>)</p>]]></content>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;查询优化&quot;&gt;&lt;a href=&quot;#查询优化&quot; class=&quot;headerlink&quot; title=&quot;查询优化&quot;&gt;&lt;/a&gt;查询优化&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Heuristics&amp;#x2F;Rules 规则&amp;#x2F;静态触发&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CMU-cs445:查询执行</title>
+    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C/"/>
+    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C/</id>
+    <published>2022-09-24T17:40:36.325Z</published>
+    <updated>2022-10-19T09:12:27.414Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="并行处理模型"><a href="#并行处理模型" class="headerlink" title="并行处理模型"></a>并行处理模型</h3><ul><li>Process per DBMS Worker<ul><li>使用一个进程处理一个请求</li><li>使用共享内存对全局数据进行共享，如buffer pool，不用将相同的page加载两次</li><li>单进程奔溃不会导致整个系统崩溃</li></ul></li><li>Process Pool<ul><li>使用进程池来处理请求</li><li>对cpu缓存不友好</li><li>减少了创建销毁进程开销</li></ul></li><li>Thread per DBMS Worker<ul><li>单进程多线程</li><li>线程崩溃导致进程崩溃</li><li>上下文切换开销很小</li><li>不需要管理共享内存<span id="more"></span></li></ul></li></ul><h3 id="并行查询方式"><a href="#并行查询方式" class="headerlink" title="并行查询方式"></a>并行查询方式</h3><ul><li><p>Inter-Query：同时执行多个查询</p></li><li><p>Intra-Query：同时执行一个查询的多个operator，一般有三种，注意下main这三种不是互斥的，他们可以相互组合。</p><ul><li>Intra-Operator（Horizontal）：将完整的操作拆分成多个平行的操作，也就是说把我们要处理的数据分成几段，并行处理，在DBMS中有一个特殊的exchange操作符，将数据分段，分别处理数据，然后最后将数据组合起来。exchange有三种类型：<ul><li>Gather：组合不同worker的数据合并成一个输出流传给上层操作符。</li><li>Repartition：将不同worker的数据分成不同的流，如group by</li><li>Distribute：将一个输入流转化成多个输出流<br>  <img src="/images/db-24.png"></li></ul></li><li>Inter-Operator（Vertical）：不同线程同一时间执行不同的operator.<br>  <img src="/images/db-25.png"></li><li>Bushy</li></ul></li></ul><h3 id="IO并行"><a href="#IO并行" class="headerlink" title="IO并行"></a>IO并行</h3><ul><li>multi-disk 并行：使用多个冗余磁盘存储相同的数据</li><li>database partitioning：将数据分成不相交的子集，分别存储在物理磁盘上单独管理<ul><li>垂直分区：将数据按照列进行分区</li><li>水平分区：将数据按照行进行分区</li></ul></li></ul>]]></content>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;并行处理模型&quot;&gt;&lt;a href=&quot;#并行处理模型&quot; class=&quot;headerlink&quot; title=&quot;并行处理模型&quot;&gt;&lt;/a&gt;并行处理模型&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Process per DBMS Worker&lt;ul&gt;
+&lt;li&gt;使用一个进程处理一个请求&lt;/li&gt;
+&lt;li&gt;使用共享内存对全局数据进行共享，如buffer pool，不用将相同的page加载两次&lt;/li&gt;
+&lt;li&gt;单进程奔溃不会导致整个系统崩溃&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Process Pool&lt;ul&gt;
+&lt;li&gt;使用进程池来处理请求&lt;/li&gt;
+&lt;li&gt;对cpu缓存不友好&lt;/li&gt;
+&lt;li&gt;减少了创建销毁进程开销&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Thread per DBMS Worker&lt;ul&gt;
+&lt;li&gt;单进程多线程&lt;/li&gt;
+&lt;li&gt;线程崩溃导致进程崩溃&lt;/li&gt;
+&lt;li&gt;上下文切换开销很小&lt;/li&gt;
+&lt;li&gt;不需要管理共享内存</summary>
     
     
     
@@ -225,16 +172,12 @@
     <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B9%B6%E5%8F%91%E8%AE%BF%E9%97%AE/"/>
     <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B9%B6%E5%8F%91%E8%AE%BF%E9%97%AE/</id>
     <published>2022-09-24T17:40:36.324Z</published>
-    <updated>2022-09-24T17:52:46.882Z</updated>
+    <updated>2022-10-19T09:12:06.428Z</updated>
     
-    <content type="html"><![CDATA[<span id="more"></span><h3 id="latch和lock"><a href="#latch和lock" class="headerlink" title="latch和lock"></a>latch和lock</h3><p><img src="/images/db-4.png"></p><h3 id="latch"><a href="#latch" class="headerlink" title="latch"></a>latch</h3><ul><li>种类<ul><li>Test-and-Set Spin Latch(TAS)</li><li>读写锁</li><li>乐观&#x2F;悲观锁</li></ul></li><li>粒度<ul><li>page latch：锁少，并行度不好</li><li>slot latch：锁多，并行度高</li></ul></li><li>latch crabbing&#x2F;coupling</li><li>B+树的死锁问题</li><li>B+树insert，父节点延迟更新</li></ul>]]></content>
+    <content type="html"><![CDATA[<h3 id="latch和lock"><a href="#latch和lock" class="headerlink" title="latch和lock"></a>latch和lock</h3><p><img src="/images/db-4.png"></p><span id="more"></span><h3 id="latch"><a href="#latch" class="headerlink" title="latch"></a>latch</h3><ul><li>种类<ul><li>Test-and-Set Spin Latch(TAS)</li><li>读写锁</li><li>乐观&#x2F;悲观锁</li></ul></li><li>粒度<ul><li>page latch：锁少，并行度不好</li><li>slot latch：锁多，并行度高</li></ul></li><li>latch crabbing&#x2F;coupling</li><li>B+树的死锁问题</li><li>B+树insert，父节点延迟更新</li></ul>]]></content>
     
     
-      
-      
-    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
-&lt;h3 id=&quot;latch和lock&quot;&gt;&lt;a href=&quot;#latch和lock&quot; class=&quot;headerlink&quot; title=&quot;latch和lock&quot;&gt;&lt;/a&gt;latch和lock&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/ima</summary>
-      
+    <summary type="html">&lt;h3 id=&quot;latch和lock&quot;&gt;&lt;a href=&quot;#latch和lock&quot; class=&quot;headerlink&quot; title=&quot;latch和lock&quot;&gt;&lt;/a&gt;latch和lock&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/images/db-4.png&quot;&gt;&lt;/p&gt;</summary>
     
     
     
@@ -250,18 +193,40 @@
     <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E9%AB%98%E7%BA%A7SQL/"/>
     <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E9%AB%98%E7%BA%A7SQL/</id>
     <published>2022-09-24T17:40:36.324Z</published>
-    <updated>2022-09-24T17:53:11.183Z</updated>
+    <updated>2022-10-19T09:12:41.787Z</updated>
     
-    <content type="html"><![CDATA[<span id="more"></span><h2 id="基础SQL"><a href="#基础SQL" class="headerlink" title="基础SQL"></a>基础SQL</h2><ul><li>聚合函数AVG，SUM，MIN，MAX等</li><li>GROUP BY</li><li>HAVING</li><li>UPPER</li><li>LIKE(%代替*，_代替?)</li><li>CONCAT</li><li>CREAT TABLE</li><li>ORDER BY</li><li>LIMIT</li><li>OFFSET</li></ul><h2 id="高级SQL"><a href="#高级SQL" class="headerlink" title="高级SQL"></a>高级SQL</h2><ul><li>嵌套查询</li></ul>]]></content>
+    <content type="html"><![CDATA[<h2 id="基础SQL"><a href="#基础SQL" class="headerlink" title="基础SQL"></a>基础SQL</h2><ul><li>聚合函数AVG，SUM，MIN，MAX等</li><li>GROUP BY</li><li>HAVING<span id="more"></span></li><li>UPPER</li><li>LIKE(%代替*，_代替?)</li><li>CONCAT</li><li>CREAT TABLE</li><li>ORDER BY</li><li>LIMIT</li><li>OFFSET</li></ul><h2 id="高级SQL"><a href="#高级SQL" class="headerlink" title="高级SQL"></a>高级SQL</h2><ul><li>嵌套查询</li></ul>]]></content>
     
     
-      
-      
-    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
-&lt;h2 id=&quot;基础SQL&quot;&gt;&lt;a href=&quot;#基础SQL&quot; class=&quot;headerlink&quot; title=&quot;基础SQL&quot;&gt;&lt;/a&gt;基础SQL&lt;/h2&gt;&lt;ul&gt;
+    <summary type="html">&lt;h2 id=&quot;基础SQL&quot;&gt;&lt;a href=&quot;#基础SQL&quot; class=&quot;headerlink&quot; title=&quot;基础SQL&quot;&gt;&lt;/a&gt;基础SQL&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;聚合函数AVG，SUM，MIN，MAX等&lt;/li&gt;
-&lt;l</summary>
-      
+&lt;li&gt;GROUP BY&lt;/li&gt;
+&lt;li&gt;HAVING</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CMU-cs445:并发控制</title>
+    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6/"/>
+    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6/</id>
+    <published>2022-09-24T17:40:36.324Z</published>
+    <updated>2022-10-19T09:12:10.554Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="ACID"><a href="#ACID" class="headerlink" title="ACID"></a>ACID</h3><ul><li>A:原子性</li><li>C:如果事务是一致的，数据库是一致的，那么结束时也必须是一致的</li><li>I:隔离性</li><li>D:事务提交之后会持久化<span id="more"></span></li></ul><h3 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h3><ul><li>Logging<br>记录所有动作到undo log</li><li>Shadow Paging<br>事务运行的时候，拷贝那些用到的page，然后在上面执行事务，当事务提交后，用这些page替换原来的page</li></ul><h3 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h3><ul><li>数据库一致性</li><li>事务一致性<br><a href="https://www.zhihu.com/question/31346392">https://www.zhihu.com/question/31346392</a></li></ul><h3 id="隔离性"><a href="#隔离性" class="headerlink" title="隔离性"></a>隔离性</h3><p>多个事务同时执行时，每个事务无法读到别的事务的中间结果。</p><ul><li>不可重复读</li><li>脏读</li><li>Overwriting Uncommited Data<br><img src="/images/db-31.png"></li></ul><p>如何判断两个事务存在冲突？</p><ul><li>依赖图</li></ul><h3 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h3><ul><li>锁的类型<ul><li>共享锁</li><li>排他锁</li></ul></li><li>锁控制协议：两阶段锁<ul><li>Growing（增长阶段）<br>每个事务被允许从锁管理器中获得锁。</li><li>Shrinking（收缩阶段）<br>事务只被允许释放前面获得的锁，不能申请新的锁。<br>两阶段锁可以消除序列化矛盾，但是会存在级联终止问题。如下图<br><img src="/images/db-32.png"><br>要解决上面这个问题，需要使用强严格两阶段锁，也就是说我们必须在事务提交的时候才能释放之前获得的锁，这样就能避main脏读和级联终止。<br>两阶段锁也会导致死锁，如下图：<br><img src="/images/db-33.png"><br>有两种方法解决死锁问题</li></ul></li><li>检测<br>锁管理器维护一个waits-for图，用来追踪每个事务等待要获取的锁，每个节点是一个事务，如果事务A正在等待事务B的锁，他们之间就有一个箭头，当存在环形结构就说明存在死锁。<br><img src="/images/db-34.png"><br>检测周期可以设置一个可容忍的系统值。</li><li>处理<br>选择一个事务，回滚，选择的标准可以是：<ul><li>时间戳</li><li>查询数</li><li>被锁住的item数量</li><li>需要回滚的事务数量</li></ul></li><li>预防<br>根据时间来确定优先级<ul><li>Wait-Die<br>如果请求锁的事务优先级高于持有锁的事务，那么等待持有锁的事务，否则终止。</li><li>Wound-Wait<br>如果请求锁的事务优先级高于持有锁的事务，那么持有锁的事务终止并且释放锁，否则请求锁的事务等待。<br><img src="/images/db-35.png"><br>当事务重启之后，其优先级（也就是时间戳）是它原本的时间戳，这有助于避免此事务饥饿。</li></ul></li><li>锁的层次<br><img src="/images/db-36.png"><br>数据库中有成千上万个tuple，我们不能直接管理这些，因此我们需要一些更高层次的抽象锁，让我们同一时间管理更少的锁。<ul><li>意向锁<ul><li>意向共享锁（IS）</li><li>意向排他锁（IX）</li><li>共享锁（S）</li><li>排他锁（X）</li><li>共享意向排他锁（SIX）<br><img src="/images/db-37.png"></li></ul></li></ul></li></ul><h3 id="基于时间戳顺序的控制"><a href="#基于时间戳顺序的控制" class="headerlink" title="基于时间戳顺序的控制"></a>基于时间戳顺序的控制</h3><p>基于两阶段锁是一种悲观锁，基于时间戳顺序是一种乐观锁。<br>我们需要向每个tuple添加两个时间戳：</p><ul><li>写时间戳：最近对tuple写的事务的时间戳</li><li>读时间戳：最近对tuple读的事务的时间戳<br>在读阶段，确保自己的时间戳不小于tuple的写时间戳，在写阶段，要确保事务的时间戳小于tuple的写时间戳和读时间戳。有一种优化叫做托马斯写入规则：<br><img src="/images/db-38.png"></li></ul><p>基于时间戳的并发控制是不可恢复的。如果事务大多时间很短并且不会发生冲突，那么可以考虑这种病发控制协议。</p><ul><li>乐观并发控制协议<br><a href="https://blog.csdn.net/BOBOyspa/article/details/121131474">偷懒，看下别人的总结</a></li></ul><h3 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h3><ul><li>并发控制协议<ul><li>基于时间戳的控制</li><li>乐观并发控制</li><li>两阶段锁</li></ul></li><li>版本存储<br>通过版本链（version chain）存储，索引指向链表头，有三种方法：<ul><li>Append-Only<br><img src="/images/db-39.png"><br>每更新一次，作为一个新的tuple插入到表中，并更新链表指针。</li><li>Time-Traval<br><img src="/images/db-40.png"><br>每次更新将旧数据拷贝到time-travel表中，并更新指针。</li><li>Delta Storage<br><img src="/images/db-41.png"><br>每次更新不用将整个tuple拷贝，只需要拷贝delta值即可</li></ul></li><li>垃圾回收<ul><li>tuple级别的回收<ul><li>后台处理：后台线程对表进行定期扫描，查看开始时间戳和结束时间戳，不在活跃线程范围内就可以清除,一个优化是设置脏页面bitmap<br><img src="/images/db-42.png"></li><li>合作清理：当执行事务的线程在扫表的时候判断历史数据，只适用于从旧到新的版本数据存储方式</li></ul></li><li>事务级别的回收</li></ul></li><li>索引管理<ul><li>辅助索引的更新<ul><li>逻辑指针：每个tuple对应一个固定的id，这个id不变，我们去改变中间层，也就是将逻辑指针映射到物理指针的这一层，辅助索引保存的是主键索引的副本，每次去查找的时候实际上做两次操作，一次去查找主键，一次根据主键去查找这是的物理数据。</li><li>物理指针：直接修改物理指针去更新链表头</li></ul></li></ul></li></ul>]]></content>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;ACID&quot;&gt;&lt;a href=&quot;#ACID&quot; class=&quot;headerlink&quot; title=&quot;ACID&quot;&gt;&lt;/a&gt;ACID&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;A:原子性&lt;/li&gt;
+&lt;li&gt;C:如果事务是一致的，数据库是一致的，那么结束时也必须是一致的&lt;/li&gt;
+&lt;li&gt;I:隔离性&lt;/li&gt;
+&lt;li&gt;D:事务提交之后会持久化</summary>
     
     
     
@@ -277,16 +242,16 @@
     <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9AHashTable&amp;TableIndex/"/>
     <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9AHashTable&amp;TableIndex/</id>
     <published>2022-09-24T17:40:36.323Z</published>
-    <updated>2022-09-24T17:53:19.582Z</updated>
+    <updated>2022-10-19T09:12:59.310Z</updated>
     
-    <content type="html"><![CDATA[<span id="more"></span><h3 id="我们需要表示的数据"><a href="#我们需要表示的数据" class="headerlink" title="我们需要表示的数据"></a>我们需要表示的数据</h3><pre><code>- Internal Mata-data- Core data storage- Temporary Data Strutures- Table Indexs</code></pre><h3 id="hash-function"><a href="#hash-function" class="headerlink" title="hash function"></a>hash function</h3><pre><code>- XXHash- CityHash- FarmHash</code></pre><h3 id="哈希算法"><a href="#哈希算法" class="headerlink" title="哈希算法"></a>哈希算法</h3><pre><code>- 开放地址法- robin 开放地址- cuckoo hashing- 链表法- extendible hashing（有些复杂）- Linear hashing（循环拆分，有点难以理解）</code></pre><h3 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h3><pre><code>- 为什么叶子结点的key和value不放在一起？为了cpu缓存，能够快速定位key。</code></pre><h3 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h3><pre><code>- 部分索引- 覆盖索引- 聚集索引- Include Columns：在建立索引的时候增加一些额外信息，能够加速查询。- 函数式/表达式索引- trie index- radix tree的垂直压缩- 倒排索引</code></pre>]]></content>
+    <content type="html"><![CDATA[<h3 id="我们需要表示的数据"><a href="#我们需要表示的数据" class="headerlink" title="我们需要表示的数据"></a>我们需要表示的数据</h3><pre><code>- Internal Mata-data- Core data storage- Temporary Data Strutures- Table Indexs</code></pre><span id="more"></span><h3 id="hash-function"><a href="#hash-function" class="headerlink" title="hash function"></a>hash function</h3><pre><code>- XXHash- CityHash- FarmHash</code></pre><h3 id="哈希算法"><a href="#哈希算法" class="headerlink" title="哈希算法"></a>哈希算法</h3><pre><code>- 开放地址法- robin 开放地址- cuckoo hashing- 链表法- extendible hashing（有些复杂）- Linear hashing（循环拆分，有点难以理解）</code></pre><h3 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h3><pre><code>- 为什么叶子结点的key和value不放在一起？为了cpu缓存，能够快速定位key。</code></pre><h3 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h3><pre><code>- 部分索引- 覆盖索引- 聚集索引- Include Columns：在建立索引的时候增加一些额外信息，能够加速查询。- 函数式/表达式索引- trie index- radix tree的垂直压缩- 倒排索引</code></pre>]]></content>
     
     
-      
-      
-    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
-&lt;h3 id=&quot;我们需要表示的数据&quot;&gt;&lt;a href=&quot;#我们需要表示的数据&quot; class=&quot;headerlink&quot; title=&quot;我们需要表示的数据&quot;&gt;&lt;/a&gt;我们需要表示的数据&lt;/h3&gt;&lt;pre&gt;&lt;code&gt;- Internal</summary>
-      
+    <summary type="html">&lt;h3 id=&quot;我们需要表示的数据&quot;&gt;&lt;a href=&quot;#我们需要表示的数据&quot; class=&quot;headerlink&quot; title=&quot;我们需要表示的数据&quot;&gt;&lt;/a&gt;我们需要表示的数据&lt;/h3&gt;&lt;pre&gt;&lt;code&gt;- Internal Mata-data
+- Core data storage
+- Temporary Data Strutures
+- Table Indexs
+&lt;/code&gt;&lt;/pre&gt;</summary>
     
     
     
@@ -302,16 +267,31 @@
     <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9Abuffer%E6%B1%A0/"/>
     <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9Abuffer%E6%B1%A0/</id>
     <published>2022-09-24T17:40:36.323Z</published>
-    <updated>2022-09-24T17:53:16.065Z</updated>
+    <updated>2022-10-19T09:12:54.501Z</updated>
     
-    <content type="html"><![CDATA[<span id="more"></span><h2 id="buffer-pool-manager"><a href="#buffer-pool-manager" class="headerlink" title="buffer pool manager"></a>buffer pool manager</h2><pre><code>- buffer池组成    - frame：缓冲池由frame组成，每次我们需要一个page，就吧这个page替换进frame    - page table：用来记录page到buffer pool的映射关系    - 其他元信息：脏页面（页面是否被修改），引用计数（页面被线程正在访问的计数）- multiple buffer pools(多个缓冲池，每个池有其策略)    - 减少线程竞争    - 提供多种策略    - 如何实现？根据Object id映射或者哈希- pre-fetching(预取)    - 提前把一些顺序信息读入buffer pool中      - 可以完成一些操作系统不能完成的预读，如index分支跳转- scan sharing(扫描共享)    - 查询复用计算结果    - 允许多个查询附加到一个游标上- buffer pool bypass    - 给查询线程分配一小块内存，查询page的时候不经过缓存池，为了不污染缓存    - 查询量小的时候使用- O_DIRECT    - 避免操作系统文件缓存</code></pre><h2 id="replacement-policies"><a href="#replacement-policies" class="headerlink" title="replacement policies"></a>replacement policies</h2><pre><code>- LRU- Clock（LRU近似算法）- LRU-K：为了避免遍历对LRU的影响，K次才不会替换</code></pre><h2 id="脏页面"><a href="#脏页面" class="headerlink" title="脏页面"></a>脏页面</h2><pre><code>- 页面有一个标识位，记录某次查询是否更改页面记录- 后台写入（background writing）：定时将脏页面写回，避免缓存池中大量脏页面</code></pre>]]></content>
+    <content type="html"><![CDATA[<h2 id="buffer-pool-manager"><a href="#buffer-pool-manager" class="headerlink" title="buffer pool manager"></a>buffer pool manager</h2><pre><code>- buffer池组成    - frame：缓冲池由frame组成，每次我们需要一个page，就吧这个page替换进frame    - page table：用来记录page到buffer pool的映射关系    - 其他元信息：脏页面（页面是否被修改），引用计数（页面被线程正在访问的计数）- multiple buffer pools(多个缓冲池，每个池有其策略)    - 减少线程竞争    - 提供多种策略    - 如何实现？根据Object id映射或者哈希- pre-fetching(预取)    - 提前把一些顺序信息读入buffer pool中      - 可以完成一些操作系统不能完成的预读，如index分支跳转- scan sharing(扫描共享)    - 查询复用计算结果    - 允许多个查询附加到一个游标上- buffer pool bypass    - 给查询线程分配一小块内存，查询page的时候不经过缓存池，为了不污染缓存    - 查询量小的时候使用- O_DIRECT    - 避免操作系统文件缓存</code></pre><span id="more"></span><h2 id="replacement-policies"><a href="#replacement-policies" class="headerlink" title="replacement policies"></a>replacement policies</h2><pre><code>- LRU- Clock（LRU近似算法）- LRU-K：为了避免遍历对LRU的影响，K次才不会替换</code></pre><h2 id="脏页面"><a href="#脏页面" class="headerlink" title="脏页面"></a>脏页面</h2><pre><code>- 页面有一个标识位，记录某次查询是否更改页面记录- 后台写入（background writing）：定时将脏页面写回，避免缓存池中大量脏页面</code></pre>]]></content>
     
     
-      
-      
-    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
-&lt;h2 id=&quot;buffer-pool-manager&quot;&gt;&lt;a href=&quot;#buffer-pool-manager&quot; class=&quot;headerlink&quot; title=&quot;buffer pool manager&quot;&gt;&lt;/a&gt;buffe</summary>
-      
+    <summary type="html">&lt;h2 id=&quot;buffer-pool-manager&quot;&gt;&lt;a href=&quot;#buffer-pool-manager&quot; class=&quot;headerlink&quot; title=&quot;buffer pool manager&quot;&gt;&lt;/a&gt;buffer pool manager&lt;/h2&gt;&lt;pre&gt;&lt;code&gt;- buffer池组成
+    - frame：缓冲池由frame组成，每次我们需要一个page，就吧这个page替换进frame
+    - page table：用来记录page到buffer pool的映射关系
+    - 其他元信息：脏页面（页面是否被修改），引用计数（页面被线程正在访问的计数）
+- multiple buffer pools(多个缓冲池，每个池有其策略)
+    - 减少线程竞争
+    - 提供多种策略
+    - 如何实现？根据Object id映射或者哈希
+- pre-fetching(预取)
+    - 提前把一些顺序信息读入buffer pool中  
+    - 可以完成一些操作系统不能完成的预读，如index分支跳转
+- scan sharing(扫描共享)
+    - 查询复用计算结果
+    - 允许多个查询附加到一个游标上
+- buffer pool bypass
+    - 给查询线程分配一小块内存，查询page的时候不经过缓存池，为了不污染缓存
+    - 查询量小的时候使用
+- O_DIRECT
+    - 避免操作系统文件缓存
+&lt;/code&gt;&lt;/pre&gt;</summary>
     
     
     
@@ -327,17 +307,16 @@
     <link href="http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9Apod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E5%92%8C%E6%8E%A7%E5%88%B6%E5%99%A8/"/>
     <id>http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9Apod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E5%92%8C%E6%8E%A7%E5%88%B6%E5%99%A8/</id>
     <published>2022-02-16T16:00:00.000Z</published>
-    <updated>2022-09-24T17:58:29.942Z</updated>
+    <updated>2022-10-19T09:33:44.135Z</updated>
     
-    <content type="html"><![CDATA[<span id="more"></span><h3 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h3><ul><li>概念：多个docker的集合，有一个pause容器，其他容器共享这个容器的网络栈和存储，这样多个应用可以实现本地访问其他应用。</li><li>分类<ul><li>自主式pod（不是被控制器管理的pod）</li><li>控制器管理的pod</li></ul></li></ul><h3 id="Pod控制器"><a href="#Pod控制器" class="headerlink" title="Pod控制器"></a>Pod控制器</h3><ul><li>Replication Controller&#x2F; ReplicaSet &#x2F; Deployment</li></ul><p>RC保证容器应用的副本始终保持在用户定义的副本数，如果容器异常，自动创建新的pod替代，异常多出来的容器也会自动回收。  </p><p>RS相比RC多了集合式的selector。  </p><p>Deployment支持滚动更新。</p><ul><li>StatefullSet<br><a href="/images/k8s-5.png"></a></li><li>DaemonSet<br><a href="/images/k8s-6.png"></a></li></ul><h3 id="pod网络通讯模式"><a href="#pod网络通讯模式" class="headerlink" title="pod网络通讯模式"></a>pod网络通讯模式</h3><ul><li>同个pod多个容器之间：同过共享pause容器，使用lo回环网卡即可。</li><li>pod之间：overlay network。</li><li>pod与service之间：节点之间的iptable规则。</li></ul><p>下图展示了利用flann eld组件进行转发的原理图，flanneld可以使整个网络扁平化：<br><a href="/images/k8s-7.png"></a></p><ol><li>假如webapp2想要访问backend，怎么同过内网ip进行通信？</li></ol><ul><li>首先webApp2发送数据到docker0</li><li>docker0数据经过flannel0网桥转发</li><li>flanneld存放有etcd的数据信息，会对数据包进行封装，如右图所示，首先写入目标主机mac地址，然后写入目标主机和本机的内网ip，通过udp协议传输到目标主机。</li><li>目标flanneld接受到数据包，进行逆向解封</li></ul><p>Q：etcd想flannel提供了什么数据？<br>A：1.存储管理flannel可分配的ip地址段资源。2.flannel监控每个pod的实际地址，在内存中建立维护pod节点路由表。</p><ol start="2"><li><p>pod到Service的网络<br>目前基于性能考虑。全部为LVS维护和转发。</p></li><li><p>pod到外网</p></li></ol><p>pod向外网发送请求，查找路由表，转发数据包到宿主机网卡，宿主机网卡完成路由选择后，iptables执行masquerade，把源ip更改为宿主网卡的ip，然后向往往服务器发送请求。</p><ol start="4"><li>外网访问pod：通过Service</li></ol>]]></content>
+    <content type="html"><![CDATA[<h3 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h3><ul><li>概念：多个docker的集合，有一个pause容器，其他容器共享这个容器的网络栈和存储，这样多个应用可以实现本地访问其他应用。</li><li>分类<ul><li>自主式pod（不是被控制器管理的pod）</li><li>控制器管理的pod<span id="more"></span></li></ul></li></ul><h3 id="Pod控制器"><a href="#Pod控制器" class="headerlink" title="Pod控制器"></a>Pod控制器</h3><ul><li>Replication Controller&#x2F; ReplicaSet &#x2F; Deployment</li></ul><p>RC保证容器应用的副本始终保持在用户定义的副本数，如果容器异常，自动创建新的pod替代，异常多出来的容器也会自动回收。  </p><p>RS相比RC多了集合式的selector。  </p><p>Deployment支持滚动更新。</p><ul><li>StatefullSet<br><a href="/images/k8s-5.png"></a></li><li>DaemonSet<br><a href="/images/k8s-6.png"></a></li></ul><h3 id="pod网络通讯模式"><a href="#pod网络通讯模式" class="headerlink" title="pod网络通讯模式"></a>pod网络通讯模式</h3><ul><li>同个pod多个容器之间：同过共享pause容器，使用lo回环网卡即可。</li><li>pod之间：overlay network。</li><li>pod与service之间：节点之间的iptable规则。</li></ul><p>下图展示了利用flann eld组件进行转发的原理图，flanneld可以使整个网络扁平化：<br><a href="/images/k8s-7.png"></a></p><ol><li>假如webapp2想要访问backend，怎么同过内网ip进行通信？</li></ol><ul><li>首先webApp2发送数据到docker0</li><li>docker0数据经过flannel0网桥转发</li><li>flanneld存放有etcd的数据信息，会对数据包进行封装，如右图所示，首先写入目标主机mac地址，然后写入目标主机和本机的内网ip，通过udp协议传输到目标主机。</li><li>目标flanneld接受到数据包，进行逆向解封</li></ul><p>Q：etcd想flannel提供了什么数据？<br>A：1.存储管理flannel可分配的ip地址段资源。2.flannel监控每个pod的实际地址，在内存中建立维护pod节点路由表。</p><ol start="2"><li><p>pod到Service的网络<br>目前基于性能考虑。全部为LVS维护和转发。</p></li><li><p>pod到外网</p></li></ol><p>pod向外网发送请求，查找路由表，转发数据包到宿主机网卡，宿主机网卡完成路由选择后，iptables执行masquerade，把源ip更改为宿主网卡的ip，然后向往往服务器发送请求。</p><ol start="4"><li>外网访问pod：通过Service</li></ol>]]></content>
     
     
-      
-      
-    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
-&lt;h3 id=&quot;Pod&quot;&gt;&lt;a href=&quot;#Pod&quot; class=&quot;headerlink&quot; title=&quot;Pod&quot;&gt;&lt;/a&gt;Pod&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;概念：多个docker的集合，有一个pause容器，其他容器共享这个容器</summary>
-      
+    <summary type="html">&lt;h3 id=&quot;Pod&quot;&gt;&lt;a href=&quot;#Pod&quot; class=&quot;headerlink&quot; title=&quot;Pod&quot;&gt;&lt;/a&gt;Pod&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;概念：多个docker的集合，有一个pause容器，其他容器共享这个容器的网络栈和存储，这样多个应用可以实现本地访问其他应用。&lt;/li&gt;
+&lt;li&gt;分类&lt;ul&gt;
+&lt;li&gt;自主式pod（不是被控制器管理的pod）&lt;/li&gt;
+&lt;li&gt;控制器管理的pod</summary>
     
     
     
@@ -353,16 +332,12 @@
     <link href="http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/"/>
     <id>http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</id>
     <published>2022-02-16T16:00:00.000Z</published>
-    <updated>2022-09-24T17:58:18.806Z</updated>
+    <updated>2022-10-19T09:33:35.969Z</updated>
     
-    <content type="html"><![CDATA[<span id="more"></span><h3 id="borg系统"><a href="#borg系统" class="headerlink" title="borg系统"></a>borg系统</h3><p><a href="/images/k8s-1.png"></a></p><p>Master节点为奇数，scheduler向paxos写入数据，然后borglet监听到右自己的消息，就会执行命令。</p><h3 id="k8s架构"><a href="#k8s架构" class="headerlink" title="k8s架构"></a>k8s架构</h3><p><a href="/images/k8s-2.png"></a></p><p>和borg一样，但是中间加了一个apiserver层，etcd约等于paxos。</p><ul><li>scheduler：负责接收任务，选择合适的节点进行分配任务.</li><li>replication controller：负责控制node的副本数量，也就是删除或者创建pod.</li><li>apiserver：所有外界输入的入口，包括kubelet、kube proxy、replication controller、scheduler.</li><li>etcd：可信赖的分布式键值对数据库，存储k8s集群的所有重要信息，其内部结构如下图所示：<br><a href="/images/k8s-3.png"></a></li></ul><p>etcd使用http协议的c&#x2F;s架构，WAL是一种持久化策略，简单来说就是增量+完整备份，每一小段时间进行一个增量备份，每隔一大段时间进行完整备份，数据写入store中.</p><ul><li>kubelet：(CRI：container runtime interface)，操作docker，维护Pod的生命周期（pod运行在docker中）.</li><li>kube proxy：负责写入ipvs和iptables，执行负载均衡，实现pod和pod之间的通信.</li></ul><h3 id="其他概念"><a href="#其他概念" class="headerlink" title="其他概念"></a>其他概念</h3><ul><li>coreDNS：为集群中的SVC创建一个域名IP的对应关系解析。</li><li>dashboard：给k8s集群提供的B&#x2F;S访问体系。</li><li>ingress controller：官方只实现四层代理，ingress实现七层代理。</li><li>federation：提供一个可以跨集群中心多k8s统一管理功能。</li><li>prometheus：提供k8s集群的监控能力。</li><li>ELK：提供k8s日志统一管理平台。</li></ul>]]></content>
+    <content type="html"><![CDATA[<h3 id="borg系统"><a href="#borg系统" class="headerlink" title="borg系统"></a>borg系统</h3><p><a href="/images/k8s-1.png"></a></p><span id="more"></span><p>Master节点为奇数，scheduler向paxos写入数据，然后borglet监听到右自己的消息，就会执行命令。</p><h3 id="k8s架构"><a href="#k8s架构" class="headerlink" title="k8s架构"></a>k8s架构</h3><p><a href="/images/k8s-2.png"></a></p><p>和borg一样，但是中间加了一个apiserver层，etcd约等于paxos。</p><ul><li>scheduler：负责接收任务，选择合适的节点进行分配任务.</li><li>replication controller：负责控制node的副本数量，也就是删除或者创建pod.</li><li>apiserver：所有外界输入的入口，包括kubelet、kube proxy、replication controller、scheduler.</li><li>etcd：可信赖的分布式键值对数据库，存储k8s集群的所有重要信息，其内部结构如下图所示：<br><a href="/images/k8s-3.png"></a></li></ul><p>etcd使用http协议的c&#x2F;s架构，WAL是一种持久化策略，简单来说就是增量+完整备份，每一小段时间进行一个增量备份，每隔一大段时间进行完整备份，数据写入store中.</p><ul><li>kubelet：(CRI：container runtime interface)，操作docker，维护Pod的生命周期（pod运行在docker中）.</li><li>kube proxy：负责写入ipvs和iptables，执行负载均衡，实现pod和pod之间的通信.</li></ul><h3 id="其他概念"><a href="#其他概念" class="headerlink" title="其他概念"></a>其他概念</h3><ul><li>coreDNS：为集群中的SVC创建一个域名IP的对应关系解析。</li><li>dashboard：给k8s集群提供的B&#x2F;S访问体系。</li><li>ingress controller：官方只实现四层代理，ingress实现七层代理。</li><li>federation：提供一个可以跨集群中心多k8s统一管理功能。</li><li>prometheus：提供k8s集群的监控能力。</li><li>ELK：提供k8s日志统一管理平台。</li></ul>]]></content>
     
     
-      
-      
-    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
-&lt;h3 id=&quot;borg系统&quot;&gt;&lt;a href=&quot;#borg系统&quot; class=&quot;headerlink&quot; title=&quot;borg系统&quot;&gt;&lt;/a&gt;borg系统&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;/images/k8s-1.png&quot;&gt;&lt;/</summary>
-      
+    <summary type="html">&lt;h3 id=&quot;borg系统&quot;&gt;&lt;a href=&quot;#borg系统&quot; class=&quot;headerlink&quot; title=&quot;borg系统&quot;&gt;&lt;/a&gt;borg系统&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;/images/k8s-1.png&quot;&gt;&lt;/a&gt;&lt;/p&gt;</summary>
     
     
     
@@ -378,18 +353,15 @@
     <link href="http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B5%84%E6%BA%90%E5%92%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/"/>
     <id>http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B5%84%E6%BA%90%E5%92%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</id>
     <published>2022-02-16T16:00:00.000Z</published>
-    <updated>2022-09-24T17:58:24.573Z</updated>
+    <updated>2022-10-19T09:33:40.002Z</updated>
     
-    <content type="html"><![CDATA[<span id="more"></span><h3 id="集群资源分类"><a href="#集群资源分类" class="headerlink" title="集群资源分类"></a>集群资源分类</h3><ol><li>名称空间级别：默认为default</li><li>集群级别：role</li><li>元数据</li></ol><h3 id="pod资源清单"><a href="#pod资源清单" class="headerlink" title="pod资源清单"></a>pod资源清单</h3><p>定义一个pod需要下面这些信息：<br><a href="/images/k8s-8.png"></a></p><h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><p><a href="/images/k8s-8.png"></a></p><ol><li>初始化pause容器</li><li>init C 初始化容器，init容器总是运行到成功为止，并且后面的容器要等到前面的容器运行结束之后才运行。</li><li>进入容器，执行start操作。</li><li>readiness：就绪检测，如果服务就绪，可以暴露给外围。</li><li>liveness：生存检测，发现容器内部有假死（例如僵尸进程）时，进行重启或其他操作。</li><li>stop：结束时执行的一些操作。</li></ol><h3 id="调度器"><a href="#调度器" class="headerlink" title="调度器"></a>调度器</h3><p>调度器负责管理pod的生命周期，在必要的时候重启pod，下图是deployment滚动更新的管理方式，称为命令式管理，在后台其实是通过管理RS来达到目的。<br><a href="/images/k8s-10.png"></a></p><p>这样存在一个问题，假如其中一个pod挂掉，RS重新启动一个pod替代，但是ip地址变了，那么其他pod访问不到怎么办？这个时候需要在pod和上层服务比如nginx中加入一个中间件SVC，SVC会自动进行服务发现，通过标签匹配策略自动获取其关联的pod的信息，然后同步给需要使用的pod。</p>]]></content>
+    <content type="html"><![CDATA[<h3 id="集群资源分类"><a href="#集群资源分类" class="headerlink" title="集群资源分类"></a>集群资源分类</h3><ol><li>名称空间级别：默认为default</li><li>集群级别：role</li><li>元数据<span id="more"></span></li></ol><h3 id="pod资源清单"><a href="#pod资源清单" class="headerlink" title="pod资源清单"></a>pod资源清单</h3><p>定义一个pod需要下面这些信息：<br><a href="/images/k8s-8.png"></a></p><h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><p><a href="/images/k8s-8.png"></a></p><ol><li>初始化pause容器</li><li>init C 初始化容器，init容器总是运行到成功为止，并且后面的容器要等到前面的容器运行结束之后才运行。</li><li>进入容器，执行start操作。</li><li>readiness：就绪检测，如果服务就绪，可以暴露给外围。</li><li>liveness：生存检测，发现容器内部有假死（例如僵尸进程）时，进行重启或其他操作。</li><li>stop：结束时执行的一些操作。</li></ol><h3 id="调度器"><a href="#调度器" class="headerlink" title="调度器"></a>调度器</h3><p>调度器负责管理pod的生命周期，在必要的时候重启pod，下图是deployment滚动更新的管理方式，称为命令式管理，在后台其实是通过管理RS来达到目的。<br><a href="/images/k8s-10.png"></a></p><p>这样存在一个问题，假如其中一个pod挂掉，RS重新启动一个pod替代，但是ip地址变了，那么其他pod访问不到怎么办？这个时候需要在pod和上层服务比如nginx中加入一个中间件SVC，SVC会自动进行服务发现，通过标签匹配策略自动获取其关联的pod的信息，然后同步给需要使用的pod。</p>]]></content>
     
     
-      
-      
-    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
-&lt;h3 id=&quot;集群资源分类&quot;&gt;&lt;a href=&quot;#集群资源分类&quot; class=&quot;headerlink&quot; title=&quot;集群资源分类&quot;&gt;&lt;/a&gt;集群资源分类&lt;/h3&gt;&lt;ol&gt;
+    <summary type="html">&lt;h3 id=&quot;集群资源分类&quot;&gt;&lt;a href=&quot;#集群资源分类&quot; class=&quot;headerlink&quot; title=&quot;集群资源分类&quot;&gt;&lt;/a&gt;集群资源分类&lt;/h3&gt;&lt;ol&gt;
 &lt;li&gt;名称空间级别：默认为default&lt;/li&gt;
-&lt;</summary>
-      
+&lt;li&gt;集群级别：role&lt;/li&gt;
+&lt;li&gt;元数据</summary>
     
     
     
@@ -405,12 +377,19 @@
     <link href="http://haoqinx.github.io/2022/02/03/%E6%B5%B7%E9%87%8F%E6%95%B0%E6%8D%AE%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/"/>
     <id>http://haoqinx.github.io/2022/02/03/%E6%B5%B7%E9%87%8F%E6%95%B0%E6%8D%AE%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/</id>
     <published>2022-02-02T16:00:00.000Z</published>
-    <updated>2022-09-24T18:05:46.831Z</updated>
+    <updated>2022-10-19T09:10:06.151Z</updated>
     
-    <content type="html"><![CDATA[<p>海量数据问题</p><span id="more"></span><h2 id="海量日志找出现次数最多的记录"><a href="#海量日志找出现次数最多的记录" class="headerlink" title="海量日志找出现次数最多的记录"></a>海量日志找出现次数最多的记录</h2><ul><li>问题主要是记录不能全部载入到内存</li></ul><ol><li>先把整个文件分割成若干个小文件，比如1000个小文件</li><li>找出每个文件中出现次数最多的记录（输出1000个记录+频次）</li><li>从每个文件出现最多的记录找出全局出现次数最多的记录（合并记录，找出最多的频次）</li></ol><h2 id="统计topk个热门记录"><a href="#统计topk个热门记录" class="headerlink" title="统计topk个热门记录"></a>统计topk个热门记录</h2><ol><li>依次遍历这些文件，通过hash映射，将每个文件的每条数据映射到新构造的多个小文件中（设生成了nn个小文件）；</li><li>依次统计每个小文件中出现次数最多的kk条数据，构成hash表，hash表中每个键值对的形式为 dataItem: count；</li><li>利用堆排序，依次遍历这些hash表，在n∗kn∗k条数据中，找出count值最大的kk个；</li></ol><h2 id="海量数据查重"><a href="#海量数据查重" class="headerlink" title="海量数据查重"></a>海量数据查重</h2><ol><li>遍历A中的所有数据，通过hash映射将他们分布存储在n个小文件中，记为{a1,a2,…,an}；</li><li>遍历B中的所有数据，通过hash映射将他们分布存储在n个小文件中，记为{b1,b2,…,bn}；</li><li>根据hash函数性质可知，A和B中的相同数据一定被映射到序号相同的小文件，所以我们依次比较{ai,bi}即可；</li><li>如果问题更进一步，要求返回重复次数最多的k条数据，则可以将对比小文件找到的数据存入hash表，键为数据，值为该数据出现的次数。再用大小为k的堆，排序找出即可。</li></ol><h2 id="海量数据频率排序"><a href="#海量数据频率排序" class="headerlink" title="海量数据频率排序"></a>海量数据频率排序</h2><ol><li>顺序读文件，利用hash将相同的记录输出到相同的文件里。</li><li>每个小文件统计频率， 排序</li><li>归并排序(外部排序)<br><a href="https://www.cnblogs.com/codeMedita/p/7425291.html">外部排序参考</a></li></ol><h2 id="int数字重复数据查找（BitMap）"><a href="#int数字重复数据查找（BitMap）" class="headerlink" title="int数字重复数据查找（BitMap）"></a>int数字重复数据查找（BitMap）</h2><ul><li>例如：在2.5亿个整数里找不重复的整数</li></ul><ol><li>使用2bitmap算法， 00 代表没有出现，01表示出现一次，10表示出现多次。</li><li>计算下：整数4B，最多表示2^32个数，每个数用2个bit表示，就是2^32 * 2 &#x2F; 2^30 &#x2F; 8 &#x3D; 1G，注意那个8是B转bit。</li><li>然后扫描这2.5亿个整数，查看Bitmap中相对应位，如果是00变01，01变10，10保持不变。所描完事后，查看bitmap，把对应位是01的整数输出即可。</li></ol><ul><li>再例如：给40亿个不重复的unsigned int的整数，没排过序的，然后再给一个数，如何快速判断这个数是否在那40亿个数当中？<br>原理和上面一样，使用1bitmap就可以了</li></ul><h2 id="超大文件求交集"><a href="#超大文件求交集" class="headerlink" title="超大文件求交集"></a>超大文件求交集</h2><ul><li>现有两个各有20亿行的文件，每一行都只有一个数字，求这两个文件的交集。</li></ul><ol><li>开辟128M的int数组。<ul><li>int最大表示4G，也就是需要2^32bit位， 一个int是4B，也就是32bit，因此需要2^32&#x2F;2^5&#x3D;2^27bit。</li></ul></li><li>对于每个数，先 &#x2F;32，确定在数组哪个位置，然后%32，确定在该int的哪一位，然后对这个数组取并集即可统计</li><li>如果存在正负数的话，设置正负两个bitmap然后分别求交集即可</li></ol><h2 id="超大文件字符串重复"><a href="#超大文件字符串重复" class="headerlink" title="超大文件字符串重复"></a>超大文件字符串重复</h2><ul><li>给定a、b两个文件，各存放50亿个url，每个url各占64字节，内存限制是4G，让你找出a、b文件共同的url</li></ul><ol><li><p>分文件： </p><ul><li><p>遍历文件a，对每个url求取hash(url)%1000，然后根据所取得的值将url分别存储到1000个小文件（记为a0,a1,…,a999）中。这样每个小文件的大约为300M。 </p></li><li><p>遍历文件b，采取和a相同的方式将url分别存储到1000小文件（记为b0,b1,…,b999）。这样处理后，所有可能相同的url都在对应的小文件（a0vsb0,a1vsb1,…,a999vsb999）中，不对应的小文件不可能有相同的url。然后我们只要求出1000对小文件中相同的url即可。</p></li></ul></li><li><p>逐个找重复：</p></li></ol><ul><li>求每对小文件中相同的url： 把其中一个小文件的url存储到hash_set中，然后遍历另一个小文件的每个url，看其是否在刚才构建的hash_set中，如果是，那么就是共同的url，存到文件里面就可以了。</li></ul><h2 id="海量数据中位数（计数排序）"><a href="#海量数据中位数（计数排序）" class="headerlink" title="海量数据中位数（计数排序）"></a>海量数据中位数（计数排序）</h2><ul><li><p>只有2G内存的pc机，在一个存有10G个整数的文件，从中找到中位数，写一个算法。</p></li><li><p>分析：<br>  明显是一道工程性很强的题目，和一般的查找中位数的题目有几点不同。</p></li></ul><ol><li><p>原数据不能读进内存，不然可以用快速选择，如果数的范围合适的话还可以考虑桶排序或者计数排序，但这里假设是32位整数，仍有4G种取值，需要一个16G大小的数组来计数。</p></li><li><p>若看成从N个数中找出第K大的数，如果K个数可以读进内存，可以利用最小或最大堆，但这里K&#x3D;N&#x2F;2,有5G个数，仍然不能读进内存。</p></li></ol><ul><li>解法一：桶排序</li></ul><ol><li><p>读一遍10G个整数，把整数映射到256M个区段中，用一个64位无符号整数给每个相应区段记数。</p></li><li><p>从前到后对每一段的计数累加，当累加的和超过5G时停止，找出这个区段（即累加停止时达到的区段，也是中位数所在的区段）的数值范围，设为[a，a+15]，同时记录累加到前一个区段的总数，设为m。然后，释放除这个区段占用的内存。</p></li><li><p>再读一遍10G个整数，把在[a，a+15]内的每个值计数，即有16个计数。</p></li><li><p>对新的计数依次累加，每次的和设为n，当m+n的值超过5G时停止，此时的这个计数所对应的数就是中位数。</p></li></ol><ul><li><p>解法二：二进制分文件</p><p>  假设10亿个数字保存在一个大文件中，依次读一部分文件到内存(不超过内存的限制：1GB)，将每个数字用二进制表示，比较二进制的最高位(第32位)，如果数字的最高位为0，则将这个数字写入 file_0文件中；如果最高位为 1，则将该数字写入file_1文件中。【这里的最高位类似于快速排序中的枢轴元素】</p><p>  从而将10亿个数字分成了两个文件（几乎是二分的），假设 file_0文件中有 6亿 个数字，file_1文件中有 4亿 个数字。那么中位数就在 file_0 文件中，并且是 file_0 文件中所有数字排序之后的第 1亿 个数字。</p></li></ul>]]></content>
+    <content type="html"><![CDATA[<p>海量数据问题</p><h2 id="海量日志找出现次数最多的记录"><a href="#海量日志找出现次数最多的记录" class="headerlink" title="海量日志找出现次数最多的记录"></a>海量日志找出现次数最多的记录</h2><ul><li>问题主要是记录不能全部载入到内存</li></ul><ol><li>先把整个文件分割成若干个小文件，比如1000个小文件</li><li>找出每个文件中出现次数最多的记录（输出1000个记录+频次）</li><li>从每个文件出现最多的记录找出全局出现次数最多的记录（合并记录，找出最多的频次）<span id="more"></span></li></ol><h2 id="统计topk个热门记录"><a href="#统计topk个热门记录" class="headerlink" title="统计topk个热门记录"></a>统计topk个热门记录</h2><ol><li>依次遍历这些文件，通过hash映射，将每个文件的每条数据映射到新构造的多个小文件中（设生成了nn个小文件）；</li><li>依次统计每个小文件中出现次数最多的kk条数据，构成hash表，hash表中每个键值对的形式为 dataItem: count；</li><li>利用堆排序，依次遍历这些hash表，在n∗kn∗k条数据中，找出count值最大的kk个；</li></ol><h2 id="海量数据查重"><a href="#海量数据查重" class="headerlink" title="海量数据查重"></a>海量数据查重</h2><ol><li>遍历A中的所有数据，通过hash映射将他们分布存储在n个小文件中，记为{a1,a2,…,an}；</li><li>遍历B中的所有数据，通过hash映射将他们分布存储在n个小文件中，记为{b1,b2,…,bn}；</li><li>根据hash函数性质可知，A和B中的相同数据一定被映射到序号相同的小文件，所以我们依次比较{ai,bi}即可；</li><li>如果问题更进一步，要求返回重复次数最多的k条数据，则可以将对比小文件找到的数据存入hash表，键为数据，值为该数据出现的次数。再用大小为k的堆，排序找出即可。</li></ol><h2 id="海量数据频率排序"><a href="#海量数据频率排序" class="headerlink" title="海量数据频率排序"></a>海量数据频率排序</h2><ol><li>顺序读文件，利用hash将相同的记录输出到相同的文件里。</li><li>每个小文件统计频率， 排序</li><li>归并排序(外部排序)<br><a href="https://www.cnblogs.com/codeMedita/p/7425291.html">外部排序参考</a></li></ol><h2 id="int数字重复数据查找（BitMap）"><a href="#int数字重复数据查找（BitMap）" class="headerlink" title="int数字重复数据查找（BitMap）"></a>int数字重复数据查找（BitMap）</h2><ul><li>例如：在2.5亿个整数里找不重复的整数</li></ul><ol><li>使用2bitmap算法， 00 代表没有出现，01表示出现一次，10表示出现多次。</li><li>计算下：整数4B，最多表示2^32个数，每个数用2个bit表示，就是2^32 * 2 &#x2F; 2^30 &#x2F; 8 &#x3D; 1G，注意那个8是B转bit。</li><li>然后扫描这2.5亿个整数，查看Bitmap中相对应位，如果是00变01，01变10，10保持不变。所描完事后，查看bitmap，把对应位是01的整数输出即可。</li></ol><ul><li>再例如：给40亿个不重复的unsigned int的整数，没排过序的，然后再给一个数，如何快速判断这个数是否在那40亿个数当中？<br>原理和上面一样，使用1bitmap就可以了</li></ul><h2 id="超大文件求交集"><a href="#超大文件求交集" class="headerlink" title="超大文件求交集"></a>超大文件求交集</h2><ul><li>现有两个各有20亿行的文件，每一行都只有一个数字，求这两个文件的交集。</li></ul><ol><li>开辟128M的int数组。<ul><li>int最大表示4G，也就是需要2^32bit位， 一个int是4B，也就是32bit，因此需要2^32&#x2F;2^5&#x3D;2^27bit。</li></ul></li><li>对于每个数，先 &#x2F;32，确定在数组哪个位置，然后%32，确定在该int的哪一位，然后对这个数组取并集即可统计</li><li>如果存在正负数的话，设置正负两个bitmap然后分别求交集即可</li></ol><h2 id="超大文件字符串重复"><a href="#超大文件字符串重复" class="headerlink" title="超大文件字符串重复"></a>超大文件字符串重复</h2><ul><li>给定a、b两个文件，各存放50亿个url，每个url各占64字节，内存限制是4G，让你找出a、b文件共同的url</li></ul><ol><li><p>分文件： </p><ul><li><p>遍历文件a，对每个url求取hash(url)%1000，然后根据所取得的值将url分别存储到1000个小文件（记为a0,a1,…,a999）中。这样每个小文件的大约为300M。 </p></li><li><p>遍历文件b，采取和a相同的方式将url分别存储到1000小文件（记为b0,b1,…,b999）。这样处理后，所有可能相同的url都在对应的小文件（a0vsb0,a1vsb1,…,a999vsb999）中，不对应的小文件不可能有相同的url。然后我们只要求出1000对小文件中相同的url即可。</p></li></ul></li><li><p>逐个找重复：</p></li></ol><ul><li>求每对小文件中相同的url： 把其中一个小文件的url存储到hash_set中，然后遍历另一个小文件的每个url，看其是否在刚才构建的hash_set中，如果是，那么就是共同的url，存到文件里面就可以了。</li></ul><h2 id="海量数据中位数（计数排序）"><a href="#海量数据中位数（计数排序）" class="headerlink" title="海量数据中位数（计数排序）"></a>海量数据中位数（计数排序）</h2><ul><li><p>只有2G内存的pc机，在一个存有10G个整数的文件，从中找到中位数，写一个算法。</p></li><li><p>分析：<br>  明显是一道工程性很强的题目，和一般的查找中位数的题目有几点不同。</p></li></ul><ol><li><p>原数据不能读进内存，不然可以用快速选择，如果数的范围合适的话还可以考虑桶排序或者计数排序，但这里假设是32位整数，仍有4G种取值，需要一个16G大小的数组来计数。</p></li><li><p>若看成从N个数中找出第K大的数，如果K个数可以读进内存，可以利用最小或最大堆，但这里K&#x3D;N&#x2F;2,有5G个数，仍然不能读进内存。</p></li></ol><ul><li>解法一：桶排序</li></ul><ol><li><p>读一遍10G个整数，把整数映射到256M个区段中，用一个64位无符号整数给每个相应区段记数。</p></li><li><p>从前到后对每一段的计数累加，当累加的和超过5G时停止，找出这个区段（即累加停止时达到的区段，也是中位数所在的区段）的数值范围，设为[a，a+15]，同时记录累加到前一个区段的总数，设为m。然后，释放除这个区段占用的内存。</p></li><li><p>再读一遍10G个整数，把在[a，a+15]内的每个值计数，即有16个计数。</p></li><li><p>对新的计数依次累加，每次的和设为n，当m+n的值超过5G时停止，此时的这个计数所对应的数就是中位数。</p></li></ol><ul><li><p>解法二：二进制分文件</p><p>  假设10亿个数字保存在一个大文件中，依次读一部分文件到内存(不超过内存的限制：1GB)，将每个数字用二进制表示，比较二进制的最高位(第32位)，如果数字的最高位为0，则将这个数字写入 file_0文件中；如果最高位为 1，则将该数字写入file_1文件中。【这里的最高位类似于快速排序中的枢轴元素】</p><p>  从而将10亿个数字分成了两个文件（几乎是二分的），假设 file_0文件中有 6亿 个数字，file_1文件中有 4亿 个数字。那么中位数就在 file_0 文件中，并且是 file_0 文件中所有数字排序之后的第 1亿 个数字。</p></li></ul>]]></content>
     
     
-    <summary type="html">&lt;p&gt;海量数据问题&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;海量数据问题&lt;/p&gt;
+&lt;h2 id=&quot;海量日志找出现次数最多的记录&quot;&gt;&lt;a href=&quot;#海量日志找出现次数最多的记录&quot; class=&quot;headerlink&quot; title=&quot;海量日志找出现次数最多的记录&quot;&gt;&lt;/a&gt;海量日志找出现次数最多的记录&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;问题主要是记录不能全部载入到内存&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;先把整个文件分割成若干个小文件，比如1000个小文件&lt;/li&gt;
+&lt;li&gt;找出每个文件中出现次数最多的记录（输出1000个记录+频次）&lt;/li&gt;
+&lt;li&gt;从每个文件出现最多的记录找出全局出现次数最多的记录（合并记录，找出最多的频次）</summary>
     
     
     
@@ -426,12 +405,14 @@
     <link href="http://haoqinx.github.io/2022/02/01/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%93%B6%E9%A2%88%E5%9C%A8%E5%93%AA%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3/"/>
     <id>http://haoqinx.github.io/2022/02/01/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%93%B6%E9%A2%88%E5%9C%A8%E5%93%AA%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3/</id>
     <published>2022-01-31T16:00:00.000Z</published>
-    <updated>2022-09-24T18:05:31.163Z</updated>
+    <updated>2022-10-19T09:09:54.838Z</updated>
     
-    <content type="html"><![CDATA[<p>服务器瓶颈</p><span id="more"></span><h3 id="瓶颈"><a href="#瓶颈" class="headerlink" title="瓶颈"></a>瓶颈</h3><ol><li><p>cpu<br>测试的时候cpu占用率70% 多核情况下占用60%</p></li><li><p>带宽<br>网络占用率</p></li><li><p>磁盘</p></li></ol><p>如果存在LOG日志写磁盘或者从磁盘映射文件，可能会存在瓶颈</p><ol start="4"><li>处理流程</li></ol><p>epoll ET&#x2F;LT模式</p><ol start="5"><li>进程能打开最大文件描述符数</li></ol><p>同时能打开65535个文件，但是一般情况下不可能并行打开这么多</p><ol start="6"><li>数据库连接等等软件层面的限制</li></ol><h3 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h3><ol><li><p>cpu<br>尽量利用多核优势，或者利用分布式进行负载均衡</p></li><li><p>带宽<br>增加网络带宽</p></li><li><p>磁盘<br>使用SSD，尽量减少磁盘IO次数</p></li><li><p>处理流程<br>各有优势，使用LT不容易犯错，使用ET模式更高效</p></li><li><p>进程能打开最大文件描述符</p></li></ol><p>这个一般不是瓶颈，在长链接情况下可能会成为瓶颈。</p>]]></content>
+    <content type="html"><![CDATA[<p>服务器瓶颈</p><h3 id="瓶颈"><a href="#瓶颈" class="headerlink" title="瓶颈"></a>瓶颈</h3><ol><li><p>cpu<br>测试的时候cpu占用率70% 多核情况下占用60%</p><span id="more"></span></li><li><p>带宽<br>网络占用率</p></li><li><p>磁盘</p></li></ol><p>如果存在LOG日志写磁盘或者从磁盘映射文件，可能会存在瓶颈</p><ol start="4"><li>处理流程</li></ol><p>epoll ET&#x2F;LT模式</p><ol start="5"><li>进程能打开最大文件描述符数</li></ol><p>同时能打开65535个文件，但是一般情况下不可能并行打开这么多</p><ol start="6"><li>数据库连接等等软件层面的限制</li></ol><h3 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h3><ol><li><p>cpu<br>尽量利用多核优势，或者利用分布式进行负载均衡</p></li><li><p>带宽<br>增加网络带宽</p></li><li><p>磁盘<br>使用SSD，尽量减少磁盘IO次数</p></li><li><p>处理流程<br>各有优势，使用LT不容易犯错，使用ET模式更高效</p></li><li><p>进程能打开最大文件描述符</p></li></ol><p>这个一般不是瓶颈，在长链接情况下可能会成为瓶颈。</p>]]></content>
     
     
-    <summary type="html">&lt;p&gt;服务器瓶颈&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;服务器瓶颈&lt;/p&gt;
+&lt;h3 id=&quot;瓶颈&quot;&gt;&lt;a href=&quot;#瓶颈&quot; class=&quot;headerlink&quot; title=&quot;瓶颈&quot;&gt;&lt;/a&gt;瓶颈&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;cpu&lt;br&gt;测试的时候cpu占用率70% 多核情况下占用60%&lt;/p&gt;</summary>
     
     
     
@@ -447,12 +428,19 @@
     <link href="http://haoqinx.github.io/2022/01/31/%E5%9C%BA%E6%99%AF%E9%A2%98/"/>
     <id>http://haoqinx.github.io/2022/01/31/%E5%9C%BA%E6%99%AF%E9%A2%98/</id>
     <published>2022-01-30T16:00:00.000Z</published>
-    <updated>2022-09-24T18:05:19.488Z</updated>
+    <updated>2022-10-19T09:09:36.530Z</updated>
     
-    <content type="html"><![CDATA[<p>场景题</p><span id="more"></span><h2 id="输入一个url后到出现页面发生什么？"><a href="#输入一个url后到出现页面发生什么？" class="headerlink" title="输入一个url后到出现页面发生什么？"></a>输入一个url后到出现页面发生什么？</h2><ol><li><p>DNS解析</p><ul><li>查询浏览器缓存</li><li>查询操作系统缓存</li><li>查询路由器缓存&#x2F;ISP服务器缓存</li><li>通过递归和迭代两种方式查询dns服务器</li></ul></li><li><p>TCP连接</p><ul><li>应用层：HTTP数据（GET&#x2F;POST）</li><li>传输层：TCP数据（三次握手、SYN泛洪攻击）<ul><li>SYN攻击是伪造tcp头，虚造一个ip，导致服务方永远无法收到ack，半连接状态消耗系统资源，一般可以设置syn timeout或者拒绝大量相同ip访问来避免。</li></ul></li><li>网络层：IP头（arp）</li><li>链路层：以太网首部（广播单播、arp攻击）<ul><li>arp攻击：局域网内有大量虚假arp应答</li></ul></li></ul></li><li><p>服务器响应</p><ul><li>协议解析</li><li>资源发送</li></ul></li><li><p>浏览器渲染</p></li></ol><h2 id="数据从磁盘到内存全过程？"><a href="#数据从磁盘到内存全过程？" class="headerlink" title="数据从磁盘到内存全过程？"></a>数据从磁盘到内存全过程？</h2><p>1、初始化DMA控制器并启动磁盘<br>2、从磁盘传输一块数据到内存缓冲区<br>3、DMA控制器发出中断请求<br>4、执行“DMA结束”中断服务程序</p><h2 id="数据从网卡到磁盘全过程？"><a href="#数据从网卡到磁盘全过程？" class="headerlink" title="数据从网卡到磁盘全过程？"></a>数据从网卡到磁盘全过程？</h2><ol><li>网卡收到数据包</li><li>将数据包从网卡硬件缓存读入内存（DMA –&gt; skb_buffer）</li><li>通知内核处理<ul><li>NIC触发硬中断，硬中断处理程序会调用驱动程序启动软中断，后续慢慢处理。</li><li>软中断触发NAPI，循环处理ring_buffer指向的skb_buffer</li></ul></li><li>经过TCP&#x2F;IP协议层逐层处理</li><li>应用程序通过read()从sockert buffer读取内容</li></ol><p>用一段话描述：网卡收到数据包，DMA到内核内存，中断通知内核数据有了，内核按轮次处理消耗数据包，一轮处理完成后，开启硬中断。其核心就是网卡和内核其实是生产和消费模型，网卡生产，内核负责消费，生产者需要通知消费者消费；如果生产过快会产生丢包，如果消费过慢也会产生问题。也就说在高流量压力情况下，只有生产消费优化后，消费能力够快，此生产消费关系才可以正常维持，所以如果物理接口有丢包计数时候，未必是网卡存在问题，也可能是内核消费的太慢。</p><h2 id="源代码到运行全过程"><a href="#源代码到运行全过程" class="headerlink" title="源代码到运行全过程"></a>源代码到运行全过程</h2><ol><li>预处理</li><li>编译（词法分析，语法分析，中间代码生成，优化）</li><li>汇编</li><li>链接</li><li>生成ELF文件</li></ol>]]></content>
+    <content type="html"><![CDATA[<p>场景题</p><h2 id="输入一个url后到出现页面发生什么？"><a href="#输入一个url后到出现页面发生什么？" class="headerlink" title="输入一个url后到出现页面发生什么？"></a>输入一个url后到出现页面发生什么？</h2><ol><li><p>DNS解析</p><ul><li>查询浏览器缓存</li><li>查询操作系统缓存</li><li>查询路由器缓存&#x2F;ISP服务器缓存</li><li>通过递归和迭代两种方式查询dns服务器<span id="more"></span></li></ul></li><li><p>TCP连接</p><ul><li>应用层：HTTP数据（GET&#x2F;POST）</li><li>传输层：TCP数据（三次握手、SYN泛洪攻击）<ul><li>SYN攻击是伪造tcp头，虚造一个ip，导致服务方永远无法收到ack，半连接状态消耗系统资源，一般可以设置syn timeout或者拒绝大量相同ip访问来避免。</li></ul></li><li>网络层：IP头（arp）</li><li>链路层：以太网首部（广播单播、arp攻击）<ul><li>arp攻击：局域网内有大量虚假arp应答</li></ul></li></ul></li><li><p>服务器响应</p><ul><li>协议解析</li><li>资源发送</li></ul></li><li><p>浏览器渲染</p></li></ol><h2 id="数据从磁盘到内存全过程？"><a href="#数据从磁盘到内存全过程？" class="headerlink" title="数据从磁盘到内存全过程？"></a>数据从磁盘到内存全过程？</h2><p>1、初始化DMA控制器并启动磁盘<br>2、从磁盘传输一块数据到内存缓冲区<br>3、DMA控制器发出中断请求<br>4、执行“DMA结束”中断服务程序</p><h2 id="数据从网卡到磁盘全过程？"><a href="#数据从网卡到磁盘全过程？" class="headerlink" title="数据从网卡到磁盘全过程？"></a>数据从网卡到磁盘全过程？</h2><ol><li>网卡收到数据包</li><li>将数据包从网卡硬件缓存读入内存（DMA –&gt; skb_buffer）</li><li>通知内核处理<ul><li>NIC触发硬中断，硬中断处理程序会调用驱动程序启动软中断，后续慢慢处理。</li><li>软中断触发NAPI，循环处理ring_buffer指向的skb_buffer</li></ul></li><li>经过TCP&#x2F;IP协议层逐层处理</li><li>应用程序通过read()从sockert buffer读取内容</li></ol><p>用一段话描述：网卡收到数据包，DMA到内核内存，中断通知内核数据有了，内核按轮次处理消耗数据包，一轮处理完成后，开启硬中断。其核心就是网卡和内核其实是生产和消费模型，网卡生产，内核负责消费，生产者需要通知消费者消费；如果生产过快会产生丢包，如果消费过慢也会产生问题。也就说在高流量压力情况下，只有生产消费优化后，消费能力够快，此生产消费关系才可以正常维持，所以如果物理接口有丢包计数时候，未必是网卡存在问题，也可能是内核消费的太慢。</p><h2 id="源代码到运行全过程"><a href="#源代码到运行全过程" class="headerlink" title="源代码到运行全过程"></a>源代码到运行全过程</h2><ol><li>预处理</li><li>编译（词法分析，语法分析，中间代码生成，优化）</li><li>汇编</li><li>链接</li><li>生成ELF文件</li></ol>]]></content>
     
     
-    <summary type="html">&lt;p&gt;场景题&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;场景题&lt;/p&gt;
+&lt;h2 id=&quot;输入一个url后到出现页面发生什么？&quot;&gt;&lt;a href=&quot;#输入一个url后到出现页面发生什么？&quot; class=&quot;headerlink&quot; title=&quot;输入一个url后到出现页面发生什么？&quot;&gt;&lt;/a&gt;输入一个url后到出现页面发生什么？&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;DNS解析&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;查询浏览器缓存&lt;/li&gt;
+&lt;li&gt;查询操作系统缓存&lt;/li&gt;
+&lt;li&gt;查询路由器缓存&amp;#x2F;ISP服务器缓存&lt;/li&gt;
+&lt;li&gt;通过递归和迭代两种方式查询dns服务器</summary>
     
     
     
@@ -468,16 +456,12 @@
     <link href="http://haoqinx.github.io/2022/01/27/%E5%8D%8F%E7%A8%8B%E6%A1%86%E6%9E%B6/"/>
     <id>http://haoqinx.github.io/2022/01/27/%E5%8D%8F%E7%A8%8B%E6%A1%86%E6%9E%B6/</id>
     <published>2022-01-26T16:00:00.000Z</published>
-    <updated>2022-09-24T17:54:11.887Z</updated>
+    <updated>2022-10-19T09:13:56.551Z</updated>
     
-    <content type="html"><![CDATA[<span id="more"></span><h3 id="网络编程中协程的作用"><a href="#网络编程中协程的作用" class="headerlink" title="网络编程中协程的作用"></a>网络编程中协程的作用</h3><p>记住一句话即可:协程可以实现同步的编程方式，性能和多线程异步回调相似。</p><h3 id="实现上下文切换的方式"><a href="#实现上下文切换的方式" class="headerlink" title="实现上下文切换的方式"></a>实现上下文切换的方式</h3><ol><li>setjump&#x2F;long jump</li><li>ucontext</li><li>汇编代码</li></ol><h3 id="协程中需要包含哪些成员？"><a href="#协程中需要包含哪些成员？" class="headerlink" title="协程中需要包含哪些成员？"></a>协程中需要包含哪些成员？</h3><ol><li>寄存器组</li><li>入口函数</li><li>函数参数</li><li>返回值</li><li>栈地址（共享栈和独立栈）</li><li>栈大小（4K）</li><li>协程状态</li></ol><h3 id="协程不同状态使用什么数据结构"><a href="#协程不同状态使用什么数据结构" class="headerlink" title="协程不同状态使用什么数据结构"></a>协程不同状态使用什么数据结构</h3><ol><li>新建&#x2F;就绪：队列</li><li>等待：红黑树</li><li>睡眠：红黑树<br> 这里为什么不用小顶堆？小顶堆适合取出次数小的任务，红黑树是有序的，在大量超时取出的情况下效率低。</li></ol><h3 id="多核模式下调度器怎么设计？"><a href="#多核模式下调度器怎么设计？" class="headerlink" title="多核模式下调度器怎么设计？"></a>多核模式下调度器怎么设计？</h3><ol><li>多线程：如果多个线程公用一个调用器，使用调度器的时候需要加锁（涉及红黑树、队列的操作）</li><li>多进程：每个核绑定一个进程</li></ol>]]></content>
+    <content type="html"><![CDATA[<h3 id="网络编程中协程的作用"><a href="#网络编程中协程的作用" class="headerlink" title="网络编程中协程的作用"></a>网络编程中协程的作用</h3><p>记住一句话即可:协程可以实现同步的编程方式，性能和多线程异步回调相似。</p><span id="more"></span><h3 id="实现上下文切换的方式"><a href="#实现上下文切换的方式" class="headerlink" title="实现上下文切换的方式"></a>实现上下文切换的方式</h3><ol><li>setjump&#x2F;long jump</li><li>ucontext</li><li>汇编代码</li></ol><h3 id="协程中需要包含哪些成员？"><a href="#协程中需要包含哪些成员？" class="headerlink" title="协程中需要包含哪些成员？"></a>协程中需要包含哪些成员？</h3><ol><li>寄存器组</li><li>入口函数</li><li>函数参数</li><li>返回值</li><li>栈地址（共享栈和独立栈）</li><li>栈大小（4K）</li><li>协程状态</li></ol><h3 id="协程不同状态使用什么数据结构"><a href="#协程不同状态使用什么数据结构" class="headerlink" title="协程不同状态使用什么数据结构"></a>协程不同状态使用什么数据结构</h3><ol><li>新建&#x2F;就绪：队列</li><li>等待：红黑树</li><li>睡眠：红黑树<br> 这里为什么不用小顶堆？小顶堆适合取出次数小的任务，红黑树是有序的，在大量超时取出的情况下效率低。</li></ol><h3 id="多核模式下调度器怎么设计？"><a href="#多核模式下调度器怎么设计？" class="headerlink" title="多核模式下调度器怎么设计？"></a>多核模式下调度器怎么设计？</h3><ol><li>多线程：如果多个线程公用一个调用器，使用调度器的时候需要加锁（涉及红黑树、队列的操作）</li><li>多进程：每个核绑定一个进程</li></ol>]]></content>
     
     
-      
-      
-    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
-&lt;h3 id=&quot;网络编程中协程的作用&quot;&gt;&lt;a href=&quot;#网络编程中协程的作用&quot; class=&quot;headerlink&quot; title=&quot;网络编程中协程的作用&quot;&gt;&lt;/a&gt;网络编程中协程的作用&lt;/h3&gt;&lt;p&gt;记住一句话即可:协程可以实现</summary>
-      
+    <summary type="html">&lt;h3 id=&quot;网络编程中协程的作用&quot;&gt;&lt;a href=&quot;#网络编程中协程的作用&quot; class=&quot;headerlink&quot; title=&quot;网络编程中协程的作用&quot;&gt;&lt;/a&gt;网络编程中协程的作用&lt;/h3&gt;&lt;p&gt;记住一句话即可:协程可以实现同步的编程方式，性能和多线程异步回调相似。&lt;/p&gt;</summary>
     
     
     
@@ -493,20 +477,38 @@
     <link href="http://haoqinx.github.io/2022/01/17/ndpi%E5%8E%9F%E7%90%86/"/>
     <id>http://haoqinx.github.io/2022/01/17/ndpi%E5%8E%9F%E7%90%86/</id>
     <published>2022-01-16T16:00:00.000Z</published>
-    <updated>2022-09-24T18:00:42.696Z</updated>
+    <updated>2022-10-19T09:36:25.261Z</updated>
     
-    <content type="html"><![CDATA[<span id="more"></span><h2 id="整体原理"><a href="#整体原理" class="headerlink" title="整体原理"></a>整体原理</h2><ol><li>整体框架</li></ol><ul><li>包处理， 解析ip和基础端口信息</li><li>解析器插件，负责检测协议</li></ul><h2 id="nDPI改进机制"><a href="#nDPI改进机制" class="headerlink" title="nDPI改进机制"></a>nDPI改进机制</h2><ul><li>支持的协议越多，解析的参数越多，检测的时间越久。</li><li>在检测开始时一次性将所有协议初始化，无需运行过程的penalty。</li><li>流只解析一次，若第一次匹配不成功，保留流的解析信息。</li><li>针对未解析的流，nDPI先根据传输层协议类型和端口号，来猜测匹配的协议，提升匹配速度。</li><li>如果存在一个已经登记号的针对包的端口和协议的解析器，那就优先使用那个。</li><li>如果没有协议匹配这个包，那么后面的包页不会被检测。</li><li>一旦有协议匹配，那么就停止检测。</li><li>每个流需要检测的包的个数根据协议来确定，大多数是2~3个包，最多8个包。</li><li>使用Aho-Corasick算法来处理字符匹配。</li><li>内存使用：内存主要用于ndpi的配置和字符串的自动匹配，无自定义配置的情况下，使用210K内存，使用自定义配置时，会上升25KB。</li><li>记录每个流的信息，每个流大约占用1KB。</li></ul>]]></content>
+    <content type="html"><![CDATA[<h2 id="整体原理"><a href="#整体原理" class="headerlink" title="整体原理"></a>整体原理</h2><ol><li>整体框架</li></ol><ul><li>包处理， 解析ip和基础端口信息</li><li>解析器插件，负责检测协议<span id="more"></span></li></ul><h2 id="nDPI改进机制"><a href="#nDPI改进机制" class="headerlink" title="nDPI改进机制"></a>nDPI改进机制</h2><ul><li>支持的协议越多，解析的参数越多，检测的时间越久。</li><li>在检测开始时一次性将所有协议初始化，无需运行过程的penalty。</li><li>流只解析一次，若第一次匹配不成功，保留流的解析信息。</li><li>针对未解析的流，nDPI先根据传输层协议类型和端口号，来猜测匹配的协议，提升匹配速度。</li><li>如果存在一个已经登记号的针对包的端口和协议的解析器，那就优先使用那个。</li><li>如果没有协议匹配这个包，那么后面的包页不会被检测。</li><li>一旦有协议匹配，那么就停止检测。</li><li>每个流需要检测的包的个数根据协议来确定，大多数是2~3个包，最多8个包。</li><li>使用Aho-Corasick算法来处理字符匹配。</li><li>内存使用：内存主要用于ndpi的配置和字符串的自动匹配，无自定义配置的情况下，使用210K内存，使用自定义配置时，会上升25KB。</li><li>记录每个流的信息，每个流大约占用1KB。</li></ul>]]></content>
     
     
-      
-      
-    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
-&lt;h2 id=&quot;整体原理&quot;&gt;&lt;a href=&quot;#整体原理&quot; class=&quot;headerlink&quot; title=&quot;整体原理&quot;&gt;&lt;/a&gt;整体原理&lt;/h2&gt;&lt;ol&gt;
+    <summary type="html">&lt;h2 id=&quot;整体原理&quot;&gt;&lt;a href=&quot;#整体原理&quot; class=&quot;headerlink&quot; title=&quot;整体原理&quot;&gt;&lt;/a&gt;整体原理&lt;/h2&gt;&lt;ol&gt;
 &lt;li&gt;整体框架&lt;/li&gt;
 &lt;/ol&gt;
 &lt;ul&gt;
-&lt;li&gt;包处理， 解析</summary>
-      
+&lt;li&gt;包处理， 解析ip和基础端口信息&lt;/li&gt;
+&lt;li&gt;解析器插件，负责检测协议</summary>
+    
+    
+    
+    <category term="Linux" scheme="http://haoqinx.github.io/categories/Linux/"/>
+    
+    
+    <category term="Linux" scheme="http://haoqinx.github.io/tags/Linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>文件描述符</title>
+    <link href="http://haoqinx.github.io/2022/01/12/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/"/>
+    <id>http://haoqinx.github.io/2022/01/12/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/</id>
+    <published>2022-01-11T16:00:00.000Z</published>
+    <updated>2022-10-19T09:13:41.555Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://blog.csdn.net/qq327767852/article/details/50830192"></a><br>主要搞清文件描述符和系统级文件表和inode的对应关系</p><span id="more"></span>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://blog.csdn.net/qq327767852/article/details/50830192&quot;&gt;&lt;/a&gt;&lt;br&gt;主要搞清文件描述符和系统级文件表和inode的对应关系&lt;/p&gt;</summary>
     
     
     

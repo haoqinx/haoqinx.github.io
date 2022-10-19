@@ -21,18 +21,18 @@
     var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="基本结构在3.0版本中基本结构如下图所示： 源码通过宏定义来实现： 12345678910111213&#x2F;* Utility macros *&#x2F;&#x2F;&#x2F;zlbytes#define ZIPLIST_BYTES(zl)       (*((uint32_t*)(zl)))&#x2F;&#x2F; zltail#define ZIPLIST_TAIL_OFFSET(zl) (*((uint32_t*)((zl)+sizeof">
+  <meta name="description" content="基本结构在3.0版本中基本结构如下图所示：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="redis系列：压缩列表">
 <meta property="og:url" content="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8/index.html">
 <meta property="og:site_name" content="面向自由编程">
-<meta property="og:description" content="基本结构在3.0版本中基本结构如下图所示： 源码通过宏定义来实现： 12345678910111213&#x2F;* Utility macros *&#x2F;&#x2F;&#x2F;zlbytes#define ZIPLIST_BYTES(zl)       (*((uint32_t*)(zl)))&#x2F;&#x2F; zltail#define ZIPLIST_TAIL_OFFSET(zl) (*((uint32_t*)((zl)+sizeof">
+<meta property="og:description" content="基本结构在3.0版本中基本结构如下图所示：">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://haoqinx.github.io/images/redis-zl-1.png">
 <meta property="og:image" content="http://haoqinx.github.io/images/redis-zl-2.png">
 <meta property="og:image" content="http://haoqinx.github.io/images/redis-zl-2.png">
 <meta property="article:published_time" content="2021-09-13T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-09-24T18:01:52.053Z">
+<meta property="article:modified_time" content="2022-10-19T09:37:55.594Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -230,7 +230,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:01:52" itemprop="dateModified" datetime="2022-09-25T02:01:52+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:37:55" itemprop="dateModified" datetime="2022-10-19T17:37:55+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -260,8 +260,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <span id="more"></span>
-<h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p>在3.0版本中基本结构如下图所示：<br><img src="/images/redis-zl-1.png"></p>
+        <h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p>在3.0版本中基本结构如下图所示：<br><img src="/images/redis-zl-1.png"></p>
+<span id="more"></span>
 <p>源码通过宏定义来实现：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Utility macros */</span></span><br><span class="line"><span class="comment">//zlbytes</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ZIPLIST_BYTES(zl)       (*((uint32_t*)(zl)))</span></span><br><span class="line"><span class="comment">// zltail</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ZIPLIST_TAIL_OFFSET(zl) (*((uint32_t*)((zl)+sizeof(uint32_t))))</span></span><br><span class="line"><span class="comment">//zl+8指向zllen字段</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ZIPLIST_LENGTH(zl)      (*((uint16_t*)((zl)+sizeof(uint32_t)*2)))</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ZIPLIST_HEADER_SIZE     (sizeof(uint32_t)*2+sizeof(uint16_t))</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ZIPLIST_ENTRY_HEAD(zl)  ((zl)+ZIPLIST_HEADER_SIZE)</span></span><br><span class="line"><span class="comment">//zl+zltail指向尾元素首地址</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ZIPLIST_ENTRY_TAIL(zl)  ((zl)+intrev32ifbe(ZIPLIST_TAIL_OFFSET(zl)))</span></span><br><span class="line"><span class="comment">//zlend</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ZIPLIST_ENTRY_END(zl)   ((zl)+intrev32ifbe(ZIPLIST_BYTES(zl))-1)</span></span><br></pre></td></tr></table></figure>
 <ul>
@@ -297,12 +297,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%97%E5%85%B8/" rel="prev" title="redis系列：字典">
-      <i class="fa fa-chevron-left"></i> redis系列：字典
+    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%93%A8%E5%85%B5%E5%92%8C%E9%9B%86%E7%BE%A4/" rel="prev" title="redis系列：哨兵和集群">
+      <i class="fa fa-chevron-left"></i> redis系列：哨兵和集群
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/" rel="next" title="redis系列：RDB & AOF">
-      redis系列：RDB & AOF <i class="fa fa-chevron-right"></i>
+    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9Araft%E5%92%8C%E5%A4%8D%E5%88%B6/" rel="next" title="redis系列：raft一致性算法">
+      redis系列：raft一致性算法 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -378,20 +378,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-count">133</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

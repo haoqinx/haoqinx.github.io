@@ -21,15 +21,15 @@
     var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="X86_64 寄存器 rax:函数返回值 rsp:栈指针寄存器，指向栈顶 rdi:函数第一参数 rsi:函数第二参数 rdx:函数第三参数、I&#x2F;O操作时提供外部设备接口的端口地址 rcx:函数第四参数、循环操作和字串处理的计数控制 r8:函数第五参数 r9:函数第六参数  注意一点：对于x86-64，当参数个数超过６时，前６个参数可以通过寄存器传递，而第７～n个参数则会通过栈传递，并且">
+  <meta name="description" content="X86_64 寄存器 rax:函数返回值  rsp:栈指针寄存器，指向栈顶  rdi:函数第一参数  rsi:函数第二参数  rdx:函数第三参数、I&#x2F;O操作时提供外部设备接口的端口地址  rcx:函数第四参数、循环操作和字串处理的计数控制  r8:函数第五参数  r9:函数第六参数">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C++协程：x86_64寄存器">
 <meta property="og:url" content="http://haoqinx.github.io/2021/11/08/C++%E5%8D%8F%E7%A8%8B%EF%BC%9A%E5%AF%84%E5%AD%98%E5%99%A8/index.html">
 <meta property="og:site_name" content="面向自由编程">
-<meta property="og:description" content="X86_64 寄存器 rax:函数返回值 rsp:栈指针寄存器，指向栈顶 rdi:函数第一参数 rsi:函数第二参数 rdx:函数第三参数、I&#x2F;O操作时提供外部设备接口的端口地址 rcx:函数第四参数、循环操作和字串处理的计数控制 r8:函数第五参数 r9:函数第六参数  注意一点：对于x86-64，当参数个数超过６时，前６个参数可以通过寄存器传递，而第７～n个参数则会通过栈传递，并且">
+<meta property="og:description" content="X86_64 寄存器 rax:函数返回值  rsp:栈指针寄存器，指向栈顶  rdi:函数第一参数  rsi:函数第二参数  rdx:函数第三参数、I&#x2F;O操作时提供外部设备接口的端口地址  rcx:函数第四参数、循环操作和字串处理的计数控制  r8:函数第五参数  r9:函数第六参数">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-11-07T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-09-24T17:56:17.763Z">
+<meta property="article:modified_time" content="2022-10-19T09:17:35.576Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="协程">
 <meta name="twitter:card" content="summary">
@@ -226,7 +226,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:56:17" itemprop="dateModified" datetime="2022-09-25T01:56:17+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:17:35" itemprop="dateModified" datetime="2022-10-19T17:17:35+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -256,24 +256,35 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <span id="more"></span>
-<h3 id="X86-64-寄存器"><a href="#X86-64-寄存器" class="headerlink" title="X86_64 寄存器"></a>X86_64 寄存器</h3><ul>
-<li>rax:函数返回值</li>
-<li>rsp:栈指针寄存器，指向栈顶</li>
-<li>rdi:函数第一参数</li>
-<li>rsi:函数第二参数</li>
-<li>rdx:函数第三参数、I&#x2F;O操作时提供外部设备接口的端口地址</li>
-<li>rcx:函数第四参数、循环操作和字串处理的计数控制</li>
-<li>r8:函数第五参数</li>
-<li>r9:函数第六参数</li>
-</ul>
+        <h3 id="X86-64-寄存器"><a href="#X86-64-寄存器" class="headerlink" title="X86_64 寄存器"></a>X86_64 寄存器</h3><ul>
+<li><p>rax:函数返回值</p>
+</li>
+<li><p>rsp:栈指针寄存器，指向栈顶</p>
+</li>
+<li><p>rdi:函数第一参数</p>
+</li>
+<li><p>rsi:函数第二参数</p>
+</li>
+<li><p>rdx:函数第三参数、I&#x2F;O操作时提供外部设备接口的端口地址</p>
+</li>
+<li><p>rcx:函数第四参数、循环操作和字串处理的计数控制</p>
+</li>
+<li><p>r8:函数第五参数</p>
+</li>
+<li><p>r9:函数第六参数  </p>
+<span id="more"></span>
 <p><font color = orange>注意一点：对于x86-64，当参数个数超过６时，前６个参数可以通过寄存器传递，而第７～n个参数则会通过栈传递，并且数据大小都向８的倍数对齐。也就是说，对于７～ｎ个参数，依然满足从右往左入栈，只是对于前６个参数，它们是通过寄存器来传递的。另外，寄存器的访问速度相对于内存来说要快得多，因此为了提高空间和时间效率，实际中其实不建议参数超过6个。</font></p>
-<ul>
-<li>rbx:基址寄存器，被调用者保护。</li>
-<li>rbp：基址指针寄存器，用于提供堆栈内某个单元的偏移地址，与rss段寄存器联用，可以访问堆栈中的任一个存储单元，被调用者保存</li>
-<li>r10, r11, r12, r13, r14, r15:用作数据存储，被调用者保护。</li>
-<li>rip:指令指针寄存器，存放代码段中指令的偏移地址.</li>
-<li>FR:(Flags Register)标志寄存器，用于存放反映处理器和运行程序执行结果状态的控制标志和条件码标志。</li>
+</li>
+<li><p>rbx:基址寄存器，被调用者保护。</p>
+</li>
+<li><p>rbp：基址指针寄存器，用于提供堆栈内某个单元的偏移地址，与rss段寄存器联用，可以访问堆栈中的任一个存储单元，被调用者保存</p>
+</li>
+<li><p>r10, r11, r12, r13, r14, r15:用作数据存储，被调用者保护。</p>
+</li>
+<li><p>rip:指令指针寄存器，存放代码段中指令的偏移地址.</p>
+</li>
+<li><p>FR:(Flags Register)标志寄存器，用于存放反映处理器和运行程序执行结果状态的控制标志和条件码标志。</p>
+</li>
 </ul>
 <p>所谓<strong>调用者保存</strong>和<strong>被调用者保存</strong>：</p>
 <ul>
@@ -379,20 +390,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-count">133</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

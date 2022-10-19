@@ -192,81 +192,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/01/12/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/01/12/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/" class="post-title-link" itemprop="url">文件描述符</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-01-12 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-12T00:00:00+08:00">2022-01-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:53:59" itemprop="dateModified" datetime="2022-09-25T01:53:59+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq327767852/article/details/50830192"></a><br>主要搞清文件描述符和系统级文件表和inode的对应关系</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/12/27/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%8D%E4%B9%A0%EF%BC%9A%E4%B8%80%E4%BA%9B%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -298,7 +223,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:52:43" itemprop="dateModified" datetime="2022-09-25T01:52:43+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:12:01" itemprop="dateModified" datetime="2022-10-19T17:12:01+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -321,80 +246,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h2 id="四大特性"><a href="#四大特性" class="headerlink" title="四大特性"></a>四大特性</h2><ul>
+          <h2 id="四大特性"><a href="#四大特性" class="headerlink" title="四大特性"></a>四大特性</h2><ul>
 <li>原子性：事务内包含的所有操作要么全部成功，要么全部失败回滚；实现：日志，将所有的更新操作全部写入日志当中，若因为一些系统奔溃&#x2F;断电等原因导致事务中的部分更新操作已经执行，部分操作未执行，则通过回溯日志，将操作回滚，使系统保证原子性以及一致性；</li>
 <li>一致性：不管任何时间有少个并发的事务，系统也必须保持一致；</li>
 <li>隔离性：多个并发的事务的操作，在同一时间只能有一个事务执行（即串行的执行）；</li>
-<li>持久性：事务正确执行后，事务中对数据的操作不会回滚；</li>
-</ul>
-<h2 id="四大隔离级别"><a href="#四大隔离级别" class="headerlink" title="四大隔离级别"></a>四大隔离级别</h2><ol>
-<li><p>读未提交（Read Uncommitted）<br>此隔离级别容易出现数据的脏读（读到未提交的数据）。</p>
-</li>
-<li><p>读已提交（Read Committed）<br>此隔离级别避免了脏读，但是会造成不可重复读。<br>不可重复读：在一个事务内，多次读同一数据，在事务还没有结束时，另一个事务对该数据进行了修改，导致两次读到的数据不同。</p>
-</li>
-<li><p>可重复读（Repeatable Read）</p>
-</li>
-</ol>
-<p>此隔离级别避免了不可重复读，但可能会造成幻读。<br>幻读：在一个事务内，前后查询同一范围内的数据，发现前后两次查询的数据不一样。</p>
-<ol start="4">
-<li>可串行化（Serialzable）</li>
-</ol>
-<p>最高的事务隔离级别，在此级别下，事务顺序执行，不仅可以避免脏读，不可重复读，还避免了幻读，但是，性能很低，代价高昂，一般很少使用。</p>
-<h2 id="MVCC原理"><a href="#MVCC原理" class="headerlink" title="MVCC原理"></a>MVCC原理</h2><p>它的实现依赖于隐式字段、undo日志、快照读&amp;当前读、Read View。</p>
-<ol>
-<li>隐式字段</li>
-</ol>
-<p>每一行记录都有两个隐藏列DB_TRX_ID、DB_ROLL_PTR，如果表中没有主键和非NULL唯一键时，则还会有第三个隐藏的主键列DB_ROW_ID。</p>
-<ul>
-<li>DB_TRX_ID，记录每一行最近一次修改（修改&#x2F;更新）它的事务ID，大小为6字节；</li>
-<li>DB_ROLL_PTR，这个隐藏列就相当于一个指针，指向回滚段的undo日志，大小为7字节；</li>
-<li>DB_ROW_ID，单调递增的行ID，大小为6字节；</li>
-</ul>
-<ol start="2">
-<li>undo 日志</li>
-</ol>
-<ul>
-<li>事务未提交的时候，修改数据的镜像（修改前的旧版本），存到undo日志里。以便事务回滚时，恢复旧版本数据，撤销未提交事务数据对数据库的影响。</li>
-<li>undo日志是逻辑日志。可以这样认为，当delete一条记录时，undo log中会记录一条对应的insert记录，当update一条记录时，它记录一条对应相反的update记录。</li>
-<li>存储undo日志的地方，就是回滚段。</li>
-</ul>
-<ol start="3">
-<li>快照读和当前读</li>
-</ol>
-<ul>
-<li>快照读：读取的是记录数据的可见版本（有旧的版本），不加锁,普通的select语句都是快照读。</li>
-<li>当前读：读取的是记录数据的最新版本，显示加锁的都是当前读。</li>
-</ul>
-<ol start="4">
-<li>Read View</li>
-</ol>
-<p>Read View就是事务执行快照读时，产生的读视图。<br>事务执行快照读时，会生成数据库系统当前的一个快照，记录当前系统中还有哪些活跃的读写事务，把它们放到一个列表里。<br>Read View主要是用来做可见性判断的，即判断当前事务可见哪个版本的数据~</p>
-<ul>
-<li>m_ids:当前系统中那些活跃的读写事务ID,它数据结构为一个List。</li>
-<li>min_limit_id:m_ids事务列表中，最小的事务ID</li>
-<li>max_limit_id:m_ids事务列表中，最大的事务ID</li>
-</ul>
-<p>如果DB_TRX_ID &lt; min_limit_id，表明生成该版本的事务在生成ReadView前已经提交(因为事务ID是递增的)，所以该版本可以被当前事务访问。<br>如果DB_TRX_ID &gt; m_ids列表中最大的事务id，表明生成该版本的事务在生成ReadView后才生成，所以该版本不可以被当前事务访问。<br>如果 min_limit_id &lt;&#x3D; PDB_TRX_ID &lt;&#x3D; max_limit_id,需要判断m_ids.contains(DB_TRX_ID)，如果在，则代表Read View生成时刻，这个事务还在活跃，还没有Commit，你修改的数据，当前事务也是看不见的；如果不在，则说明，你这个事务在Read View生成之前就已经Commit了，修改的结果，当前事务是能看见的。</p>
-<h2 id="mysql隔离级别的实现原理"><a href="#mysql隔离级别的实现原理" class="headerlink" title="mysql隔离级别的实现原理"></a>mysql隔离级别的实现原理</h2><ol>
-<li>读未提交</li>
-</ol>
-<p>采取读不加锁原理。</p>
-<ul>
-<li>事务读不加锁，不阻塞其他事务的读和写</li>
-<li>事务写阻塞其他事务写，但不阻塞其他事务读；</li>
-</ul>
-<ol start="2">
-<li>已提交读<br>已提交读就是在每次读数据的时候产生ReadView。<br><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904115353436174">参考这个链接</a></li>
-<li>可重复读</li>
-</ol>
-<p>可重复读就是在第一次读取数据的时候产生ReadView。</p>
-<ol start="4">
-<li>避免幻读</li>
-</ol>
-<p>InnoDB避免幻读的方法就是在索引上加入Next-Key Locking。<br>5. 串行化</p>
-<p>读加共享锁，写加排他锁，读写互斥。如果有未提交的事务正在修改某些行，所有select这些行的语句都会阻塞。</p>
-
+<li>持久性：事务正确执行后，事务中对数据的操作不会回滚；
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/12/27/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%8D%E4%B9%A0%EF%BC%9A%E4%B8%80%E4%BA%9B%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -444,7 +308,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:52:26" itemprop="dateModified" datetime="2022-09-25T01:52:26+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:11:46" itemprop="dateModified" datetime="2022-10-19T17:11:46+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -467,16 +331,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>从n个元素中选出m个</p>
+          <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>从n个元素中选出m个</p>
 <h2 id="Fisher-Yates-Shuffle"><a href="#Fisher-Yates-Shuffle" class="headerlink" title="Fisher-Yates Shuffle"></a>Fisher-Yates Shuffle</h2><p>假设待选元素数组N， 此算法核心思想为每次选一个，然后把此元素从数组删除。</p>
-<h2 id="Knuth-Durstenfeld-Shuffle"><a href="#Knuth-Durstenfeld-Shuffle" class="headerlink" title="Knuth-Durstenfeld Shuffle"></a>Knuth-Durstenfeld Shuffle</h2><p>是方法一的改进，由于方法一删除通常会伴随内存从新分配或者元素重新排列或者辅助空间，因此方法二将删除改为每次选一个之后，跟最后面的元素交换，然后减少选的范围。</p>
-<h2 id="Inside-Out-Algorithm"><a href="#Inside-Out-Algorithm" class="headerlink" title="Inside-Out Algorithm"></a>Inside-Out Algorithm</h2><p>由于方法二需要额外的空间存储整个元素数组，此方法改进为遍历数组然后每次将i元素跟0~i元素交换。  </p>
-<p>如果知道arr的lengh的话，可以改为for循环，由于是从前往后遍历，所以可以应对arr[]数目未知的情况，或者arr[]是一个动态增加的情况。</p>
-<h2 id="蓄水池抽样"><a href="#蓄水池抽样" class="headerlink" title="蓄水池抽样"></a>蓄水池抽样</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Reservoir_Sampling</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; arr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> k;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = m; i &lt; arr.<span class="built_in">size</span>(); ++ i)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">srand</span>((<span class="type">unsigned</span>)<span class="built_in">time</span>(<span class="literal">NULL</span>));</span><br><span class="line">		k = <span class="built_in">rand</span>() % (i + <span class="number">1</span>);</span><br><span class="line">		<span class="keyword">if</span> (k &lt; M)</span><br><span class="line">			<span class="built_in">swap</span>(arr[k], arr[i]); </span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>从伪代码很容易理解，就是从第m个元素开始，以（i + 1)为界生成随机数，如果随机数小于m,则交换两个元素。</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/12/25/%E4%B8%89%E7%A7%8D%E6%B4%97%E7%89%8C%E7%AE%97%E6%B3%95/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -526,7 +390,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:52:19" itemprop="dateModified" datetime="2022-09-25T01:52:19+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:11:40" itemprop="dateModified" datetime="2022-10-19T17:11:40+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -549,8 +413,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h3 id="如何知道内存泄漏了？"><a href="#如何知道内存泄漏了？" class="headerlink" title="如何知道内存泄漏了？"></a>如何知道内存泄漏了？</h3><ol>
+          <h3 id="如何知道内存泄漏了？"><a href="#如何知道内存泄漏了？" class="headerlink" title="如何知道内存泄漏了？"></a>如何知道内存泄漏了？</h3><ol>
 <li>hook函数</li>
 </ol>
 <p>定义malloc&#x2F;free 或者new&#x2F;delete 的hook函数，在c语言中使用dlsym。</p>
@@ -559,14 +422,14 @@
 再使用address2line</li>
 </ul>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">address2line -fe xxxxx</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>使用宏定义或者重载</li>
-</ol>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> malloc_hook(size) malloc(size)</span></span><br></pre></td></tr></table></figure>
-
-<p>这种方式只能定义在一个文件中，第一种方法可以在全局使用。</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/12/03/%E5%A6%82%E4%BD%95%E6%A3%80%E6%B5%8B%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -616,7 +479,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:51:59" itemprop="dateModified" datetime="2022-09-25T01:51:59+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:10:18" itemprop="dateModified" datetime="2022-10-19T17:10:18+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -639,9 +502,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/riemann_/article/details/90324846">看这一篇应该就够了</a></p>
-
+          <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/riemann_/article/details/90324846">看这一篇应该就够了</a></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/12/02/%E8%81%9A%E9%9B%86%E7%B4%A2%E5%BC%95%E5%92%8C%E9%9D%9E%E8%81%9A%E9%9B%86%E7%B4%A2%E5%BC%95%E5%8C%BA%E5%88%AB/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -691,7 +560,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:56:17" itemprop="dateModified" datetime="2022-09-25T01:56:17+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:17:35" itemprop="dateModified" datetime="2022-10-19T17:17:35+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -714,31 +583,30 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h3 id="X86-64-寄存器"><a href="#X86-64-寄存器" class="headerlink" title="X86_64 寄存器"></a>X86_64 寄存器</h3><ul>
-<li>rax:函数返回值</li>
-<li>rsp:栈指针寄存器，指向栈顶</li>
-<li>rdi:函数第一参数</li>
-<li>rsi:函数第二参数</li>
-<li>rdx:函数第三参数、I&#x2F;O操作时提供外部设备接口的端口地址</li>
-<li>rcx:函数第四参数、循环操作和字串处理的计数控制</li>
-<li>r8:函数第五参数</li>
-<li>r9:函数第六参数</li>
-</ul>
-<p><font color = orange>注意一点：对于x86-64，当参数个数超过６时，前６个参数可以通过寄存器传递，而第７～n个参数则会通过栈传递，并且数据大小都向８的倍数对齐。也就是说，对于７～ｎ个参数，依然满足从右往左入栈，只是对于前６个参数，它们是通过寄存器来传递的。另外，寄存器的访问速度相对于内存来说要快得多，因此为了提高空间和时间效率，实际中其实不建议参数超过6个。</font></p>
-<ul>
-<li>rbx:基址寄存器，被调用者保护。</li>
-<li>rbp：基址指针寄存器，用于提供堆栈内某个单元的偏移地址，与rss段寄存器联用，可以访问堆栈中的任一个存储单元，被调用者保存</li>
-<li>r10, r11, r12, r13, r14, r15:用作数据存储，被调用者保护。</li>
-<li>rip:指令指针寄存器，存放代码段中指令的偏移地址.</li>
-<li>FR:(Flags Register)标志寄存器，用于存放反映处理器和运行程序执行结果状态的控制标志和条件码标志。</li>
-</ul>
-<p>所谓<strong>调用者保存</strong>和<strong>被调用者保存</strong>：</p>
-<ul>
-<li>调用者保存：<br>也叫易失性寄存器，在程序调用的过程中，这些寄存器中的值不需要被保存（即压入到栈中再从栈中取出），如果某一个程序需要保存这个寄存器的值，需要调用者自己压入栈。</li>
-<li>被调用者保存：<br>也叫非易失性寄存器，在程序调用过程中，这些寄存器中的值需要被保存，不能被覆盖；当某个程序调用这些寄存器，被调用寄存器会先保存这些值然后再进行调用，且在调用结束后恢复被调用之前的值。</li>
-</ul>
-
+          <h3 id="X86-64-寄存器"><a href="#X86-64-寄存器" class="headerlink" title="X86_64 寄存器"></a>X86_64 寄存器</h3><ul>
+<li><p>rax:函数返回值</p>
+</li>
+<li><p>rsp:栈指针寄存器，指向栈顶</p>
+</li>
+<li><p>rdi:函数第一参数</p>
+</li>
+<li><p>rsi:函数第二参数</p>
+</li>
+<li><p>rdx:函数第三参数、I&#x2F;O操作时提供外部设备接口的端口地址</p>
+</li>
+<li><p>rcx:函数第四参数、循环操作和字串处理的计数控制</p>
+</li>
+<li><p>r8:函数第五参数</p>
+</li>
+<li><p>r9:函数第六参数  </p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/11/08/C++%E5%8D%8F%E7%A8%8B%EF%BC%9A%E5%AF%84%E5%AD%98%E5%99%A8/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -788,7 +656,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:56:13" itemprop="dateModified" datetime="2022-09-25T01:56:13+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:17:29" itemprop="dateModified" datetime="2022-10-19T17:17:29+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -811,30 +679,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h3 id="基于ucontext的协程"><a href="#基于ucontext的协程" class="headerlink" title="基于ucontext的协程"></a>基于ucontext的协程</h3><p>ucontext是glibc下的组件，用来管理程序执行的上下文，重点是四个函数：</p>
+          <h3 id="基于ucontext的协程"><a href="#基于ucontext的协程" class="headerlink" title="基于ucontext的协程"></a>基于ucontext的协程</h3><p>ucontext是glibc下的组件，用来管理程序执行的上下文，重点是四个函数：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ucontext.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">getcontext</span><span class="params">(<span class="type">ucontext_t</span> *ucp)</span></span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">setcontext</span><span class="params">(<span class="type">const</span> <span class="type">ucontext_t</span> *ucp)</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">makecontext</span><span class="params">(<span class="type">ucontext_t</span> *ucp, <span class="type">void</span> (*func)(),<span class="type">int</span> argc, ...)</span></span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">swapcontext</span><span class="params">(<span class="type">ucontext_t</span> *oucp, <span class="type">const</span> <span class="type">ucontext_t</span> *ucp)</span></span>;</span><br></pre></td></tr></table></figure>
 <p>在使用ucontext封装c++风格的轻量级协程的过程中，主要是干下面几件事：</p>
-<ol>
-<li>对调度器、协程的资源初始化。  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Coroutine</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Coroutine</span>(coroutineFunc func, <span class="type">void</span>* args, CoScheduler* sche);</span><br><span class="line">    ~<span class="built_in">Coroutine</span>();</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">saveStack</span><span class="params">(<span class="type">char</span>* top)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">dofunc</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">getStatus</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> status_;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setId</span><span class="params">(<span class="type">int</span> id)</span></span>&#123;</span><br><span class="line">        id_ = id;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    coroutineFunc func_;</span><br><span class="line">    <span class="type">void</span>* args_;</span><br><span class="line">    CoScheduler* sehcduler_;</span><br><span class="line">    <span class="type">ptrdiff_t</span> capacity_;</span><br><span class="line">    <span class="type">ptrdiff_t</span> curSize_;</span><br><span class="line">    <span class="type">ucontext_t</span> ctx_;</span><br><span class="line">    CoStatus status_;</span><br><span class="line">    <span class="type">char</span>* stack_;</span><br><span class="line">    <span class="type">int</span> id_;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">CoScheduler</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">CoScheduler</span>();</span><br><span class="line">    ~<span class="built_in">CoScheduler</span>();</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">createCoroutine</span><span class="params">(coroutineFunc func, <span class="type">void</span>* args)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">deleteCoroutine</span><span class="params">(<span class="type">int</span> id)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">resume</span><span class="params">(<span class="type">int</span> id)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">yield</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">currentCo</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> runningCo_;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">getStatus</span><span class="params">(<span class="type">int</span> id)</span></span>&#123;</span><br><span class="line">        <span class="built_in">assert</span>(id&gt;=<span class="number">0</span> &amp;&amp; id &lt; capacity_);</span><br><span class="line">        <span class="keyword">if</span> (coroutines_[id] == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> COURTINUE_DEAD;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> coroutines_[id] -&gt; status_;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">CoScheduler</span>(<span class="type">const</span> CoScheduler&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    CoScheduler&amp; <span class="keyword">operator</span>=(<span class="type">const</span> CoScheduler&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    <span class="type">char</span> stack_[STACK_SIZE];</span><br><span class="line">    <span class="type">ucontext_t</span> mainCtx_;</span><br><span class="line">    <span class="type">int</span> numCoroutines_;</span><br><span class="line">    <span class="type">int</span> capacity_;</span><br><span class="line">    <span class="type">int</span> runningCo_;</span><br><span class="line">    std::vector&lt;Coroutine*&gt; coroutines_;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
-<li>对调度器调度方式实现。</li>
-</ol>
-<p>这里主要有对称和非对称之别，主要区别:</p>
-<ul>
-<li>非对称:类似于函数调用，某个协程切换到另一个协程，最终是要返回到本协程调用处的。在实现基于ucontext的协程的过程中，采用的是非对称方式，主要是因为非对称的方式比较好控制。</li>
-<li>对称则不存在这种关系，程序执行权在协程之间任意切换。例如go的协程。</li>
-</ul>
-<ol start="3">
-<li>协程堆栈的封装</li>
-</ol>
-<p>在有栈协程里，对协程堆栈的实现也分为两种，一种是共享堆栈，一种是独立栈。</p>
-<ul>
-<li>独立栈：每个协程都有自己的堆栈数据，每次执行之后保存，优点是切换速度快，缺点是需要分配足够大的内存，否则运行过程会导致栈溢出。</li>
-<li>共享栈：在主协程分配足够大的栈空间，每次执行将协程堆栈拷贝到此空间，缺点是拷贝耗时，优点是省空间。</li>
-</ul>
-<p>除此之外，由于ucontext有浮点数上下文和sigmask(信号屏蔽掩码)的保存，因此切换的效率并不高，在一些工业级的应用场景下，常常自定义汇编代码进行上下文切换，如libco，接下来我会参考libco来使用x86汇编实现一个小型协程库。</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/11/06/C++%E5%8D%8F%E7%A8%8B%EF%BC%9A%E5%9F%BA%E4%BA%8Eucontext/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -884,7 +739,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:57:43" itemprop="dateModified" datetime="2022-09-25T01:57:43+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:33:07" itemprop="dateModified" datetime="2022-10-19T17:33:07+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -907,14 +762,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h3 id="HTTP1-0-x2F-1-1-x2F-2-0"><a href="#HTTP1-0-x2F-1-1-x2F-2-0" class="headerlink" title="HTTP1.0&#x2F;1.1&#x2F;2.0"></a>HTTP1.0&#x2F;1.1&#x2F;2.0</h3><ol>
-<li>HTTP1.0<br>主要问题就是HTTP请求需要一个一个发，每次三次握手。并且不支持断点续传。</li>
-<li>HTTP1.1<br>引入长连接，多个请求可以用一个TCP连接，但是会引起HTTP队头阻塞，也就是前一个请求没有被应答的话后面的请求也无法获得。管线化（同时发若干个请求）也无法避免队头阻塞。</li>
-<li>HTTP2.0<br>基于二进制帧的传输，可以实现多路复用。若干个帧组成一个HTTP消息，若干个消息组成一个流。解决了<strong>HTTP队头阻塞</strong>的问题，but基于TCP的HTTP&#x2F;2，尽管从逻辑上来说，不同的流之间相互独立，不会相互影响，但在实际传输方面，数据还是要一帧一帧的发送和接收，一旦某一个流的数据有丢包，则同样会阻塞在它之后传输的流数据传输</li>
-<li>HTTP3.0<br>基于TLS1.3实现1RTT的握手，实现了TCP的流量控制和可靠传输，实现了HTTP2.0的多路复用，不同点是QUIC实现了同一个物理连接有多个独立的逻辑数据流，解决了<strong>TCP队头阻塞</strong>的问题。</li>
-</ol>
-
+          <h3 id="HTTP1-0-x2F-1-1-x2F-2-0"><a href="#HTTP1-0-x2F-1-1-x2F-2-0" class="headerlink" title="HTTP1.0&#x2F;1.1&#x2F;2.0"></a>HTTP1.0&#x2F;1.1&#x2F;2.0</h3><ol>
+<li>HTTP1.0<br>主要问题就是HTTP请求需要一个一个发，每次三次握手。并且不支持断点续传。
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/11/06/HTTP3.0/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -964,7 +821,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:57:55" itemprop="dateModified" datetime="2022-09-25T01:57:55+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:33:15" itemprop="dateModified" datetime="2022-10-19T17:33:15+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -987,37 +844,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h2 id="扁平事务"><a href="#扁平事务" class="headerlink" title="扁平事务"></a>扁平事务</h2><p>由begin开始，其中的操作是原子的，要么都执行，要么都回滚。</p>
+          <h2 id="扁平事务"><a href="#扁平事务" class="headerlink" title="扁平事务"></a>扁平事务</h2><p>由begin开始，其中的操作是原子的，要么都执行，要么都回滚。</p>
 <ul>
-<li>缺点：代价大，若中间某个条件不满足，需要全部回滚。</li>
-</ul>
-<h2 id="带有保存点的事务"><a href="#带有保存点的事务" class="headerlink" title="带有保存点的事务"></a>带有保存点的事务</h2><p><a href="/images/mysql-9.png"></a><br>如图所示，保存点是递增的。</p>
-<h2 id="链事务"><a href="#链事务" class="headerlink" title="链事务"></a>链事务</h2><p><a href="/images/mysql-10.png"></a><br>保存点事务的一种变种，带有保存点的扁平事务，当系统发生崩溃时，所有的保存点都将消失，因此在进行恢复时，事务需要从开始处重新执行。<br>链事务：在提交一个事务时，释放不需要的数据对象，将必要的处理上下文隐士传递给下一个要开始的事务。</p>
-<h2 id="嵌套事务"><a href="#嵌套事务" class="headerlink" title="嵌套事务"></a>嵌套事务</h2><p><a href="/images/mysql-11.png"></a><br>如上图所示，嵌套事务是一个层次结构框架，由一个顶层事务控制各个层次的事务，类似一个树形结构。</p>
-<h2 id="分布式事务"><a href="#分布式事务" class="headerlink" title="分布式事务"></a>分布式事务</h2><p>分布式场景下运行扁平事务，需要根据数据所在位置访问网络中的不同节点。</p>
-<h2 id="事务的实现"><a href="#事务的实现" class="headerlink" title="事务的实现"></a>事务的实现</h2><ol>
-<li>redo</li>
-</ol>
-<ul>
-<li>基本概念：用来实现事务的持久性，由两部分组成：内存中的重做日志缓冲（易失性）和重做日志文件（持久性）。每次事务提交之后，需要将所有日志写入重做日志文件中进行持久化，并且写完要调用fsync操作进行磁盘同步。</li>
-<li>存储方式：以512字节的块进行保存（也成为重做日志块），日志块有头12字节，尾8字节的标志位。</li>
-<li>注：redo记录的是物理页上的变化。</li>
-</ul>
-<ol start="2">
-<li>undo</li>
-</ol>
-<ul>
-<li>基本概念：undo存放在数据库内部的一个特殊段中，成为undo段，undo段位于共享表空间中。当存储引擎回滚时，做的是与之前相反的工作，insert对应delete，update对应相反的update。</li>
-<li>存储方式：使用段的方式，每个回滚段中记录1024个undo log 段。</li>
-<li>注：undo记录的是逻辑结构上的变化。<strong>undo log的产生也会造成redo log的产生，因为undo log需要持久性的保护。</strong></li>
-</ul>
-<ol start="3">
-<li>purge</li>
-</ol>
-<p>delete和update可能并不直接删除原有数据，InnoDB存储引擎支持MVCC，所以记录不能再事务提交时立即进行处理，可能其他事务正在引用这行。是否可以删除某条记录可以通过purge来进行判断。</p>
-<p><a target="_blank" rel="noopener" href="https://baijiahao.baidu.com/s?id=1662096005584873447&wfr=spider&for=pc">这个连接文章</a>写的非常好，讲了四种隔离级别和并发控制。</p>
-
+<li>缺点：代价大，若中间某个条件不满足，需要全部回滚。
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E4%BA%8B%E5%8A%A1/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1067,7 +904,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:58:14" itemprop="dateModified" datetime="2022-09-25T01:58:14+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:33:31" itemprop="dateModified" datetime="2022-10-19T17:33:31+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1090,141 +927,100 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h2 id="MySQL体系结构"><a href="#MySQL体系结构" class="headerlink" title="MySQL体系结构"></a>MySQL体系结构</h2><p><a href="/images/mysql-1.png"></a></p>
-<p>从上图可以看出，主要是这几个</p>
-<ul>
-<li>连接池组件</li>
-<li>管理服务和工具组件</li>
-<li>SQL接口组件</li>
-<li>查询分析器组件</li>
-<li>优化器组件</li>
-<li>缓冲组件</li>
-<li>插件式存储引擎</li>
-<li>物理文件</li>
-</ul>
-<p>其中比较重要的就是这个插件式的存储引擎，这个引擎完全是基于表的，而不是基于整个数据库。</p>
-<h2 id="InnoDB的优点"><a href="#InnoDB的优点" class="headerlink" title="InnoDB的优点"></a>InnoDB的优点</h2><ul>
-<li>插入缓冲：对于非聚集索引的插入或更新操作不是每次直接插入到索引页，先判断插入的非聚集索引页是否在缓冲池中，若在，直接插入，若不在，先放入插入缓冲对象中。再用一定的频率对插入缓冲和辅助索引页进行合并操作。</li>
-<li>MVCC高并发：支持行锁，每次删除不直接删除数据，而是去标记这个数据无效。</li>
-<li>next-key locking 避免幻读。</li>
-<li>支持事务，保证ACID。</li>
-<li>支持崩溃后的安全恢复。</li>
-</ul>
-<h2 id="InnoDB体系结构"><a href="#InnoDB体系结构" class="headerlink" title="InnoDB体系结构"></a>InnoDB体系结构</h2><p><a href="/images/mysql-2.png"></a></p>
-<p>一图胜千言，上面就是Innodb存储引擎的体系架构。</p>
-<ul>
-<li><p>后台线程</p>
-<ul>
-<li>刷新内存池中的数据，保证缓冲池中的内存缓冲是最近的数据。</li>
-</ul>
-</li>
-<li><p>内存池</p>
-<ul>
-<li>存储所有进程&#x2F;线程需要访问的多个内部数据结构</li>
-<li>缓存磁盘上的数据，方便快速读取</li>
-<li>redo log的缓冲</li>
-</ul>
-</li>
-</ul>
-<ol>
-<li>后台线程</li>
-</ol>
-<ul>
-<li><p>Master Thread<br> 主线程，用于将缓冲池中的数据异步刷新到磁盘，保证数据的一致性。</p>
-</li>
-<li><p>IO Thread</p>
-</li>
-</ul>
-<p>使用大量Async IO来提高数据库性能。这些线程的主要工作就是负责IO请求的回调。1.0.x版本之后，分别有4个write和read，1个insert buffer和1个log thread。</p>
-<ul>
-<li><p>Purge Thread<br>事务提交之后其undolog可能不在需要，因此需要PurgeThread来回收已经使用并分配的undo页。</p>
-</li>
-<li><p>Page Cleaner Thread<br>1.2版本引入，目的是减轻主线程的工作量。</p>
-</li>
-</ul>
-<ol start="2">
-<li>内存池</li>
-</ol>
-<ul>
-<li>缓冲池<br>其实就是一块内存区域，按照页的方式进行管理。在数据库读取页的时候，首先判断此页是否在缓冲池中，若没有，则读取的时候顺便把它放到缓冲池中。而脏页的回写遵循checkpoint机制。<br>缓冲池中不光是数据和索引，更有自适应哈希索引，所信息，数据字典信息等等。</li>
-<li>LRU List&#x2F;Free List&#x2F;Flush List</li>
-</ul>
-<p>需要注意的是在进行LRU的时候，每次新的页不是直接插在表头，而是5&#x2F;8的位置，为什么？因为某些SQL操作例如数据的扫描和索引等，需要访问表中的甚至全部页，而这些都不是热点数据，如果插在头部会淘汰热点数据。<br>还有一个问题，什么时候会认为这些数据是热点数据？mysql设置了一个参数，只要超过这个时间，就会被移到热端。  </p>
-<p>还有一点是脏页可同时存在于LRU list和Flush list中。</p>
-<ul>
-<li><p>redo log缓冲</p>
-</li>
-<li><p>额外的内存池<br>对一些数据和结构本身的存储，必要的时候需要设置大一点</p>
-</li>
-</ul>
-<ol start="3">
-<li>checkpoint技术</li>
-</ol>
-<p>设置这个技术的目的就是为了协调cpu和磁盘的速度，刷新频率不能太快，太快导致性能变差，并且如果从缓冲刷到磁盘宕机了，数据就丢失了。为了避免这个情况，使用Write Ahead Log策略，事务提交时，先写重做日志，再修改页，这样可以通过redo log来恢复。<strong>这也是事务ACID中D的要求。</strong><br>综合来看，checkpoint技术解决下面几个问题：</p>
-<ul>
-<li>缩短数据库恢复时间（只需redo 检查点之后的数据）。</li>
-<li>缓冲池不够时，将脏页刷新到磁盘。</li>
-<li>redo log不可用时，刷新脏页（redo log满了）。</li>
-</ul>
-<p>checkpoint分为sharp和fuzzy两种，第一种是把所有脏页刷回磁盘，第二种有下面好几种情况：</p>
-<ul>
-<li>主线程检查点：每秒或者没十秒从缓冲池刷一定比例的脏页回磁盘。</li>
-<li>Flush&#x2F;LRU 检查点：保证列表有一定比例的空闲项。</li>
-<li>Async&#x2F;Sync checkpoint：redo日志不可用时刷新。</li>
-</ul>
-<ol start="4">
-<li>主线程工作方式<br>主线程内部由几个循环组成</li>
-</ol>
-<ul>
-<li>主循环<ul>
-<li>每1s<ul>
-<li>日志缓冲刷新到磁盘</li>
-<li>合并插入缓冲</li>
-<li>至多100个脏页回写（后面版本改成以磁盘IO吞吐量来定）</li>
-<li>如果没有活动，切换到后台循环</li>
-</ul>
-</li>
-<li>每10s<ul>
-<li>刷新100个脏页</li>
-<li>合并5个插入缓冲</li>
-<li>日志缓冲回写</li>
-<li>删除无用undo页</li>
-<li>刷新100个或10个脏页</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>后台循环<ul>
-<li>删除无用undo</li>
-<li>合并20个插入缓冲</li>
-<li>跳回主循环</li>
-<li>不断刷新100个页，跳转刷新循环</li>
-</ul>
-</li>
-<li>刷新循环</li>
-<li>暂停循环</li>
-</ul>
-<ol start="5">
-<li>插入缓冲</li>
-</ol>
-<p>对于非聚集索引的插入或者更新，不是直接插入到索引页， 而是先放入插入缓冲对象中。再按照一定的频率对插入缓冲和非聚集索引节点进行合并操作。</p>
-<ol start="6">
-<li>两次写（double write）</li>
-</ol>
-<p><a href="/images/mysql-3.png"></a><br>两次写由两个部分组成，一部分是内存中的doublewrite buffer（2MB）。另一部分是物理磁盘上共享表空间中连续的128页（2MB）。<br>对缓冲池脏页刷新时：</p>
-<ul>
-<li>不立马写磁盘，使用memcpy将脏页复制到buffer中</li>
-<li>分两次，每次先将buffer的1MB写入共享表空间，调用fsync函数同步磁盘</li>
-</ul>
-<ol start="7">
-<li>自适应哈希索引（AHI）<br>InnoDB会监控对表上索引页的查询，如果观察到简历哈希索引可以带来速度提升，会建立哈希索引。<br>建立哈希索引的条件是：</li>
-</ol>
-<ul>
-<li>通过某模式访问100次</li>
-<li>页通过该模式访问了（页中记录&#x2F;16）次</li>
-</ul>
+          <h2 id="MySQL体系结构"><a href="#MySQL体系结构" class="headerlink" title="MySQL体系结构"></a>MySQL体系结构</h2><p><a href="/images/mysql-1.png"></a></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
 
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E7%B4%A2%E5%BC%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E7%B4%A2%E5%BC%95/" class="post-title-link" itemprop="url">InnoDB系列：索引</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-11-06 00:00:00" itemprop="dateCreated datePublished" datetime="2021-11-06T00:00:00+08:00">2021-11-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-10-19 17:33:22" itemprop="dateModified" datetime="2022-10-19T17:33:22+08:00">2022-10-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="B-树索引"><a href="#B-树索引" class="headerlink" title="B+树索引"></a>B+树索引</h2><ul>
+<li>聚集索引</li>
+<li>非聚集索引（辅助索引）</li>
+<li>Cardinality<ul>
+<li>获取B+树叶子节点的数据，记为A<br>  随机获得B+树索引中8个叶子节点。统计每个页不同记录的个数，分别记为P1,P2…P8<br>  计算cardinality &#x3D; (P1+P2+…P8)A&#x2F;8
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E7%B4%A2%E5%BC%95/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1310,20 +1106,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-count">133</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

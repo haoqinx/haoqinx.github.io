@@ -21,15 +21,15 @@
     var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="问题描述1234567891011&#x2F;tmp&#x2F;cc961U4H.o: In function &#96;main&amp;#x27;:ie.cpp:(.text+0xac): undefined reference to &#96;cv::imread(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;c">
+  <meta name="description" content="问题描述1234567891011&#x2F;tmp&#x2F;cc961U4H.o: In function &#96;main&amp;#x27;:ie.cpp:(.text+0xac): undefined reference to &#96;cv::imread(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;ch">
 <meta property="og:type" content="article">
 <meta property="og:title" content="opencv动态链接库错误">
 <meta property="og:url" content="http://haoqinx.github.io/2020/10/02/%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF%EF%BC%9Aopencv/index.html">
 <meta property="og:site_name" content="面向自由编程">
-<meta property="og:description" content="问题描述1234567891011&#x2F;tmp&#x2F;cc961U4H.o: In function &#96;main&amp;#x27;:ie.cpp:(.text+0xac): undefined reference to &#96;cv::imread(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;c">
+<meta property="og:description" content="问题描述1234567891011&#x2F;tmp&#x2F;cc961U4H.o: In function &#96;main&amp;#x27;:ie.cpp:(.text+0xac): undefined reference to &#96;cv::imread(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;ch">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-10-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-09-24T18:06:35.833Z">
+<meta property="article:modified_time" content="2022-10-19T09:09:27.615Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="Bug">
 <meta name="twitter:card" content="summary">
@@ -226,7 +226,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:06:35" itemprop="dateModified" datetime="2022-09-25T02:06:35+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:09:27" itemprop="dateModified" datetime="2022-10-19T17:09:27+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -256,9 +256,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <span id="more"></span>
-<h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">/tmp/cc961U4H.o: In function `main&#x27;:</span><br><span class="line">ie.cpp:(.text+0xac): undefined reference to `cv::imread(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;, int)&#x27;</span><br><span class="line">/tmp/cc961U4H.o: In function `cv::Mat::~Mat()&#x27;:</span><br><span class="line">ie.cpp:(.text._ZN2cv3MatD2Ev[_ZN2cv3MatD5Ev]+0x39): undefined reference to `cv::fastFree(void*)&#x27;</span><br><span class="line">/tmp/cc961U4H.o: In function `cv::Mat::operator=(cv::Mat const&amp;)&#x27;:</span><br><span class="line">ie.cpp:(.text._ZN2cv3MataSERKS0_[_ZN2cv3MataSERKS0_]+0x111): undefined reference to `cv::Mat::copySize(cv::Mat const&amp;)&#x27;</span><br><span class="line">/tmp/cc961U4H.o: In function `cv::Mat::create(int, int, int)&#x27;:</span><br><span class="line">ie.cpp:(.text._ZN2cv3Mat6createEiii[_ZN2cv3Mat6createEiii]+0x9d): undefined reference to `cv::Mat::create(int, int const*, int)&#x27;</span><br><span class="line">/tmp/cc961U4H.o: In function `cv::Mat::release()&#x27;:</span><br><span class="line">ie.cpp:(.text._ZN2cv3Mat7releaseEv[_ZN2cv3Mat7releaseEv]+0x47): undefined reference to `cv::Mat::deallocate()&#x27;</span><br><span class="line">collect2: error: ld returned 1 exit status</span><br></pre></td></tr></table></figure>
-
+        <h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">/tmp/cc961U4H.o: In function `main&#x27;:</span><br><span class="line">ie.cpp:(.text+0xac): undefined reference to `cv::imread(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;, int)&#x27;</span><br><span class="line">/tmp/cc961U4H.o: In function `cv::Mat::~Mat()&#x27;:</span><br><span class="line">ie.cpp:(.text._ZN2cv3MatD2Ev[_ZN2cv3MatD5Ev]+0x39): undefined reference to `cv::fastFree(void*)&#x27;</span><br><span class="line">/tmp/cc961U4H.o: In function `cv::Mat::operator=(cv::Mat const&amp;)&#x27;:</span><br><span class="line">ie.cpp:(.text._ZN2cv3MataSERKS0_[_ZN2cv3MataSERKS0_]+0x111): undefined reference to `cv::Mat::copySize(cv::Mat const&amp;)&#x27;</span><br><span class="line">/tmp/cc961U4H.o: In function `cv::Mat::create(int, int, int)&#x27;:</span><br><span class="line">ie.cpp:(.text._ZN2cv3Mat6createEiii[_ZN2cv3Mat6createEiii]+0x9d): undefined reference to `cv::Mat::create(int, int const*, int)&#x27;</span><br><span class="line">/tmp/cc961U4H.o: In function `cv::Mat::release()&#x27;:</span><br><span class="line">ie.cpp:(.text._ZN2cv3Mat7releaseEv[_ZN2cv3Mat7releaseEv]+0x47): undefined reference to `cv::Mat::deallocate()&#x27;</span><br><span class="line">collect2: error: ld returned 1 exit status</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
 
 <h3 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h3><p>在编译命令后加：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">`pkg-config  --cflags --libs opencv`</span><br></pre></td></tr></table></figure>
@@ -362,20 +361,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-count">133</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

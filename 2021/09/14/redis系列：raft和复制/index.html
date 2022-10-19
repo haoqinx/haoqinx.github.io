@@ -34,7 +34,7 @@
 <meta property="og:image" content="http://haoqinx.github.io/images/redis-raft-4.png">
 <meta property="og:image" content="http://haoqinx.github.io/images/redis-raft-4.png">
 <meta property="article:published_time" content="2021-09-13T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-09-24T18:01:59.628Z">
+<meta property="article:modified_time" content="2022-10-19T09:38:03.628Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -232,7 +232,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:01:59" itemprop="dateModified" datetime="2022-09-25T02:01:59+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:38:03" itemprop="dateModified" datetime="2022-10-19T17:38:03+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -262,14 +262,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <span id="more"></span>
-<h3 id="Raft算法"><a href="#Raft算法" class="headerlink" title="Raft算法"></a>Raft算法</h3><ol>
+        <h3 id="Raft算法"><a href="#Raft算法" class="headerlink" title="Raft算法"></a>Raft算法</h3><ol>
 <li>基本概念<br>在任何时刻，服务器节点都处于三个状态之一：leader、follower或者candidate。</li>
 </ol>
 <ul>
 <li>follwer：不会发送任何请求，只相应leader和candidate的请求；</li>
 <li>leader：处理所有客户端请求，如果一个可会断和follower通信，那么follower会重定向给leader；</li>
-<li>candidate：用来选举新leader。<br>下图展示了上面三种状态的转换：<br><img src="/images/redis-raft-1.png"></li>
+<li>candidate：用来选举新leader。<br>下图展示了上面三种状态的转换：<br><img src="/images/redis-raft-1.png"><span id="more"></span></li>
 </ul>
 <p>Raft把时间分割成任意长度的任期，如下图所示：<br><img src="/images/redis-raft-2.png"></p>
 <p>每一个服务器节点存储一个当前任期号，该编号随着时间单调递增。不同的服务器节点观察到的任期转换的次数可能不同，在某些情况下，一个服务器节点可能没有看到 leader 选举过程或者甚至整个任期全程。任期在 Raft 算法中充当逻辑时钟的作用，这使得服务器节点可以发现一些过期的信息比如过时的leader。</p>
@@ -317,12 +316,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/09/14/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AB%E6%A0%91%EF%BC%8CB+%E6%A0%91%EF%BC%8C%E7%BA%A2%E9%BB%91%E6%A0%91/" rel="prev" title="数据结构：B树，B+树，B*树，红黑树">
-      <i class="fa fa-chevron-left"></i> 数据结构：B树，B+树，B*树，红黑树
+    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8/" rel="prev" title="redis系列：压缩列表">
+      <i class="fa fa-chevron-left"></i> redis系列：压缩列表
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%93%A8%E5%85%B5%E5%92%8C%E9%9B%86%E7%BE%A4/" rel="next" title="redis系列：哨兵和集群">
-      redis系列：哨兵和集群 <i class="fa fa-chevron-right"></i>
+    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/" rel="next" title="redis系列：RDB & AOF">
+      redis系列：RDB & AOF <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -398,20 +397,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-count">133</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

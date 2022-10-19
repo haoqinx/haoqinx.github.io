@@ -21,15 +21,15 @@
     var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="GDT现代的内存寻址方式一般采用保护模式。     Q:什么是保护模式？    A:保护模式是相对于实模式来说的，以前的内存寻址是直接由cpu段寄存器+偏移量去实存里面找物理地址，例如在8086的时候，也就是16位cpu的时候，CPU配备了4个16位段寄存器（CS代码段寄存器、DS数据段寄存器、SS堆栈段寄存器和ES附加寄存器），这种方式非常粗暴并且很容易出错，一旦用户修改段寄存的值，就可以随意">
+  <meta name="description" content="GDT现代的内存寻址方式一般采用保护模式。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux内核系列：GDT&#x2F;LDT">
 <meta property="og:url" content="http://haoqinx.github.io/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9AGDT%EF%BC%8CLDT/index.html">
 <meta property="og:site_name" content="面向自由编程">
-<meta property="og:description" content="GDT现代的内存寻址方式一般采用保护模式。     Q:什么是保护模式？    A:保护模式是相对于实模式来说的，以前的内存寻址是直接由cpu段寄存器+偏移量去实存里面找物理地址，例如在8086的时候，也就是16位cpu的时候，CPU配备了4个16位段寄存器（CS代码段寄存器、DS数据段寄存器、SS堆栈段寄存器和ES附加寄存器），这种方式非常粗暴并且很容易出错，一旦用户修改段寄存的值，就可以随意">
+<meta property="og:description" content="GDT现代的内存寻址方式一般采用保护模式。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-08-28T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-09-24T17:59:32.072Z">
+<meta property="article:modified_time" content="2022-10-19T09:35:15.559Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="Linux">
 <meta property="article:tag" content="分段分页">
@@ -227,7 +227,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:59:32" itemprop="dateModified" datetime="2022-09-25T01:59:32+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:35:15" itemprop="dateModified" datetime="2022-10-19T17:35:15+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -257,8 +257,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <span id="more"></span>
-<h3 id="GDT"><a href="#GDT" class="headerlink" title="GDT"></a>GDT</h3><p>现代的内存寻址方式一般采用保护模式。    </p>
+        <h3 id="GDT"><a href="#GDT" class="headerlink" title="GDT"></a>GDT</h3><p>现代的内存寻址方式一般采用保护模式。    </p>
+<span id="more"></span>
 <p>Q:什么是保护模式？   </p>
 <p>A:保护模式是相对于实模式来说的，以前的内存寻址是直接由cpu段寄存器+偏移量去实存里面找物理地址，例如在8086的时候，也就是16位cpu的时候，CPU配备了4个16位段寄存器（CS代码段寄存器、DS数据段寄存器、SS堆栈段寄存器和ES附加寄存器），这种方式非常粗暴并且很容易出错，一旦用户修改段寄存的值，就可以随意访问所有内存，到了80296芯片，大家意识到直接访问实地址的危害，intel将寻址方式改为保护模式，保护模式下段寄存器不在指向一个真实地址，而是变成指向一个数据结构的指针，这个数据结构就是<font color = orange>Segment Descripter Table</font>，又根据这个段描述符表里存的是全局共同的，还是进程私有的，分成了全局段描述符表（GDT）和局部段描述符表（LDT）。  </p>
 <p>需要了解的：</p>
@@ -306,8 +306,8 @@
       <i class="fa fa-chevron-left"></i> c++内存管理系列：mmap原理
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/08/29/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9AELF%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F/" rel="next" title="Linux内核系列：ELF文件格式">
-      Linux内核系列：ELF文件格式 <i class="fa fa-chevron-right"></i>
+    <a href="/2021/09/02/c++%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" rel="next" title="c++设计模式：单例模式">
+      c++设计模式：单例模式 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -383,20 +383,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-count">133</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

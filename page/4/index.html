@@ -192,7 +192,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E7%B4%A2%E5%BC%95/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E8%A1%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -206,7 +206,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E7%B4%A2%E5%BC%95/" class="post-title-link" itemprop="url">InnoDB系列：索引</a>
+            <a href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E8%A1%A8/" class="post-title-link" itemprop="url">InnoDB系列：表结构</a>
         </h2>
 
         <div class="post-meta">
@@ -223,7 +223,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:58:02" itemprop="dateModified" datetime="2022-09-25T01:58:02+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:33:12" itemprop="dateModified" datetime="2022-10-19T17:33:12+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -246,40 +246,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h2 id="B-树索引"><a href="#B-树索引" class="headerlink" title="B+树索引"></a>B+树索引</h2><ul>
-<li>聚集索引</li>
-<li>非聚集索引（辅助索引）</li>
-<li>Cardinality<ul>
-<li>获取B+树叶子节点的数据，记为A<br>  随机获得B+树索引中8个叶子节点。统计每个页不同记录的个数，分别记为P1,P2…P8<br>  计算cardinality &#x3D; (P1+P2+…P8)A&#x2F;8</li>
-</ul>
-</li>
-</ul>
-<h2 id="OLAP-和-OLTP"><a href="#OLAP-和-OLTP" class="headerlink" title="OLAP 和 OLTP"></a>OLAP 和 OLTP</h2><p><a href="/images/mysql-5.png"></a></p>
-<ul>
-<li><p>OLTP，也叫联机事务处理（Online Transaction Processing），表示事务性非常高的系统，一般都是高可用的在线系统，以小的事务以及小的查询为主，评估其系统的时候，一般看其每秒执行的Transaction以及Execute SQL的数量。<br>OLTP系统最容易出现瓶颈的地方就是CPU与磁盘子系统。</p>
-</li>
-<li><p>OLAP，也叫联机分析处理（Online Analytical Processing）系统，有的时候也叫DSS决策支持系统，就是我们说的数据仓库。<br>在这样的系统中，考核的标准往往是磁盘子系统的吞吐量（带宽），如能达到多少MB&#x2F;s的流量。</p>
-</li>
-</ul>
-<h2 id="联合索引"><a href="#联合索引" class="headerlink" title="联合索引"></a>联合索引</h2><p>对表上多个列进行索引。</p>
-<h2 id="覆盖索引"><a href="#覆盖索引" class="headerlink" title="覆盖索引"></a>覆盖索引</h2><p>就是能从辅助索引中得到所有查询信息的记录。</p>
-<h2 id="Multi-Range-Read优化"><a href="#Multi-Range-Read优化" class="headerlink" title="Multi-Range Read优化"></a>Multi-Range Read优化</h2><p>当表的数据非常多以至于无法放入缓存时，基于二级索引的范围扫描读取数据会造成较多的硬盘随机读。如果启用了MRR优化，MySQL首先会基于索引进行数据定位并收集满足条件的keys，然后再对这些keys进行排序，这样可以以主键的顺序进行表行的读取，能够减少随机读的数量。MRR优化的目的就是通过对keys排序后的一定程度的顺序读减少随机读的数量。</p>
-<h3 id="ICP优化"><a href="#ICP优化" class="headerlink" title="ICP优化"></a>ICP优化</h3><p>在不启用 ICP 的情况下利用二级索引查找数据的过程：</p>
-<ol>
-<li>用二级索引查找数据的主键；</li>
-<li>用主键回表读取完整的行记录；</li>
-<li>利用 where 语句的条件对行记录进行过滤。</li>
-</ol>
-<p>启用 ICP 的情况下利用二级索引查找数据的过程为：</p>
-<ol>
-<li>用二级索引查找数据的主键；</li>
-<li>如果二级索引记录的元组里的列出现在 where 条件里，那么对元组进行过滤；</li>
-<li>对索引元组的主键回表读取完整的行记录；</li>
-<li>利用 where 语句的剩余条件对行记录进行过滤；</li>
-</ol>
-<h2 id="倒排索引"><a href="#倒排索引" class="headerlink" title="倒排索引"></a>倒排索引</h2><p>使用full inverted index实现，表现形式为{单词，（单词所在文档的ID，在具体文档中的位置）}</p>
-
+          <h2 id="表结构"><a href="#表结构" class="headerlink" title="表结构"></a>表结构</h2><p><a href="/images/mysql-4.png"></a><br>如图所示，Innodb表结构由表空间，段，区，页组成。<br>默认所有数据在共享表空间ibdata1.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E8%A1%A8/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -329,7 +304,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:58:08" itemprop="dateModified" datetime="2022-09-25T01:58:08+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:33:27" itemprop="dateModified" datetime="2022-10-19T17:33:27+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -352,123 +327,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h2 id="lock-和-latch的不同"><a href="#lock-和-latch的不同" class="headerlink" title="lock 和 latch的不同"></a>lock 和 latch的不同</h2><p><a href="/images/mysql-6.png"></a></p>
-<h2 id="InnoDB锁的类型"><a href="#InnoDB锁的类型" class="headerlink" title="InnoDB锁的类型"></a>InnoDB锁的类型</h2><ul>
-<li>共享锁（S Lock）：允许事务读一行数据。</li>
-<li>排他锁（X Lock）：允许事务删除或更新一行数据。</li>
-</ul>
-<p>持有共享锁后还能获得共享锁，持有共享不能获得排他，持有排他不能获得其他锁。</p>
-<p>还有两种意向锁</p>
-<ul>
-<li>意向共享锁（IS Lock）：事务想获得一张表中某几行的共享锁</li>
-<li>意向排它锁（IX Lock）：事务想要获得一张表中某几行的排他锁<br><a href="/images/mysql-7.png"></a></li>
-</ul>
-<h2 id="一致性非锁定读"><a href="#一致性非锁定读" class="headerlink" title="一致性非锁定读"></a>一致性非锁定读</h2><p>如果读取的行正在执行update或者delete操作，读取操作不会等待行上的锁释放，而是读取行的以个快照数据。</p>
-<h2 id="行锁"><a href="#行锁" class="headerlink" title="行锁"></a>行锁</h2><ol>
-<li>Record Lock：单个行记录的锁</li>
-<li>Gap Lock：间隙锁，锁定一个范围，不包含本身</li>
-<li>Next-Key Lock：1+2，锁定一个范围，包含本身</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E8%A1%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E8%A1%A8/" class="post-title-link" itemprop="url">InnoDB系列：表结构</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-11-06 00:00:00" itemprop="dateCreated datePublished" datetime="2021-11-06T00:00:00+08:00">2021-11-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:57:47" itemprop="dateModified" datetime="2022-09-25T01:57:47+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h2 id="表结构"><a href="#表结构" class="headerlink" title="表结构"></a>表结构</h2><p><a href="/images/mysql-4.png"></a><br>如图所示，Innodb表结构由表空间，段，区，页组成。<br>默认所有数据在共享表空间ibdata1.</p>
-<ol>
-<li>段<br>常见的段有数据段，索引段，回滚段等等，在Innodb中存储引擎表由索引组织，数据就是索引，索引就是数据，因此数据段就是B+树的叶子节点，索引段就是B+树的非叶子节点。</li>
-<li>区</li>
-</ol>
-<p>每个区的大小是1MB。一个页的大小是16K，因此一般一个区中有64个连续的页。</p>
-<ol start="3">
-<li>页</li>
-</ol>
-<p>也成为块（block），常见的页类型有：</p>
-<ul>
-<li>数据页（B-tree Node）</li>
-<li>undo页（undo Log page）</li>
-<li>系统页</li>
-<li>事务数据页</li>
-<li>插入缓冲位图页</li>
-<li>插入缓冲空闲链表页</li>
-<li>未压缩的二进制大对象页</li>
-<li>压缩的二进制大对象页</li>
-</ul>
-<ol start="4">
-<li>行</li>
-</ol>
-<p>每个页存放的行记录也是有硬性定义的，最多允许存放16KB&#x2F;2 - 200 &#x3D; 7992行的记录。</p>
-
+          <h2 id="lock-和-latch的不同"><a href="#lock-和-latch的不同" class="headerlink" title="lock 和 latch的不同"></a>lock 和 latch的不同</h2><p><a href="/images/mysql-6.png"></a></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E9%94%81/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -518,7 +385,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:59:00" itemprop="dateModified" datetime="2022-09-25T01:59:00+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:34:33" itemprop="dateModified" datetime="2022-10-19T17:34:33+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -541,35 +408,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h3 id="孤儿进程"><a href="#孤儿进程" class="headerlink" title="孤儿进程"></a>孤儿进程</h3><ul>
-<li>基本概念：一个父进程退出，而它的一个或多个子进程还在运行，那么那些子进程将成为孤儿进程。孤儿进程将被init进程(进程号为1)所收养，并由init进程对它们完成状态收集工作。</li>
-</ul>
-<p>unix提供了一种机制可以保证只要父进程想知道子进程结束时的状态信息， 就可以得到。这种机制就是: 在每个进程退出的时候,内核释放该进程所有的资源,包括打开的文件,占用的内存等。 但是仍然为其保留一定的信息(包括进程号the process ID,退出状态the termination status of the process,运行时间the amount of CPU time taken by the process等)。直到父进程通过wait &#x2F; waitpid来取时才释放。 但这样就导致了问题，<font color = "orange">如果进程不调用wait &#x2F; waitpid的话， 那么保留的那段信息就不会释放，其进程号就会一直被占用，但是系统所能使用的进程号是有限的，如果大量的产生僵死进程，将因为没有可用的进程号而导致系统不能产生新的进程. 此即为僵尸进程的危害，应当避免。</font>  </p>
-<ul>
-<li>形成原因：<br>孤儿进程是没有父进程的进程，孤儿进程这个重任就落到了init进程身上，init进程就好像是一个民政局，专门负责处理孤儿进程的善后工作。每当出现一个孤儿进程的时候，内核就把孤 儿进程的父进程设置为init，而init进程会循环地wait()它的已经退出的子进程。这样，当一个孤儿进程凄凉地结束了其生命周期的时候，init进程就会代表党和政府出面处理它的一切善后工作。因此孤儿进程并不会有什么危害。</li>
-<li>举例说明  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">pid_t</span> pid;</span><br><span class="line">    <span class="comment">//创建一个进程</span></span><br><span class="line">    pid = fork();</span><br><span class="line">    <span class="comment">//创建失败</span></span><br><span class="line">    <span class="keyword">if</span> (pid &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;fork error:&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//子进程</span></span><br><span class="line">    <span class="keyword">if</span> (pid == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;I am the child process.\n&quot;</span>);</span><br><span class="line">        <span class="comment">//输出进程ID和父进程ID</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;pid: %d\tppid:%d\n&quot;</span>,<span class="built_in">getpid</span>(),<span class="built_in">getppid</span>());</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;I will sleep five seconds.\n&quot;</span>);</span><br><span class="line">        <span class="comment">//睡眠30s，保证父进程先退出</span></span><br><span class="line">        <span class="built_in">sleep</span>(<span class="number">30</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;pid: %d\tppid:%d\n&quot;</span>,<span class="built_in">getpid</span>(),<span class="built_in">getppid</span>());</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;child process is exited.\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//父进程</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;I am father process.\n&quot;</span>);</span><br><span class="line">        <span class="comment">//父进程睡眠1s，保证子进程输出进程id</span></span><br><span class="line">        <span class="built_in">sleep</span>(<span class="number">1</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;father process is  exited.\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-运行结果如下所示：<br><img src="/images/guer-1.png"><br>从图中可以看出，父进程退出之后，有init进程收留孤儿进程。</li>
-</ul>
-<h3 id="僵尸进程"><a href="#僵尸进程" class="headerlink" title="僵尸进程"></a>僵尸进程</h3><ul>
-<li>基本概念：<br>一个进程使用fork创建子进程，如果子进程退出，而父进程并没有调用wait或waitpid获取子进程的状态信息，那么子进程的进程描述符仍然保存在系统中。这种进程称之为僵死进程。  </li>
-<li>形成原因：<br>任何一个子进程(init除外)在exit()之后，并非马上就消失掉，而是留下一个称为僵尸进程(Zombie)的数据结构，等待父进程处理。这是每个 子进程在结束时都要经过的阶段。如果子进程在exit()之后，父进程没有来得及处理，这时用ps命令就能看到子进程的状态是“Z”。如果父进程能及时 处理，可能用ps命令就来不及看到子进程的僵尸状态，但这并不等于子进程不经过僵尸状态。  如果父进程在子进程结束之前退出，则子进程将由init接管。init将会以父进程的身份对僵尸状态的子进程进行处理。</li>
-<li>例如有个进程，它定期的产 生一个子进程，这个子进程需要做的事情很少，做完它该做的事情之后就退出了，因此这个子进程的生命周期很短，但是，父进程只管生成新的子进程，至于子进程 退出之后的事情，则一概不闻不问，这样，系统运行上一段时间之后，系统中就会存在很多的僵死进程，倘若用ps命令查看的话，就会看到很多状态为Z的进程。 </li>
-<li>解决方法：<br>严格地来说，僵死进程并不是问题的根源，罪魁祸首是产生出大量僵死进程的那个父进程。因此，当我们寻求如何消灭系统中大量的僵死进程时，答案就是把产生大 量僵死进程的那个元凶枪毙掉（也就是通过kill发送SIGTERM或者SIGKILL信号啦）。枪毙了元凶进程之后，它产生的僵死进程就变成了孤儿进程，这些孤儿进程会被init进程接管，init进程会wait()这些孤儿进程，释放它们占用的系统进程表中的资源，这样，这些已经僵死的孤儿进程就能瞑目而去了。<br>测试代码如下：<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">pid_t</span> pid;</span><br><span class="line">    pid = fork();</span><br><span class="line">    <span class="keyword">if</span> (pid &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;fork error:&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (pid == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;I am child process.I am exiting.\n&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;I am father process.I will sleep two seconds\n&quot;</span>);</span><br><span class="line">    <span class="comment">//等待子进程先退出</span></span><br><span class="line">    <span class="built_in">sleep</span>(<span class="number">15</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;father process is exiting.\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-运行结果如下所示<br><img src="/images/jiangshi-1.png"><br>从图中可以看出，子进程变成了僵尸进程。<br>同理，如果父进程循环创建子进程，而子进程在父进程之前退出，那么就会有相当多数量的僵尸进程。</li>
-<li>解决方法：</li>
-</ul>
-<ol>
-<li><p>通过信号机制：子进程退出时向父进程发送SIGCHILD信号，父进程处理SIGCHILD信号。在信号处理函数中调用wait进行处理僵尸进程。测试程序如下所示：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">sig_child</span><span class="params">(<span class="type">int</span> signo)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">pid_t</span> pid;</span><br><span class="line">    <span class="comment">//创建捕捉子进程退出信号</span></span><br><span class="line">    <span class="built_in">signal</span>(SIGCHLD,sig_child);</span><br><span class="line">    pid = fork();</span><br><span class="line">    <span class="keyword">if</span> (pid &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;fork error:&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (pid == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;I am child process,pid id %d.I am exiting.\n&quot;</span>,<span class="built_in">getpid</span>());</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;I am father process.I will sleep two seconds\n&quot;</span>);</span><br><span class="line">    <span class="comment">//等待子进程先退出</span></span><br><span class="line">    <span class="built_in">sleep</span>(<span class="number">10</span>);</span><br><span class="line">    <span class="comment">//输出进程信息</span></span><br><span class="line">    <span class="built_in">system</span>(<span class="string">&quot;ps -o pid,ppid,state,tty,command&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;father process is exiting.\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">sig_child</span><span class="params">(<span class="type">int</span> signo)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">     <span class="type">pid_t</span>        pid;</span><br><span class="line">     <span class="type">int</span>        stat;</span><br><span class="line">     <span class="comment">//处理僵尸进程</span></span><br><span class="line">     <span class="keyword">while</span> ((pid = <span class="built_in">waitpid</span>(<span class="number">-1</span>, &amp;stat, WNOHANG)) &gt;<span class="number">0</span>)</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;child %d terminated.\n&quot;</span>, pid);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>程序运行结果如下：<br><img src="/images/jiangshi-2.png"><br>从图中可以看出，父进程捕捉到子进程结束的信号。</p>
-</li>
-<li><p>fork两次<br>《Unix 环境高级编程》8.6节说的非常详细。原理是将子进程成为孤儿进程，从而其的父进程变为init进程，通过init进程可以处理僵尸进程。测试程序如下所示：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;errno.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">pid_t</span>  pid;</span><br><span class="line">    <span class="comment">//创建第一个子进程</span></span><br><span class="line">    pid = fork();</span><br><span class="line">    <span class="keyword">if</span> (pid &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;fork error:&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//第一个子进程</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (pid == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//子进程再创建子进程</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;I am the first child process.pid:%d\tppid:%d\n&quot;</span>,<span class="built_in">getpid</span>(),<span class="built_in">getppid</span>());</span><br><span class="line">        pid = fork();</span><br><span class="line">        <span class="keyword">if</span> (pid &lt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">perror</span>(<span class="string">&quot;fork error:&quot;</span>);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//第一个子进程退出</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (pid &gt;<span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;first procee is exited.\n&quot;</span>);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//第二个子进程</span></span><br><span class="line">        <span class="comment">//睡眠3s保证第一个子进程退出，这样第二个子进程的父亲就是init进程里</span></span><br><span class="line">        <span class="built_in">sleep</span>(<span class="number">3</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;I am the second child process.pid: %d\tppid:%d\n&quot;</span>,<span class="built_in">getpid</span>(),<span class="built_in">getppid</span>());</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//父进程处理第一个子进程退出</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">waitpid</span>(pid, <span class="literal">NULL</span>, <span class="number">0</span>) != pid)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;waitepid error:&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>程序的运行结果为：<br><img src="/images/jiangshi-2.png"></p>
-</li>
-</ol>
-
+          <h3 id="孤儿进程"><a href="#孤儿进程" class="headerlink" title="孤儿进程"></a>孤儿进程</h3><ul>
+<li>基本概念：一个父进程退出，而它的一个或多个子进程还在运行，那么那些子进程将成为孤儿进程。孤儿进程将被init进程(进程号为1)所收养，并由init进程对它们完成状态收集工作。
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%A4%E5%84%BF%E8%BF%9B%E7%A8%8B%E5%92%8C%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -619,7 +467,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:59:06" itemprop="dateModified" datetime="2022-09-25T01:59:06+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:34:38" itemprop="dateModified" datetime="2022-10-19T17:34:38+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -642,246 +490,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h3 id="匿名管道"><a href="#匿名管道" class="headerlink" title="匿名管道"></a>匿名管道</h3><p>适用场景：在父子线程间传递信息。<br>核心是pipe函数，创建了全双工的两个文件描述符。下图来自APUE十五章。<br><img src="/images/ipc-1.png"></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> fd[<span class="number">2</span>];</span><br><span class="line">    <span class="type">pid_t</span> pid;</span><br><span class="line">    <span class="type">int</span> err = <span class="built_in">pipe</span>(fd);</span><br><span class="line">    <span class="type">char</span> line[<span class="number">100</span>];</span><br><span class="line">    <span class="keyword">if</span>(err == <span class="number">-1</span>)&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;pipe error&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>((pid = fork()) &lt; <span class="number">0</span>)&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;fork error&quot;</span> &lt;&lt; endl;</span><br><span class="line">        <span class="built_in">abort</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(pid &gt; <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="built_in">close</span>(fd[<span class="number">0</span>]);</span><br><span class="line">        <span class="type">char</span> s[] = <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">        <span class="built_in">write</span>(fd[<span class="number">1</span>], s, <span class="built_in">sizeof</span>(s));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="built_in">close</span>(fd[<span class="number">1</span>]);</span><br><span class="line">        <span class="type">int</span> n = <span class="built_in">read</span>(fd[<span class="number">0</span>], line, <span class="number">100</span>);</span><br><span class="line">        <span class="built_in">write</span>(STDOUT_FILENO, line, n);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="命令管道"><a href="#命令管道" class="headerlink" title="命令管道"></a>命令管道</h3><p>在Linux中使用mkfifo函数创建一个命令管道，可以使用此管道实现不同进程之间的通信。<br>命名管道和匿名的相同和不用是：</p>
-<ul>
-<li>相同：<ul>
-<li>都用管道通信</li>
-<li>管道数据都存在内核内存的缓冲区</li>
-</ul>
-</li>
-<li>不同：<ul>
-<li>匿名不在磁盘建立管道文件，FIFO在磁盘建立文件</li>
-<li>PIPE需要进程具有亲缘关系，FIFO不需要</li>
-</ul>
-</li>
-</ul>
-<p>读和写可以设置阻塞或者非阻塞：</p>
-<ul>
-<li>阻塞：<ul>
-<li>写端等待数据被读走后才写</li>
-<li>读端等待数据写入后才读</li>
-</ul>
-</li>
-<li>非阻塞：<ul>
-<li>写端一直写，直到缓冲区满</li>
-<li>读端无论有无数据，立刻返回</li>
-</ul>
-</li>
-</ul>
-<p>下面是一个使用实例：</p>
-<p>写端</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> FIFO_FIFE <span class="string">&quot;./fiffo&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUFF_SIZE PIPE_BUF</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">mkfifo</span>(FIFO_FIFE, <span class="number">0666</span>) &lt; <span class="number">0</span> &amp;&amp; errno != EEXIST)&#123;</span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;create fifo file error&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="type">char</span> info[] = <span class="string">&quot;0&quot;</span>;</span><br><span class="line">        <span class="type">int</span> fd = <span class="built_in">open</span>(FIFO_FIFE, O_CREAT | O_WRONLY, <span class="number">0666</span>);</span><br><span class="line">        <span class="keyword">if</span>(fd &gt; <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="type">int</span> count = <span class="number">60</span>;</span><br><span class="line">            <span class="keyword">while</span>(-- count)&#123;</span><br><span class="line">                <span class="built_in">write</span>(fd, info, <span class="built_in">sizeof</span>(info));</span><br><span class="line">                <span class="built_in">sleep</span>(<span class="number">1</span>);</span><br><span class="line">                cout &lt;&lt; <span class="string">&quot;writing&quot;</span> &lt;&lt; info &lt;&lt; <span class="string">&quot; msg to fifo&quot;</span> &lt;&lt; endl;</span><br><span class="line">                info[<span class="number">0</span>] = (<span class="type">char</span>)(<span class="string">&#x27;0&#x27;</span> + count);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="type">char</span> sig[] = <span class="string">&quot;end&quot;</span>;</span><br><span class="line">            <span class="built_in">write</span>(fd, sig, <span class="built_in">sizeof</span>(sig));</span><br><span class="line">            <span class="built_in">close</span>(fd);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>读端</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> FIFO_FIFE <span class="string">&quot;./fiffo&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUFF_SIZE PIPE_BUF</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">mkfifo</span>(FIFO_FIFE, <span class="number">0666</span>) &lt; <span class="number">0</span> &amp;&amp; errno != EEXIST)&#123;</span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;create fifo file error&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="type">char</span> buf[BUFF_SIZE];</span><br><span class="line">        <span class="type">int</span> fd = <span class="built_in">open</span>(FIFO_FIFE, O_CREAT | O_RDONLY, <span class="number">0666</span>);</span><br><span class="line">        <span class="keyword">if</span>(fd &gt; <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">                <span class="built_in">read</span>(fd, buf, BUFF_SIZE);</span><br><span class="line">                <span class="built_in">sleep</span>(<span class="number">1</span>);</span><br><span class="line">                cout &lt;&lt; <span class="string">&quot;reading &quot;</span> &lt;&lt; buf &lt;&lt; <span class="string">&quot; from fifo&quot;</span> &lt;&lt; endl;</span><br><span class="line">                <span class="keyword">if</span>(<span class="built_in">strcmp</span>(buf, <span class="string">&quot;end&quot;</span>) == <span class="number">0</span>)&#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">close</span>(fd);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="信号"><a href="#信号" class="headerlink" title="信号"></a>信号</h3><p>信号是异步的，一个进程不必通过任何操作来等待信号的到达。<br>使用信号有两个作用：</p>
-<ul>
-<li>让进程直到发生了一个特定的事件</li>
-<li>强迫进程去执行信号处理程序</li>
-</ul>
-<p>ps: 信号机制是一种特殊的软中断设计。</p>
-<p>信号机制底层实现：</p>
-<ol>
-<li>信号产生：内核更新目标进程的数据结构表示一个新信号已发送；</li>
-<li>信号传递：内核强迫目标进程：<ul>
-<li>改变进程的执行状态</li>
-<li>执行一个信号处理函数</li>
-</ul>
-</li>
-<li>注意：当信号产生但还未被传递，则称为挂起信号。进程执行信号处理函数时屏蔽同编号的信号。</li>
-</ol>
-<p>信号处理的相关源码和细节<a target="_blank" rel="noopener" href="https://os.51cto.com/art/202108/675743.htm">参考这篇文章</a>.<br>用一张图来概括：<br><img src="/images/ipc-2.png"></p>
-<p>下面写一个实例吧：<br>在新版系统中使用sigaction处理信号：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">sigaction</span><span class="params">(<span class="type">int</span> signum, <span class="type">const</span> <span class="keyword">struct</span> sigaction *act, <span class="keyword">struct</span> sigaction *oldact)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用 sigaction 结构取代了单一的 sighandler_t 函数指针</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">sigaction</span> &#123;</span><br><span class="line">	<span class="built_in">void</span>     (*sa_handler)(<span class="type">int</span>); <span class="comment">// 信号处理函数</span></span><br><span class="line">	<span class="built_in">void</span>     (*sa_sigaction)(<span class="type">int</span>, <span class="type">siginfo_t</span> *, <span class="type">void</span> *);	<span class="comment">// 另一种替代的信号处理函数</span></span><br><span class="line">	<span class="type">sigset_t</span>   sa_mask;  <span class="comment">// 指定了应该被阻塞的信号掩码</span></span><br><span class="line">	<span class="type">int</span>        sa_flags; <span class="comment">// 指定一组修改信号行为的标志</span></span><br><span class="line">	<span class="built_in">void</span>     (*sa_restorer)(<span class="type">void</span>); <span class="comment">// 应用程序不是使用这个成员</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>接收端：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ERR_EXIT(m) \</span></span><br><span class="line"><span class="meta">     do &#123; \</span></span><br><span class="line"><span class="meta">        perror(m); \</span></span><br><span class="line"><span class="meta">        exit(EXIT_FAILURE); \</span></span><br><span class="line"><span class="meta">    &#125;  while( 0)</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">handler</span><span class="params">( <span class="type">int</span>, <span class="type">siginfo_t</span> *,  <span class="type">void</span> *)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">( <span class="type">int</span> argc,  <span class="type">char</span> *argv[])</span></span>&#123;</span><br><span class="line">     <span class="keyword">struct</span> <span class="title class_">sigaction</span> act;</span><br><span class="line">    act.sa_sigaction = handler;  <span class="comment">//sa_sigaction与sa_handler只能取其一</span></span><br><span class="line">     <span class="comment">//sa_sigaction多用于实时信号，可以保存信息</span></span><br><span class="line">    <span class="built_in">sigemptyset</span>(&amp;act.sa_mask);</span><br><span class="line">    act.sa_flags = SA_SIGINFO;  <span class="comment">// 设置标志位后可以接收其他进程</span></span><br><span class="line">     <span class="comment">// 发送的数据，保存在siginfo_t结构体中</span></span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (<span class="built_in">sigaction</span>(SIGUSR1, &amp;act,  <span class="literal">NULL</span>) &lt;  <span class="number">0</span>)</span><br><span class="line">        <span class="built_in">ERR_EXIT</span>( <span class="string">&quot;sigaction error&quot;</span>);</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;mypid:&quot;</span> &lt;&lt; <span class="built_in">getpid</span>() &lt;&lt; endl;</span><br><span class="line">     <span class="keyword">for</span> (; ;)</span><br><span class="line">        <span class="built_in">pause</span>();</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span>  <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">handler</span><span class="params">( <span class="type">int</span> sig, <span class="type">siginfo_t</span> *info,  <span class="type">void</span> *ctx)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>( <span class="string">&quot;recv a sig=%d data=%d data=%d\n&quot;</span>,</span><br><span class="line">           sig, info-&gt;si_value.sival_int, info-&gt;si_int);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>发送端：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ERR_EXIT(m) \</span></span><br><span class="line"><span class="meta">     do &#123; \</span></span><br><span class="line"><span class="meta">        perror(m); \</span></span><br><span class="line"><span class="meta">        exit(EXIT_FAILURE); \</span></span><br><span class="line"><span class="meta">    &#125;  while( 0)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">( <span class="type">int</span> argc,  <span class="type">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">     <span class="keyword">if</span> (argc !=  <span class="number">2</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(stderr,  <span class="string">&quot;Usage %s pid\n&quot;</span>, argv[ <span class="number">0</span>]);</span><br><span class="line">        <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">pid_t</span> pid = <span class="built_in">atoi</span>(argv[ <span class="number">1</span>]);  <span class="comment">//字符串转换为整数</span></span><br><span class="line">     <span class="keyword">union</span> <span class="title class_">sigval</span> val;</span><br><span class="line">    val.sival_int =  <span class="number">100</span>;</span><br><span class="line">    <span class="built_in">sigqueue</span>(pid, SIGUSR1, val);  <span class="comment">// 只可以发信号给某个进程，而不能是进程组</span></span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span>  <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><font color = green>上面这两段程序在ubuntu 16.04虚拟机、linux16.04 系统运行正常，在wsl ubuntu 18.04下运行时，接受不到信号，暂时还没有找到原因。</font></p>
-<h3 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h3><p>信号量的本质就是对资源的一组控制原语，进程间可以通过信号量实现同步。</p>
-<p>下面用信号量实现经典的生产者消费者问题，<font color = green> 下面使用线程实现的，但是原理差不多，主要就是解决同步问题。</font></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;semaphore.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">int</span> item;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> N 20</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> pSpeed 1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> cSpeed 2</span></span><br><span class="line"></span><br><span class="line"><span class="type">sem_t</span> mutex, empty, full;</span><br><span class="line"><span class="type">int</span> head, tail;</span><br><span class="line"><span class="type">int</span> buf[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">showbuf</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(head &gt; tail)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = tail; i &lt;= head; ++ i)&#123;</span><br><span class="line">            cout &lt;&lt; buf[i] &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(head &lt; tail)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = tail; i &lt;= N; ++ i)&#123;</span><br><span class="line">            cout &lt;&lt; buf[i] &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; head; ++ i)&#123;</span><br><span class="line">            cout &lt;&lt; buf[i] &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; N; ++ i)&#123;</span><br><span class="line">            cout &lt;&lt; buf[i] &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span>* <span class="title">producer</span><span class="params">(<span class="type">void</span>* id)</span></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">        item r = <span class="built_in">rand</span>() % <span class="number">100</span> + <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">sleep</span>(pSpeed);</span><br><span class="line">        <span class="built_in">sem_wait</span>(&amp;empty);</span><br><span class="line">        <span class="built_in">sem_wait</span>(&amp;mutex);</span><br><span class="line">        buf[head] = r;</span><br><span class="line">        head = (++ head) % N;</span><br><span class="line">        <span class="built_in">showbuf</span>();</span><br><span class="line">        <span class="built_in">sem_post</span>(&amp;mutex);</span><br><span class="line">        <span class="built_in">sem_post</span>(&amp;full);</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span>* <span class="title">customer</span><span class="params">(<span class="type">void</span>* id)</span></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">        <span class="built_in">sleep</span>(cSpeed);</span><br><span class="line">        <span class="built_in">sem_wait</span>(&amp;full);</span><br><span class="line">        <span class="built_in">sem_wait</span>(&amp;mutex);</span><br><span class="line">        buf[tail] = <span class="number">0</span>;</span><br><span class="line">        tail = (++ tail) % N;</span><br><span class="line">        <span class="built_in">showbuf</span>();</span><br><span class="line">        <span class="built_in">sem_post</span>(&amp;mutex);</span><br><span class="line">        <span class="built_in">sem_post</span>(&amp;empty);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">( <span class="type">int</span> argc,  <span class="type">char</span> *argv[])</span></span>&#123;</span><br><span class="line">    head = <span class="number">0</span>, tail = head;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">sem_init</span>(&amp;mutex, <span class="number">0</span>, <span class="number">1</span>) == <span class="number">-1</span>)</span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;sem_init error 1&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">sem_init</span>(&amp;empty, <span class="number">0</span>, N) == <span class="number">-1</span>)</span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;sem_init error 1&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">sem_init</span>(&amp;full, <span class="number">0</span>, <span class="number">0</span>) == <span class="number">-1</span>)</span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;sem_init error 1&quot;</span>);</span><br><span class="line">    <span class="type">pthread_t</span> p1, p2, c1, c2;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">pthread_create</span>(&amp;p1, <span class="literal">NULL</span>, producer, (<span class="type">void</span>*)<span class="string">&quot;p1&quot;</span>))</span><br><span class="line">		<span class="built_in">perror</span>(<span class="string">&quot;pthread_create&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">pthread_create</span>(&amp;p2, <span class="literal">NULL</span>, producer, (<span class="type">void</span>*)<span class="string">&quot;p1&quot;</span>))</span><br><span class="line">		<span class="built_in">perror</span>(<span class="string">&quot;pthread_create&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">pthread_create</span>(&amp;c1, <span class="literal">NULL</span>, customer, (<span class="type">void</span>*)<span class="string">&quot;c1&quot;</span>))</span><br><span class="line">		<span class="built_in">perror</span>(<span class="string">&quot;pthread_create&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">pthread_create</span>(&amp;c2, <span class="literal">NULL</span>, customer, (<span class="type">void</span>*)<span class="string">&quot;c2&quot;</span>))</span><br><span class="line">		<span class="built_in">perror</span>(<span class="string">&quot;pthread_create&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">pthread_join</span>(p1, <span class="literal">NULL</span>)) <span class="built_in">perror</span>(<span class="string">&quot;pthread_join&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">pthread_join</span>(p2, <span class="literal">NULL</span>)) <span class="built_in">perror</span>(<span class="string">&quot;pthread_join&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">pthread_join</span>(c1, <span class="literal">NULL</span>)) <span class="built_in">perror</span>(<span class="string">&quot;pthread_join&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">pthread_join</span>(c2, <span class="literal">NULL</span>)) <span class="built_in">perror</span>(<span class="string">&quot;pthread_join&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>  <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="共享内存"><a href="#共享内存" class="headerlink" title="共享内存"></a>共享内存</h3><p>共享内存就是允许两个或多个进程共享一定的存储区。就如同 malloc() 函数向不同进程返回了指向同一个物理内存区域的指针。当一个进程改变了这块地址中的内容的时候，其它进程都会察觉到这个更改。因为数据不需要在客户机和服务器端之间复制，数据直接写到内存，不用若干次数据拷贝，所以这是最快的一种IPC。<br><font color = orange>注意：共享内存没有任何的同步与互斥机制，所以要使用信号量来实现对共享内存的存取的同步。</font></p>
-<p>下面以mmap为例说明如何进行进程间通信：<br>注意需要先创建一个文件，文件名作为输入参数。<br>读端：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/mman.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/stat.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;error.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUF_SIZE 100  </span></span><br><span class="line">     </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span>  </span></span><br><span class="line"><span class="function"></span>&#123;  </span><br><span class="line">     <span class="type">int</span> fd, nread, i;  </span><br><span class="line">     <span class="keyword">struct</span> <span class="title class_">stat</span> sb;  </span><br><span class="line">     <span class="type">char</span> *mapped, buf[BUF_SIZE];  </span><br><span class="line">     </span><br><span class="line">     <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; BUF_SIZE; i++) &#123;  </span><br><span class="line">          buf[i] = <span class="string">&#x27;#&#x27;</span>;  </span><br><span class="line">     &#125;  </span><br><span class="line">     <span class="comment">/* 打开文件 */</span>  </span><br><span class="line">     <span class="keyword">if</span> ((fd = <span class="built_in">open</span>(argv[<span class="number">1</span>], O_RDWR)) &lt; <span class="number">0</span>) &#123;  </span><br><span class="line">          <span class="built_in">perror</span>(<span class="string">&quot;open&quot;</span>);  </span><br><span class="line">     &#125;  </span><br><span class="line">     </span><br><span class="line">     <span class="comment">/* 获取文件的属性 */</span>  </span><br><span class="line">     <span class="keyword">if</span> ((<span class="built_in">fstat</span>(fd, &amp;sb)) == <span class="number">-1</span>) &#123;  </span><br><span class="line">          <span class="built_in">perror</span>(<span class="string">&quot;fstat&quot;</span>);  </span><br><span class="line">     &#125;  </span><br><span class="line">     </span><br><span class="line">     <span class="comment">/* 将文件映射至进程的地址空间 */</span>  </span><br><span class="line">     <span class="keyword">if</span> ((mapped = (<span class="type">char</span> *)<span class="built_in">mmap</span>(<span class="literal">NULL</span>, sb.st_size, PROT_READ |   </span><br><span class="line">                    PROT_WRITE, MAP_SHARED, fd, <span class="number">0</span>)) == (<span class="type">void</span> *)<span class="number">-1</span>) &#123;  </span><br><span class="line">          <span class="built_in">perror</span>(<span class="string">&quot;mmap&quot;</span>);  </span><br><span class="line">     &#125;  </span><br><span class="line">     </span><br><span class="line">     <span class="comment">/* 文件已在内存, 关闭文件也可以操纵内存 */</span>  </span><br><span class="line">     <span class="built_in">close</span>(fd);  </span><br><span class="line">     </span><br><span class="line">     <span class="comment">/* 每隔两秒查看存储映射区是否被修改 */</span>  </span><br><span class="line">     <span class="keyword">while</span> (<span class="number">1</span>) &#123;  </span><br><span class="line">          cout &lt;&lt; mapped &lt;&lt; endl;</span><br><span class="line">          <span class="built_in">sleep</span>(<span class="number">2</span>);  </span><br><span class="line">     &#125;  </span><br><span class="line">     </span><br><span class="line">     <span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
-
-<p>写端：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//进程B的代码</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/mman.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/stat.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;error.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUF_SIZE 100  </span></span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span></span>&#123;  </span><br><span class="line">    <span class="type">int</span> fd, nread, i;  </span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">stat</span> sb;  </span><br><span class="line">    <span class="type">char</span> *mapped, buf[BUF_SIZE];  </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; BUF_SIZE; i++) &#123;  </span><br><span class="line">        buf[i] = <span class="string">&#x27;#&#x27;</span>;  </span><br><span class="line">    &#125;  </span><br><span class="line">    </span><br><span class="line">    <span class="comment">/* 打开文件 */</span>  </span><br><span class="line">    <span class="keyword">if</span> ((fd = <span class="built_in">open</span>(argv[<span class="number">1</span>], O_RDWR)) &lt; <span class="number">0</span>) &#123;  </span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;open&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">    </span><br><span class="line">    <span class="comment">/* 获取文件的属性 */</span>  </span><br><span class="line">    <span class="keyword">if</span> ((<span class="built_in">fstat</span>(fd, &amp;sb)) == <span class="number">-1</span>) &#123;  </span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;fstat&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">    </span><br><span class="line">    <span class="comment">/* 私有文件映射将无法修改文件 */</span>  </span><br><span class="line">    <span class="keyword">if</span> ((mapped = (<span class="type">char</span> *)<span class="built_in">mmap</span>(<span class="literal">NULL</span>, sb.st_size, PROT_READ |   </span><br><span class="line">                    PROT_WRITE, MAP_SHARED, fd, <span class="number">0</span>)) == (<span class="type">void</span> *)<span class="number">-1</span>) &#123;  </span><br><span class="line">        <span class="built_in">perror</span>(<span class="string">&quot;mmap&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">    </span><br><span class="line">    <span class="comment">/* 映射完后, 关闭文件也可以操纵内存 */</span>  </span><br><span class="line">    <span class="built_in">close</span>(fd);  </span><br><span class="line">    </span><br><span class="line">     </span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">        <span class="comment">/* 修改一个字符 */</span>  </span><br><span class="line">        mapped[<span class="number">0</span>] = <span class="string">&#x27;9&#x27;</span>; </span><br><span class="line">        <span class="built_in">sleep</span>(<span class="number">1</span>);</span><br><span class="line">        cout &lt;&lt; mapped &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
-<h3 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h3><p>Linux的消息队列(queue)实质上是一个链表, 它有消息队列标识符(queue ID). msgget创建一个新队列或打开一个存在的队列; msgsnd向队列末端添加一条新消息; msgrcv从队列中取消息, 取消息是不一定遵循先进先出的, 也可以按消息的类型字段取消息。<br>下面实例说明如何利用linux msg系列系统调用来使用消息队列进行进程间通信：<br>发送端：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/mman.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/stat.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/ipc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/msg.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;error.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"> </span><br><span class="line"><span class="type">const</span> <span class="type">int</span> MAX_LEN = <span class="number">20</span>;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">item</span>&#123;</span><br><span class="line">    <span class="type">int</span> id;</span><br><span class="line">    <span class="type">char</span> data[MAX_LEN];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> handle_error(msg) \</span></span><br><span class="line"><span class="meta">        perror(msg);    \</span></span><br><span class="line"><span class="meta">        exit(-1);   </span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span>  </span>&#123;  </span><br><span class="line">     <span class="type">int</span> msqid;</span><br><span class="line">     item it;</span><br><span class="line">     <span class="type">long</span> <span class="type">int</span> msgtype = <span class="number">0</span>;</span><br><span class="line">     msqid = <span class="built_in">msgget</span>((<span class="type">key_t</span>)<span class="number">10086</span>, <span class="number">0666</span> | IPC_CREAT);</span><br><span class="line">     <span class="keyword">if</span>(msqid &lt; <span class="number">0</span>)&#123;</span><br><span class="line">          <span class="built_in">handle_error</span>(<span class="string">&quot;msg queue create error&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="type">int</span> count = <span class="number">20</span>;</span><br><span class="line">     <span class="keyword">while</span>(-- count)&#123;</span><br><span class="line">          <span class="keyword">if</span>(count == <span class="number">1</span>)&#123;</span><br><span class="line">               <span class="built_in">memcpy</span>(it.data, <span class="string">&quot;end&quot;</span>, <span class="built_in">sizeof</span>(<span class="string">&quot;end&quot;</span>));</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">else</span>&#123;</span><br><span class="line">               string temp = <span class="string">&quot;number: &quot;</span> + <span class="built_in">to_string</span>(count);</span><br><span class="line">               <span class="type">const</span> <span class="type">char</span> * msg = temp.<span class="built_in">c_str</span>();</span><br><span class="line">               <span class="built_in">memcpy</span>(it.data, msg, <span class="built_in">sizeof</span>(msg));</span><br><span class="line">          &#125;</span><br><span class="line">          cout &lt;&lt; <span class="string">&quot;sending:&quot;</span> &lt;&lt; it.data &lt;&lt; endl;</span><br><span class="line">          <span class="keyword">if</span>(<span class="built_in">msgsnd</span>(msqid, &amp;it, <span class="built_in">sizeof</span>(item), <span class="number">0</span>) &lt; <span class="number">0</span>)&#123;</span><br><span class="line">               <span class="built_in">handle_error</span>(<span class="string">&quot;send error&quot;</span>);</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="built_in">sleep</span>(<span class="number">1</span>);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
-<p>接收端：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//进程B的代码</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/mman.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/ipc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/msg.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;error.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> MAX_LEN = <span class="number">20</span>;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">item</span>&#123;</span><br><span class="line">    <span class="type">int</span> id;</span><br><span class="line">    <span class="type">char</span> data[MAX_LEN];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> handle_error(msg) \</span></span><br><span class="line"><span class="meta">        perror(msg);    \</span></span><br><span class="line"><span class="meta">        exit(-1);   </span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span></span>&#123;  </span><br><span class="line">    <span class="type">int</span> msqid;</span><br><span class="line">    item it;</span><br><span class="line">    <span class="type">long</span> <span class="type">int</span> msgtype = <span class="number">0</span>;</span><br><span class="line">    msqid = <span class="built_in">msgget</span>((<span class="type">key_t</span>)<span class="number">10086</span>, <span class="number">0666</span> | IPC_CREAT);</span><br><span class="line">    <span class="keyword">if</span>(msqid &lt; <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="built_in">handle_error</span>(<span class="string">&quot;msg queue create error&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">msgrcv</span>(msqid, &amp;it, <span class="built_in">sizeof</span>(item), msgtype, <span class="number">0</span>) &lt; <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="built_in">handle_error</span>(<span class="string">&quot;msg rev error&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;msg : &quot;</span> &lt;&lt; it.data &lt;&lt; endl;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">strcmp</span>(it.data, <span class="string">&quot;end&quot;</span>) == <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
-
-<h3 id="Socket"><a href="#Socket" class="headerlink" title="Socket"></a>Socket</h3><p>常用于网络编程，在进程间通信时可以用，但是感觉大材小用了。在后续网络编程中会详细分析。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9Aepoll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9Aepoll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">Linux网络编程：epoll内核原理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:00:26" itemprop="dateModified" datetime="2022-09-25T02:00:26+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="内核函数poll-wait"><a href="#内核函数poll-wait" class="headerlink" title="内核函数poll_wait"></a>内核函数poll_wait</h3><ul>
-<li>作用：把当前进程加入到驱动里自定义的等待队列上 </li>
-<li>当驱动事件就绪后，就可以在驱动里自定义的等待队列上唤醒调用poll的进程</li>
-</ul>
-<h3 id="钩子poll"><a href="#钩子poll" class="headerlink" title="钩子poll"></a>钩子poll</h3><p>内核f_op-&gt;poll必须配合驱动自己的等待队列才能用，不然驱动有事件产生后不知道哪些进程调用了poll来等待这个事件：<br>内核f_op-&gt;poll要做的事情：</p>
-<ul>
-<li>调用poll_wait，将当前进程放入驱动设备的等待队列上，这样驱动就知道哪些进程在调用poll等待事件</li>
-<li>检查此时立刻已有的事件（POLLIN\POLLOUT\POLLERR……）并返回掩码表示<br>f_op-&gt;poll是一个非阻塞的操作，立即返回，返回值以掩码形式表示当前已产生的事件集合。<br>例如：<br>snull驱动有两个自定义的等待队列：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">wait_queue_head_t</span> inq;<span class="comment">//读取进程无数据可读时，在此队列等待</span></span><br><span class="line"><span class="type">wait_queue_head_t</span> outq;<span class="comment">//写入进程无空间可写时，在此队列等待</span></span><br></pre></td></tr></table></figure>
-由于snull驱动的读操作read会在读取数据后，唤醒outq队列上的写进程们<br>且snull驱动的写操作write会在写入数据后，唤醒inq队列上的读进程们，因此snull驱动的poll操作：</li>
-</ul>
-<ol>
-<li>调用poll_wait将当前进程加入到inq;</li>
-<li>调用poll_wait将当前进程加入到outq;</li>
-<li>查看当前有什么事件，返回掩码.<br>假设某进程X调用poll，则进程X会出现在inq与outq等待队列上</li>
-</ol>
-<p>之后snull写入时，由于将唤醒inq，故调用poll而进入inq的进程X被唤醒<br>同理，snull读取时，由于将唤醒outq，故调用poll而进入outq的进程X被唤醒.<br>于是，读、写事件唤醒了调用poll等待事件产生的进程们。</p>
-<h3 id="等待队列"><a href="#等待队列" class="headerlink" title="等待队列"></a>等待队列</h3><p>等待队列对头：wait_queue_head_t<br>队列的成员：wait_queue_t<br>wait_queue_t的成员:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> *private; <span class="comment">/*指向进程描述符task_struct*/</span></span><br><span class="line"><span class="type">wait_queue_func_t</span>  func;<span class="comment">//唤醒时调用此函数，即钩子函数</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span>  <span class="title">task_list</span>;</span><span class="comment">//队列链表指针</span></span><br></pre></td></tr></table></figure>
-<p><font color = orange>一般钩子函数func是内核默认函数default_wake_function，功能就是唤醒进程。<br>我们也可以在把进程放入等待队列时主动设定钩子函数，使得在唤醒进程时自动执行我们需要的操作.</font><br><font color = red>epoll就利用了队列钩子函数：把产生的事件内容copy到rdlist,这样，事件来临时会自动把事件内容放到rdlist中，而不需要我们自己遍历监听句柄们查有谁产生了事件.</font></p>
-<h3 id="epoll内核原理1：调用epoll-create1-x2F-epoll-create"><a href="#epoll内核原理1：调用epoll-create1-x2F-epoll-create" class="headerlink" title="epoll内核原理1：调用epoll_create1&#x2F;epoll_create"></a>epoll内核原理1：调用epoll_create1&#x2F;epoll_create</h3><p>创建了epoll句柄eventpoll，返回其文件表示的描述符epfd<br><img src="/images/epoll-1.png"></p>
-<p>eventpoll内部有以下关键数据结构：</p>
-<ul>
-<li>rbtree：红黑树，每个被加入到epoll监控的文件事件会创建一个epitem结构，作为rbtree节点; <ul>
-<li>使用rbtree的优点：可容纳大量文件事件，方便增删改（O(lgN)）</li>
-</ul>
-</li>
-<li>rdlist：内核链表，用于存放当前产生了期待事件产生的文件句柄们（这里的一个文件句柄可以理解为一个epoll_event）</li>
-<li>wq：当进程调用epoll_wait等待时，进程加入等待队列wq</li>
-<li>poll_wait：eventpoll本身的等待队列，由于eventpoll自己也被当做文件，这个队列用于自己被别人调用select&#x2F;poll&#x2F;epoll监听的情况（一般没啥用）。</li>
-</ul>
-<p>poll_wait在啥时候用呢：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">fd = socket(...);</span><br><span class="line">efd1 = epoll_create();</span><br><span class="line">efd2 = epoll_create();</span><br><span class="line">epoll_ctl(efd1, EPOLL_CTL_ADD, fd, ...);</span><br><span class="line">epoll_ctl(efd2, EPOLL_CTL_ADD, efd1, ...);</span><br></pre></td></tr></table></figure>
-<p>如上，efd1监控fd，而efd2监控了efd1，即嵌套的epoll监控：epoll监控另一个epoll句柄<br>efd2要监控efd1，将调用efd1的poll函数<br>回忆之前说过：文件f_op-&gt;poll需要配合驱动提供的等待队列<br>对于epollfd，等待队列就是poll_wait<br>efd2监听efd1，会调用efd1-&gt;f_op-&gt;poll，于是把当前进程放到efd1的poll_wait队列上<br>在epoll的内核实现中，当efd1本身监听到fd事件产生后，会顺便唤醒poll_wait上的进程<br>于是，“efd1监听到事件” 被通知到efd2。这样，就实现了epollfd被其他多路复用监听了！<br>故：poll_wait就是用于epoll句柄被另外的多路复用监听的，配合epoll自己的f_op-&gt;poll，看起来一般用不到。</p>
-<h3 id="epoll内核原理2：调用epoll-ctl操作句柄新增监控事件"><a href="#epoll内核原理2：调用epoll-ctl操作句柄新增监控事件" class="headerlink" title="epoll内核原理2：调用epoll_ctl操作句柄新增监控事件"></a>epoll内核原理2：调用epoll_ctl操作句柄新增监控事件</h3><p>epoll_ctl：EPOLL_CTL_ADD、EPOLL_CTL_MOD、EPOLL_CTL_DEL新增、修改、删除红黑树上的文件句柄。<br><font color = orange>其中epll_ctl：EPOLL_CTL_ADD新增句柄不仅仅新增红黑树节点，更关键的是对文件开始监控！与select&#x2F;poll的本质区别：并不是调用epoll_wait的时候才监听文件，而是EPOLL_CTL_ADD的时候就开始监听了!</font></p>
-<ul>
-<li>EPOLL_CTL_ADD<br>  epoll_ctl(epfd, EPOLL_CTL_ADD, fd, fdevent)核心流程：<ul>
-<li>对要注册的事件event-&gt;events追加关心事件：EPOLLERR | EPOLLHUP(EPOLLERR、EPOLLHUP事件会被自动监听，即使我们没设置)</li>
-<li>创建epitem结构，加入到红黑树中.</li>
-<li><font color = red>revent &#x3D; file-&gt;f_op-&gt;poll，即调用poll，把当前进程放到文件的等待队列上且设置回调函数ep_poll_callback，返回值revent是文件当前已产生事件掩码.</font></li>
-<li>检查返回事件：如果revent与关心事件event-&gt;events有交集（说明ADD之前事件就准备好了）<ul>
-<li>把此epitem节点拷贝到rdlist链表中；（就绪句柄拷贝到rdlist）;</li>
-<li>如果有进程在wq等待队列上（即有进程在调用epoll_wait等待），则唤醒之！</li>
-<li>顺便，如果有进程在poll_wait等待队列上（即有进程调用多路复用来监听当前epoll句柄），则唤醒之！</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>可以看到，如果在EPOLL_CTL_ADD一个文件之前，这个文件关心的事件就已经产生了的话，由于会唤醒wq队列上的进程，则此时EPOLL_CTL_ADD会使得epoll_wait函数从阻塞中返回.</p>
-<p><img src="/images/epoll-2.png"></p>
-<ul>
-<li><p>回调函数ep_poll_callback<br>  回调函数ep_poll_callback作为等待队列的回调函数：<br>  当文件事件来临，唤醒文件等待队列上进程，ep_poll_callback函数将被自动调用，并把已产生事件们作为其参数传入。<br>  流程：</p>
-<ul>
-<li>ep_poll_callback检查已产生事件与关心事件是否有交集，如果有：<ul>
-<li>文件的epitem节点拷贝到rdlist链表上（就绪句柄拷贝到rdlist）</li>
-<li>如果有进程在wq等待队列上（即有进程在调用epoll_wait等待），则唤醒之！</li>
-<li>顺便，如果有进程在poll_wait等待队列上（即有进程调用多路复用来监听当前epoll句柄），则唤醒之！</li>
-</ul>
-</li>
-</ul>
-<p>  简而言之：回调函数把文件句柄拷贝到rdlist，并唤醒epoll_wait等待的进程</p>
-</li>
-</ul>
-<h3 id="epoll内核原理3：当文件有事件来临时："><a href="#epoll内核原理3：当文件有事件来临时：" class="headerlink" title="epoll内核原理3：当文件有事件来临时："></a>epoll内核原理3：当文件有事件来临时：</h3><ol>
-<li>对应的等待队列上的进程被唤醒，执行回调函数ep_poll_callback，并把已产生事件们以参数传入</li>
-<li>call ep_poll_callback.<br><img src="/images/epoll-4.png"></li>
-</ol>
-<p>简而言之：事件发生时，文件句柄被自动拷贝到rdlist，调用epoll_wait等待的进程们被唤醒</p>
-<h3 id="epoll内核原理4：调用epoll-wait等待事件"><a href="#epoll内核原理4：调用epoll-wait等待事件" class="headerlink" title="epoll内核原理4：调用epoll_wait等待事件"></a>epoll内核原理4：调用epoll_wait等待事件</h3><p>epoll_wait并不监听文件句柄，而是等待rdlist不空 or 收到信号 or 超时这三种条件后返回<br>伪代码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">epoll_wait(epfd, events, MAXSIZE, timeout)</span><br><span class="line">    res = <span class="number">0</span></span><br><span class="line">    jitimeout = 剩余时间，timeout换算为内核时间</span><br><span class="line">    <span class="keyword">while</span> rdlist为空：</span><br><span class="line">        当前进程放到等待队列wq中；</span><br><span class="line">        <span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">            如果rdlist不空，或者jitimeout = <span class="number">0</span>超时</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            如果有信号挂起</span><br><span class="line">                res = EINTR</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            jitimeout = schedule_timeout(jitimeout)</span><br><span class="line">            让出CPU，唤醒后返回新的剩余时间</span><br><span class="line"></span><br><span class="line">    如果res = <span class="number">0</span>，说明rdlist不空 or 超时了</span><br><span class="line">        则把rdlist中句柄们调用ep_send_events函数拷贝到events数组中，返回拷贝了几个句柄，赋值给res</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">    <span class="comment">//res = -1，收到信号；</span></span><br><span class="line">    <span class="comment">//res = 0，超时</span></span><br><span class="line">    <span class="comment">//res &gt; 0, 有res个句柄拷贝到events数组</span></span><br></pre></td></tr></table></figure>
-<p>主要逻辑：</p>
-<ul>
-<li>不断让出CPU，直到： <ul>
-<li>rdlist有数据</li>
-<li>超时</li>
-<li>收到信号</li>
-</ul>
-</li>
-<li>如果rdlist有数据，则拷贝到用户传入的events数组<br><img src="/images/epoll-5.png"></li>
-</ul>
-<p>简而言之：等待rdlist不空或者超时、信号中断，rdlist不空则把句柄们拷贝到用户空间.</p>
-<h3 id="水平触发、边沿触发"><a href="#水平触发、边沿触发" class="headerlink" title="水平触发、边沿触发"></a>水平触发、边沿触发</h3><p>拷贝句柄函数ep_send_events会先遍历rdlist中每个句柄，对于每个句柄，再次调用poll获取实际事件：</p>
-<ol>
-<li>如果与关心事件有交集：<br>如果句柄是水平触发（EPOLLLT），则再次把句柄加入到rdlist；否则从rdlist中删除.<br>于是水平模式下次还会准备好，这就是EPOLLET 与 EPOLLLT的区别原理</li>
-<li>如果与关心事件无交集，从rdlist中删除之.<br>问题：如此一来看起来水平模式的句柄永远都不断重新加入rdlist，这就成永远都通知了吧？<br>当事件已经被处理完后，调用poll得到的实际事件与关心事件已经无交集了，于是会被删除的！</li>
-</ol>
-<p>ep_send_events函数内再次调用poll获取实际事件就是为了EPOLLLT模式而生的，防止其永远加入rdlist！<br>于是，EPOLLLT读事件 做到了只要有数据就不停通知，直到没数据就不再通知了.</p>
-
+          <h3 id="匿名管道"><a href="#匿名管道" class="headerlink" title="匿名管道"></a>匿名管道</h3><p>适用场景：在父子线程间传递信息。<br>核心是pipe函数，创建了全双工的两个文件描述符。下图来自APUE十五章。<br><img src="/images/ipc-1.png"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/Linux%E5%86%85%E6%A0%B8%E7%B3%BB%E5%88%97%EF%BC%9A%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -931,7 +548,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:00:31" itemprop="dateModified" datetime="2022-09-25T02:00:31+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:35:51" itemprop="dateModified" datetime="2022-10-19T17:35:51+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -954,39 +571,98 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h3 id="select函数"><a href="#select函数" class="headerlink" title="select函数"></a>select函数</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">select</span><span class="params">(<span class="type">int</span> maxfdp,fd_set *readfds,fd_set *writefds,fd_set *errorfds,<span class="keyword">struct</span> timeval *timeout)</span>;</span><br></pre></td></tr></table></figure>
-<ol>
-<li><p>int maxfdp是一个整数值，是指集合中所有文件描述符的范围，即所有文件描述符的最大值加1，不能错！在Windows中这个参数的值无所谓，可以设置不正确。</p>
-</li>
-<li><p>struct fd_set可以理解为一个集合，这个集合中存放的是文件描述符(file descriptor)，即文件句柄。fd_set集合可以通过一些宏由人为来操作。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">FD_ZERO(fd_set *fdset)：清空fdset与所有文件句柄的联系。 </span><br><span class="line">FD_SET(<span class="type">int</span> fd, fd_set *fdset)：建立文件句柄fd与fdset的联系。 </span><br><span class="line">FD_CLR(<span class="type">int</span> fd, fd_set *fdset)：清除文件句柄fd与fdset的联系。 </span><br><span class="line">FD_ISSET(<span class="type">int</span> fd, fdset *fdset)：检查fdset联系的文件句柄fd是否可读写，&gt;<span class="number">0</span>表示可读写。 </span><br></pre></td></tr></table></figure></li>
-<li><p>struct timeval用来代表时间值，有两个成员，一个是秒数，另一个是毫秒数。 若将NULL以形参传入，即不传入时间结构，就是将select置于阻塞状态，一定等到监视文件描述符集合中某个文件描述符发生变化为止；第二，若将时间值设为0秒0毫秒，就变成一个纯粹的非阻塞函数，不管文件描述符是否有变化，都立刻返回继续执行，文件无变化返回0，有变化返回一个正值；第三，timeout的值大于0，这就是等待的超时时间，即select在timeout时间内阻塞，超时时间之内有事件到来就返回了，否则在超时后不管怎样一定返回。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">timeval</span>&#123;</span>      </span><br><span class="line">    <span class="type">long</span> tv_sec;   <span class="comment">/*秒 */</span></span><br><span class="line">    <span class="type">long</span> tv_usec;  <span class="comment">/*微秒 */</span>   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>三个fd_set分别监视文件描述符的读写异常变化，如果有select会返回一个大于0的值。如果没有则在timeout的时间后select返回0，若发生错误返回负值。可以传入NULL值，表示不关心任何文件的读&#x2F;写&#x2F;异常变化。</p>
-</li>
-</ol>
-<h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p>源码中的调用树如下：<br><img src="/images/select-1.png"></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">staticint <span class="title function_">core_sys_select</span><span class="params">(<span class="type">int</span> n, fd_set __user *inp, fd_set __user *outp, fd_set __user *<span class="built_in">exp</span>, s64 *timeout)</span> &#123;</span><br><span class="line">    <span class="comment">//读取当前进程的文件描述符表，如果传入的n大于当前进程最大的文件描述符，给予修正。</span></span><br><span class="line">    <span class="comment">//尝试使用栈分配内存，不够则用堆。需要使用6倍于最大描述符的描述符个数</span></span><br><span class="line">    <span class="comment">//get_fd_set调用copy_from_user从用户空间拷贝了fd_set</span></span><br><span class="line">    <span class="comment">//执行ret = do_select(n, &amp;fds, timeout);</span></span><br><span class="line">    <span class="comment">//将修改后的fd_set写回用户空间</span></span><br><span class="line">&#125;</span><br><span class="line">staticint <span class="title function_">core_sys_select</span><span class="params">(<span class="type">int</span> n, fd_set __user *inp, fd_set __user *outp, fd_set __user *<span class="built_in">exp</span>, s64 *timeout)</span> &#123;</span><br><span class="line">    <span class="comment">//读取当前进程的文件描述符表，如果传入的n大于当前进程最大的文件描述符，给予修正。</span></span><br><span class="line">    <span class="comment">//尝试使用栈分配内存，不够则用堆。需要使用6倍于最大描述符的描述符个数</span></span><br><span class="line">    <span class="comment">//get_fd_set调用copy_from_user从用户空间拷贝了fd_set</span></span><br><span class="line">    <span class="comment">//执行ret = do_select(n, &amp;fds, timeout);</span></span><br><span class="line">    <span class="comment">//将修改后的fd_set写回用户空间</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>do_select函数中，遍历所有n个fd，对每一个fd调用对应驱动程序中的poll函数。poll函数调用poll_wait函数，poll_wait函数调用__pollwait()，这个函数会初始化等待队列项（有个pollwake函数），并将该等待队列项添加到从驱动程序中传递过来的等待队列头中去。驱动程序在得知设备有IO事件时（通常是该设备上IO事件中断），会调用wakeup，wakeup –&gt; _wake_up_common -&gt; curr-&gt;func(即pollwake)。pollwake函数里面调用_pollwake函数, 通过pwq-&gt;triggered &#x3D; 1将进程标志为唤醒。再调用default_wake_function(&amp;dummy_wait, mode, sync, key)这个默认的通用唤醒函数唤醒调用select的进程。 请注意，poll函数会返回一个mask码值，通过这个值我们可以判断是否可读写。更详细的必须看 do_select源码。</p>
-<h3 id="流程总结"><a href="#流程总结" class="headerlink" title="流程总结"></a>流程总结</h3><ol>
-<li><p>select的睡眠过程<br>支持阻塞操作的设备驱动通常会实现一组自身的等待队列如读&#x2F;写等待队列用于支持上层(用户层)所需的BLOCK或NONBLOCK操作。当应用程序通过设备驱动访问该设备时(默认为BLOCK操作)，若该设备当前没有数据可读或写，则将该用户进程插入到该设备驱动对应的读&#x2F;写等待队列让其睡眠一段时间，等到有数据可读&#x2F;写时再将该进程唤醒。</p>
-<p> select就是巧妙的利用等待队列机制让用户进程适当在没有资源可读&#x2F;写时睡眠，有资源可读&#x2F;写时唤醒。下面我们看看select睡眠的详细过程。</p>
-<p> select会循环遍历它所监测的fd_set内的所有文件描述符对应的驱动程序的poll函数。驱动程序提供的poll函数首先会将调用select的用户进程插入到该设备驱动对应资源的等待队列(如读&#x2F;写等待队列)，然后返回一个bitmask告诉select当前资源哪些可用。当select循环遍历完所有fd_set内指定的文件描述符对应的poll函数后，如果没有一个资源可用(即没有一个文件可供操作)，则select让该进程睡眠，一直等到有资源可用为止，进程被唤醒(或者timeout)继续往下执行。</p>
-</li>
-<li><p>唤醒该进程的过程通常是在所监测文件的设备驱动内实现的，驱动程序维护了针对自身资源读写的等待队列。当设备驱动发现自身资源变为可读写并且有进程睡眠在该资源的等待队列上时，就会唤醒这个资源等待队列上的进程。</p>
-</li>
-</ol>
-<h3 id="poll和select的区别"><a href="#poll和select的区别" class="headerlink" title="poll和select的区别"></a>poll和select的区别</h3><ol>
-<li>使用的是定长数组，而poll是通过用户自定义数组长度的形式（pollfd[]）。</li>
-<li>select只支持最大fd &lt; 1024，如果单个进程的文件句柄数超过1024，select就不能用了。poll在接口上无限制，考虑到每次都要拷贝到内核，一般文件句柄多的情况下建议用poll。</li>
-<li>select由于使用的是位运算，所以select需要分别设置read&#x2F;write&#x2F;error fds的掩码。而poll是通过设置数据结构中fd和event参数来实现read&#x2F;write，比如读为POLLIN，写为POLLOUT，出错为POLLERR：</li>
-<li>：select中fd_set是被内核和用户共同修改的，所以要么每次FD_CLR再FD_SET，要么备份一份memcpy进去。而poll中用户修改的是events，系统修改的是revents。所以参考muduo的代码，都不需要自己去清除revents，从而使得代码更加简洁。</li>
-<li>select的timeout使用的是struct timeval *timeout，poll的timeout单位是int。</li>
-<li>select使用的是绝对时间，poll使用的是相对时间。</li>
-<li>select的timeout为NULL时表示无限等待，否则是指定的超时目标时间；poll的timeout为-1表示无限等待。所以有用select来实现usleep的。</li>
-</ol>
+          <h3 id="select函数"><a href="#select函数" class="headerlink" title="select函数"></a>select函数</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">select</span><span class="params">(<span class="type">int</span> maxfdp,fd_set *readfds,fd_set *writefds,fd_set *errorfds,<span class="keyword">struct</span> timeval *timeout)</span>;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9Aselect,poll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
 
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9Aepoll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9Aepoll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">Linux网络编程：epoll内核原理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-10-19 17:35:47" itemprop="dateModified" datetime="2022-10-19T17:35:47+08:00">2022-10-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="内核函数poll-wait"><a href="#内核函数poll-wait" class="headerlink" title="内核函数poll_wait"></a>内核函数poll_wait</h3><ul>
+<li>作用：把当前进程加入到驱动里自定义的等待队列上 </li>
+<li>当驱动事件就绪后，就可以在驱动里自定义的等待队列上唤醒调用poll的进程
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9Aepoll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1036,7 +712,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:59:56" itemprop="dateModified" datetime="2022-09-25T01:59:56+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:35:43" itemprop="dateModified" datetime="2022-10-19T17:35:43+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1059,20 +735,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h3 id="阻塞式IO"><a href="#阻塞式IO" class="headerlink" title="阻塞式IO"></a>阻塞式IO</h3><p>在linux中，默认情况下所有的socket都是blocking，一个典型的读操作流程大概是这样：<br><img src="/images/io-1.png"></p>
-<p>当用户进程调用了recvfrom这个系统调用，kernel就开始了IO的第一个阶段：准备数据。对于network io来说，很多时候数据在一开始还没有到达（比如，还没有收到一个完整的UDP包），这个时候kernel就要等待足够的数据到来。而在用户进程这边，整个进程会被阻塞。当kernel一直等到数据准备好了，它就会将数据从kernel中拷贝到用户内存，然后kernel返回结果，用户进程才解除block的状态，重新运行起来。<br>所以，blocking IO的特点就是在IO执行的两个阶段都被block了。</p>
-<h3 id="非阻塞式IO"><a href="#非阻塞式IO" class="headerlink" title="非阻塞式IO"></a>非阻塞式IO</h3><p>linux下，可以通过设置socket使其变为non-blocking。当对一个non-blocking socket执行读操作时，流程是这个样子：<br><img src="/images/io-2.png"></p>
-<p>从图中可以看出，当用户进程发出read操作时，如果kernel中的数据还没有准备好，那么它并不会block用户进程，而是立刻返回一个error。从用户进程角度讲 ，它发起一个read操作后，并不需要等待，而是马上就得到了一个结果。用户进程判断结果是一个error时，它就知道数据还没有准备好，于是它可以再次发送read操作。一旦kernel中的数据准备好了，并且又再次收到了用户进程的system call，那么它马上就将数据拷贝到了用户内存，然后返回。<br>所以，用户进程其实是需要不断的主动询问kernel数据好了没有。</p>
-<h3 id="IO复用"><a href="#IO复用" class="headerlink" title="IO复用"></a>IO复用</h3><p>它的基本原理就是select&#x2F;poll这个function会不断的轮询所负责的所有socket，当某个socket有数据到达了，就通知用户进程。它的流程如图：<br><img src="/images/io-3.png"></p>
-<p>当用户进程调用了select，那么整个进程会被block，而同时，kernel会“监视”所有select负责的socket，当任何一个socket中的数据准备好了，select就会返回。这个时候用户进程再调用read操作，将数据从kernel拷贝到用户进程。<br>这个图和blocking IO的图其实并没有太大的不同，事实上，还更差一些。因为这里需要使用两个system call (select 和 recvfrom)，而blocking IO只调用了一个system call (recvfrom)。但是，用select的优势在于它可以同时处理多个connection。（多说一句。所以，如果处理的连接数不是很高的话，使用select&#x2F;epoll的web server不一定比使用multi-threading + blocking IO的web server性能更好，可能延迟还更大。select&#x2F;epoll的优势并不是对于单个连接能处理得更快，而是在于能处理更多的连接。）<br>在IO multiplexing Model中，实际中，对于每一个socket，一般都设置成为non-blocking，但是，如上图所示，整个用户的process其实是一直被block的。只不过process是被select这个函数block，而不是被socket IO给block。</p>
-<h3 id="异步IO"><a href="#异步IO" class="headerlink" title="异步IO"></a>异步IO</h3><p>linux下的asynchronous IO其实用得很少。先看一下它的流程：<br><img src="/images/io-4.png"></p>
-<p>用户进程发起read操作之后，立刻就可以开始去做其它的事。而另一方面，从kernel的角度，当它受到一个asynchronous read之后，首先它会立刻返回，所以不会对用户进程产生任何block。然后，kernel会等待数据准备完成，然后将数据拷贝到用户内存，当这一切都完成之后，kernel会给用户进程发送一个signal，告诉它read操作完成了。</p>
-<h3 id="阻塞-x2F-非阻塞-同步-x2F-异步区别？"><a href="#阻塞-x2F-非阻塞-同步-x2F-异步区别？" class="headerlink" title="阻塞&#x2F;非阻塞,同步&#x2F;异步区别？"></a>阻塞&#x2F;非阻塞,同步&#x2F;异步区别？</h3><ul>
-<li>调用blocking IO会一直block住对应的进程直到操作完成，而non-blocking IO在kernel还准备数据的情况下会立刻返回。</li>
-<li>A synchronous I&#x2F;O operation causes the requesting process to be blocked until that I&#x2F;O operation completes;<br>An asynchronous I&#x2F;O operation does not cause the requesting process to be blocked;<br>同步&#x2F;异步两者的区别就在于synchronous IO做”IO operation”的时候会将process阻塞。按照这个定义，之前所述的blocking IO，non-blocking IO，IO multiplexing都属于synchronous IO。有人可能会说，non-blocking IO并没有被block啊。这里有个非常“狡猾”的地方，定义中所指的”IO operation”是指真实的IO操作，就是例子中的recvfrom这个system call。non-blocking IO在执行recvfrom这个system call的时候，如果kernel的数据没有准备好，这时候不会block进程。但是，当kernel中数据准备好的时候，recvfrom会将数据从kernel拷贝到用户内存中，这个时候进程是被block了，在这段时间内，进程是被block的。而asynchronous IO则不一样，当进程发起IO 操作之后，就直接返回再也不理睬了，直到kernel发送一个信号，告诉进程说IO完成。在这整个过程中，进程完全没有被block。<br>各个IO Model的比较如图所示：<br><img src="/images/io-5.png"></li>
-</ul>
-
+          <h3 id="阻塞式IO"><a href="#阻塞式IO" class="headerlink" title="阻塞式IO"></a>阻塞式IO</h3><p>在linux中，默认情况下所有的socket都是blocking，一个典型的读操作流程大概是这样：<br><img src="/images/io-1.png"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9A%E5%90%8C%E6%AD%A5%E5%BC%82%E6%AD%A5%EF%BC%8C%E9%98%BB%E5%A1%9E%EF%BC%8CIO%E5%A4%8D%E7%94%A8/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1122,7 +793,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 01:54:45" itemprop="dateModified" datetime="2022-09-25T01:54:45+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:15:01" itemprop="dateModified" datetime="2022-10-19T17:15:01+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1145,56 +816,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h3 id="为什么要引入智能指针？"><a href="#为什么要引入智能指针？" class="headerlink" title="为什么要引入智能指针？"></a>为什么要引入智能指针？</h3><p>首先我们来看下面这个例子：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">test</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span>*_ptr=<span class="keyword">new</span> <span class="built_in">int</span>(<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">if</span>(_ptr)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">delete</span> _ptr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">try</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">test</span>();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">catch</span>(...)</span><br><span class="line">	&#123;&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol>
-<li>在test函数中new一个四字节的空间，</li>
-<li>判断if条件的语句为真，抛出异常</li>
-<li>main函数直接catch 捕获异常，函数返回0</li>
-<li>try 执行了直接执行catch，程序结束，以至于没有执行delete_ptr释放空间，导致内存泄漏。</li>
-</ol>
-<p>理解智能指针需要从下面三个层次：</p>
-<ol>
-<li>从较浅的层面看，智能指针是利用了一种叫做RAII（资源获取即初始化）的技术对普通的指针进行封装，这使得智能指针实质是一个对象，行为表现的却像一个指针。</li>
-<li>智能指针的作用是防止忘记调用delete释放内存和程序异常的进入catch块忘记释放内存。另外指针的释放时机也是非常有考究的，多次释放同一个指针会造成程序崩溃，这些都可以通过智能指针来解决。</li>
-<li>智能指针还有一个作用是把值语义转换成引用语义。</li>
-</ol>
-<h3 id="std-unique-ptr"><a href="#std-unique-ptr" class="headerlink" title="std::unique_ptr"></a>std::unique_ptr</h3><ul>
-<li>性质</li>
-</ul>
-<ol>
-<li>对其持有的对内存具有唯一拥有权。</li>
-<li>对象销毁时会释放其持有的堆内存。</li>
-</ol>
-<ul>
-<li>使用<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1</span></span><br><span class="line"><span class="function">unique_ptr&lt;<span class="type">int</span>&gt; <span class="title">sp1</span><span class="params">(<span class="keyword">new</span> <span class="type">int</span>(<span class="number">1</span>))</span></span>;</span><br><span class="line"><span class="comment">//2</span></span><br><span class="line">unique_ptr&lt;<span class="type">int</span>&gt; sp2;</span><br><span class="line">sp2.<span class="built_in">reset</span>(<span class="keyword">new</span> <span class="built_in">int</span>(<span class="number">1</span>));</span><br><span class="line"><span class="comment">//3</span></span><br><span class="line">unique_ptr&lt;<span class="type">int</span>&gt; sp3 = <span class="built_in">make_unique</span>&lt;<span class="type">int</span>&gt;(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-注意尽量使用方式3去创建，因为形式3更安全。</li>
-</ul>
-<p>Q:为什么形式3更安全？<br>A:<a target="_blank" rel="noopener" href="https://github.com/kelthuzadx/EffectiveModernCppChinese/blob/master/4.SmartPointers/item21.md">参考《effective modern c++》</a></p>
-<p>鉴于std::auto_ptr的前车之鉴，std::unique_ptr禁止赋值语义，为了达到这个效果，std::unique_ptr类的拷贝构造函数和赋值运算符被标记为delete。<br>但是可以通过移动构造函数来将堆内存转移。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">unique_ptr&lt;<span class="type">int</span>&gt; <span class="title">func</span><span class="params">(<span class="type">int</span> val)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">unique_ptr</span>&lt;<span class="type">int</span>&gt;(<span class="keyword">new</span> <span class="built_in">int</span>(val));</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    unique_ptr&lt;<span class="type">int</span>&gt; sp = <span class="built_in">func</span>(<span class="number">12</span>);</span><br><span class="line">    unique_ptr&lt;<span class="type">int</span>&gt; sp2 = <span class="built_in">make_unique</span>&lt;<span class="type">int</span>&gt;(<span class="number">12</span>);</span><br><span class="line">    unique_ptr&lt;<span class="type">int</span>&gt; sp3 = <span class="built_in">move</span>(sp2);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>std::unique_ptr不仅可以持有一个堆对象，还可以持有一组堆对象。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1</span></span><br><span class="line"><span class="function">unique_ptr&lt;<span class="type">int</span>[]&gt; <span class="title">p</span><span class="params">(<span class="keyword">new</span> <span class="type">int</span>[<span class="number">10</span>])</span></span>;</span><br><span class="line"><span class="comment">//2</span></span><br><span class="line">unique_ptr&lt;<span class="type">int</span>[]&gt; sp2;</span><br><span class="line">sp2.<span class="built_in">reset</span>(<span class="keyword">new</span> <span class="type">int</span>[<span class="number">10</span>]);</span><br><span class="line"><span class="comment">//3</span></span><br><span class="line"><span class="function">unique_ptr&lt;<span class="type">int</span>[]&gt; <span class="title">sp3</span><span class="params">(make_unique&lt;<span class="type">int</span>[]&gt;(<span class="number">10</span>))</span></span>;</span><br></pre></td></tr></table></figure>
-<p>加入堆内存对象内部还有需要回收的资源，我们还可以自定义智能指针的资源释放函数。<br>例如：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;memory&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Socket</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Socket</span>()&#123;&#125;</span><br><span class="line">    ~<span class="built_in">Socket</span>()&#123;&#125;</span><br><span class="line">    <span class="comment">//关闭资源句柄</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">close</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">auto</span> deletor = [](Socket* pSocket) &#123;</span><br><span class="line">        <span class="comment">//关闭句柄</span></span><br><span class="line">        pSocket-&gt;<span class="built_in">close</span>();</span><br><span class="line">         <span class="keyword">delete</span> pSocket;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="function">std::unique_ptr&lt;Socket, <span class="title">void</span><span class="params">(*)</span><span class="params">(Socket * pSocket)</span>&gt; <span class="title">spSocket</span><span class="params">(<span class="keyword">new</span> Socket(), deletor)</span></span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="shared-ptr"><a href="#shared-ptr" class="headerlink" title="shared_ptr"></a>shared_ptr</h3><p>unique_ptr对持有的资源具有独占性，shared_ptr持有的资源在多个shared_ptr<br>之间共享，每多一个shared_ptr对资源的引用，资源引用计数将增加1，每个指向该资源的<br>shared_ptr对象析构时，资源引用计数减一，最后一个shared_ptr对象析构时，发现资源<br>计数为0，将释放其持有的资源。多个线程之间，递增和减少资源的引用计数是安全的（不意味着<br>多个线程同时操纵资源对象是安全的）。shared_ptr使用use_count()来获取当前持有资源的<br>引用计数。除了上面描述的，基本上使用方法和unique_ptr相似。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1</span></span><br><span class="line"><span class="function">shared_ptr&lt;<span class="type">int</span>&gt; <span class="title">sp1</span><span class="params">(<span class="keyword">new</span> <span class="type">int</span>(<span class="number">1</span>))</span></span>;</span><br><span class="line"><span class="comment">//2</span></span><br><span class="line">shared_ptr&lt;<span class="type">int</span>&gt; sp2;</span><br><span class="line">sp2.<span class="built_in">reset</span>(<span class="keyword">new</span> <span class="built_in">int</span>(<span class="number">1</span>));</span><br><span class="line"><span class="comment">//3</span></span><br><span class="line">shared_ptr&lt;<span class="type">int</span>&gt; sp3 = <span class="built_in">make_shared</span>&lt;<span class="type">int</span>&gt;(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-<p>再看下面这段代码：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">A</span>()&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;A()&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">A</span>()&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;~A()&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">       </span><br><span class="line">    <span class="function">shared_ptr&lt;A&gt; <span class="title">sp1</span><span class="params">(<span class="keyword">new</span> A())</span></span>;</span><br><span class="line">    cout &lt;&lt; sp1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="function">shared_ptr&lt;A&gt; <span class="title">sp2</span><span class="params">(sp1)</span></span>;</span><br><span class="line">    cout &lt;&lt; sp1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    sp2.<span class="built_in">reset</span>();</span><br><span class="line">    cout &lt;&lt; sp1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    &#123;</span><br><span class="line">        shared_ptr&lt;A&gt; sp3 = sp1;</span><br><span class="line">        cout &lt;&lt; sp1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; sp1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>输出结果：</p>
-<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">A()</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">2</span><br><span class="line">~A()</span><br></pre></td></tr></table></figure>
-<p>实际开发中，有时候需要在类中返回包裹当前对象（this）的一个std::shared_ptr<br>对象给外部使用，C++ 新标准也为我们考虑到了这一点，有如此需求的类只要继承自<br>std::enable_shared_from_this 模板对象即可。用法如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> : <span class="keyword">public</span> std::enable_shared_from_this&lt;A&gt;</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">A</span>()&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;A()&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">A</span>()&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;~A()&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">shared_ptr&lt;A&gt; <span class="title">getSelf</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">shared_from_this</span>();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>上述代码中，类 A 的继承 std::enable_shared_from_this 并提供一个<br>getSelf() 方法返回自身的 std::shared_ptr 对象，在 getSelf() 中<br>调用 shared_from_this() 即可。<br>陷阱一：不应该共享栈对象的 this 给智能指针对象<br>陷阱二：避免 std::enable_shared_from_this 的循环引用问题</p>
-<h3 id="weak-ptr"><a href="#weak-ptr" class="headerlink" title="weak_ptr"></a>weak_ptr</h3><p>std::weak_ptr 是一个不控制资源生命周期的智能指针，是对对象的一种弱引用，<br>只是提供了对其管理的资源的一个访问手段，引入它的目的为协助 std::shared_ptr<br>工作。<br>std::weak_ptr 可以从一个 std::shared_ptr 或另一个std::weak_ptr 对象构造，<br>std::shared_ptr 可以直接赋值给 std::weak_ptr ，也可以通过 std::weak_ptr<br>的 lock() 函数来获得 std::shared_ptr。它的构造和析构不会引起引用计数的增<br>加或减少。std::weak_ptr 可用来解决 std::shared_ptr 相互引用时的死锁问题<br>（即两个std::shared_ptr 相互引用，那么这两个指针的引用计数永远不可能下降<br>为 0， 资源永远不会释放）。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;memory&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//创建一个shared_ptr对象</span></span><br><span class="line">    <span class="function">shared_ptr&lt;<span class="type">int</span>&gt; <span class="title">sp1</span><span class="params">(<span class="keyword">new</span> <span class="type">int</span>(<span class="number">123</span>))</span></span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;use count: &quot;</span> &lt;&lt; sp1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//通过构造函数得到一个weak_ptr对象</span></span><br><span class="line">    <span class="function">weak_ptr&lt;<span class="type">int</span>&gt; <span class="title">sp2</span><span class="params">(sp1)</span></span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;use count: &quot;</span> &lt;&lt; sp1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//通过赋值运算符得到一个weak_ptr对象</span></span><br><span class="line">    weak_ptr&lt;<span class="type">int</span>&gt; sp3 = sp1;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;use count: &quot;</span> &lt;&lt; sp1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//通过一个weak_ptr对象得到另外一个weak_ptr对象</span></span><br><span class="line">    weak_ptr&lt;<span class="type">int</span>&gt; sp4 = sp2;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;use count: &quot;</span> &lt;&lt; sp1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//output:</span></span><br><span class="line"><span class="comment">// use count: 1</span></span><br><span class="line"><span class="comment">// use count: 1</span></span><br><span class="line"><span class="comment">// use count: 1</span></span><br><span class="line"><span class="comment">// use count: 1</span></span><br></pre></td></tr></table></figure>
-<p>既然，std::weak_ptr 不管理对象的生命周期，那么其引用的对象可能在某个时刻被销毁了<br>，如何得知呢？<br>std::weak_ptr 提供了一个 expired() 方法来做这一项检测，返回 true，<br>说明其引用的资源已经不存在了；返回 false，说明该资源仍然存在，这个时候可以使用<br>std::weak_ptr 的 lock() 方法得到一个std::shared_ptr 对象然后继续操作资源，以下<br>代码演示了该用法：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//tmpConn_ 是一个 std::weak_ptr&lt;TcpConnection&gt; 对象</span></span><br><span class="line"><span class="comment">//tmpConn_引用的TcpConnection已经销毁，直接返回</span></span><br><span class="line"><span class="keyword">if</span> (tmpConn_.<span class="built_in">expired</span>())</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">std::shared_ptr&lt;TcpConnection&gt; conn = tmpConn_.<span class="built_in">lock</span>();</span><br><span class="line"><span class="keyword">if</span> (conn)&#123;</span><br><span class="line">    <span class="comment">//操作conn</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>有读者可能对上述代码产生疑问，既然使用了 std::weak_ptr 的 expired() 方<br>法判断了对象是否存在，为什么不直接使用 std::weak_ptr 对象对引用资源进行<br>操作呢？实际上这是行不通的，std::weak_ptr 类没有重写operator-&gt; 和 operator*<br>方法，因此不能 <em>std::shared_ptr 或 std::unique_ptr 一样直接操作对象，<br>同时 std::weak_ptr 类也没有重写 operator! 操作，因此也不能通过 std::weak_ptr</em>*<br>对象直接判断其引用的资源是否存在。<br>之所以weak_ptr 不增加引用资源的引用计数不管理资源的生命周期，是因为，即使它实现<br>了以上说的几个方法，调用它们也是不安全的，因为在调用期间，引用的资源可能恰好被<br>销毁了，这会造成棘手的错误和麻烦。<br>正确使用场景是那些资源如果可能就使用，如果不可使用则不用的场景，它不参与资源的生<br>命周期管理。例如，网络分层结构中，Session 对象（会话对象）利用 Connection 对象<br>（连接对象）提供的服务工作，但是 Session 对象不管理 Connection 对象的生命周期，<br>Session 管理 Connection 的生命周期是不合理的，因为网络底层出错会导致 Connection<br>对象被销毁，此时 Session 对象如果强行持有 Connection 对象与事实矛盾。</p>
-
+          <h3 id="为什么要引入智能指针？"><a href="#为什么要引入智能指针？" class="headerlink" title="为什么要引入智能指针？"></a>为什么要引入智能指针？</h3><p>首先我们来看下面这个例子：</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9A%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1244,7 +874,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:00:39" itemprop="dateModified" datetime="2022-09-25T02:00:39+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:36:20" itemprop="dateModified" datetime="2022-10-19T17:36:20+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1267,65 +897,109 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h3 id="常见并发服务器方案"><a href="#常见并发服务器方案" class="headerlink" title="常见并发服务器方案"></a>常见并发服务器方案</h3><ol>
-<li>循环式&#x2F;迭代式服务器<br><img src="/images/muduo-1.png"></li>
-</ol>
-<p>整个服务器的流程是</p>
-<ul>
-<li>创建套接字，绑定监听。</li>
-<li>在一个循环中执行：<ul>
-<li>接受客户端连接</li>
-<li>读</li>
-<li>解码 处理 编码</li>
-<li>写</li>
-<li>关闭连接</li>
-</ul>
-</li>
-<li>关闭连接</li>
-</ul>
-<p>这种连接方式实际上是短链接，而循环式服务器只能是短连接。整个程序是一个单线程的应用程序，不能是长连接的原因是因为如果需要进行长链接持续读，那么需要在写后在进行读，此时如果来一个新的连接请求就得不到响应。<br>另外整个连接处理过程不能太长，如果太长就会影响用户的响应时间。<br>总的来说这种方式具有下面几个缺点：</p>
-<ul>
-<li>不能进行长连接</li>
-<li>不能处理复杂的业务请求</li>
-<li>不能利用cpu多核优势</li>
-</ul>
-<ol start="2">
-<li>cocurrent服务器<br><img src="/images/muduo-2.png"></li>
-</ol>
-<p>这个服务器的流程如上图所示，通过多进程的方式来处理多个客户端请求，并且可以处理长连接。</p>
-<ol start="3">
-<li><p>pre-fork or pre threaded<br><img src="/images/muduo-3.png"><br>这种称为预先创建线程或者进程的方式，每个进程或者线程负责一个客户端的请求。这种方式的一个缺点是会出现“惊群”现象。<br>所谓惊群现象，就是父进程创建socket，bind、listen后，通过fork创建多个子进程，每个子进程继承了父进程的socket，调用accpet开始监听等待网络连接。这个时候有多个进程同时等待网络的连接事件，当这个事件发生时，这些进程被同时唤醒，就是“惊群”。这样会导致什么问题呢？我们知道进程被唤醒，需要进行内核重新调度，这样每个进程同时去响应这一个事件，而最终只有一个进程能处理事件成功，其他的进程在处理该事件失败后重新休眠或其他。</p>
-</li>
-<li><p>reactor模式<br><img src="/images/muduo-4.png"></p>
-</li>
-</ol>
-<ul>
-<li>reactor可以使用select&#x2F;poll&#x2F;epoll来实现。</li>
-<li>我们首先注册我们关注的监听套接字；</li>
-<li>用客户端发来请求，acceptor来接受连接，然后将对应的文件描述符加入reactor中关注可读事件；</li>
-<li>如果发生可读事件，开始dispatch（分派）；</li>
-<li>然后进行业务逻辑的处理。</li>
-</ul>
-<p>以上所有的操作都是在单线程上完成的，因此不能处理较复杂的业务逻辑，也不能利用多核cpu的优势。</p>
-<ol start="5">
-<li>过渡方案</li>
-</ol>
-<ul>
-<li>reactor + thread per request<br>每来一个请求，创建一个线程，在请求较多的情况下系统的负载显著上升。</li>
-<li>reactor + worker thread<br>每个连接在一个工作者线程中完成，这种方式不如cocurrent方式，因为多了reactor。</li>
-</ul>
-<ol start="6">
-<li><p>reactor + threadpool<br><img src="/images/muduo-5.png"><br>与reactor不同的地方是，将业务代码通过线程池来实现。<br>这种模式适用于计算密集型的业务。</p>
-</li>
-<li><p>mutiple reactors<br><img src="/images/muduo-5.png"><br>如上图所示，拥有一个mainReactor，当acceptor返回已连接套接字，就将活跃的套接字分配给subReactor。如果分配的顺序是按顺序，那么就叫做“轮叫”(round robin)，这种方式能够保证每个reactor都有均匀的任务数量。<br>每个进程或者线程拥有一个事件循环。（reactors in threads or reactors in process）。<br>这种方式能够应对更大的突发IO。<br>一个reactor能够应对一个千兆网卡，我们可以根据网卡数量来设计线程池或者进程池的容量。</p>
-</li>
-<li><p>mutiple reactors + thread pool<br><img src="/images/muduo-7.png"><br>这种方式也叫做one loop per thread + thread pool。<br>实际上在这种模式下，一共有两个线程池，一个是reactor的线程池，一个是业务线程的线程池。</p>
-</li>
-<li><p>proactor服务器（基于异步IO)<br>这种异步方式linux支持不够，暂不考虑。</p>
-</li>
-</ol>
+          <h3 id="常见并发服务器方案"><a href="#常见并发服务器方案" class="headerlink" title="常见并发服务器方案"></a>常见并发服务器方案</h3><ol>
+<li>循环式&#x2F;迭代式服务器<br><img src="/images/muduo-1.png">
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/muduo%E7%BD%91%E7%BB%9C%E5%BA%93%E7%B3%BB%E5%88%97-%E5%B9%B6%E5%8F%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AE%BE%E8%AE%A1/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
 
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/" class="post-title-link" itemprop="url">redis系列：RDB & AOF</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-10-19 17:38:07" itemprop="dateModified" datetime="2022-10-19T17:38:07+08:00">2022-10-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h3><ol>
+<li>文件结构<br><img src="/images/redis-ar-1.png"><br>一个完整的RDB文件包含上面各部分。</li>
+</ol>
+<ul>
+<li><p>REDIS：5字节，检查是否为RDB文件。</p>
+</li>
+<li><p>db_version:4字节，字符串表示的整数，记录版本号。</p>
+</li>
+<li><p>database：0或n个数据库的键值对数据。</p>
+</li>
+<li><p>EOF：1字节，表示正文结束。</p>
+</li>
+<li><p>check_sum：8字节长无符号整数，保存一个校验和，根据前面四个部分计算得到。  </p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1411,20 +1085,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-count">133</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

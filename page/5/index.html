@@ -192,7 +192,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%8A%A8%E6%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9Araft%E5%92%8C%E5%A4%8D%E5%88%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -206,7 +206,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%8A%A8%E6%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="post-title-link" itemprop="url">redis系列：动态字符串</a>
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9Araft%E5%92%8C%E5%A4%8D%E5%88%B6/" class="post-title-link" itemprop="url">redis系列：raft一致性算法</a>
         </h2>
 
         <div class="post-meta">
@@ -223,7 +223,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:01:25" itemprop="dateModified" datetime="2022-09-25T02:01:25+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:38:03" itemprop="dateModified" datetime="2022-10-19T17:38:03+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -246,174 +246,21 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h3 id="3-0版本"><a href="#3-0版本" class="headerlink" title="3.0版本"></a>3.0版本</h3><p>redis的动态字符串在3.0中的实现如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sdshdr</span> &#123;</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> len;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> <span class="built_in">free</span>;</span><br><span class="line">    <span class="type">char</span> buf[];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>其中len代表字符串的实际长度，free代表剩余可分配的长度，buf是一个动态数组。<br>redis之所以这么封装，有以下几点好处：</p>
-<ol>
-<li>常数复杂度获得字符串长度，即直接sdshdr.len即可；</li>
-<li>有效防止缓冲区溢出，也就是说sdshdr记录了字符串长度和可用长度，在对字符进行拼接的时候，可以检查实际空间大小。</li>
-<li>内存分配采用空间预分配和惰性释放策略，能够减少申请和释放内存的操作，减少系统负载。</li>
-<li>buf存储的字符串是二进制安全的（所谓二进制安全，就是不访问不修改存储的二进制串，而传统的c字符串是通过判断’\0’字符来断定字符串结束，必然涉及到了字符串的访问，是不安全的。）。</li>
-<li>兼容c字符串函数，可以将sdshr -&gt; buf作为字符串输入到c函数中。</li>
-</ol>
-<h3 id="5-0-版本"><a href="#5-0-版本" class="headerlink" title="5.0 版本"></a>5.0 版本</h3><p>在3.2版本之前的字符串都如上章节所示，这样能够满足基本的使用了，但是还有没有更好的改进空间呢？<br>我们从一个简单的问题开始思考：不同长度的字符串是否有必要占用相同大小的头部？一个int占4字节，在实际应用中，存放于Redis中的字符串往往没有这么长，每个字符串都用4字节存储未免太浪费空间了。我们考虑三种情况：短字符串，len和free的长度为1字节就够了；长字符串，用2字节或4字节；更长的字符串，用8字节。<br>这样确实更省内存，但依然存在以下问题。</p>
-<p>问题1：如何区分这3种情况？  </p>
-<p>问题2：对于短字符串来说，头部还是太长了。以长度为1字节的<br>字符串为例，len和free本身就占了2个字节，能不能进一步压缩呢？<br>对于问题1，我们考虑增加一个字段flags来标识类型，用最小的1<br>字节来存储，且把flags加在柔性数组buf之前，这样虽然多了1字节，<br>但通过偏移柔性数组的指针即能快速定位flags，区分类型，也可以接<br>受；对于问题2，由于len已经是最小的1字节了，再压缩只能考虑用位<br>来存储长度了。  </p>
-<p>结合两个问题，5种type（长度1字节、2字节、4字节、8字节、小<br>于1字节）的SDS至少要用3位来存储类型（23 ＝8），1个字节8位，剩<br>余的5位存储长度，可以满足长度小于32的短字符串。在Redis 5.0<br>中，我们用如下结构来存储长度小于32的短字符串：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Note: sdshdr5 is never used, we just access the flags byte directly.</span></span><br><span class="line"><span class="comment"> * However is here to document the layout of type 5 SDS strings. */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr5</span> &#123;</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> flags; <span class="comment">/* 3 lsb of type, and 5 msb of string length */</span></span><br><span class="line">    <span class="type">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr8</span> &#123;</span></span><br><span class="line">    <span class="type">uint8_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="type">uint8_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="type">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr16</span> &#123;</span></span><br><span class="line">    <span class="type">uint16_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="type">uint16_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="type">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr32</span> &#123;</span></span><br><span class="line">    <span class="type">uint32_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="type">uint32_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="type">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr64</span> &#123;</span></span><br><span class="line">    <span class="type">uint64_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="type">uint64_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="type">char</span> buf[];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>1）len ：表示buf中已占用字节数。<br>2）alloc ：表示buf中已分配字节数，不同于free，记录的是为<br>buf分配的总长度。<br>3）flags ：标识当前结构体的类型，低3位用作标识位，高5位预<br>留。<br>4）buf ：柔性数组，真正存储字符串的数据空间。</p>
-<p>sdshdr5结构如下图所示：<br><img src="/images/redis-sds-1.png"><br>设置flags成员，前三个bits来表示类型，后5个字节表示长度，最多能够表示0~31（2^5)。</p>
-<p>而长度大于31的字符串，1个字节依然存不下。我们按之前的思<br>路，将len和free单独存放。sdshdr8、sdshdr16、sdshdr32和<br>sdshdr64的结构相同。下面是sds16的结构：<br><img src="/images/redis-sds-1.png"></p>
-<p>这里为什么使用__attribute__ ((<strong>packed</strong>))关键字不进行内存对齐呢？</p>
-<ul>
-<li>节省内存</li>
-<li>SDS返回给上层的，不是结构体首地址，而是指向内容的buf指针。因为此时按1字节对齐，故SDS创建成功后，无论是sdshdr8、sdshdr16还是sdshdr32，都能通过(char*)sh+hdrlen得到buf指针地址（其中hdrlen是结构体长度，通过sizeof计算得到）。修饰后，无论是sdshdr8、sdshdr16还是sdshdr32，都能通过buf[-1]找到flags，因为此时按1字节对齐。若没有packed的修饰，还需要对不同结构进行处理，实现更复杂。</li>
-</ul>
-<h3 id="扩容机制"><a href="#扩容机制" class="headerlink" title="扩容机制"></a>扩容机制</h3><p>由于5.0版本的动态字符串通过不同的结构体实现，因此当涉及到修改动态字符串的相关操作时，可能需要更改类型。并且动态数组的增长也涉及了扩容机制。<br>扩容机制保留了3.0版本的惰性释放原则。</p>
-<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><ul>
-<li>缓存功能：String字符串是最常用的数据类型，不仅仅是Redis，各个语言都是最基本类型，因此，利用Redis作为缓存，配合其它数据库作为存储层，利用Redis支持高并发的特点，可以大大加快系统的读写速度、以及降低后端数据库的压力。</li>
-<li>计数器：许多系统都会使用Redis作为系统的实时计数器，可以快速实现计数和查询的功能。而且最终的数据结果可以按照特定的时间落地到数据库或者其它存储介质当中进行永久保存。</li>
-<li>共享用户Session：用户重新刷新一次界面，可能需要访问一下数据进行重新登录，或者访问页面缓存Cookie，但是可以利用Redis将用户的Session集中管理，在这种模式只需要保证Redis的高可用，每次用户Session的更新和获取都可以快速完成。大大提高效率。</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/" class="post-title-link" itemprop="url">redis系列：RDB & AOF</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:02:03" itemprop="dateModified" datetime="2022-09-25T02:02:03+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h3><ol>
-<li>文件结构<br><img src="/images/redis-ar-1.png"><br>一个完整的RDB文件包含上面各部分。</li>
+          <h3 id="Raft算法"><a href="#Raft算法" class="headerlink" title="Raft算法"></a>Raft算法</h3><ol>
+<li>基本概念<br>在任何时刻，服务器节点都处于三个状态之一：leader、follower或者candidate。</li>
 </ol>
 <ul>
-<li>REDIS：5字节，检查是否为RDB文件。</li>
-<li>db_version:4字节，字符串表示的整数，记录版本号。</li>
-<li>database：0或n个数据库的键值对数据。</li>
-<li>EOF：1字节，表示正文结束。</li>
-<li>check_sum：8字节长无符号整数，保存一个校验和，根据前面四个部分计算得到。</li>
-</ul>
-<p>如下是一个有两个数据库的RDB文件。<br><img src="/images/redis-rdb-1.png"><br>每个数据库里面包含下面几个部分：<br><img src="/images/redis-rdb-2.png"></p>
-<ul>
-<li>SELECTDB：1字节，表示接下来是一个数据库号码；</li>
-<li>db_number：数据库号码，1&#x2F;2&#x2F;5字节，当读入时，服务器根据select切换；</li>
-<li>key_value_pairs：保存数据库中所有键值对数据。</li>
-</ul>
-<ol start="2">
-<li>key_value_pairs<br>下图展示了一个不带过期时间的键值对：<br><img src="/images/redis-rdb-3.png"></li>
-</ol>
-<ul>
-<li><p>TYPE：1字节类型</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Dup object types to RDB object types. Only reason is readability (are we</span></span><br><span class="line"><span class="comment"> * dealing with RDB types or with in-memory object types?). */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_STRING 0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_LIST   1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_SET    2</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_ZSET   3</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_HASH   4</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Object types for encoded objects. */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_HASH_ZIPMAP    9</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_LIST_ZIPLIST  10</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_SET_INTSET    11</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_ZSET_ZIPLIST  12</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_RDB_TYPE_HASH_ZIPLIST  13</span></span><br></pre></td></tr></table></figure>
-<p>带有过期时间的键值对：<br><img src="/images/redis-rdb-3.png"></p>
-</li>
-<li><p>EXPIRETIME_MS：1字节，表示接下来是一个时间。</p>
-</li>
-<li><p>ms：8字节带符号整数，过期时间，一个毫秒单位UNIX时间戳。</p>
-</li>
-</ul>
-<ol start="3">
-<li>value的编码</li>
-</ol>
-<ul>
-<li><p>字符串对象：<br>存在压缩版<br><img src="/images/redis-rdb-6.png"><br>无压缩版<br><img src="/images/redis-rdb-5.png"></p>
-</li>
-<li><p>列表对象<br><img src="/images/redis-rdb-7.png"></p>
-</li>
-<li><p>集合对象<br><img src="/images/redis-rdb-8.png"></p>
-</li>
-<li><p>哈希表对象<br><img src="/images/redis-rdb-9.png"></p>
-</li>
-<li><p>有序集合对象<br><img src="/images/redis-rdb-10.png"></p>
-</li>
-<li><p>压缩列表<br>保存这种文件的方法是：（1）将压缩列表转换成一个字符串对象（2）将字符串对象保存到RDB文件。</p>
-</li>
-</ul>
-<h3 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h3><p>简单来说AOF就是讲命令按顺序写入文件来持久化。<br>总的来说分为三个步骤：命令追加，文件写入，文件同步。</p>
-<ul>
-<li><p>命令追加<br>在redisServer结构体重有一个aof_buf缓冲区：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">redisServer</span>&#123;</span></span><br><span class="line">    sds aof_buf;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>AOF文件中是以命令请求协议格式保存的，因此命令追加是如下形式：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">redis&gt;SET KEY VALUE</span><br><span class="line"></span><br><span class="line">*<span class="number">3</span>\r\n$<span class="number">3</span>\r\nSET\r\nKEY\r\n$<span class="number">5</span>\r\nVALUE\r\n</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>文件写入<br>在服务器进程每次时间循环结束之前，可以考虑将aof缓冲区的数据写入文件。写入策略有：（1）always:将缓冲区所有内容写入并同步到AOF文件（2）everysec：将缓冲区所有内存写入AOF，如果上次同步AOF文件的时间超过1s，那么再次对AOF同步，并且由一个线程专门负责执行（3）写入AOF但不同步。<br>所谓同步，就是讲aof_buf拷贝到内核缓冲区，写入就是讲内核缓冲区的数据写入磁盘。这三种方式第一种最耗时但是最安全，第二种保证出现故障最多丢失1s的数据，最后一种方式写入最快但是不安全。</p>
-</li>
-<li><p>载入和数据还原<br>因为本身存的是命令，只需要再执行一遍命令就可以了，在读取AOF文件之后，redis创建一个伪客户端发出命令。</p>
-</li>
-<li><p>AOF重写<br>由于AOF文件记录所有命令，因此文件体积会迅速膨胀，因此redis提供对AOF文件重写功能。<br>核心思想就是，直接从数据库读取键值对，生成一条命令，来替代所记录的所有相关命令。<br>例如：<br><img src="/images/redis-aof-1.png"><br>可以用下面命令代替：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SELECT 0</span><br><span class="line">RPUSH alphabet &quot;a&quot; &quot;b&quot; &quot;c&quot;</span><br><span class="line">EXPIREAT alphabet 1385877600000</span><br><span class="line">HMSET book &quot;name&quot; &quot;Redisin Action&quot; &quot;author&quot; &quot;Josiah L. Carison&quot; &quot;publisher&quot; &quot;Manning&quot;</span><br><span class="line">EXPIREAT book 1388556000000</span><br><span class="line">SET message &quot;hello world&quot;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<p>如果直接使用主线程来重写，势必会造成主线程长时间繁忙，无法处理用户请求，因此在实际实现中使用子进程来写。<br>使用子进程写的过程中，如果父进程对数据库进行修改，就回造成数据不一致问题，针对这个问题，redis设置了AOF重写缓冲区。<br><img src="/images/redis-aof-2.png"><br>在子进程执行重写的过程中，需要执行下面三个工作：<br>1）执行客户端的命令<br>2）将执行后的命令追加到AOF缓冲区<br>3）执行后的写命令追加到AOF重写缓冲区  </p>
-<p>当子进程完成AOF重写，给父进程发一个信号，父进程接受信号之后，调用信号处理函数：<br>1)将AOF重写缓冲区所有内容写入新AOF，这时新AOF文件与当前数据库数据一致。<br>2）对新的AOF改名，原子性覆盖现有AOF文件。</p>
-
+<li>follwer：不会发送任何请求，只相应leader和candidate的请求；</li>
+<li>leader：处理所有客户端请求，如果一个可会断和follower通信，那么follower会重定向给leader；</li>
+<li>candidate：用来选举新leader。<br>下图展示了上面三种状态的转换：<br><img src="/images/redis-raft-1.png">
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9Araft%E5%92%8C%E5%A4%8D%E5%88%B6/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -463,7 +310,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:01:52" itemprop="dateModified" datetime="2022-09-25T02:01:52+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:37:55" itemprop="dateModified" datetime="2022-10-19T17:37:55+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -486,26 +333,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p>在3.0版本中基本结构如下图所示：<br><img src="/images/redis-zl-1.png"></p>
-<p>源码通过宏定义来实现：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Utility macros */</span></span><br><span class="line"><span class="comment">//zlbytes</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ZIPLIST_BYTES(zl)       (*((uint32_t*)(zl)))</span></span><br><span class="line"><span class="comment">// zltail</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ZIPLIST_TAIL_OFFSET(zl) (*((uint32_t*)((zl)+sizeof(uint32_t))))</span></span><br><span class="line"><span class="comment">//zl+8指向zllen字段</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ZIPLIST_LENGTH(zl)      (*((uint16_t*)((zl)+sizeof(uint32_t)*2)))</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ZIPLIST_HEADER_SIZE     (sizeof(uint32_t)*2+sizeof(uint16_t))</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ZIPLIST_ENTRY_HEAD(zl)  ((zl)+ZIPLIST_HEADER_SIZE)</span></span><br><span class="line"><span class="comment">//zl+zltail指向尾元素首地址</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ZIPLIST_ENTRY_TAIL(zl)  ((zl)+intrev32ifbe(ZIPLIST_TAIL_OFFSET(zl)))</span></span><br><span class="line"><span class="comment">//zlend</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ZIPLIST_ENTRY_END(zl)   ((zl)+intrev32ifbe(ZIPLIST_BYTES(zl))-1)</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>zlbytes： 压缩列表的字节长度，占4个字节，因此压缩列表最多有2^32 -1个字节。</li>
-<li>zltail： 压缩列表尾元素相对于压缩列表起始地址的偏移量，占4个字节。</li>
-<li>zllen： 压缩列表的元素个数，占2个字节。zllen无法存储元素个数超过65535（2^16 -1）的压缩列表，必须遍历整个压缩列表才能获取到元素个数。</li>
-<li>entryX： 压缩列表存储的元素，可以是字节数组或者整数，长度不限。</li>
-<li>zlend： 压缩列表的结尾，占1个字节，恒为0xFF。</li>
-</ul>
-<h3 id="节点的构成"><a href="#节点的构成" class="headerlink" title="节点的构成"></a>节点的构成</h3><p>压缩列表的节点组成如下所示：<br><img src="/images/redis-zl-2.png"></p>
-<ul>
-<li>previous_entry_length字段:<br>表示前一个元素的字节长度，占1个或者5个字节，当前一个元素的长度小于254字节时，用1个字节表示；当前一个元素的长度大于或等于254字节时，用5个字节来表示。而此时previous_entry_length字段的第1个字节是固定的0xFE，后面4个字节才真正表示前一个元素长度。</li>
-<li>encoding字段:<br>表示当前元素的编码，即content字段存储的数据类型（整数或者字节数组），数据内容存储在content字段。</li>
-<li>content字段：<br>负责保存节点的值，节点值可以是字节数组或者整数。<br>在redis中，压缩链表项如下定义：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zlentry</span> &#123;</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> prevrawlensize, prevrawlen;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> lensize, len;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> headersize;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> encoding;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> *p;</span><br><span class="line">&#125; zlentry;</span><br></pre></td></tr></table></figure>
-回顾压缩列表元素的编码结构，可变因素实际上不止3个：previous_entry_length字段的长度（prevrawlensize）、previous_entry_length字段存储的内容（prevrawlen）、encoding字段的长度（lensize）、encoding字段的内容（len表示元素数据内容的长度，encoding表示数据类型）和当前元素首地址（p）；而headersize则表示当前元素的首部长度，previous_entry_length字段长度与encoding字段长度之和.</li>
-</ul>
-<h3 id="连锁更新"><a href="#连锁更新" class="headerlink" title="连锁更新"></a>连锁更新</h3><p><img src="/images/redis-zl-2.png"><br>简单来说就是增加或者删除元素的时候，对应的previous_entry_length会发生变化，当元素长度处于临界值的时候 </p>
-
+          <h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p>在3.0版本中基本结构如下图所示：<br><img src="/images/redis-zl-1.png"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -524,7 +360,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%97%E5%85%B8/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%93%A8%E5%85%B5%E5%92%8C%E9%9B%86%E7%BE%A4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -538,7 +374,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%97%E5%85%B8/" class="post-title-link" itemprop="url">redis系列：字典</a>
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%93%A8%E5%85%B5%E5%92%8C%E9%9B%86%E7%BE%A4/" class="post-title-link" itemprop="url">redis系列：哨兵和集群</a>
         </h2>
 
         <div class="post-meta">
@@ -555,7 +391,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:01:55" itemprop="dateModified" datetime="2022-09-25T02:01:55+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:37:34" itemprop="dateModified" datetime="2022-10-19T17:37:34+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -578,125 +414,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h3 id="3-0哈希表"><a href="#3-0哈希表" class="headerlink" title="3.0哈希表"></a>3.0哈希表</h3><p>下面是哈希表结构：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* This is our hash table structure. Every dictionary has two of this as we</span></span><br><span class="line"><span class="comment"> * implement incremental rehashing, for the old to the new table. */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictht</span> &#123;</span></span><br><span class="line">    dictEntry **table;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> size;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> sizemask;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> used;</span><br><span class="line">&#125; dictht;</span><br></pre></td></tr></table></figure>
-
+          <h3 id="哨兵模式"><a href="#哨兵模式" class="headerlink" title="哨兵模式"></a>哨兵模式</h3><p>基本概念和详细流程见《Redis设计与实现》、《Redis5设计与源码分析》，只说下自己的理解。<br>下图是一个基本的主从复制的哨兵系统：<br><img src="/images/sen-1.png"><br>主要有三种角色：哨兵、主服务器，从服务器。</p>
 <ul>
-<li>table是一个数组</li>
-<li>size记录哈希表的大小，也就是table数组的大小</li>
-<li>used记录了哈希表目前已有节点的数量</li>
-<li>sizemask &#x3D; size - 1<br>形式如下图所示：<br><img src="/images/redis-ht-1.png"></li>
-</ul>
-<p>哈希表节点：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> &#123;</span></span><br><span class="line">    <span class="type">void</span> *key;</span><br><span class="line">    <span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">        <span class="type">void</span> *val;</span><br><span class="line">        <span class="type">uint64_t</span> u64;</span><br><span class="line">        <span class="type">int64_t</span> s64;</span><br><span class="line">        <span class="type">double</span> d;</span><br><span class="line">    &#125; v;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125; dictEntry;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>key保存键</li>
-<li>v保存键值对的值，可以是指针，或者uint64_t整数或者一个int64_t整数。</li>
-<li>next指向另一个哈希表节点的指针，由此可以看出，redis使用链表法来解决冲突<br>下图展示了一个冲突的哈希表：<br><img src="/images/redis-ht-2.png"></li>
-</ul>
-<h3 id="3-0字典"><a href="#3-0字典" class="headerlink" title="3.0字典"></a>3.0字典</h3><ol>
-<li>基本数据结构<br>数据结构如下：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dict</span> &#123;</span></span><br><span class="line">    dictType *type;</span><br><span class="line">    <span class="type">void</span> *privdata;</span><br><span class="line">    dictht ht[<span class="number">2</span>];</span><br><span class="line">    <span class="type">long</span> rehashidx; <span class="comment">/* rehashing not in progress if rehashidx == -1 */</span></span><br><span class="line">    <span class="type">int</span> iterators; <span class="comment">/* number of iterators currently running */</span></span><br><span class="line">&#125; dict;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictType</span> &#123;</span></span><br><span class="line">    <span class="comment">// 哈希函数</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="title function_">int</span> <span class="params">(*hashFunction)</span><span class="params">(<span class="type">const</span> <span class="type">void</span> *key)</span>;</span><br><span class="line">    <span class="comment">// 复制键的函数</span></span><br><span class="line">    <span class="type">void</span> *(*keyDup)(<span class="type">void</span> *privdata, <span class="type">const</span> <span class="type">void</span> *key);</span><br><span class="line">    <span class="comment">// 复制值的函数 </span></span><br><span class="line">    <span class="type">void</span> *(*valDup)(<span class="type">void</span> *privdata, <span class="type">const</span> <span class="type">void</span> *obj);</span><br><span class="line">    <span class="comment">// 对比键</span></span><br><span class="line">    <span class="type">int</span> (*keyCompare)(<span class="type">void</span> *privdata, <span class="type">const</span> <span class="type">void</span> *key1, <span class="type">const</span> <span class="type">void</span> *key2);</span><br><span class="line">    <span class="comment">//销毁键</span></span><br><span class="line">    <span class="type">void</span> (*keyDestructor)(<span class="type">void</span> *privdata, <span class="type">void</span> *key);</span><br><span class="line">    <span class="comment">// 销毁值</span></span><br><span class="line">    <span class="type">void</span> (*valDestructor)(<span class="type">void</span> *privdata, <span class="type">void</span> *obj);</span><br><span class="line">&#125; dictType;</span><br></pre></td></tr></table></figure></li>
-</ol>
-<ul>
-<li>type属性和privdata是针对不同类型的键值对，为创建多态字典设置的</li>
-<li>dictType是一族绑定特定类型键值对的函数族，privdata是这些函数的可选参数</li>
-<li>ht是两个哈希表，ht[1]只会在ht[0]rehash的时候使用</li>
-<li>rehashidx 记录rehash进度，如果没有rehash就为-1<br>下面是一个正常状态下的字典<br><img src="/images/redis-ht-3.png"></li>
-</ul>
-<ol start="2">
-<li>插入哈希表</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hash = dict -&gt; type -&gt; hashFunction(key);</span><br><span class="line"></span><br><span class="line">index = hash &amp; dict -&gt; ht[x].sizemask;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>首先使用定义的哈希函数计算键的哈希值</li>
-<li>然后使用与操作将hash掩码到长度范围内</li>
-</ul>
-<ol start="3">
-<li>解决键冲突</li>
-</ol>
-<p>使用链表法解决冲突，一个优化是将新添加的键值对插入到链表的头部。</p>
-<ol start="3">
-<li>rehash</li>
-</ol>
-<ul>
-<li>为字典的ht[1]哈希表分配空间<ul>
-<li>如果是扩展操作，那么sizeof ht[1] &#x3D; min(n),2^n &gt;&#x3D; ht[0].used * 2;</li>
-<li>如果是收缩操作，sizeof ht[1] &#x3D; min(n), 2^n &gt;&#x3D; ht[0].used</li>
-</ul>
-</li>
-<li>将保存在ht[0]的所有键值对重哈希到ht[1]</li>
-<li>释放ht[0]，ht[0] &#x3D; ht[1], h1 &#x3D; empty.</li>
-</ul>
-<ol start="4">
-<li>哈希表的收缩扩张条件（满足下列条件之一即可）<br>负载因子：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">load_factor = ht[<span class="number">0</span>].used / ht[<span class="number">0</span>].size;</span><br></pre></td></tr></table></figure></li>
-</ol>
-<ul>
-<li>服务器没有在执行BGSAVE或者BGREWRITEAOF命令，并且哈希表的负载因子大于等于1</li>
-<li>服务器目前正在执行这两个命令，并且哈希表的负载因子大于等于5.</li>
-</ul>
-<ol start="4">
-<li>渐进式rehash</li>
-</ol>
-<ul>
-<li>为ht[1]分配空间</li>
-<li>维护rehashidx，并设置为0</li>
-<li>在rehash期间，对字典添加删除，查找或者更新，都在ht[1]中进行，还需要将当前rehashidx对应的ht[0]的所有键值对rehash到ht[1]，然后rehashidx + 1</li>
-<li>当所有键值对完成哈希后，rehashidx设置为-1</li>
-</ul>
-<h3 id="5-0版本"><a href="#5-0版本" class="headerlink" title="5.0版本"></a>5.0版本</h3><ol>
-<li>hash函数</li>
-</ol>
-<ul>
-<li>服务端的hash函数使用的是siphash算法</li>
-<li>客户端使用的是times_33函数</li>
-</ul>
-<ol start="2">
-<li>基本结构和3.0无太大变化，增加了iterators字段<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dict</span> &#123;</span></span><br><span class="line">    dictType *type;</span><br><span class="line">    <span class="type">void</span> *privdata;</span><br><span class="line">    dictht ht[<span class="number">2</span>];</span><br><span class="line">    <span class="type">long</span> rehashidx; <span class="comment">/* rehashing not in progress if rehashidx == -1 */</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> iterators; <span class="comment">/* number of iterators currently running */</span></span><br><span class="line">&#125; dict;</span><br></pre></td></tr></table></figure></li>
-<li>迭代器遍历</li>
-</ol>
-<p>iterators字段，用来记录当前运行的安全迭代器数，当有安全迭代器绑定到该字典时，会暂停rehash操作。Redis很多场景下都会用到迭代器，例如：行keys命令会创建一个安全迭代器，此时iterators会加1，命令执行完毕则减1，而执行sort命令时会创建普通迭代器，该字段不会改变.<br>字典迭代器主要用于迭代字典这个数据结构中的数据，既然是迭代字典中的数据，必然会出现一个问题，迭代过程中，如果发生了数据增删，则可能导致字典触发rehash操作，或迭代开始时字典正在进行rehash操作，从而导致一条数据可能多次遍历到。那Redis如何解决这个问题呢？<br><font color = orange>普通迭代器通过指纹字段，每次迭代就会检查字典是否改变，如果改变（增删改查rehash）直接退出。安全迭代器通过设置标志位，设置完之后，rehash函数检查标志位后不会进行rehash，但是可以进行增删改查操作。</font></p>
-<p>数据结构如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* If safe is set to 1 this is a safe iterator, that means, you can call</span></span><br><span class="line"><span class="comment"> * dictAdd, dictFind, and other functions against the dictionary even while</span></span><br><span class="line"><span class="comment"> * iterating. Otherwise it is a non safe iterator, and only dictNext()</span></span><br><span class="line"><span class="comment"> * should be called while iterating. */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictIterator</span> &#123;</span></span><br><span class="line">    dict *d;</span><br><span class="line">    <span class="type">long</span> index;</span><br><span class="line">    <span class="type">int</span> table, safe;</span><br><span class="line">    dictEntry *entry, *nextEntry;</span><br><span class="line">    <span class="comment">/* unsafe iterator fingerprint for misuse detection. */</span></span><br><span class="line">    <span class="type">long</span> <span class="type">long</span> fingerprint;</span><br><span class="line">&#125; dictIterator;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>d：迭代的字典</li>
-<li>index：当前迭代的索引值</li>
-<li>table，safe：table为正在迭代的Hash表，即ht[0]与ht[1]，safe用于表示当前创建的是否为安全迭代器</li>
-<li>entry，nextentry：当前和下一个节点</li>
-<li>fingerprint：字典的指纹，随字典改变而变</li>
-</ul>
-<p>简单介绍完迭代器的基本结构、字段含义及API，我们来看下Redis如何解决增删数据的同时不出现读取数据重复的问题。Redis为单进程单线程模式，不存在两个命令同时执行的情况，因此只有当执行的命令在遍历的同时删除了数据，才会触发前面的问题。我们把迭代器遍历数据分为两类：</p>
-<ul>
-<li>普通迭代器，只遍历数据:<br>普通迭代器迭代字典中数据时，会对迭代器中fingerprint字段的值作严格的校验，来保证迭代过程中字典结构不发生任何变化，确保读取出的数据不出现重复。主要步骤如下：</li>
-</ul>
-<ol>
-<li>调用dictGetIterator函数初始化一个普通迭代器，此时会把iter-&gt;safe值置为0，表示初始化的迭代器为普通迭代器；</li>
-<li>循环调用dictNext函数依次遍历字典中Hash表的节点，首次遍历时会通过<br>dictFingerprint函数拿到当前字典的指纹值；</li>
-<li>当调用dictNext函数遍历完字典Hash表中节点数据后，释放迭代器时会继续调用dictFingerprint函数计算字典的指纹值，并与首次拿到的指纹值比较，不相等则输出异常”&#x3D;&#x3D;&#x3D;ASSERTION FAILED&#x3D;&#x3D;&#x3D;”，且退出程序执行。</li>
-</ol>
-<ul>
-<li>安全迭代器，遍历的同时删除数据：安全迭代器和普通迭代器迭代数据原理类似，也是通过循环调用dictNext函数依次遍历字典中Hash表的节点。安全迭代器确保读取数据的准确性，不是通过限制字典的部分操作来实现的，而是通过限制rehash的进行来确保数据的准确性，因此迭代过程中可以对字典进行增删改查等操作。主要步骤如下：</li>
-</ul>
-<ol>
-<li>调用dictGetSafeIterator函数初始化一个安全迭代器，此时会把iter-&gt;safe值置为1，表示初始化的迭代器为安全迭代器；</li>
-<li>循环调用dictNext函数依次遍历字典中Hash表的节点，首次遍历时会把字<br>典中iterators字段进行加1操作，确保迭代过程中渐进式rehash操作会被中断执行;</li>
-<li>当调用dictNext函数遍历完字典Hash表中节点数据后，释放迭代器时会把<br>字典中iterators字段进行减1操作，确保迭代后渐进式rehash操作能正常进行。</li>
-</ol>
-<h3 id="间断遍历"><a href="#间断遍历" class="headerlink" title="间断遍历"></a>间断遍历</h3><p>为了解决在海量数据遍历时，造成的短暂的redis不可用。<br>函数原型为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">long</span> <span class="title function_">dictScan</span><span class="params">(dict *d,</span></span><br><span class="line"><span class="params">                       <span class="type">unsigned</span> <span class="type">long</span> v,</span></span><br><span class="line"><span class="params">                       dictScanFunction *fn,</span></span><br><span class="line"><span class="params">                       dictScanBucketFunction* bucketfn,</span></span><br><span class="line"><span class="params">                       <span class="type">void</span> *privdata)</span></span><br></pre></td></tr></table></figure>
-<p>dictScan函数间断遍历字典过程中会遇到如下3种情况。<br>1）从迭代开始到结束，散列表没有进行rehash操作。<br>2）从迭代开始到结束，散列表进行了扩容或缩容操作，且恰好为两次迭代间隔期间完成了rehash操作。<br>3）从迭代开始到结束，某次或某几次迭代时散列表正在进行rehash操作。</p>
-<ol>
-<li>遍历过程中始终未遇到rehash操作</li>
-</ol>
-<p>每次迭代都没有遇到rehash操作，也就是遍历字典只遇到第1或第2种情况。其实第1种情况，只要依次按照顺序遍历Hash表ht[0]中节点即可，第2种情况因为在遍历的整个过程中，期间字典可能发生了扩容或缩容操作，如果依然按照顺序遍历，则可能会出现数据重复读取的现象.<br>Redis为了做到不漏数据且尽量不重复数据，统一采用了一种叫作reverse binary iteration的方法来进行间断数据迭代，接下来看下其主要源码实现，迭代的代码如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">t0 = &amp;(d-&gt;ht[<span class="number">0</span>]);</span><br><span class="line">m0 = t0-&gt;sizemask;</span><br><span class="line">de = t0-&gt;table[v &amp; m0];<span class="comment">//避免缩容后游标超出Hash表最大值</span></span><br><span class="line"><span class="keyword">while</span> (de) &#123;<span class="comment">//循环遍历当前节点的单链表</span></span><br><span class="line">    next = de-&gt;next;</span><br><span class="line">    fn(privdata, de);<span class="comment">//依次将节点中键值对存入privdata字段中的单链表</span></span><br><span class="line">    de = next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>为了兼容迭代间隔期间可能发生的缩容与扩容操作，每次迭代时都会对v变量（游标值）进行修改，以确保迭代出的数据无遗漏，游标具体变更算法为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">v |= ~m0;</span><br><span class="line">v = rev(v);<span class="comment">// 二进制逆转</span></span><br><span class="line">v++;</span><br><span class="line">v = rev(v);<span class="comment">//二进制逆转</span></span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li>遍历过程中遇到rehash操作<br>大小两表并存，所以需要从ht[0]和ht[1]中都取出数据，整个遍历过程为：先找到两个散列表中更小的表，先对小的Hash表遍历，然后对大的Hash表遍历，迭代的代码如下：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">t0 = &amp;d-&gt;ht[<span class="number">0</span>];t1 = &amp;d-&gt;ht[<span class="number">1</span>];</span><br><span class="line"><span class="keyword">if</span> (t0-&gt;size &gt; t1-&gt;size) &#123;</span><br><span class="line">t0 = &amp;d-&gt;ht[<span class="number">1</span>];t1 = &amp;d-&gt;ht[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line">m0 = t0-&gt;sizemask;m1 = t1-&gt;sizemask;</span><br><span class="line">de = t0-&gt;table[v &amp; m0];</span><br><span class="line"><span class="keyword">while</span> (de) &#123;<span class="comment">/*迭代第一张小Hash表*/</span></span><br><span class="line">    next = de-&gt;next;</span><br><span class="line">    fn(privdata, de);</span><br><span class="line">    de = next;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">do</span> &#123;<span class="comment">/*迭代第二张大Hash表*/</span></span><br><span class="line">    de = t1-&gt;table[v &amp; m1];</span><br><span class="line">    <span class="keyword">while</span> (de) &#123;</span><br><span class="line">        next = de-&gt;next;</span><br><span class="line">        fn(privdata, de);</span><br><span class="line">        de = next;</span><br><span class="line">    &#125;</span><br><span class="line">    v |= ~m1;v = rev(v); v++; v = rev(v);</span><br><span class="line">&#125; <span class="keyword">while</span> (v &amp; (m0 ^ m1));</span><br></pre></td></tr></table></figure>
-<font color = orange> 这套算法能满足这样的特点，主要是巧妙地利用了扩容及缩容正好为整数倍增长或减<br>少的原理，根据这个特征，很容易就能推导出同一个节点的数据扩容&#x2F;缩容后在新的Hash<br>表中的分布位置，从而避免了重复遍历或漏遍历。</font></li>
-</ol>
-
+<li>哨兵：一种特殊的redis服务端，使用哨兵专用命令。用来监控主从状态，执行故障转移等。</li>
+<li>主服务器：执行客户端请求，同步自身数据到从服务器。</li>
+<li>从服务器：从主服务器同步数据。
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%93%A8%E5%85%B5%E5%92%8C%E9%9B%86%E7%BE%A4/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -715,7 +445,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E5%A4%A7%E6%80%BB%E7%BB%93/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%8A%A8%E6%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -729,7 +459,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E5%A4%A7%E6%80%BB%E7%BB%93/" class="post-title-link" itemprop="url">redis系列：对象大总结（字符串，列表，哈希，集合，有序集合底层结构）</a>
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%8A%A8%E6%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="post-title-link" itemprop="url">redis系列：动态字符串</a>
         </h2>
 
         <div class="post-meta">
@@ -746,7 +476,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:01:29" itemprop="dateModified" datetime="2022-09-25T02:01:29+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:37:19" itemprop="dateModified" datetime="2022-10-19T17:37:19+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -769,318 +499,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h3 id="对象类型和编码"><a href="#对象类型和编码" class="headerlink" title="对象类型和编码"></a>对象类型和编码</h3><p>在redis中，并没有使用之前学到的数据结构来直接构建数据库，而是基于这些数据结构构建了一个对象系统，这个系统包含了字符串对象，列表对象，哈希对象，集合对象和有序集合对象五种类型。<br>在redis中，对象的数据结构如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* The actual Redis Object */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_LRU_BITS 24</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_LRU_CLOCK_MAX ((1<span class="string">&lt;&lt;REDIS_LRU_BITS)-1) /* Max value of obj-&gt;</span>lru */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> REDIS_LRU_CLOCK_RESOLUTION 1000 <span class="comment">/* LRU clock resolution in ms */</span></span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">redisObject</span> &#123;</span></span><br><span class="line">    <span class="type">unsigned</span> type:<span class="number">4</span>;</span><br><span class="line">    <span class="type">unsigned</span> encoding:<span class="number">4</span>;</span><br><span class="line">    <span class="type">unsigned</span> lru:REDIS_LRU_BITS; <span class="comment">/* lru time (relative to server.lruclock) */</span></span><br><span class="line">    <span class="type">int</span> refcount;</span><br><span class="line">    <span class="type">void</span> *ptr;</span><br><span class="line">&#125; robj;</span><br></pre></td></tr></table></figure>
-
-<p>对象宏定义如下：<br><img src="/images/redis-obj-1.png"><br>对象的ptr指针指向了这个对象的底层数据结构，这些数据结构由对象的encoding属性决定：<br><img src="/images/redis-obj-2.png"><br>不同类型的编码的对象可能有多种形式：<br><img src="/images/redis-obj-3.png"></p>
-<h3 id="字符串对象"><a href="#字符串对象" class="headerlink" title="字符串对象"></a>字符串对象</h3><p>字符串的编码可以是int，raw，embstr。</p>
-<ul>
-<li>若为整数并且可用long表示，那么编码设置为int，（void<em>）转为（int</em>）类型。</li>
-<li>若为字符串类型，且长度大于32字节，那么用动态字符串存储，编码设置为raw，调用两次内存分配。</li>
-<li>如果为字符串类型且长度小于32字节，那么用embstr编码表示，与上面不同的是embstr直接调用一次内存分配，将redisObject和embstr存储在一起。<br><img src="/images/redis-obj-4.png"></li>
-</ul>
-<h4 id="编码转换"><a href="#编码转换" class="headerlink" title="编码转换"></a>编码转换</h4><ol>
-<li>int编码的字符串执行append命令追加一个非整数值或者长度超过限制，那么int将变为raw类型。</li>
-<li>embstr为可读类型，也就是不能执行任何更改操作，因此要更改必须转为raw类型。一旦对embstr更改将立即编程raw类型。</li>
-</ol>
-<h4 id="字符串命令的实现"><a href="#字符串命令的实现" class="headerlink" title="字符串命令的实现"></a>字符串命令的实现</h4><p><img src="/images/redis-obj-5.png"></p>
-<h3 id="列表对象"><a href="#列表对象" class="headerlink" title="列表对象"></a>列表对象</h3><p>列表对象通过ziplist或者linkedlist编码实现。<br>如果是压缩链表，在内存中的布局如下图所示：<br><img src="/images/redis-obj-6.png"><br>如果是双向队列，如下图所示：<br><img src="/images/redis-obj-7.png"><br>链表中存储的是动态字符串对象，<font color = orange>字符串对象是Redis五种对象中唯一一种会被其他四种类型对象嵌套的对象</font>。</p>
-<h4 id="编码转换-1"><a href="#编码转换-1" class="headerlink" title="编码转换"></a>编码转换</h4><p>满足下面两个条件，使用ziplist编码：</p>
-<ul>
-<li>列表对象保存的所有字符串元素长度小于64字节</li>
-<li>列表对象保存的元素数量小于512个<br>除此之外使用linkedlist编码。</li>
-</ul>
-<h4 id="列表命令实现"><a href="#列表命令实现" class="headerlink" title="列表命令实现"></a>列表命令实现</h4><p><img src="/images/redis-obj-8.png"></p>
-<h3 id="哈希对象"><a href="#哈希对象" class="headerlink" title="哈希对象"></a>哈希对象</h3><p>哈希对象通过ziplist或者hashtable编码实现。  </p>
-<ul>
-<li>ziplist编码的哈希对象使用压缩链表作为底层实现<br>新键值对加入哈希对象是，会先将保存了键的压缩链表节点压到表尾，在将保存了值的节点压到表尾。如下图所示：<br><img src="/images/redis-obj-9.png"></li>
-<li>hashtable编码使用字典作为底层实现<br>哈希对象每个键值对使用一个字典键值对来保存。每个键和值都是一个字符串对象。如下图所示：<br><img src="/images/redis-obj-10.png"></li>
-</ul>
-<h4 id="编码转换-2"><a href="#编码转换-2" class="headerlink" title="编码转换"></a>编码转换</h4><p>满足下面两个条件使用ziplist编码：</p>
-<ul>
-<li>哈希对象保存的所有键值对的键和值的字符串长度都小于64字节。</li>
-<li>键值对数量小于512个。</li>
-</ul>
-<p>除此之外使用字典存储。</p>
-<h4 id="命令的实现"><a href="#命令的实现" class="headerlink" title="命令的实现"></a>命令的实现</h4><p><img src="/images/redis-obj-11.png"></p>
-<h3 id="集合对象"><a href="#集合对象" class="headerlink" title="集合对象"></a>集合对象</h3><p>集合对象使用intset或者hashtable编码。</p>
-<ul>
-<li>intset使用整数集合作为底层实现。</li>
-<li>hashtable使用字典作为底层实现。</li>
-</ul>
-<h4 id="编码转换-3"><a href="#编码转换-3" class="headerlink" title="编码转换"></a>编码转换</h4><p>集合对象满足下面两个条件使用intset编码：</p>
-<ul>
-<li>集合对象保存的所有元素都是整数。</li>
-<li>集合对象保存的元素数量不超过512个。</li>
-</ul>
-<p>除此之外使用hashtable实现。</p>
-<h4 id="集合命令的实现"><a href="#集合命令的实现" class="headerlink" title="集合命令的实现"></a>集合命令的实现</h4><p><img src="/images/redis-obj-12.png"></p>
-<h3 id="有序集合"><a href="#有序集合" class="headerlink" title="有序集合"></a>有序集合</h3><p>有序结合使用ziplist或者skiplist编码。</p>
-<ul>
-<li>ziplist使用压缩链表作为底层实现。每个集合元素使用两个紧挨在一起的压缩链表节点表示，第一个是元素成员，第二个是元素的分值。<br><img src="/images/redis-obj-13.png"></li>
-<li>skiplist使用zset作为底层实现。</li>
-</ul>
-<h4 id="zset"><a href="#zset" class="headerlink" title="zset"></a>zset</h4><p>zset有一个字典和一个跳表组成：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zset</span> &#123;</span></span><br><span class="line">    dict *dict;</span><br><span class="line">    zskiplist *zsl;</span><br><span class="line">&#125; zset;</span><br></pre></td></tr></table></figure>
-<p><font color = orange>其中zsl跳表按照分值从小到大保存了所有集合元素，每个跳表节点都保存了一个集合元素，具体的：跳表的obj指针指向元素，score属性保存元素分值。通过跳表可以对有序集合进行范围型操作，比如ZRANK.ZRANGE等命令。dict字典结构为有序结合创建了一个从成员到分值的映射，键保存成员，值保存分值，因此通过字典可以O(1)地查找元素的分值。</font></p>
-<h4 id="为什么要用两个结构来实现zset？"><a href="#为什么要用两个结构来实现zset？" class="headerlink" title="为什么要用两个结构来实现zset？"></a>为什么要用两个结构来实现zset？</h4><p>理论上可以使用其中任何一个来实现，但是只使用字典的话，执行ZRANK,ZRANGE命令就需要O(NlogN)的复杂度，单使用跳表的话，查找复杂度会是O(logN)。<font color = orange>并且两种数据结构都使用指针来避免了额外的内存开销。</font><br><img src="/images/redis-obj-14.png"><br>上图所示为了简化，stingObject和score分开表示，但是在实际的实现中，指针都是指向同一块内存区域。</p>
-<h4 id="编码转换-4"><a href="#编码转换-4" class="headerlink" title="编码转换"></a>编码转换</h4><p>同时满足下面两个条件使用压缩链表，否则使用zset：</p>
-<ul>
-<li>集合保存的元素数量小于128个</li>
-<li>保存的元素成员的长度都小于64字节</li>
-</ul>
-<h4 id="命令的实现-1"><a href="#命令的实现-1" class="headerlink" title="命令的实现"></a>命令的实现</h4><p><img src="/images/redis-obj-14.png"></p>
-<h3 id="内存回收、对象共享和空转时长"><a href="#内存回收、对象共享和空转时长" class="headerlink" title="内存回收、对象共享和空转时长"></a>内存回收、对象共享和空转时长</h3><ul>
-<li>内存回收</li>
-</ul>
-<p>在对象结构体中</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">redisObject</span> &#123;</span></span><br><span class="line">    <span class="type">unsigned</span> type:<span class="number">4</span>;</span><br><span class="line">    <span class="type">unsigned</span> encoding:<span class="number">4</span>;</span><br><span class="line">    <span class="type">unsigned</span> lru:REDIS_LRU_BITS; <span class="comment">/* lru time (relative to server.lruclock) */</span></span><br><span class="line">    <span class="type">int</span> refcount;</span><br><span class="line">    <span class="type">void</span> *ptr;</span><br><span class="line">&#125; robj;</span><br></pre></td></tr></table></figure>
-<p>有一个refcount字段用来记录对象的引用计数信息。对象的整个生命周期可以分为创建对象，操作对象，释放对象三个阶段。</p>
-<ul>
-<li>对象共享</li>
-</ul>
-<p>对象的引用计数还能带来对象共享的作用：如果键A创建”100”作为值对象，此时键B如果需要创建一个同样的值对象，就可以直接在A的值对象的引用计数上加1。<br><font color = orange>redis不共享包含字符串的对象，原因在于每次共享需要比较对象是否完全相同，如果是整数，复杂度为O(1)，如果是字符串，复杂度是O（N），如果是包含了多个值的对象，复杂度会上升为O(N^2)。</font> </p>
-<ul>
-<li>空转时长</li>
-</ul>
-<p>另外结构体中的lru记录了当前时间减去值对象最后一次被访问的时间，当程序内存超过限制，会优先清理长时间没有访问的元素。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">redis系列：数据库的实现</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:01:42" itemprop="dateModified" datetime="2022-09-25T02:01:42+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="服务端数据库"><a href="#服务端数据库" class="headerlink" title="服务端数据库"></a>服务端数据库</h3><p>redis中将所有的数据库信息保存在redisServer结构体中，结构体中的变量有两百多个，这里就不写了。<br>主要的结构成员是：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">redisServer</span>&#123;</span></span><br><span class="line">    redisDb* db;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>db成员指向一个redisDb数组，数组长度有dbnum决定：<br><img src="/images/redis-db-1.png"><br>默认情况下，目标数据库是0号数据库。如果需要更换数据库，修改指针即可。</p>
-<h3 id="数据库键空间"><a href="#数据库键空间" class="headerlink" title="数据库键空间"></a>数据库键空间</h3><p>redisDb结构体中保存了数据库中所有的键值对，因此将这个字典称为键空间：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">redisDb</span>&#123;</span></span><br><span class="line">    dict* dict;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>键空间中的键是数据库的键，每个键都是一个字符串对象</li>
-<li>键空间中的值是数据库的值，每个值可以是一个字符串对象，列表对象，哈希表对象，集合对象，有序集合对象中的一种。<br>表示如下图所示：<br><img src="/images/redis-db-2.png"></li>
-</ul>
-<h3 id="读写键空间时的维护操作"><a href="#读写键空间时的维护操作" class="headerlink" title="读写键空间时的维护操作"></a>读写键空间时的维护操作</h3><ul>
-<li>读取一个键之后，服务器会更新键的LRU时间，这个可以用于计算键的闲置时间。</li>
-<li>如果在读取一个键时发现已经过期，服务器会删除这个过期键然后执行其他操作。</li>
-<li>如果客户端使用watch命令监视了某个键，会将这个键标记为脏，从而让事务程序注意到这个键已经被修改过。</li>
-<li>每次修改键之后，都会对脏键计数器加1，计数器会出发服务器的持久化和复制操作。</li>
-<li>如果开启数据库通知，在对键修改之后，服务器将按配置发送相应的数据库通知。</li>
-</ul>
-<h3 id="过期时间"><a href="#过期时间" class="headerlink" title="过期时间"></a>过期时间</h3><p>redisDb结构的expires字典保存了数据库所有键的过期时间，称为过期字典。<br><img src="/images/redis-db-3.png"></p>
-<ul>
-<li>设置过期时间通过向过期字典添加键值对实现。</li>
-<li>删除过期时间则直接在过期字典中移除，移除策略有三种：</li>
-</ul>
-<ol>
-<li>定时删除，创建过期时间的同时创建一个定时器，让定时器在键的过期时间删除；</li>
-<li>惰性删除，每次获取键的时候检查是否过期；</li>
-<li>定期删除，每隔一段时间主动删除过期键。</li>
-</ol>
-<h3 id="AOF-x2F-RDB和复制功能对过期键的处理"><a href="#AOF-x2F-RDB和复制功能对过期键的处理" class="headerlink" title="AOF&#x2F;RDB和复制功能对过期键的处理"></a>AOF&#x2F;RDB和复制功能对过期键的处理</h3><ol>
-<li>RDB</li>
-</ol>
-<ul>
-<li>生成RDB文件时从数据库检查，过期不写入。</li>
-<li>载入RDB文件时：<ul>
-<li>主服务器模式下会对所有键进行检查，过期忽略。</li>
-<li>从服务器模式会将所有键载入，不检查。</li>
-</ul>
-</li>
-</ul>
-<ol start="2">
-<li>AOF</li>
-</ol>
-<ul>
-<li>生成AOF：当服务器以AOF持久化模式运行时，如果某个键过期，但还没有被删除时，不会对AOF文件产生影响。当过期键被删除之后，程序会向AOF文件追加一条DEL命令，显式地记录该键已被删除。</li>
-<li>重写：进行键过期检查，过期则不写。</li>
-</ul>
-<ol start="3">
-<li>复制</li>
-</ol>
-<ul>
-<li>主服务器删除，向从服务器发送DEL命令。</li>
-<li>从服务器执行读命令，忽略键过期。</li>
-<li>从服务器接到DEL删除键。</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B7%B3%E8%B7%83%E8%A1%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.jpg">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B7%B3%E8%B7%83%E8%A1%A8/" class="post-title-link" itemprop="url">redis系列：跳跃表</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:01:47" itemprop="dateModified" datetime="2022-09-25T02:01:47+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <span id="more"></span>
-<h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p>数据结构如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> &#123;</span></span><br><span class="line">    <span class="comment">//成员对象</span></span><br><span class="line">    robj *obj;</span><br><span class="line">    <span class="comment">//分值</span></span><br><span class="line">    <span class="type">double</span> score;</span><br><span class="line">    <span class="comment">//后退指针</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">backward</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistLevel</span> &#123;</span></span><br><span class="line">        <span class="comment">//前进指针</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">forward</span>;</span></span><br><span class="line">        <span class="comment">//跨度</span></span><br><span class="line">        <span class="type">unsigned</span> <span class="type">int</span> span;</span><br><span class="line">    &#125; level[];</span><br><span class="line">&#125; zskiplistNode;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplist</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">header</span>, *<span class="title">tail</span>;</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> length;</span><br><span class="line">    <span class="type">int</span> level;</span><br><span class="line">&#125; zskiplist;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/redis-zlist-1.png"></p>
-<ul>
-<li>score是一个double类型树，跳表中所有节点按照分值排序</li>
-<li>obj（5.0版本为ele）:存储一个sds类型对象</li>
-</ul>
-<h3 id="内部实现"><a href="#内部实现" class="headerlink" title="内部实现"></a>内部实现</h3><ol>
-<li>节点层高</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> ZSKIPLIST_P 0.25 <span class="comment">/* Skiplist P = 1/4 */</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">zslRandomLevel</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    <span class="type">int</span> level = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> ((random()&amp;<span class="number">0xFFFF</span>) &lt; (ZSKIPLIST_P * <span class="number">0xFFFF</span>))</span><br><span class="line">    level += <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> (level&lt;ZSKIPLIST_MAXLEVEL) ? level : ZSKIPLIST_MAXLEVEL;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>level的初始值为1，通过while循环，每次生成一个随机值，取这个值的低16位作为x，当x小于0.25倍的0xFFFF时，level的值加1；否则退出while循环。最终返回level和ZSKIPLIST_MAXLEVEL两者中的最小值。<br>1）节点层高为1的概率为(1-p)。<br>2）节点层高为2的概率为p(1-p)。<br>3）节点层高为3的概率为p2 (1-p)。<br>4）……<br>5）节点层高为n的概率为pn-1 (1-p)。<br>节点期望层高为<font color = red> E &#x3D; 1 &#x2F; (1 - p) </font>.</p>
-<ol start="2">
-<li>创建跳跃表</li>
-</ol>
-<p>1）创建跳跃表结构体对象zsl。<br>2）将zsl的头节点指针指向新创建的头节点。<br>3）跳跃表层高初始化为1，长度初始化为0，尾节点指向NULL。  </p>
-<ol start="3">
-<li>插入节点</li>
-</ol>
-<ul>
-<li>查找要插入的位置</li>
-<li>调整跳跃表高度</li>
-<li>插入节点</li>
-<li>调整backward</li>
-</ul>
-<p>源代码中的大概思路就是通过for循环来对每个高度进行遍历，找到前驱和后继节点，通过rank和update两个数组记录，最后调整指针。</p>
-<ol start="4">
-<li>删除节点</li>
-</ol>
-<ul>
-<li>查找需要更新的节点</li>
-<li>设置span和forward</li>
-</ul>
-<h3 id="跳跃表应用"><a href="#跳跃表应用" class="headerlink" title="跳跃表应用"></a>跳跃表应用</h3><p>跳跃表主要应用于有序集合的底层实现（有序集合的另一种实现方式为压缩列表）。</p>
-
+          <h3 id="3-0版本"><a href="#3-0版本" class="headerlink" title="3.0版本"></a>3.0版本</h3><p>redis的动态字符串在3.0中的实现如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sdshdr</span> &#123;</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> len;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> <span class="built_in">free</span>;</span><br><span class="line">    <span class="type">char</span> buf[];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%8A%A8%E6%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1130,7 +558,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:01:32" itemprop="dateModified" datetime="2022-09-25T02:01:32+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:37:30" itemprop="dateModified" datetime="2022-10-19T17:37:30+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1153,32 +581,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h3 id="完全复制"><a href="#完全复制" class="headerlink" title="完全复制"></a>完全复制</h3><ul>
+          <h3 id="完全复制"><a href="#完全复制" class="headerlink" title="完全复制"></a>完全复制</h3><ul>
 <li>第一步是同步<br>1）从服务器向主服务器发送SYNC命令。<br>2）收到SYNC命令的主服务器执行BGSAVE命令，在后台生成一个RDB文件，并使用一个缓冲区记录从现在开始执行的所有写命令。<br>3）BGSAVE命令执行完毕后，将生成的RDB文件传输给从服务器，从服务器接收到开始更新。<br>4）主服务器将记录在缓冲区的所有写命令发送给从服务器，从服务器状态更新。<br>如下图示例所示：<br><img src="/images/redis-sync-1.png"></li>
-<li>命令传播<br>主服务器将更改服务器状态的命令发送给从服务器。</li>
-</ul>
-<h3 id="部分复制"><a href="#部分复制" class="headerlink" title="部分复制"></a>部分复制</h3><p>完全复制在效率上比较低，应为每次都需要生成RDB文件，从服务器也需要从RDB恢复数据。因此考虑部分复制，在非第一次同步的情况下，只传播断线过程中执行的更改主服务器状态的命令。如下图所示：<br><img src="/images/redis-sync-2.png"><br>部分同步的实现有三个部分</p>
-<ul>
-<li>主服务器的复制偏移量和从服务器的复制偏移量。</li>
-<li>主服务器的复制积压缓冲区。</li>
-<li>服务器的运行ID。</li>
-</ul>
-<ol>
-<li>复制偏移量<br>主服务器每次传输N个字节数据，就将复制偏移量+N，从服务器收到N个字节，就加N，通过复制偏移量就可以知道是否是同步状态。</li>
-<li>积压缓冲区<br>复制积压缓冲区维护一个固定长度的队列，大小为1MB。固定长度就是说队列的长度是固定的，如果入队后队列长度超过固定值，就将多余的值弹出。队列会保存字节的复制偏移量和字节内容。<br><img src="/images/redis-sync-3.png"></li>
-</ol>
-<h3 id="复制的实现"><a href="#复制的实现" class="headerlink" title="复制的实现"></a>复制的实现</h3><p>通过向从服务器发送SLAVEOF命令，可以让从服务器复制一个主服务器。</p>
-<ul>
-<li>设置主服务器地址和端口<br>从服务器需要首先保存主服务器的地址和端口。</li>
-<li>建立套接字连接</li>
-<li>发送ping命令<br>有两个作用：<br>1）检查套接字读写是否正常。<br>2）检查主服务器是否能正产处理请求。<br>如果返回一个命令回复但从服务器无法在规定时间内读取命令回复的内容，那么表示网络连接异常。如果返回一个错误，那么主服务器无法处理。</li>
-<li>身份验证  </li>
-<li>发送端口数据</li>
-<li>同步</li>
-<li>命令传播</li>
-</ul>
-
+<li>命令传播<br>主服务器将更改服务器状态的命令发送给从服务器。
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%A4%8D%E5%88%B6/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1197,7 +610,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/ubuntu%E6%B7%B1%E5%9D%91%EF%BC%9A%E6%9D%83%E9%99%90%E5%92%8C%E7%BD%91%E7%BB%9C/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%97%E5%85%B8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.jpg">
@@ -1211,7 +624,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/14/ubuntu%E6%B7%B1%E5%9D%91%EF%BC%9A%E6%9D%83%E9%99%90%E5%92%8C%E7%BD%91%E7%BB%9C/" class="post-title-link" itemprop="url">ubuntu 权限修改错误深坑</a>
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%97%E5%85%B8/" class="post-title-link" itemprop="url">redis系列：字典</a>
         </h2>
 
         <div class="post-meta">
@@ -1228,7 +641,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:02:59" itemprop="dateModified" datetime="2022-09-25T02:02:59+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:37:59" itemprop="dateModified" datetime="2022-10-19T17:37:59+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1251,45 +664,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h3 id="使用vim-修改了-x2F-etc-x2F-sudoers-下的sudoers，导致无法鉴权。"><a href="#使用vim-修改了-x2F-etc-x2F-sudoers-下的sudoers，导致无法鉴权。" class="headerlink" title="使用vim 修改了&#x2F;etc&#x2F;sudoers 下的sudoers，导致无法鉴权。"></a>使用vim 修改了&#x2F;etc&#x2F;sudoers 下的sudoers，导致无法鉴权。</h3><p>这两天在嵌入式linux上搞网络编程，发现ubuntu设置的防火墙把端口屏蔽了，想手动打开，普通用户提权的时候不小心用vim修改了</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/etc/sudoers</span><br></pre></td></tr></table></figure>
-<p>文件，导致内核解析的时候出错了:<br><img src="/images/sudo-1.png"></p>
-<p>这时候出现了一个悖论：</p>
-<ol>
-<li>我想把sudoers修改回去，但是需要sudo权限</li>
-<li>sudoers解析错误，没办法sudo</li>
-</ol>
-<p>造成了死锁…. 于是求助广大网友，万能网友一个骚操作成功化解，其原理至今未解：</p>
-<ol>
-<li><p>使用ctrl+alt+F2 打开另外一个tty</p>
-</li>
-<li><p>在第一个tty执行</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo $$</span><br></pre></td></tr></table></figure>
-<p>获取tty的pid</p>
-</li>
-<li><p>在第二个tty执行 </p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pkttyagent --process &#123;pid&#125; </span><br></pre></td></tr></table></figure>
-<p>这时第二个会卡住</p>
-</li>
-<li><p>返回第一个执行</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pkexec visudo</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>然后，第二个终端也卡主，回到第一个终端，会提示输入当前用户密码</p>
-</li>
-<li><p>输入完密码，第一个终端卡主了，回到第二个终端，会发现，出现了sudoers的内容，编辑出错的地方，保存即可。</p>
-</li>
-<li><p>完成任务，修改完成，发现就可以继续使用sudo命令了，over</p>
-</li>
-</ol>
-<h3 id="循环登录"><a href="#循环登录" class="headerlink" title="循环登录"></a>循环登录</h3><p>在嵌入式linux系统里面又遇到下面这种情况：输入密码进入ubuntu后不一会闪退，需要重新输入密码，然后陷入循环…</p>
-<p>试了很久，猜想系统扫描某些配置文件需要sudo权限，而普通用户无权限：</p>
-<ol>
-<li>使用ctrl + alt + F1进入命令行界面</li>
-<li>进入&#x2F;etc&#x2F;passwd 文件修改用户组为0:0，提升到root权限</li>
-<li>重新登录神奇的好了，但是登录需要选择用户了(以前直接默认普通用户登录，现在可以直接root登录)</li>
-</ol>
-
+          <h3 id="3-0哈希表"><a href="#3-0哈希表" class="headerlink" title="3.0哈希表"></a>3.0哈希表</h3><p>下面是哈希表结构：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* This is our hash table structure. Every dictionary has two of this as we</span></span><br><span class="line"><span class="comment"> * implement incremental rehashing, for the old to the new table. */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictht</span> &#123;</span></span><br><span class="line">    dictEntry **table;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> size;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> sizemask;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> used;</span><br><span class="line">&#125; dictht;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%97%E5%85%B8/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1339,7 +723,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-09-25 02:01:17" itemprop="dateModified" datetime="2022-09-25T02:01:17+08:00">2022-09-25</time>
+                <time title="Modified: 2022-10-19 17:37:14" itemprop="dateModified" datetime="2022-10-19T17:37:14+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1362,49 +746,261 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h3 id="Redis常用数据结构和使用场景（Zset中跳表数据结构）"><a href="#Redis常用数据结构和使用场景（Zset中跳表数据结构）" class="headerlink" title="Redis常用数据结构和使用场景（Zset中跳表数据结构）"></a>Redis常用数据结构和使用场景（Zset中跳表数据结构）</h3><h3 id="缓存击穿-缓存穿透-缓存雪崩"><a href="#缓存击穿-缓存穿透-缓存雪崩" class="headerlink" title="缓存击穿 缓存穿透 缓存雪崩"></a>缓存击穿 缓存穿透 缓存雪崩</h3><ol>
-<li>缓存击穿：<br>访问一个缓存和数据库都不存在的 key，此时会直接打到数据库上，并且查不到数据，没法写缓存，所以下一次同样会打到数据库上。<br>此时，缓存起不到作用，请求每次都会走到数据库，流量大时数据库可能会被打挂。此时缓存就好像被“穿透”了一样，起不到任何作用。<br>解决方案：</li>
-</ol>
-<ul>
-<li>接口校验。在正常业务流程中可能会存在少量访问不存在 key 的情况，但是一般不会出现大量的情况，所以这种场景最大的可能性是遭受了非法攻击。可以在最外层先做一层校验：用户鉴权、数据合法性校验等，例如商品查询中，商品的ID是正整数，则可以直接对非正整数直接过滤等等。</li>
-<li>缓存空值。当访问缓存和DB都没有查询到值时，可以将空值写进缓存，但是设置较短的过期时间，该时间需要根据产品业务特性来设置。</li>
-<li>布隆过滤器。使用布隆过滤器存储所有可能访问的 key，不存在的 key 直接被过滤，存在的 key 则再进一步查询缓存和数据库。</li>
-</ul>
-<ol start="2">
-<li>缓存穿透<br>某一个热点 key，在缓存过期的一瞬间，同时有大量的请求打进来，由于此时缓存过期了，所以请求最终都会走到数据库，造成瞬时数据库请求量大、压力骤增，甚至可能打垮数据库。<br>解决方案</li>
-</ol>
-<ul>
-<li>加互斥锁。在并发的多个请求中，只有第一个请求线程能拿到锁并执行数据库查询操作，其他的线程拿不到锁就阻塞等着，等到第一个线程将数据写入缓存后，直接走缓存。（现在主流的方法就是加Redis分布式锁）</li>
-<li>热点数据不过期。直接将缓存设置为不过期，然后由定时任务去异步加载数据，更新缓存。<br>这种方式适用于比较极端的场景，例如流量特别特别大的场景，使用时需要考虑业务能接受数据不一致的时间，还有就是异常情况的处理，不要到时候缓存刷新不上，一直是脏数据，那就凉了。</li>
-</ul>
-<ol start="3">
-<li>缓存雪崩<br>大量的热点 key 设置了相同的过期时间，导在缓存在同一时刻全部失效，造成瞬时数据库请求量大、压力骤增，引起雪崩，甚至导致数据库被打挂。<br>缓存雪崩其实有点像“升级版的缓存击穿”，缓存击穿是一个热点 key，缓存雪崩是一组热点 key。<br>解决方案</li>
-</ol>
-<ul>
-<li><p>过期时间打散。既然是大量缓存集中失效，那最容易想到就是让他们不集中生效。可以给缓存的过期时间时加上一个随机值时间，使得每个 key 的过期时间分布开来，不会集中在同一时刻失效。</p>
-</li>
-<li><p>热点数据不过期。该方式和缓存击穿一样，也是要着重考虑刷新的时间间隔和数据异常如何处理的情况。</p>
-</li>
-<li><p>加互斥锁。该方式和缓存击穿一样，按 key 维度加锁，对于同一个 key，只允许一个线程去计算，其他线程原地阻塞等待第一个线程的计算结果，然后直接走缓存即可。</p>
-</li>
-</ul>
-<h3 id="Redis缓存一致性的解决方案"><a href="#Redis缓存一致性的解决方案" class="headerlink" title="Redis缓存一致性的解决方案"></a>Redis缓存一致性的解决方案</h3><p>解决的办法是，如果服务对耗时不是特别敏感可以增加重试；如果服务对耗时敏感可以通过异步补偿任务来处理失败的更新，或者短期的数据不一致不会影响业务，那么只要下次更新时可以成功，能保证最终一致性就可以。</p>
-<h3 id="持久化机制"><a href="#持久化机制" class="headerlink" title="持久化机制"></a>持久化机制</h3><p>主要是RDB和AOF策略，<a href="https://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/">可以参考这篇文章</a>.</p>
-<h3 id="为什么槽的个数是16384？"><a href="#为什么槽的个数是16384？" class="headerlink" title="为什么槽的个数是16384？"></a>为什么槽的个数是16384？</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/99037321">主要参考这个文章</a><br>总结下来就是：  </p>
-<ol>
-<li>如果槽位为65536，发送心跳信息的消息头达8k，发送的心跳包过于庞大。</li>
-</ol>
-<p>如上所述，在消息头中，最占空间的是 myslots[CLUSTER_SLOTS&#x2F;8]。 当槽位为65536时，这块的大小是: 65536÷8÷1024&#x3D;8kb因为每秒钟，redis节点需要发送一定数量的ping消息作为心跳包，如果槽位为65536，这个ping消息的消息头太大了，浪费带宽。</p>
-<ol start="2">
-<li>redis的集群主节点数量基本不可能超过1000个。</li>
-</ol>
-<p>如上所述，集群节点越多，心跳包的消息体内携带的数据越多。如果节点过1000个，也会导致网络拥堵。因此redis作者，不建议redis cluster节点数量超过1000个。 那么，对于节点数在1000以内的redis cluster集群，16384个槽位够用了。没有必要拓展到65536个。</p>
-<ol start="3">
-<li>槽位越小，节点少的情况下，压缩率高</li>
-</ol>
-<p>Redis主节点的配置信息中，它所负责的哈希槽是通过一张bitmap的形式来保存的，在传输过程中，会对bitmap进行压缩，但是如果bitmap的填充率slots &#x2F; N很高的话(N表示节点数)，bitmap的压缩率就很低。 如果节点数很少，而哈希槽数量很多的话，bitmap的压缩率就很低。<br>而16384÷8÷1024&#x3D;2kb。</p>
-<h3 id="过期策略"><a href="#过期策略" class="headerlink" title="过期策略"></a>过期策略</h3><h3 id="淘汰策略"><a href="#淘汰策略" class="headerlink" title="淘汰策略"></a>淘汰策略</h3><h3 id="Redis为什么那么快"><a href="#Redis为什么那么快" class="headerlink" title="Redis为什么那么快"></a>Redis为什么那么快</h3><h3 id="分布式锁"><a href="#分布式锁" class="headerlink" title="分布式锁"></a>分布式锁</h3>
+          <h3 id="Redis常用数据结构和使用场景（Zset中跳表数据结构）"><a href="#Redis常用数据结构和使用场景（Zset中跳表数据结构）" class="headerlink" title="Redis常用数据结构和使用场景（Zset中跳表数据结构）"></a>Redis常用数据结构和使用场景（Zset中跳表数据结构）</h3><h3 id="缓存击穿-缓存穿透-缓存雪崩"><a href="#缓存击穿-缓存穿透-缓存雪崩" class="headerlink" title="缓存击穿 缓存穿透 缓存雪崩"></a>缓存击穿 缓存穿透 缓存雪崩</h3><ol>
+<li>缓存击穿：<br>访问一个缓存和数据库都不存在的 key，此时会直接打到数据库上，并且查不到数据，没法写缓存，所以下一次同样会打到数据库上。<br>此时，缓存起不到作用，请求每次都会走到数据库，流量大时数据库可能会被打挂。此时缓存就好像被“穿透”了一样，起不到任何作用。
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">redis系列：数据库的实现</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-10-19 17:37:39" itemprop="dateModified" datetime="2022-10-19T17:37:39+08:00">2022-10-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="服务端数据库"><a href="#服务端数据库" class="headerlink" title="服务端数据库"></a>服务端数据库</h3><p>redis中将所有的数据库信息保存在redisServer结构体中，结构体中的变量有两百多个，这里就不写了。<br>主要的结构成员是：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">redisServer</span>&#123;</span></span><br><span class="line">    redisDb* db;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E5%A4%A7%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E5%A4%A7%E6%80%BB%E7%BB%93/" class="post-title-link" itemprop="url">redis系列：对象大总结（字符串，列表，哈希，集合，有序集合底层结构）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-10-19 17:37:26" itemprop="dateModified" datetime="2022-10-19T17:37:26+08:00">2022-10-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="对象类型和编码"><a href="#对象类型和编码" class="headerlink" title="对象类型和编码"></a>对象类型和编码</h3><p>在redis中，并没有使用之前学到的数据结构来直接构建数据库，而是基于这些数据结构构建了一个对象系统，这个系统包含了字符串对象，列表对象，哈希对象，集合对象和有序集合对象五种类型。  </p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AF%B9%E8%B1%A1%E5%A4%A7%E6%80%BB%E7%BB%93/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B7%B3%E8%B7%83%E8%A1%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.jpg">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B7%B3%E8%B7%83%E8%A1%A8/" class="post-title-link" itemprop="url">redis系列：跳跃表</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-10-19 17:37:50" itemprop="dateModified" datetime="2022-10-19T17:37:50+08:00">2022-10-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p>数据结构如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> &#123;</span></span><br><span class="line">    <span class="comment">//成员对象</span></span><br><span class="line">    robj *obj;</span><br><span class="line">    <span class="comment">//分值</span></span><br><span class="line">    <span class="type">double</span> score;</span><br><span class="line">    <span class="comment">//后退指针</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">backward</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistLevel</span> &#123;</span></span><br><span class="line">        <span class="comment">//前进指针</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">forward</span>;</span></span><br><span class="line">        <span class="comment">//跨度</span></span><br><span class="line">        <span class="type">unsigned</span> <span class="type">int</span> span;</span><br><span class="line">    &#125; level[];</span><br><span class="line">&#125; zskiplistNode;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplist</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">header</span>, *<span class="title">tail</span>;</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> length;</span><br><span class="line">    <span class="type">int</span> level;</span><br><span class="line">&#125; zskiplist;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B7%B3%E8%B7%83%E8%A1%A8/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1490,20 +1086,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-count">133</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
