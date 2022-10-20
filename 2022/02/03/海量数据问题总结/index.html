@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="海量数据问题 海量日志找出现次数最多的记录 问题主要是记录不能全部载入到内存   先把整个文件分割成若干个小文件，比如1000个小文件 找出每个文件中出现次数最多的记录（输出1000个记录+频次） 从每个文件出现最多的记录找出全局出现次数最多的记录（合并记录，找出最多的频次）">
@@ -386,8 +386,8 @@
       <i class="fa fa-chevron-left"></i> 服务器瓶颈
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/" rel="next" title="k8s系列：基础概念">
-      k8s系列：基础概念 <i class="fa fa-chevron-right"></i>
+    <a href="/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B5%84%E6%BA%90%E5%92%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" rel="next" title="k8s系列：资源和声明周期">
+      k8s系列：资源和声明周期 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -401,6 +401,7 @@
 
           </div>
           
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -634,6 +635,26 @@ document.querySelectorAll('.pdfobject-container').forEach(element => {
   
 
   
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'fb8db88ab21e323b59ff',
+      clientSecret: '9baa261fc5c431daaf6087c951140fa82784014c',
+      repo        : 'haoqinx.github.io',
+      owner       : 'haoqinx',
+      admin       : ['haoqinx'],
+      id          : '9562698b73ffc155026106985d98121d',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
 
   

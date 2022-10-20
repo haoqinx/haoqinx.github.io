@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="使用vim 修改了&#x2F;etc&#x2F;sudoers 下的sudoers，导致无法鉴权。这两天在嵌入式linux上搞网络编程，发现ubuntu设置的防火墙把端口屏蔽了，想手动打开，普通用户提权的时候不小心用vim修改了 1&#x2F;etc&#x2F;sudoers">
@@ -326,12 +326,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0/" rel="prev" title="redis系列：数据库的实现">
-      <i class="fa fa-chevron-left"></i> redis系列：数据库的实现
+    <a href="/2021/09/14/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AB%E6%A0%91%EF%BC%8CB+%E6%A0%91%EF%BC%8C%E7%BA%A2%E9%BB%91%E6%A0%91/" rel="prev" title="数据结构：B树，B+树，B*树，红黑树">
+      <i class="fa fa-chevron-left"></i> 数据结构：B树，B+树，B*树，红黑树
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" rel="next" title="redis系列：常见问题">
-      redis系列：常见问题 <i class="fa fa-chevron-right"></i>
+    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B7%B3%E8%B7%83%E8%A1%A8/" rel="next" title="redis系列：跳跃表">
+      redis系列：跳跃表 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -345,6 +345,7 @@
 
           </div>
           
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -578,6 +579,26 @@ document.querySelectorAll('.pdfobject-container').forEach(element => {
   
 
   
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'fb8db88ab21e323b59ff',
+      clientSecret: '9baa261fc5c431daaf6087c951140fa82784014c',
+      repo        : 'haoqinx.github.io',
+      owner       : 'haoqinx',
+      admin       : ['haoqinx'],
+      id          : '7a9520f3d203d8da01f4650e37dd1bd9',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
 
   

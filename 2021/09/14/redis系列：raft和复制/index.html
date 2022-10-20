@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="Raft算法 基本概念在任何时刻，服务器节点都处于三个状态之一：leader、follower或者candidate。   follwer：不会发送任何请求，只相应leader和candidate的请求； leader：处理所有客户端请求，如果一个可会断和follower通信，那么follower会重定向给leader； candidate：用来选举新leader。下图展示了上面三种状态的转换：">
@@ -328,8 +328,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/" rel="prev" title="redis系列：RDB & AOF">
-      <i class="fa fa-chevron-left"></i> redis系列：RDB & AOF
+    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%8A%A8%E6%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="prev" title="redis系列：动态字符串">
+      <i class="fa fa-chevron-left"></i> redis系列：动态字符串
     </a></div>
       <div class="post-nav-item">
     <a href="/2021/09/14/muduo%E7%BD%91%E7%BB%9C%E5%BA%93%E7%B3%BB%E5%88%97-%E5%B9%B6%E5%8F%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AE%BE%E8%AE%A1/" rel="next" title="muduo网络库：并发服务器设计">
@@ -347,6 +347,7 @@
 
           </div>
           
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -580,6 +581,26 @@ document.querySelectorAll('.pdfobject-container').forEach(element => {
   
 
   
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'fb8db88ab21e323b59ff',
+      clientSecret: '9baa261fc5c431daaf6087c951140fa82784014c',
+      repo        : 'haoqinx.github.io',
+      owner       : 'haoqinx',
+      admin       : ['haoqinx'],
+      id          : 'd7408db9b12438db6a38f55d44a9a9d6',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
 
   

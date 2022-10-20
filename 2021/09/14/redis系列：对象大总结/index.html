@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="对象类型和编码在redis中，并没有使用之前学到的数据结构来直接构建数据库，而是基于这些数据结构构建了一个对象系统，这个系统包含了字符串对象，列表对象，哈希对象，集合对象和有序集合对象五种类型。">
@@ -383,8 +383,8 @@
       <i class="fa fa-chevron-left"></i> redis系列：常见问题
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%97%E5%85%B8/" rel="next" title="redis系列：字典">
-      redis系列：字典 <i class="fa fa-chevron-right"></i>
+    <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9A%E5%93%A8%E5%85%B5%E5%92%8C%E9%9B%86%E7%BE%A4/" rel="next" title="redis系列：哨兵和集群">
+      redis系列：哨兵和集群 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -398,6 +398,7 @@
 
           </div>
           
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -631,6 +632,26 @@ document.querySelectorAll('.pdfobject-container').forEach(element => {
   
 
   
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'fb8db88ab21e323b59ff',
+      clientSecret: '9baa261fc5c431daaf6087c951140fa82784014c',
+      repo        : 'haoqinx.github.io',
+      owner       : 'haoqinx',
+      admin       : ['haoqinx'],
+      id          : 'b29f1df73f864ae718cdbcf6d39a4283',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
 
   

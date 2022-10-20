@@ -18,7 +18,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="扁平事务由begin开始，其中的操作是原子的，要么都执行，要么都回滚。  缺点：代价大，若中间某个条件不满足，需要全部回滚。">
@@ -28,11 +28,15 @@
 <meta property="og:site_name" content="面向自由编程">
 <meta property="og:description" content="扁平事务由begin开始，其中的操作是原子的，要么都执行，要么都回滚。  缺点：代价大，若中间某个条件不满足，需要全部回滚。">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://haoqinx.github.io/images/mysql-9.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/mysql-10.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/mysql-11.png">
 <meta property="article:published_time" content="2021-11-05T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-10-19T09:33:15.568Z">
+<meta property="article:modified_time" content="2022-10-20T06:18:22.341Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="MySQL">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://haoqinx.github.io/images/mysql-9.png">
 
 <link rel="canonical" href="http://haoqinx.github.io/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E4%BA%8B%E5%8A%A1/">
 
@@ -224,7 +228,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-10-19 17:33:15" itemprop="dateModified" datetime="2022-10-19T17:33:15+08:00">2022-10-19</time>
+                <time title="Modified: 2022-10-20 14:18:22" itemprop="dateModified" datetime="2022-10-20T14:18:22+08:00">2022-10-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -272,9 +276,9 @@
 <ul>
 <li>缺点：代价大，若中间某个条件不满足，需要全部回滚。<span id="more"></span></li>
 </ul>
-<h2 id="带有保存点的事务"><a href="#带有保存点的事务" class="headerlink" title="带有保存点的事务"></a>带有保存点的事务</h2><p><a href="/images/mysql-9.png"></a><br>如图所示，保存点是递增的。</p>
-<h2 id="链事务"><a href="#链事务" class="headerlink" title="链事务"></a>链事务</h2><p><a href="/images/mysql-10.png"></a><br>保存点事务的一种变种，带有保存点的扁平事务，当系统发生崩溃时，所有的保存点都将消失，因此在进行恢复时，事务需要从开始处重新执行。<br>链事务：在提交一个事务时，释放不需要的数据对象，将必要的处理上下文隐士传递给下一个要开始的事务。</p>
-<h2 id="嵌套事务"><a href="#嵌套事务" class="headerlink" title="嵌套事务"></a>嵌套事务</h2><p><a href="/images/mysql-11.png"></a><br>如上图所示，嵌套事务是一个层次结构框架，由一个顶层事务控制各个层次的事务，类似一个树形结构。</p>
+<h2 id="带有保存点的事务"><a href="#带有保存点的事务" class="headerlink" title="带有保存点的事务"></a>带有保存点的事务</h2><p><img src="/images/mysql-9.png"><br>如图所示，保存点是递增的。</p>
+<h2 id="链事务"><a href="#链事务" class="headerlink" title="链事务"></a>链事务</h2><p><img src="/images/mysql-10.png"><br>保存点事务的一种变种，带有保存点的扁平事务，当系统发生崩溃时，所有的保存点都将消失，因此在进行恢复时，事务需要从开始处重新执行。<br>链事务：在提交一个事务时，释放不需要的数据对象，将必要的处理上下文隐士传递给下一个要开始的事务。</p>
+<h2 id="嵌套事务"><a href="#嵌套事务" class="headerlink" title="嵌套事务"></a>嵌套事务</h2><p><img src="/images/mysql-11.png"><br>如上图所示，嵌套事务是一个层次结构框架，由一个顶层事务控制各个层次的事务，类似一个树形结构。</p>
 <h2 id="分布式事务"><a href="#分布式事务" class="headerlink" title="分布式事务"></a>分布式事务</h2><p>分布式场景下运行扁平事务，需要根据数据所在位置访问网络中的不同节点。</p>
 <h2 id="事务的实现"><a href="#事务的实现" class="headerlink" title="事务的实现"></a>事务的实现</h2><ol>
 <li>redo</li>
@@ -334,6 +338,7 @@
 
           </div>
           
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -567,6 +572,26 @@ document.querySelectorAll('.pdfobject-container').forEach(element => {
   
 
   
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'fb8db88ab21e323b59ff',
+      clientSecret: '9baa261fc5c431daaf6087c951140fa82784014c',
+      repo        : 'haoqinx.github.io',
+      owner       : 'haoqinx',
+      admin       : ['haoqinx'],
+      id          : '023b7a64b7219589c80596e07aead15d',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
 
   
