@@ -190,7 +190,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E9%AB%98%E7%BA%A7SQL/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.png">
@@ -204,7 +204,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E9%AB%98%E7%BA%A7SQL/" class="post-title-link" itemprop="url">CMU-cs445:SQL基础</a>
+            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C/" class="post-title-link" itemprop="url">CMU-cs445:查询执行</a>
         </h2>
 
         <div class="post-meta">
@@ -221,7 +221,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-10-19 17:12:41" itemprop="dateModified" datetime="2022-10-19T17:12:41+08:00">2022-10-19</time>
+                <time title="Modified: 2022-10-19 17:12:27" itemprop="dateModified" datetime="2022-10-19T17:12:27+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -239,7 +239,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>101</span>
+              <span>669</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -258,13 +258,27 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="基础SQL"><a href="#基础SQL" class="headerlink" title="基础SQL"></a>基础SQL</h2><ul>
-<li>聚合函数AVG，SUM，MIN，MAX等</li>
-<li>GROUP BY</li>
-<li>HAVING
+          <h3 id="并行处理模型"><a href="#并行处理模型" class="headerlink" title="并行处理模型"></a>并行处理模型</h3><ul>
+<li>Process per DBMS Worker<ul>
+<li>使用一个进程处理一个请求</li>
+<li>使用共享内存对全局数据进行共享，如buffer pool，不用将相同的page加载两次</li>
+<li>单进程奔溃不会导致整个系统崩溃</li>
+</ul>
+</li>
+<li>Process Pool<ul>
+<li>使用进程池来处理请求</li>
+<li>对cpu缓存不友好</li>
+<li>减少了创建销毁进程开销</li>
+</ul>
+</li>
+<li>Thread per DBMS Worker<ul>
+<li>单进程多线程</li>
+<li>线程崩溃导致进程崩溃</li>
+<li>上下文切换开销很小</li>
+<li>不需要管理共享内存
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E9%AB%98%E7%BA%A7SQL/#more" rel="contents">
+              <a class="btn" href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -387,7 +401,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9Abuffer%E6%B1%A0/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B9%B6%E5%8F%91%E8%AE%BF%E9%97%AE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.png">
@@ -401,7 +415,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9Abuffer%E6%B1%A0/" class="post-title-link" itemprop="url">CMU-cs445:buffer pool</a>
+            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B9%B6%E5%8F%91%E8%AE%BF%E9%97%AE/" class="post-title-link" itemprop="url">CMU-cs445:并发访问</a>
         </h2>
 
         <div class="post-meta">
@@ -418,7 +432,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-10-19 17:12:54" itemprop="dateModified" datetime="2022-10-19T17:12:54+08:00">2022-10-19</time>
+                <time title="Modified: 2022-10-19 17:12:06" itemprop="dateModified" datetime="2022-10-19T17:12:06+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -436,7 +450,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>552</span>
+              <span>146</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -455,29 +469,108 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="buffer-pool-manager"><a href="#buffer-pool-manager" class="headerlink" title="buffer pool manager"></a>buffer pool manager</h2><pre><code>- buffer池组成
-    - frame：缓冲池由frame组成，每次我们需要一个page，就吧这个page替换进frame
-    - page table：用来记录page到buffer pool的映射关系
-    - 其他元信息：脏页面（页面是否被修改），引用计数（页面被线程正在访问的计数）
-- multiple buffer pools(多个缓冲池，每个池有其策略)
-    - 减少线程竞争
-    - 提供多种策略
-    - 如何实现？根据Object id映射或者哈希
-- pre-fetching(预取)
-    - 提前把一些顺序信息读入buffer pool中  
-    - 可以完成一些操作系统不能完成的预读，如index分支跳转
-- scan sharing(扫描共享)
-    - 查询复用计算结果
-    - 允许多个查询附加到一个游标上
-- buffer pool bypass
-    - 给查询线程分配一小块内存，查询page的时候不经过缓存池，为了不污染缓存
-    - 查询量小的时候使用
-- O_DIRECT
-    - 避免操作系统文件缓存
-</code></pre>
+          <h3 id="latch和lock"><a href="#latch和lock" class="headerlink" title="latch和lock"></a>latch和lock</h3><p><img src="/images/db-4.png"></p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9Abuffer%E6%B1%A0/#more" rel="contents">
+              <a class="btn" href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B9%B6%E5%8F%91%E8%AE%BF%E9%97%AE/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E9%AB%98%E7%BA%A7SQL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.png">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E9%AB%98%E7%BA%A7SQL/" class="post-title-link" itemprop="url">CMU-cs445:SQL基础</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-09-25 01:40:36" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-10-19 17:12:41" itemprop="dateModified" datetime="2022-10-19T17:12:41+08:00">2022-10-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>101</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>1 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="基础SQL"><a href="#基础SQL" class="headerlink" title="基础SQL"></a>基础SQL</h2><ul>
+<li>聚合函数AVG，SUM，MIN，MAX等</li>
+<li>GROUP BY</li>
+<li>HAVING
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E9%AB%98%E7%BA%A7SQL/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -577,6 +670,120 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9AHashTable&TableIndex/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9Abuffer%E6%B1%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.png">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9Abuffer%E6%B1%A0/" class="post-title-link" itemprop="url">CMU-cs445:buffer pool</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-09-25 01:40:36" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-10-19 17:12:54" itemprop="dateModified" datetime="2022-10-19T17:12:54+08:00">2022-10-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>552</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>1 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="buffer-pool-manager"><a href="#buffer-pool-manager" class="headerlink" title="buffer pool manager"></a>buffer pool manager</h2><pre><code>- buffer池组成
+    - frame：缓冲池由frame组成，每次我们需要一个page，就吧这个page替换进frame
+    - page table：用来记录page到buffer pool的映射关系
+    - 其他元信息：脏页面（页面是否被修改），引用计数（页面被线程正在访问的计数）
+- multiple buffer pools(多个缓冲池，每个池有其策略)
+    - 减少线程竞争
+    - 提供多种策略
+    - 如何实现？根据Object id映射或者哈希
+- pre-fetching(预取)
+    - 提前把一些顺序信息读入buffer pool中  
+    - 可以完成一些操作系统不能完成的预读，如index分支跳转
+- scan sharing(扫描共享)
+    - 查询复用计算结果
+    - 允许多个查询附加到一个游标上
+- buffer pool bypass
+    - 给查询线程分配一小块内存，查询page的时候不经过缓存池，为了不污染缓存
+    - 查询量小的时候使用
+- O_DIRECT
+    - 避免操作系统文件缓存
+</code></pre>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9Abuffer%E6%B1%A0/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -990,205 +1197,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/02/01/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%93%B6%E9%A2%88%E5%9C%A8%E5%93%AA%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.png">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/01/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%93%B6%E9%A2%88%E5%9C%A8%E5%93%AA%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3/" class="post-title-link" itemprop="url">服务器瓶颈</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-02-01 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-01T00:00:00+08:00">2022-02-01</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-10-19 17:09:54" itemprop="dateModified" datetime="2022-10-19T17:09:54+08:00">2022-10-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%9C%BA%E6%99%AF%E8%AE%BE%E8%AE%A1/" itemprop="url" rel="index"><span itemprop="name">场景设计</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>268</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>服务器瓶颈</p>
-<h3 id="瓶颈"><a href="#瓶颈" class="headerlink" title="瓶颈"></a>瓶颈</h3><ol>
-<li><p>cpu<br>测试的时候cpu占用率70% 多核情况下占用60%</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/02/01/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%93%B6%E9%A2%88%E5%9C%A8%E5%93%AA%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/01/31/%E5%9C%BA%E6%99%AF%E9%A2%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.png">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/01/31/%E5%9C%BA%E6%99%AF%E9%A2%98/" class="post-title-link" itemprop="url">场景题</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-01-31 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-31T00:00:00+08:00">2022-01-31</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-10-19 17:09:36" itemprop="dateModified" datetime="2022-10-19T17:09:36+08:00">2022-10-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%9C%BA%E6%99%AF%E8%AE%BE%E8%AE%A1/" itemprop="url" rel="index"><span itemprop="name">场景设计</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>806</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>场景题</p>
-<h2 id="输入一个url后到出现页面发生什么？"><a href="#输入一个url后到出现页面发生什么？" class="headerlink" title="输入一个url后到出现页面发生什么？"></a>输入一个url后到出现页面发生什么？</h2><ol>
-<li><p>DNS解析</p>
-<ul>
-<li>查询浏览器缓存</li>
-<li>查询操作系统缓存</li>
-<li>查询路由器缓存&#x2F;ISP服务器缓存</li>
-<li>通过递归和迭代两种方式查询dns服务器
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/01/31/%E5%9C%BA%E6%99%AF%E9%A2%98/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1260,7 +1268,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">136</span>
+          <span class="site-state-item-count">138</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
