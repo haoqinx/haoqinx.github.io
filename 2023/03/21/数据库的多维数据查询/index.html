@@ -21,19 +21,19 @@
     var CONFIG = {"hostname":"haoqinx.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="SQL中的多维数据查询 多维数据可存储在传统的关系数据库中 需要将许多查询表达为SQL形式，例如部分匹配查询，范围查询，最近邻查询，where-am-i查询  如：SELECT*FROM POINTS pWHERE NOT EXISTS(    SELECT &amp;    FROM POINTS q    WHERE (q.x - 10) * (q.x - 10) + (q.y - 20) *">
+  <meta name="description" content="SQL中的多维数据查询 多维数据可存储在传统的关系数据库中 需要将许多查询表达为SQL形式，例如部分匹配查询，范围查询，最近邻查询，where-am-i查询">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据库的多维数据查询">
 <meta property="og:url" content="http://haoqinx.github.io/2023/03/21/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%9A%E7%BB%B4%E6%95%B0%E6%8D%AE%E6%9F%A5%E8%AF%A2/index.html">
 <meta property="og:site_name" content="面向自由编程">
-<meta property="og:description" content="SQL中的多维数据查询 多维数据可存储在传统的关系数据库中 需要将许多查询表达为SQL形式，例如部分匹配查询，范围查询，最近邻查询，where-am-i查询  如：SELECT*FROM POINTS pWHERE NOT EXISTS(    SELECT &amp;    FROM POINTS q    WHERE (q.x - 10) * (q.x - 10) + (q.y - 20) *">
+<meta property="og:description" content="SQL中的多维数据查询 多维数据可存储在传统的关系数据库中 需要将许多查询表达为SQL形式，例如部分匹配查询，范围查询，最近邻查询，where-am-i查询">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://haoqinx.github.io/images/%E6%95%B0%E6%8D%AE%E5%A4%9A%E7%BB%B4%E5%AD%98%E5%82%A8.png">
 <meta property="og:image" content="http://haoqinx.github.io/images/%E5%88%86%E6%AE%B5%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B0.png">
 <meta property="og:image" content="http://haoqinx.github.io/images/%E5%A4%9A%E9%94%AE%E7%B4%A2%E5%BC%95.png">
 <meta property="og:image" content="http://haoqinx.github.io/images/%E4%BD%8D%E5%9B%BE%E7%B4%A2%E5%BC%95.png">
 <meta property="article:published_time" content="2023-03-21T11:30:54.000Z">
-<meta property="article:modified_time" content="2023-03-21T15:02:47.835Z">
+<meta property="article:modified_time" content="2023-03-26T14:22:40.268Z">
 <meta property="article:author" content="hqin">
 <meta property="article:tag" content="数据库">
 <meta name="twitter:card" content="summary">
@@ -221,10 +221,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2023-03-21 19:30:54 / Modified: 23:02:47" itemprop="dateCreated datePublished" datetime="2023-03-21T19:30:54+08:00">2023-03-21</time>
+              <time title="Created: 2023-03-21 19:30:54" itemprop="dateCreated datePublished" datetime="2023-03-21T19:30:54+08:00">2023-03-21</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-26 22:22:40" itemprop="dateModified" datetime="2023-03-26T22:22:40+08:00">2023-03-26</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -269,10 +275,8 @@
       
         <h2 id="SQL中的多维数据查询"><a href="#SQL中的多维数据查询" class="headerlink" title="SQL中的多维数据查询"></a>SQL中的多维数据查询</h2><ul>
 <li>多维数据可存储在传统的关系数据库中</li>
-<li>需要将许多查询表达为SQL形式，例如部分匹配查询，范围查询，最近邻查询，where-am-i查询</li>
-</ul>
-<p>如：<br>SELECT*<br>FROM POINTS p<br>WHERE NOT EXISTS(<br>    SELECT &amp;<br>    FROM POINTS q<br>    WHERE (q.x - 10) * (q.x - 10) + (q.y - 20) * (q.y - 20) &lt; (p.x - 10) * (p.x - 10) + (p.y - 20) * (p.y - 20)<br>);</p>
-<ul>
+<li>需要将许多查询表达为SQL形式，例如部分匹配查询，范围查询，最近邻查询，where-am-i查询  <span id="more"></span>
+如：<br>SELECT*<br>FROM POINTS p<br>WHERE NOT EXISTS(<br>  SELECT &amp;<br>  FROM POINTS q<br>  WHERE (q.x - 10) * (q.x - 10) + (q.y - 20) * (q.y - 20) &lt; (p.x - 10) * (p.x - 10) + (p.y - 20) * (p.y - 20)<br>);</li>
 <li>步骤<ul>
 <li>在多位数据每个维度上建立B树辅助索引，给出每个维度的查询范围</li>
 <li>根据每个维度的查询范围，利用B树找出符合条件的记录</li>
