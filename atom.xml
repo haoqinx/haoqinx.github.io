@@ -101,29 +101,6 @@
   </entry>
   
   <entry>
-    <title>CMU-cs445:查询引擎实现</title>
-    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E5%BC%95%E6%93%8E%E5%AE%9E%E7%8E%B0/"/>
-    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E5%BC%95%E6%93%8E%E5%AE%9E%E7%8E%B0/</id>
-    <published>2022-09-24T17:40:36.326Z</published>
-    <updated>2022-10-19T09:12:14.349Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h3><ul><li>数据库中的table不能完全放到内存中</li><li>计算得到的中间结果不能完全放入内存中<span id="more"></span></li></ul><h3 id="排序算法"><a href="#排序算法" class="headerlink" title="排序算法"></a>排序算法</h3><ul><li>外部排序（多路归并排序）<ul><li>读取B个page到内存，对page排序并且回写到磁盘</li><li>使用prefetch预读加速</li></ul></li><li>B+树<ul><li>如果需要排序的key作为b+树存储，可以复用b+树</li><li>只能在聚簇索引（物理相邻）的b+树上使用，因为如果不是聚簇索引，每次获得数据都需要一次磁盘io</li></ul></li></ul><h3 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h3><ul><li>排序聚合</li><li>非排序聚合<ul><li>external hashing aggregate<br>  <img src="/images/db-7.png"></li></ul></li></ul><h3 id="Join操作"><a href="#Join操作" class="headerlink" title="Join操作"></a>Join操作</h3><ul><li><p>data在查询语法树中的传递</p><ul><li>一个常规做法是将两个表所有属性拷贝到新表中，这样下面的操作不必再考虑前面的数据，也就是不用再到磁盘中进行retrieve.</li><li>另一种方法是指穿入我们所需的最小限度信息（join keys）.然后根据这些信息在后面的操作总从数据库中获取tuple的其他数据.这种方法叫做late materialization，对于列式存储比较友好，因为不用将其他列的信息粘合起来，这些信息通常位于不同的page中。现在这种优化很少，因为数据的获取（第一阶段）的代价通常很大。</li></ul></li><li><p>Nested Loop Join<br>  <img src="/images/db-8.png"><br>  <img src="/images/db-9.png"><br>  这是一种非常暴力的方法，一种优化手段是block nested loop join，这种方法把outter table的tuple缓存，减少了对inner table的io次数。<br>  <img src="/images/db-10.png"><br>  <img src="/images/db-11.png"><br>  另一种优化手段是index nested loop join，在内循环中去查询索引，这样避免了遍历操作，是O（logn）的复杂度，但是如果要查询的索引不是聚簇索引，还需要一次回表操作。<br>  <img src="/images/db-12.png"></p></li><li><p>Sort-Merge Join<br>  首先是对需要join的key(s)进行排序，然后利用两个游标在两个有序表上进行匹配。<br>  <img src="/images/db-13.png"></p></li><li><p>Hash Join<br>  原理就是对两个表中需要join的那个值进行hash操作，那么相同的值肯定会映射到一个partition中，我们每次只需要在一个partition中进行比较就行了。<br>  <img src="/images/db-14.png"><br>  在分布式场景下，可能两个表存在不同的主机上，那么传递哈希表是一个非常消耗资源的事，一个优化手段是使用布隆过滤器，布隆过滤器通常只有几kb大小，非常容易在主机之间进行网络通信，在建立第一个表的哈希表的时候填充布隆过滤器，那么我们对第二个表进行哈希的时候，可以直接判断是否存在。<br>  哈希之后的数据量可能非常大，不能放在内存中，因此我们可以使用Grace Hash Join优化。<br>  <img src="/images/db-15.png1"><br>  也就是分别对两个表进行哈希，然后对每对bucket进行Nested Loop Join，如果bucket也不能完全放到内存中，那就再进行一次哈希，递归进行。<br>  <img src="/images/db-16.png"></p></li><li><p>总结<br>  <img src="/images/db-17.png"></p></li></ul><h3 id="处理模型（processing-model）"><a href="#处理模型（processing-model）" class="headerlink" title="处理模型（processing model）"></a>处理模型（processing model）</h3><ul><li><p>迭代模型（Iterator Model）<br>  <img src="/images/db-18.png"><br>  每一个查询操作符都实现一个Next函数，函数调用其子节点的Next函数。Next每次处理一个tuple数据，需要迭代所有tuple才能完成所有操作。<br>  一些操作符必须获得所有子节点的tuple，例如Joins，Subqueries，Order By</p></li><li><p>Materialization Model<br>  不同于迭代模型，每次子节点都将整个结果传递给上层<br>  <img src="/images/db-19.png"><br>  在OLTP中进行点查询，这种方式比较高效，但是在OLAP中存在大量的中间结果，会产生锁延时，并且对于含有LIMIT的查询，如果数据量很大，每次传递给上层所有数据，这种资源消耗是不必要的。</p></li><li><p>Vectorization Model<br>  对迭代模型的优化，每次不是产生一个tuple，而是产生一个batch的tuple.<br>  <img src="/images/db-20.png"><br>  这种方式能够使用SIMD技术对数据进行分析计算，对于OLAP非常友好</p></li></ul><h3 id="Access-Method"><a href="#Access-Method" class="headerlink" title="Access Method"></a>Access Method</h3><ul><li>Sequential Scan<br>  普通遍历，对每页的tuple基于cursor做遍历，这通常效率非常低，有一些优化：预读，Buffer Pool Bypass，并行化，Zone Maps，Late Materialization，Heap CLustering<ul><li>Zone Maps：预先对page中的数据做聚合计算，DBMS在访问page的时候先去检查这些字段，如果不需要访问就直接跳过这个page<br>  <img src="/images/db-21.png"></li><li>Late Materialization：在列式存储数据库中，由于数据被按列存储到不同的page中，那么在每次opertaor之后，不用将整个tuple传给上层，直接传tuple对应的offset值，然后到root节点再到不同page中获取每一列的值。</li></ul></li><li>Index Scan<ul><li>Multi-Index Scan：通过不同的索引进行多次查找，基于我们的判断在对结果进行合并<br>  <img src="/images/db-22.png"></li><li>非聚簇索引的随机IO问题：对于非聚簇索引，我们可以不去一一随机IO，我们先将要访问的page id记录下来排序然后去一次访问page，拿到所有需要的tuple.</li></ul></li></ul><h3 id="表达式评估（Expression-Evaluation）"><a href="#表达式评估（Expression-Evaluation）" class="headerlink" title="表达式评估（Expression Evaluation）"></a>表达式评估（Expression Evaluation）</h3><p>DBMS将WHERE语句转化成一个expression tree<br><img src="/images/db-23.png"><br>每次遇到一个tuple，去匹配这个树，这样的话效率很低。</p>]]></content>
-    
-    
-    <summary type="html">&lt;h3 id=&quot;关键点&quot;&gt;&lt;a href=&quot;#关键点&quot; class=&quot;headerlink&quot; title=&quot;关键点&quot;&gt;&lt;/a&gt;关键点&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;数据库中的table不能完全放到内存中&lt;/li&gt;
-&lt;li&gt;计算得到的中间结果不能完全放入内存中</summary>
-    
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-  </entry>
-  
-  <entry>
     <title>CMU-cs445:Undo &amp;&amp; Redo</title>
     <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/"/>
     <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/</id>
@@ -147,6 +124,52 @@
   </entry>
   
   <entry>
+    <title>CMU-cs445:查询引擎实现</title>
+    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E5%BC%95%E6%93%8E%E5%AE%9E%E7%8E%B0/"/>
+    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E5%BC%95%E6%93%8E%E5%AE%9E%E7%8E%B0/</id>
+    <published>2022-09-24T17:40:36.326Z</published>
+    <updated>2022-10-19T09:12:14.349Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h3><ul><li>数据库中的table不能完全放到内存中</li><li>计算得到的中间结果不能完全放入内存中<span id="more"></span></li></ul><h3 id="排序算法"><a href="#排序算法" class="headerlink" title="排序算法"></a>排序算法</h3><ul><li>外部排序（多路归并排序）<ul><li>读取B个page到内存，对page排序并且回写到磁盘</li><li>使用prefetch预读加速</li></ul></li><li>B+树<ul><li>如果需要排序的key作为b+树存储，可以复用b+树</li><li>只能在聚簇索引（物理相邻）的b+树上使用，因为如果不是聚簇索引，每次获得数据都需要一次磁盘io</li></ul></li></ul><h3 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h3><ul><li>排序聚合</li><li>非排序聚合<ul><li>external hashing aggregate<br>  <img src="/images/db-7.png"></li></ul></li></ul><h3 id="Join操作"><a href="#Join操作" class="headerlink" title="Join操作"></a>Join操作</h3><ul><li><p>data在查询语法树中的传递</p><ul><li>一个常规做法是将两个表所有属性拷贝到新表中，这样下面的操作不必再考虑前面的数据，也就是不用再到磁盘中进行retrieve.</li><li>另一种方法是指穿入我们所需的最小限度信息（join keys）.然后根据这些信息在后面的操作总从数据库中获取tuple的其他数据.这种方法叫做late materialization，对于列式存储比较友好，因为不用将其他列的信息粘合起来，这些信息通常位于不同的page中。现在这种优化很少，因为数据的获取（第一阶段）的代价通常很大。</li></ul></li><li><p>Nested Loop Join<br>  <img src="/images/db-8.png"><br>  <img src="/images/db-9.png"><br>  这是一种非常暴力的方法，一种优化手段是block nested loop join，这种方法把outter table的tuple缓存，减少了对inner table的io次数。<br>  <img src="/images/db-10.png"><br>  <img src="/images/db-11.png"><br>  另一种优化手段是index nested loop join，在内循环中去查询索引，这样避免了遍历操作，是O（logn）的复杂度，但是如果要查询的索引不是聚簇索引，还需要一次回表操作。<br>  <img src="/images/db-12.png"></p></li><li><p>Sort-Merge Join<br>  首先是对需要join的key(s)进行排序，然后利用两个游标在两个有序表上进行匹配。<br>  <img src="/images/db-13.png"></p></li><li><p>Hash Join<br>  原理就是对两个表中需要join的那个值进行hash操作，那么相同的值肯定会映射到一个partition中，我们每次只需要在一个partition中进行比较就行了。<br>  <img src="/images/db-14.png"><br>  在分布式场景下，可能两个表存在不同的主机上，那么传递哈希表是一个非常消耗资源的事，一个优化手段是使用布隆过滤器，布隆过滤器通常只有几kb大小，非常容易在主机之间进行网络通信，在建立第一个表的哈希表的时候填充布隆过滤器，那么我们对第二个表进行哈希的时候，可以直接判断是否存在。<br>  哈希之后的数据量可能非常大，不能放在内存中，因此我们可以使用Grace Hash Join优化。<br>  <img src="/images/db-15.png1"><br>  也就是分别对两个表进行哈希，然后对每对bucket进行Nested Loop Join，如果bucket也不能完全放到内存中，那就再进行一次哈希，递归进行。<br>  <img src="/images/db-16.png"></p></li><li><p>总结<br>  <img src="/images/db-17.png"></p></li></ul><h3 id="处理模型（processing-model）"><a href="#处理模型（processing-model）" class="headerlink" title="处理模型（processing model）"></a>处理模型（processing model）</h3><ul><li><p>迭代模型（Iterator Model）<br>  <img src="/images/db-18.png"><br>  每一个查询操作符都实现一个Next函数，函数调用其子节点的Next函数。Next每次处理一个tuple数据，需要迭代所有tuple才能完成所有操作。<br>  一些操作符必须获得所有子节点的tuple，例如Joins，Subqueries，Order By</p></li><li><p>Materialization Model<br>  不同于迭代模型，每次子节点都将整个结果传递给上层<br>  <img src="/images/db-19.png"><br>  在OLTP中进行点查询，这种方式比较高效，但是在OLAP中存在大量的中间结果，会产生锁延时，并且对于含有LIMIT的查询，如果数据量很大，每次传递给上层所有数据，这种资源消耗是不必要的。</p></li><li><p>Vectorization Model<br>  对迭代模型的优化，每次不是产生一个tuple，而是产生一个batch的tuple.<br>  <img src="/images/db-20.png"><br>  这种方式能够使用SIMD技术对数据进行分析计算，对于OLAP非常友好</p></li></ul><h3 id="Access-Method"><a href="#Access-Method" class="headerlink" title="Access Method"></a>Access Method</h3><ul><li>Sequential Scan<br>  普通遍历，对每页的tuple基于cursor做遍历，这通常效率非常低，有一些优化：预读，Buffer Pool Bypass，并行化，Zone Maps，Late Materialization，Heap CLustering<ul><li>Zone Maps：预先对page中的数据做聚合计算，DBMS在访问page的时候先去检查这些字段，如果不需要访问就直接跳过这个page<br>  <img src="/images/db-21.png"></li><li>Late Materialization：在列式存储数据库中，由于数据被按列存储到不同的page中，那么在每次opertaor之后，不用将整个tuple传给上层，直接传tuple对应的offset值，然后到root节点再到不同page中获取每一列的值。</li></ul></li><li>Index Scan<ul><li>Multi-Index Scan：通过不同的索引进行多次查找，基于我们的判断在对结果进行合并<br>  <img src="/images/db-22.png"></li><li>非聚簇索引的随机IO问题：对于非聚簇索引，我们可以不去一一随机IO，我们先将要访问的page id记录下来排序然后去一次访问page，拿到所有需要的tuple.</li></ul></li></ul><h3 id="表达式评估（Expression-Evaluation）"><a href="#表达式评估（Expression-Evaluation）" class="headerlink" title="表达式评估（Expression Evaluation）"></a>表达式评估（Expression Evaluation）</h3><p>DBMS将WHERE语句转化成一个expression tree<br><img src="/images/db-23.png"><br>每次遇到一个tuple，去匹配这个树，这样的话效率很低。</p>]]></content>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;关键点&quot;&gt;&lt;a href=&quot;#关键点&quot; class=&quot;headerlink&quot; title=&quot;关键点&quot;&gt;&lt;/a&gt;关键点&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;数据库中的table不能完全放到内存中&lt;/li&gt;
+&lt;li&gt;计算得到的中间结果不能完全放入内存中</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CMU-cs445:存储引擎</title>
+    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%B8%80%E5%B8%83%E5%B1%80/"/>
+    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%B8%80%E5%B8%83%E5%B1%80/</id>
+    <published>2022-09-24T17:40:36.325Z</published>
+    <updated>2022-10-19T09:12:36.914Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="存储层次"><a href="#存储层次" class="headerlink" title="存储层次"></a>存储层次</h2><p><img src="/images/db-1.png"></p><ul><li>tips：在数据库存储上尽量不要使用mmap，这会带来内存&#x2F;并发等一系列问题，会成为系统瓶颈。<span id="more"></span></li></ul><h2 id="页式存储引擎"><a href="#页式存储引擎" class="headerlink" title="页式存储引擎"></a>页式存储引擎</h2><ol><li>页<br> a. 数据往往存储在以页为单位的空间中，页中包含元数据&#x2F;索引&#x2F;表数据，有的数据库将元数据和对应的表数据存放在一起，为了保证其他页丢失的情况下本页不受影响。<br> b. 通常一页不会存放不同类型的数据，例如某页都是tuple，另一页全都是索引数据.<br> c. 每个page会被赋予一个唯一的内部标识符，系统会生成属于page的ID.<br> d. indirection层会吧page id映射到某个文件的某个位置（也就是记录一个相对位置，当文件整体移动后，使用相对位置+偏移量就能重新找到page）<br> e. 物理页和操作系统页都在4kb左右，数据库的页在512b～16kb</li><li>管理页的方式<br> a. Heap File Organization<br> b. Sequential&#x2F;sorted File Organization<br> c. Hashing File Organization</li><li>Heap File管理方式<br> heap file是许多页的无序集合，有两种组织形式：链表和页目录<ul><li>链表管理就是定义两个链表，一个数据链表表示都是存满的数据页，另一个时空闲链表，用来新写入数据。</li><li>页目录管理：使用一些特殊的页记录数据页page id和他的位置的映射关系，甚至可以记录页的剩余空间的大小。</li></ul></li><li>页头（page header）<ul><li>page size</li><li>checksum</li><li>DBMS version</li><li>transaction Visibility</li><li>压缩信息</li></ul></li><li>页内tuple布局<ul><li>长度固定方法：每个tuple固定长度</li><li>slotted pages：如下图所示，为了支持可变长度的记录作出的妥协。<br> <img src="/images/db-2.png"></li></ul></li><li>tuple布局<br> <img src="/images/db-3.png"><ul><li>header：Visibility info（并发控制信息），Bit Map for NULL values.header并不需要存储数据的元数据，因为他们都是按顺序记录的。</li><li>record数据按定义时顺序写入</li></ul></li></ol><h2 id="日志式文件布局"><a href="#日志式文件布局" class="headerlink" title="日志式文件布局"></a>日志式文件布局</h2><pre><code>![](/images/db-3.png)通过追加命令的方式记录信息，有点像redis的rdb模式比较出名的有leveldb，基于leveldb，移除其mmap的rocksdb等。</code></pre>]]></content>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;存储层次&quot;&gt;&lt;a href=&quot;#存储层次&quot; class=&quot;headerlink&quot; title=&quot;存储层次&quot;&gt;&lt;/a&gt;存储层次&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;/images/db-1.png&quot;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;tips：在数据库存储上尽量不要使用mmap，这会带来内存&amp;#x2F;并发等一系列问题，会成为系统瓶颈。</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+  </entry>
+  
+  <entry>
     <title>CMU-cs445:数据存储表示</title>
     <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%BA%8C%E8%A1%A8%E7%A4%BA/"/>
     <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%BA%8C%E8%A1%A8%E7%A4%BA/</id>
@@ -158,6 +181,28 @@
     
     <summary type="html">&lt;h2 id=&quot;数据表示&quot;&gt;&lt;a href=&quot;#数据表示&quot; class=&quot;headerlink&quot; title=&quot;数据表示&quot;&gt;&lt;/a&gt;数据表示&lt;/h2&gt;&lt;pre&gt;&lt;code&gt;涉及浮点数和定点数的存储，不同的是我们需要更多的信息去记录浮点数，包括字符串形式的数据以及其他辅助信息，运算过程为字符串相加相乘类似。
 &lt;/code&gt;&lt;/pre&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CMU-cs445:查询优化</title>
+    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/"/>
+    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/</id>
+    <published>2022-09-24T17:40:36.325Z</published>
+    <updated>2022-10-19T09:12:19.501Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="查询优化"><a href="#查询优化" class="headerlink" title="查询优化"></a>查询优化</h3><ul><li><p>Heuristics&#x2F;Rules 规则&#x2F;静态触发</p><span id="more"></span><p>当查询中的某些部分满足我们的规则或者条件，我们就重写这部分.这部分需要我们去检查catelog.</p></li><li><p>Cost-based Search</p></li></ul><p>方法的思想是使用一个模型去评估一个查询的负载，然后使用多种不同的查询计划去替换这个查询，找出最小负载的方案。</p><p>下面是整个查询优化过程<br><img src="/images/db-26.png"></p><h3 id="Relational-Algebra-Equivalences-等价关系代数"><a href="#Relational-Algebra-Equivalences-等价关系代数" class="headerlink" title="Relational Algebra Equivalences(等价关系代数)"></a>Relational Algebra Equivalences(等价关系代数)</h3><ul><li>predicate pushdown:在join前尽量过滤数据。</li><li>对过滤条件进行排序，让更具有分辨性的条件排在前面。</li><li>对复杂判断进行简化</li><li>对于行存储类型数据库，projection越早越好。</li></ul><h3 id="Plan-Cost-Estimation"><a href="#Plan-Cost-Estimation" class="headerlink" title="Plan Cost Estimation"></a>Plan Cost Estimation</h3><ul><li>CPU</li><li>磁盘</li><li>内存</li><li>网络</li></ul><p>在数据库的catelog中，会维护相关信息，并且在特定时间或者遍历表的时候更跟这些信息，在执行查询之前，将这些变量带入公式，计算出最小代价的查询。在系统中，我们定义一些统计量：</p><ul><li>$N_R$: 关系R的tuple数量</li><li>V(A,R):属性A不同值的数量</li><li>Selection Cardinality：$N_R$&#x2F;V(A,R)</li><li>selectivity: 选择率，给定一个条件，计算table中符合条件的tuple数量</li><li>Range Predicate：计算范围值的比例，有点像概率计算，因此可以引入概率论中的结论,但是为了计算方便，有下面三个前提：<br><img src="/images/db-27.png"></li></ul><h5 id="直方图法"><a href="#直方图法" class="headerlink" title="直方图法"></a>直方图法</h5><p>对于数据分布不均匀的关系，在一些高端数据库中会使用直方图来跟踪数据的分布。对于数据量极大或者属性值分布很广的情况，我们会使用相同宽度的<strong>bucket</strong>来记录值的分布，但是这种情况会导致某个桶内数据分布极不均匀的情况，我们可以使用<strong>分位数</strong>来解决这个问题，即累计一定比例的数据分桶，桶的宽度可变，但是总体占比大致相当。</p><h5 id="采样法"><a href="#采样法" class="headerlink" title="采样法"></a>采样法</h5><p>对于直方图，其实是对表中数据的一种缩略表达，那么在大数据量的table中，我们可以直接采样来近似代表整个表的数据分布。当表进行大规模更新或者到达一个指定时间点，我们去更新这个采样表。</p><h3 id="Plan-Enumeration"><a href="#Plan-Enumeration" class="headerlink" title="Plan Enumeration"></a>Plan Enumeration</h3><h5 id="单关系查询计划"><a href="#单关系查询计划" class="headerlink" title="单关系查询计划"></a>单关系查询计划</h5><ul><li>循序遍历</li><li>二分查找（对于聚集索引）</li><li>索引遍历</li></ul><h5 id="多关系查询计划"><a href="#多关系查询计划" class="headerlink" title="多关系查询计划"></a>多关系查询计划</h5><ul><li><p>left-deep join tree<br><img src="/images/db-28.png"><br>在上面三个查询树中，System R不考虑后面两个，只考虑第一种。为什么采用第一种？后面两种实现过程中会有大量结果溢出到磁盘，影响性能。</p></li><li><p>步骤（System R based）<br><img src="/images/db-29.png"></p></li><li><p>步骤（遗传算法）<br><img src="/images/db-30.png"></p></li></ul><h3 id="Nested-Sub-queries"><a href="#Nested-Sub-queries" class="headerlink" title="Nested Sub-queries"></a>Nested Sub-queries</h3><p>通常情况下将where作为函数，穿入参数然后返回一组值，有两种方法进行查询优化：</p><ul><li>重写查询，去除关联性，让其扁平化</li><li>将内部查询提取出来作为单独查询来执行，将结果缓存起来，这样不用每次执行上层查询都再执行一次子查询</li></ul><p>(<a href="https://dbdb.io/">https://dbdb.io/</a>)</p>]]></content>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;查询优化&quot;&gt;&lt;a href=&quot;#查询优化&quot; class=&quot;headerlink&quot; title=&quot;查询优化&quot;&gt;&lt;/a&gt;查询优化&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Heuristics&amp;#x2F;Rules 规则&amp;#x2F;静态触发&lt;/p&gt;</summary>
     
     
     
@@ -196,51 +241,6 @@
 &lt;li&gt;线程崩溃导致进程崩溃&lt;/li&gt;
 &lt;li&gt;上下文切换开销很小&lt;/li&gt;
 &lt;li&gt;不需要管理共享内存</summary>
-    
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CMU-cs445:存储引擎</title>
-    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%B8%80%E5%B8%83%E5%B1%80/"/>
-    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%B8%80%E5%B8%83%E5%B1%80/</id>
-    <published>2022-09-24T17:40:36.325Z</published>
-    <updated>2022-10-19T09:12:36.914Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="存储层次"><a href="#存储层次" class="headerlink" title="存储层次"></a>存储层次</h2><p><img src="/images/db-1.png"></p><ul><li>tips：在数据库存储上尽量不要使用mmap，这会带来内存&#x2F;并发等一系列问题，会成为系统瓶颈。<span id="more"></span></li></ul><h2 id="页式存储引擎"><a href="#页式存储引擎" class="headerlink" title="页式存储引擎"></a>页式存储引擎</h2><ol><li>页<br> a. 数据往往存储在以页为单位的空间中，页中包含元数据&#x2F;索引&#x2F;表数据，有的数据库将元数据和对应的表数据存放在一起，为了保证其他页丢失的情况下本页不受影响。<br> b. 通常一页不会存放不同类型的数据，例如某页都是tuple，另一页全都是索引数据.<br> c. 每个page会被赋予一个唯一的内部标识符，系统会生成属于page的ID.<br> d. indirection层会吧page id映射到某个文件的某个位置（也就是记录一个相对位置，当文件整体移动后，使用相对位置+偏移量就能重新找到page）<br> e. 物理页和操作系统页都在4kb左右，数据库的页在512b～16kb</li><li>管理页的方式<br> a. Heap File Organization<br> b. Sequential&#x2F;sorted File Organization<br> c. Hashing File Organization</li><li>Heap File管理方式<br> heap file是许多页的无序集合，有两种组织形式：链表和页目录<ul><li>链表管理就是定义两个链表，一个数据链表表示都是存满的数据页，另一个时空闲链表，用来新写入数据。</li><li>页目录管理：使用一些特殊的页记录数据页page id和他的位置的映射关系，甚至可以记录页的剩余空间的大小。</li></ul></li><li>页头（page header）<ul><li>page size</li><li>checksum</li><li>DBMS version</li><li>transaction Visibility</li><li>压缩信息</li></ul></li><li>页内tuple布局<ul><li>长度固定方法：每个tuple固定长度</li><li>slotted pages：如下图所示，为了支持可变长度的记录作出的妥协。<br> <img src="/images/db-2.png"></li></ul></li><li>tuple布局<br> <img src="/images/db-3.png"><ul><li>header：Visibility info（并发控制信息），Bit Map for NULL values.header并不需要存储数据的元数据，因为他们都是按顺序记录的。</li><li>record数据按定义时顺序写入</li></ul></li></ol><h2 id="日志式文件布局"><a href="#日志式文件布局" class="headerlink" title="日志式文件布局"></a>日志式文件布局</h2><pre><code>![](/images/db-3.png)通过追加命令的方式记录信息，有点像redis的rdb模式比较出名的有leveldb，基于leveldb，移除其mmap的rocksdb等。</code></pre>]]></content>
-    
-    
-    <summary type="html">&lt;h2 id=&quot;存储层次&quot;&gt;&lt;a href=&quot;#存储层次&quot; class=&quot;headerlink&quot; title=&quot;存储层次&quot;&gt;&lt;/a&gt;存储层次&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;/images/db-1.png&quot;&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;tips：在数据库存储上尽量不要使用mmap，这会带来内存&amp;#x2F;并发等一系列问题，会成为系统瓶颈。</summary>
-    
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CMU-cs445:查询优化</title>
-    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/"/>
-    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/</id>
-    <published>2022-09-24T17:40:36.325Z</published>
-    <updated>2022-10-19T09:12:19.501Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="查询优化"><a href="#查询优化" class="headerlink" title="查询优化"></a>查询优化</h3><ul><li><p>Heuristics&#x2F;Rules 规则&#x2F;静态触发</p><span id="more"></span><p>当查询中的某些部分满足我们的规则或者条件，我们就重写这部分.这部分需要我们去检查catelog.</p></li><li><p>Cost-based Search</p></li></ul><p>方法的思想是使用一个模型去评估一个查询的负载，然后使用多种不同的查询计划去替换这个查询，找出最小负载的方案。</p><p>下面是整个查询优化过程<br><img src="/images/db-26.png"></p><h3 id="Relational-Algebra-Equivalences-等价关系代数"><a href="#Relational-Algebra-Equivalences-等价关系代数" class="headerlink" title="Relational Algebra Equivalences(等价关系代数)"></a>Relational Algebra Equivalences(等价关系代数)</h3><ul><li>predicate pushdown:在join前尽量过滤数据。</li><li>对过滤条件进行排序，让更具有分辨性的条件排在前面。</li><li>对复杂判断进行简化</li><li>对于行存储类型数据库，projection越早越好。</li></ul><h3 id="Plan-Cost-Estimation"><a href="#Plan-Cost-Estimation" class="headerlink" title="Plan Cost Estimation"></a>Plan Cost Estimation</h3><ul><li>CPU</li><li>磁盘</li><li>内存</li><li>网络</li></ul><p>在数据库的catelog中，会维护相关信息，并且在特定时间或者遍历表的时候更跟这些信息，在执行查询之前，将这些变量带入公式，计算出最小代价的查询。在系统中，我们定义一些统计量：</p><ul><li>$N_R$: 关系R的tuple数量</li><li>V(A,R):属性A不同值的数量</li><li>Selection Cardinality：$N_R$&#x2F;V(A,R)</li><li>selectivity: 选择率，给定一个条件，计算table中符合条件的tuple数量</li><li>Range Predicate：计算范围值的比例，有点像概率计算，因此可以引入概率论中的结论,但是为了计算方便，有下面三个前提：<br><img src="/images/db-27.png"></li></ul><h5 id="直方图法"><a href="#直方图法" class="headerlink" title="直方图法"></a>直方图法</h5><p>对于数据分布不均匀的关系，在一些高端数据库中会使用直方图来跟踪数据的分布。对于数据量极大或者属性值分布很广的情况，我们会使用相同宽度的<strong>bucket</strong>来记录值的分布，但是这种情况会导致某个桶内数据分布极不均匀的情况，我们可以使用<strong>分位数</strong>来解决这个问题，即累计一定比例的数据分桶，桶的宽度可变，但是总体占比大致相当。</p><h5 id="采样法"><a href="#采样法" class="headerlink" title="采样法"></a>采样法</h5><p>对于直方图，其实是对表中数据的一种缩略表达，那么在大数据量的table中，我们可以直接采样来近似代表整个表的数据分布。当表进行大规模更新或者到达一个指定时间点，我们去更新这个采样表。</p><h3 id="Plan-Enumeration"><a href="#Plan-Enumeration" class="headerlink" title="Plan Enumeration"></a>Plan Enumeration</h3><h5 id="单关系查询计划"><a href="#单关系查询计划" class="headerlink" title="单关系查询计划"></a>单关系查询计划</h5><ul><li>循序遍历</li><li>二分查找（对于聚集索引）</li><li>索引遍历</li></ul><h5 id="多关系查询计划"><a href="#多关系查询计划" class="headerlink" title="多关系查询计划"></a>多关系查询计划</h5><ul><li><p>left-deep join tree<br><img src="/images/db-28.png"><br>在上面三个查询树中，System R不考虑后面两个，只考虑第一种。为什么采用第一种？后面两种实现过程中会有大量结果溢出到磁盘，影响性能。</p></li><li><p>步骤（System R based）<br><img src="/images/db-29.png"></p></li><li><p>步骤（遗传算法）<br><img src="/images/db-30.png"></p></li></ul><h3 id="Nested-Sub-queries"><a href="#Nested-Sub-queries" class="headerlink" title="Nested Sub-queries"></a>Nested Sub-queries</h3><p>通常情况下将where作为函数，穿入参数然后返回一组值，有两种方法进行查询优化：</p><ul><li>重写查询，去除关联性，让其扁平化</li><li>将内部查询提取出来作为单独查询来执行，将结果缓存起来，这样不用每次执行上层查询都再执行一次子查询</li></ul><p>(<a href="https://dbdb.io/">https://dbdb.io/</a>)</p>]]></content>
-    
-    
-    <summary type="html">&lt;h3 id=&quot;查询优化&quot;&gt;&lt;a href=&quot;#查询优化&quot; class=&quot;headerlink&quot; title=&quot;查询优化&quot;&gt;&lt;/a&gt;查询优化&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Heuristics&amp;#x2F;Rules 规则&amp;#x2F;静态触发&lt;/p&gt;</summary>
     
     
     
@@ -322,6 +322,31 @@
   </entry>
   
   <entry>
+    <title>CMU-cs445:HashTable &amp;&amp; TableIndex</title>
+    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9AHashTable&amp;TableIndex/"/>
+    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9AHashTable&amp;TableIndex/</id>
+    <published>2022-09-24T17:40:36.323Z</published>
+    <updated>2022-10-19T09:12:59.310Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="我们需要表示的数据"><a href="#我们需要表示的数据" class="headerlink" title="我们需要表示的数据"></a>我们需要表示的数据</h3><pre><code>- Internal Mata-data- Core data storage- Temporary Data Strutures- Table Indexs</code></pre><span id="more"></span><h3 id="hash-function"><a href="#hash-function" class="headerlink" title="hash function"></a>hash function</h3><pre><code>- XXHash- CityHash- FarmHash</code></pre><h3 id="哈希算法"><a href="#哈希算法" class="headerlink" title="哈希算法"></a>哈希算法</h3><pre><code>- 开放地址法- robin 开放地址- cuckoo hashing- 链表法- extendible hashing（有些复杂）- Linear hashing（循环拆分，有点难以理解）</code></pre><h3 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h3><pre><code>- 为什么叶子结点的key和value不放在一起？为了cpu缓存，能够快速定位key。</code></pre><h3 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h3><pre><code>- 部分索引- 覆盖索引- 聚集索引- Include Columns：在建立索引的时候增加一些额外信息，能够加速查询。- 函数式/表达式索引- trie index- radix tree的垂直压缩- 倒排索引</code></pre>]]></content>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;我们需要表示的数据&quot;&gt;&lt;a href=&quot;#我们需要表示的数据&quot; class=&quot;headerlink&quot; title=&quot;我们需要表示的数据&quot;&gt;&lt;/a&gt;我们需要表示的数据&lt;/h3&gt;&lt;pre&gt;&lt;code&gt;- Internal Mata-data
+- Core data storage
+- Temporary Data Strutures
+- Table Indexs
+&lt;/code&gt;&lt;/pre&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+  </entry>
+  
+  <entry>
     <title>CMU-cs445:buffer pool</title>
     <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9Abuffer%E6%B1%A0/"/>
     <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9Abuffer%E6%B1%A0/</id>
@@ -362,31 +387,6 @@
   </entry>
   
   <entry>
-    <title>CMU-cs445:HashTable &amp;&amp; TableIndex</title>
-    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9AHashTable&amp;TableIndex/"/>
-    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9AHashTable&amp;TableIndex/</id>
-    <published>2022-09-24T17:40:36.323Z</published>
-    <updated>2022-10-19T09:12:59.310Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="我们需要表示的数据"><a href="#我们需要表示的数据" class="headerlink" title="我们需要表示的数据"></a>我们需要表示的数据</h3><pre><code>- Internal Mata-data- Core data storage- Temporary Data Strutures- Table Indexs</code></pre><span id="more"></span><h3 id="hash-function"><a href="#hash-function" class="headerlink" title="hash function"></a>hash function</h3><pre><code>- XXHash- CityHash- FarmHash</code></pre><h3 id="哈希算法"><a href="#哈希算法" class="headerlink" title="哈希算法"></a>哈希算法</h3><pre><code>- 开放地址法- robin 开放地址- cuckoo hashing- 链表法- extendible hashing（有些复杂）- Linear hashing（循环拆分，有点难以理解）</code></pre><h3 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h3><pre><code>- 为什么叶子结点的key和value不放在一起？为了cpu缓存，能够快速定位key。</code></pre><h3 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h3><pre><code>- 部分索引- 覆盖索引- 聚集索引- Include Columns：在建立索引的时候增加一些额外信息，能够加速查询。- 函数式/表达式索引- trie index- radix tree的垂直压缩- 倒排索引</code></pre>]]></content>
-    
-    
-    <summary type="html">&lt;h3 id=&quot;我们需要表示的数据&quot;&gt;&lt;a href=&quot;#我们需要表示的数据&quot; class=&quot;headerlink&quot; title=&quot;我们需要表示的数据&quot;&gt;&lt;/a&gt;我们需要表示的数据&lt;/h3&gt;&lt;pre&gt;&lt;code&gt;- Internal Mata-data
-- Core data storage
-- Temporary Data Strutures
-- Table Indexs
-&lt;/code&gt;&lt;/pre&gt;</summary>
-    
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-  </entry>
-  
-  <entry>
     <title>k8s系列：pod</title>
     <link href="http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9Apod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E5%92%8C%E6%8E%A7%E5%88%B6%E5%99%A8/"/>
     <id>http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9Apod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E5%92%8C%E6%8E%A7%E5%88%B6%E5%99%A8/</id>
@@ -412,6 +412,27 @@
   </entry>
   
   <entry>
+    <title>k8s系列：基础概念</title>
+    <link href="http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/"/>
+    <id>http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</id>
+    <published>2022-02-16T16:00:00.000Z</published>
+    <updated>2022-10-20T06:18:57.917Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="borg系统"><a href="#borg系统" class="headerlink" title="borg系统"></a>borg系统</h3><p><img src="/images/k8s-1.png"></p><span id="more"></span><p>Master节点为奇数，scheduler向paxos写入数据，然后borglet监听到右自己的消息，就会执行命令。</p><h3 id="k8s架构"><a href="#k8s架构" class="headerlink" title="k8s架构"></a>k8s架构</h3><p><img src="/images/k8s-2.png"></p><p>和borg一样，但是中间加了一个apiserver层，etcd约等于paxos。</p><ul><li>scheduler：负责接收任务，选择合适的节点进行分配任务.</li><li>replication controller：负责控制node的副本数量，也就是删除或者创建pod.</li><li>apiserver：所有外界输入的入口，包括kubelet、kube proxy、replication controller、scheduler.</li><li>etcd：可信赖的分布式键值对数据库，存储k8s集群的所有重要信息，其内部结构如下图所示：<br><img src="/images/k8s-3.png"></li></ul><p>etcd使用http协议的c&#x2F;s架构，WAL是一种持久化策略，简单来说就是增量+完整备份，每一小段时间进行一个增量备份，每隔一大段时间进行完整备份，数据写入store中.</p><ul><li>kubelet：(CRI：container runtime interface)，操作docker，维护Pod的生命周期（pod运行在docker中）.</li><li>kube proxy：负责写入ipvs和iptables，执行负载均衡，实现pod和pod之间的通信.</li></ul><h3 id="其他概念"><a href="#其他概念" class="headerlink" title="其他概念"></a>其他概念</h3><ul><li>coreDNS：为集群中的SVC创建一个域名IP的对应关系解析。</li><li>dashboard：给k8s集群提供的B&#x2F;S访问体系。</li><li>ingress controller：官方只实现四层代理，ingress实现七层代理。</li><li>federation：提供一个可以跨集群中心多k8s统一管理功能。</li><li>prometheus：提供k8s集群的监控能力。</li><li>ELK：提供k8s日志统一管理平台。</li></ul>]]></content>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;borg系统&quot;&gt;&lt;a href=&quot;#borg系统&quot; class=&quot;headerlink&quot; title=&quot;borg系统&quot;&gt;&lt;/a&gt;borg系统&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/images/k8s-1.png&quot;&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="K8S" scheme="http://haoqinx.github.io/categories/K8S/"/>
+    
+    
+    <category term="K8S" scheme="http://haoqinx.github.io/tags/K8S/"/>
+    
+  </entry>
+  
+  <entry>
     <title>k8s系列：资源和声明周期</title>
     <link href="http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B5%84%E6%BA%90%E5%92%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/"/>
     <id>http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E8%B5%84%E6%BA%90%E5%92%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</id>
@@ -425,27 +446,6 @@
 &lt;li&gt;名称空间级别：默认为default&lt;/li&gt;
 &lt;li&gt;集群级别：role&lt;/li&gt;
 &lt;li&gt;元数据</summary>
-    
-    
-    
-    <category term="K8S" scheme="http://haoqinx.github.io/categories/K8S/"/>
-    
-    
-    <category term="K8S" scheme="http://haoqinx.github.io/tags/K8S/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>k8s系列：基础概念</title>
-    <link href="http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/"/>
-    <id>http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</id>
-    <published>2022-02-16T16:00:00.000Z</published>
-    <updated>2022-10-20T06:18:57.917Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="borg系统"><a href="#borg系统" class="headerlink" title="borg系统"></a>borg系统</h3><p><img src="/images/k8s-1.png"></p><span id="more"></span><p>Master节点为奇数，scheduler向paxos写入数据，然后borglet监听到右自己的消息，就会执行命令。</p><h3 id="k8s架构"><a href="#k8s架构" class="headerlink" title="k8s架构"></a>k8s架构</h3><p><img src="/images/k8s-2.png"></p><p>和borg一样，但是中间加了一个apiserver层，etcd约等于paxos。</p><ul><li>scheduler：负责接收任务，选择合适的节点进行分配任务.</li><li>replication controller：负责控制node的副本数量，也就是删除或者创建pod.</li><li>apiserver：所有外界输入的入口，包括kubelet、kube proxy、replication controller、scheduler.</li><li>etcd：可信赖的分布式键值对数据库，存储k8s集群的所有重要信息，其内部结构如下图所示：<br><img src="/images/k8s-3.png"></li></ul><p>etcd使用http协议的c&#x2F;s架构，WAL是一种持久化策略，简单来说就是增量+完整备份，每一小段时间进行一个增量备份，每隔一大段时间进行完整备份，数据写入store中.</p><ul><li>kubelet：(CRI：container runtime interface)，操作docker，维护Pod的生命周期（pod运行在docker中）.</li><li>kube proxy：负责写入ipvs和iptables，执行负载均衡，实现pod和pod之间的通信.</li></ul><h3 id="其他概念"><a href="#其他概念" class="headerlink" title="其他概念"></a>其他概念</h3><ul><li>coreDNS：为集群中的SVC创建一个域名IP的对应关系解析。</li><li>dashboard：给k8s集群提供的B&#x2F;S访问体系。</li><li>ingress controller：官方只实现四层代理，ingress实现七层代理。</li><li>federation：提供一个可以跨集群中心多k8s统一管理功能。</li><li>prometheus：提供k8s集群的监控能力。</li><li>ELK：提供k8s日志统一管理平台。</li></ul>]]></content>
-    
-    
-    <summary type="html">&lt;h3 id=&quot;borg系统&quot;&gt;&lt;a href=&quot;#borg系统&quot; class=&quot;headerlink&quot; title=&quot;borg系统&quot;&gt;&lt;/a&gt;borg系统&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/images/k8s-1.png&quot;&gt;&lt;/p&gt;</summary>
     
     
     
