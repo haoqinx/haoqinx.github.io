@@ -282,27 +282,6 @@
   </entry>
   
   <entry>
-    <title>CMU-cs445:并发访问</title>
-    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B9%B6%E5%8F%91%E8%AE%BF%E9%97%AE/"/>
-    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B9%B6%E5%8F%91%E8%AE%BF%E9%97%AE/</id>
-    <published>2022-09-24T17:40:36.324Z</published>
-    <updated>2022-10-19T09:12:06.428Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="latch和lock"><a href="#latch和lock" class="headerlink" title="latch和lock"></a>latch和lock</h3><p><img src="/images/db-4.png"></p><span id="more"></span><h3 id="latch"><a href="#latch" class="headerlink" title="latch"></a>latch</h3><ul><li>种类<ul><li>Test-and-Set Spin Latch(TAS)</li><li>读写锁</li><li>乐观&#x2F;悲观锁</li></ul></li><li>粒度<ul><li>page latch：锁少，并行度不好</li><li>slot latch：锁多，并行度高</li></ul></li><li>latch crabbing&#x2F;coupling</li><li>B+树的死锁问题</li><li>B+树insert，父节点延迟更新</li></ul>]]></content>
-    
-    
-    <summary type="html">&lt;h3 id=&quot;latch和lock&quot;&gt;&lt;a href=&quot;#latch和lock&quot; class=&quot;headerlink&quot; title=&quot;latch和lock&quot;&gt;&lt;/a&gt;latch和lock&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/images/db-4.png&quot;&gt;&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-  </entry>
-  
-  <entry>
     <title>CMU-cs445:并发控制</title>
     <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6/"/>
     <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6/</id>
@@ -317,6 +296,27 @@
 &lt;li&gt;C:如果事务是一致的，数据库是一致的，那么结束时也必须是一致的&lt;/li&gt;
 &lt;li&gt;I:隔离性&lt;/li&gt;
 &lt;li&gt;D:事务提交之后会持久化</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CMU-cs445:并发访问</title>
+    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B9%B6%E5%8F%91%E8%AE%BF%E9%97%AE/"/>
+    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%B9%B6%E5%8F%91%E8%AE%BF%E9%97%AE/</id>
+    <published>2022-09-24T17:40:36.324Z</published>
+    <updated>2022-10-19T09:12:06.428Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="latch和lock"><a href="#latch和lock" class="headerlink" title="latch和lock"></a>latch和lock</h3><p><img src="/images/db-4.png"></p><span id="more"></span><h3 id="latch"><a href="#latch" class="headerlink" title="latch"></a>latch</h3><ul><li>种类<ul><li>Test-and-Set Spin Latch(TAS)</li><li>读写锁</li><li>乐观&#x2F;悲观锁</li></ul></li><li>粒度<ul><li>page latch：锁少，并行度不好</li><li>slot latch：锁多，并行度高</li></ul></li><li>latch crabbing&#x2F;coupling</li><li>B+树的死锁问题</li><li>B+树insert，父节点延迟更新</li></ul>]]></content>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;latch和lock&quot;&gt;&lt;a href=&quot;#latch和lock&quot; class=&quot;headerlink&quot; title=&quot;latch和lock&quot;&gt;&lt;/a&gt;latch和lock&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/images/db-4.png&quot;&gt;&lt;/p&gt;</summary>
     
     
     
