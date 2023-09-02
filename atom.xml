@@ -123,6 +123,29 @@
   </entry>
   
   <entry>
+    <title>CMU-cs445:Undo &amp;&amp; Redo</title>
+    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/"/>
+    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/</id>
+    <published>2022-09-24T17:40:36.326Z</published>
+    <updated>2022-10-19T09:12:46.726Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="Undo-amp-Redo"><a href="#Undo-amp-Redo" class="headerlink" title="Undo &amp; Redo"></a>Undo &amp; Redo</h3><ul><li>Undo:移除一个终止的事务的影响</li><li>Redo：重新执行一个事务进行持久化<span id="more"></span></li><li>Steal Policy<br>允许未提交的事务回写到磁盘</li><li>Force Policy<br>要求所有事务提交之前必须回写到磁盘</li><li>No Steal + Force<ul><li>Shodow Paging<br><img src="/images/db-43.png"></li></ul></li><li>Steal + No Force<ul><li>write-ahead log<br><img src="/images/db-44.png"><br> 什么时间提交这些日志条目？<ul><li>事务提交时</li><li>组提交，这时会出现未提交事务的条目，但是不影响。</li></ul></li></ul></li><li>Logging Schemes<ul><li>Physical</li><li>Logical</li><li>Physiological<br><img src="/images/db-45.png"></li></ul></li><li>CheckPoints<br>使用预写日志，为了避免恢复时间过长，在某个时间点将所有脏页面持久化到磁盘。写入一个Checkpoint条目。</li></ul>]]></content>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;Undo-amp-Redo&quot;&gt;&lt;a href=&quot;#Undo-amp-Redo&quot; class=&quot;headerlink&quot; title=&quot;Undo &amp;amp; Redo&quot;&gt;&lt;/a&gt;Undo &amp;amp; Redo&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Undo:移除一个终止的事务的影响&lt;/li&gt;
+&lt;li&gt;Redo：重新执行一个事务进行持久化</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+  </entry>
+  
+  <entry>
     <title>CMU-cs445:查询引擎实现</title>
     <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E5%BC%95%E6%93%8E%E5%AE%9E%E7%8E%B0/"/>
     <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E5%BC%95%E6%93%8E%E5%AE%9E%E7%8E%B0/</id>
@@ -146,18 +169,40 @@
   </entry>
   
   <entry>
-    <title>CMU-cs445:Undo &amp;&amp; Redo</title>
-    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/"/>
-    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/</id>
-    <published>2022-09-24T17:40:36.326Z</published>
-    <updated>2022-10-19T09:12:46.726Z</updated>
+    <title>CMU-cs445:存储引擎</title>
+    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%B8%80%E5%B8%83%E5%B1%80/"/>
+    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%B8%80%E5%B8%83%E5%B1%80/</id>
+    <published>2022-09-24T17:40:36.325Z</published>
+    <updated>2022-10-19T09:12:36.914Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="Undo-amp-Redo"><a href="#Undo-amp-Redo" class="headerlink" title="Undo &amp; Redo"></a>Undo &amp; Redo</h3><ul><li>Undo:移除一个终止的事务的影响</li><li>Redo：重新执行一个事务进行持久化<span id="more"></span></li><li>Steal Policy<br>允许未提交的事务回写到磁盘</li><li>Force Policy<br>要求所有事务提交之前必须回写到磁盘</li><li>No Steal + Force<ul><li>Shodow Paging<br><img src="/images/db-43.png"></li></ul></li><li>Steal + No Force<ul><li>write-ahead log<br><img src="/images/db-44.png"><br> 什么时间提交这些日志条目？<ul><li>事务提交时</li><li>组提交，这时会出现未提交事务的条目，但是不影响。</li></ul></li></ul></li><li>Logging Schemes<ul><li>Physical</li><li>Logical</li><li>Physiological<br><img src="/images/db-45.png"></li></ul></li><li>CheckPoints<br>使用预写日志，为了避免恢复时间过长，在某个时间点将所有脏页面持久化到磁盘。写入一个Checkpoint条目。</li></ul>]]></content>
+    <content type="html"><![CDATA[<h2 id="存储层次"><a href="#存储层次" class="headerlink" title="存储层次"></a>存储层次</h2><p><img src="/images/db-1.png"></p><ul><li>tips：在数据库存储上尽量不要使用mmap，这会带来内存&#x2F;并发等一系列问题，会成为系统瓶颈。<span id="more"></span></li></ul><h2 id="页式存储引擎"><a href="#页式存储引擎" class="headerlink" title="页式存储引擎"></a>页式存储引擎</h2><ol><li>页<br> a. 数据往往存储在以页为单位的空间中，页中包含元数据&#x2F;索引&#x2F;表数据，有的数据库将元数据和对应的表数据存放在一起，为了保证其他页丢失的情况下本页不受影响。<br> b. 通常一页不会存放不同类型的数据，例如某页都是tuple，另一页全都是索引数据.<br> c. 每个page会被赋予一个唯一的内部标识符，系统会生成属于page的ID.<br> d. indirection层会吧page id映射到某个文件的某个位置（也就是记录一个相对位置，当文件整体移动后，使用相对位置+偏移量就能重新找到page）<br> e. 物理页和操作系统页都在4kb左右，数据库的页在512b～16kb</li><li>管理页的方式<br> a. Heap File Organization<br> b. Sequential&#x2F;sorted File Organization<br> c. Hashing File Organization</li><li>Heap File管理方式<br> heap file是许多页的无序集合，有两种组织形式：链表和页目录<ul><li>链表管理就是定义两个链表，一个数据链表表示都是存满的数据页，另一个时空闲链表，用来新写入数据。</li><li>页目录管理：使用一些特殊的页记录数据页page id和他的位置的映射关系，甚至可以记录页的剩余空间的大小。</li></ul></li><li>页头（page header）<ul><li>page size</li><li>checksum</li><li>DBMS version</li><li>transaction Visibility</li><li>压缩信息</li></ul></li><li>页内tuple布局<ul><li>长度固定方法：每个tuple固定长度</li><li>slotted pages：如下图所示，为了支持可变长度的记录作出的妥协。<br> <img src="/images/db-2.png"></li></ul></li><li>tuple布局<br> <img src="/images/db-3.png"><ul><li>header：Visibility info（并发控制信息），Bit Map for NULL values.header并不需要存储数据的元数据，因为他们都是按顺序记录的。</li><li>record数据按定义时顺序写入</li></ul></li></ol><h2 id="日志式文件布局"><a href="#日志式文件布局" class="headerlink" title="日志式文件布局"></a>日志式文件布局</h2><pre><code>![](/images/db-3.png)通过追加命令的方式记录信息，有点像redis的rdb模式比较出名的有leveldb，基于leveldb，移除其mmap的rocksdb等。</code></pre>]]></content>
     
     
-    <summary type="html">&lt;h3 id=&quot;Undo-amp-Redo&quot;&gt;&lt;a href=&quot;#Undo-amp-Redo&quot; class=&quot;headerlink&quot; title=&quot;Undo &amp;amp; Redo&quot;&gt;&lt;/a&gt;Undo &amp;amp; Redo&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;Undo:移除一个终止的事务的影响&lt;/li&gt;
-&lt;li&gt;Redo：重新执行一个事务进行持久化</summary>
+    <summary type="html">&lt;h2 id=&quot;存储层次&quot;&gt;&lt;a href=&quot;#存储层次&quot; class=&quot;headerlink&quot; title=&quot;存储层次&quot;&gt;&lt;/a&gt;存储层次&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;/images/db-1.png&quot;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;tips：在数据库存储上尽量不要使用mmap，这会带来内存&amp;#x2F;并发等一系列问题，会成为系统瓶颈。</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CMU-cs445:数据存储表示</title>
+    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%BA%8C%E8%A1%A8%E7%A4%BA/"/>
+    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%BA%8C%E8%A1%A8%E7%A4%BA/</id>
+    <published>2022-09-24T17:40:36.325Z</published>
+    <updated>2022-10-19T09:12:32.418Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="数据表示"><a href="#数据表示" class="headerlink" title="数据表示"></a>数据表示</h2><pre><code>涉及浮点数和定点数的存储，不同的是我们需要更多的信息去记录浮点数，包括字符串形式的数据以及其他辅助信息，运算过程为字符串相加相乘类似。</code></pre><span id="more"></span><h2 id="大数据表示"><a href="#大数据表示" class="headerlink" title="大数据表示"></a>大数据表示</h2><pre><code>当需要存储的数据大于单页大小，有以下解决方案- overflow page：存储指向overflow page的指针，如果仍然无法全部存储，就形成链表结构。通常比较难以维护，包括overflow page上的元信息。- 外部存储：数据库存一个文件路径。缺点是无法受到数据库保护。</code></pre><h2 id="catalogs"><a href="#catalogs" class="headerlink" title="catalogs"></a>catalogs</h2><pre><code>存储表，列，索引，视图，用户，权限，内部的统计信息等</code></pre><h2 id="workload"><a href="#workload" class="headerlink" title="workload"></a>workload</h2><pre><code>- OLTP(On-line Transaction Processing)    简单查询，每次读取或者更新数据库中很小一部分数据-  OLAP(On-line Analytical Processing)复杂查询，常常读取分析大批量数据</code></pre><h2 id="tuple存储形式"><a href="#tuple存储形式" class="headerlink" title="tuple存储形式"></a>tuple存储形式</h2><pre><code>- N-array tuple以行的形式存储    - 优点:插入更新删除快，对需要整个tuple的查询友好    - 缺点:对于全表扫描或者tuple一部分字段的查询不友好- Column store：每页存储相同字段的值。    - 优点:可以对数据进行压缩，降低字段查询时的系统io。    - 缺点:小数据的增删改查比较费时</code></pre>]]></content>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;数据表示&quot;&gt;&lt;a href=&quot;#数据表示&quot; class=&quot;headerlink&quot; title=&quot;数据表示&quot;&gt;&lt;/a&gt;数据表示&lt;/h2&gt;&lt;pre&gt;&lt;code&gt;涉及浮点数和定点数的存储，不同的是我们需要更多的信息去记录浮点数，包括字符串形式的数据以及其他辅助信息，运算过程为字符串相加相乘类似。
+&lt;/code&gt;&lt;/pre&gt;</summary>
     
     
     
@@ -218,51 +263,6 @@
 &lt;li&gt;线程崩溃导致进程崩溃&lt;/li&gt;
 &lt;li&gt;上下文切换开销很小&lt;/li&gt;
 &lt;li&gt;不需要管理共享内存</summary>
-    
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CMU-cs445:数据存储表示</title>
-    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%BA%8C%E8%A1%A8%E7%A4%BA/"/>
-    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%BA%8C%E8%A1%A8%E7%A4%BA/</id>
-    <published>2022-09-24T17:40:36.325Z</published>
-    <updated>2022-10-19T09:12:32.418Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="数据表示"><a href="#数据表示" class="headerlink" title="数据表示"></a>数据表示</h2><pre><code>涉及浮点数和定点数的存储，不同的是我们需要更多的信息去记录浮点数，包括字符串形式的数据以及其他辅助信息，运算过程为字符串相加相乘类似。</code></pre><span id="more"></span><h2 id="大数据表示"><a href="#大数据表示" class="headerlink" title="大数据表示"></a>大数据表示</h2><pre><code>当需要存储的数据大于单页大小，有以下解决方案- overflow page：存储指向overflow page的指针，如果仍然无法全部存储，就形成链表结构。通常比较难以维护，包括overflow page上的元信息。- 外部存储：数据库存一个文件路径。缺点是无法受到数据库保护。</code></pre><h2 id="catalogs"><a href="#catalogs" class="headerlink" title="catalogs"></a>catalogs</h2><pre><code>存储表，列，索引，视图，用户，权限，内部的统计信息等</code></pre><h2 id="workload"><a href="#workload" class="headerlink" title="workload"></a>workload</h2><pre><code>- OLTP(On-line Transaction Processing)    简单查询，每次读取或者更新数据库中很小一部分数据-  OLAP(On-line Analytical Processing)复杂查询，常常读取分析大批量数据</code></pre><h2 id="tuple存储形式"><a href="#tuple存储形式" class="headerlink" title="tuple存储形式"></a>tuple存储形式</h2><pre><code>- N-array tuple以行的形式存储    - 优点:插入更新删除快，对需要整个tuple的查询友好    - 缺点:对于全表扫描或者tuple一部分字段的查询不友好- Column store：每页存储相同字段的值。    - 优点:可以对数据进行压缩，降低字段查询时的系统io。    - 缺点:小数据的增删改查比较费时</code></pre>]]></content>
-    
-    
-    <summary type="html">&lt;h2 id=&quot;数据表示&quot;&gt;&lt;a href=&quot;#数据表示&quot; class=&quot;headerlink&quot; title=&quot;数据表示&quot;&gt;&lt;/a&gt;数据表示&lt;/h2&gt;&lt;pre&gt;&lt;code&gt;涉及浮点数和定点数的存储，不同的是我们需要更多的信息去记录浮点数，包括字符串形式的数据以及其他辅助信息，运算过程为字符串相加相乘类似。
-&lt;/code&gt;&lt;/pre&gt;</summary>
-    
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CMU-cs445:存储引擎</title>
-    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%B8%80%E5%B8%83%E5%B1%80/"/>
-    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%B8%80%E5%B8%83%E5%B1%80/</id>
-    <published>2022-09-24T17:40:36.325Z</published>
-    <updated>2022-10-19T09:12:36.914Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="存储层次"><a href="#存储层次" class="headerlink" title="存储层次"></a>存储层次</h2><p><img src="/images/db-1.png"></p><ul><li>tips：在数据库存储上尽量不要使用mmap，这会带来内存&#x2F;并发等一系列问题，会成为系统瓶颈。<span id="more"></span></li></ul><h2 id="页式存储引擎"><a href="#页式存储引擎" class="headerlink" title="页式存储引擎"></a>页式存储引擎</h2><ol><li>页<br> a. 数据往往存储在以页为单位的空间中，页中包含元数据&#x2F;索引&#x2F;表数据，有的数据库将元数据和对应的表数据存放在一起，为了保证其他页丢失的情况下本页不受影响。<br> b. 通常一页不会存放不同类型的数据，例如某页都是tuple，另一页全都是索引数据.<br> c. 每个page会被赋予一个唯一的内部标识符，系统会生成属于page的ID.<br> d. indirection层会吧page id映射到某个文件的某个位置（也就是记录一个相对位置，当文件整体移动后，使用相对位置+偏移量就能重新找到page）<br> e. 物理页和操作系统页都在4kb左右，数据库的页在512b～16kb</li><li>管理页的方式<br> a. Heap File Organization<br> b. Sequential&#x2F;sorted File Organization<br> c. Hashing File Organization</li><li>Heap File管理方式<br> heap file是许多页的无序集合，有两种组织形式：链表和页目录<ul><li>链表管理就是定义两个链表，一个数据链表表示都是存满的数据页，另一个时空闲链表，用来新写入数据。</li><li>页目录管理：使用一些特殊的页记录数据页page id和他的位置的映射关系，甚至可以记录页的剩余空间的大小。</li></ul></li><li>页头（page header）<ul><li>page size</li><li>checksum</li><li>DBMS version</li><li>transaction Visibility</li><li>压缩信息</li></ul></li><li>页内tuple布局<ul><li>长度固定方法：每个tuple固定长度</li><li>slotted pages：如下图所示，为了支持可变长度的记录作出的妥协。<br> <img src="/images/db-2.png"></li></ul></li><li>tuple布局<br> <img src="/images/db-3.png"><ul><li>header：Visibility info（并发控制信息），Bit Map for NULL values.header并不需要存储数据的元数据，因为他们都是按顺序记录的。</li><li>record数据按定义时顺序写入</li></ul></li></ol><h2 id="日志式文件布局"><a href="#日志式文件布局" class="headerlink" title="日志式文件布局"></a>日志式文件布局</h2><pre><code>![](/images/db-3.png)通过追加命令的方式记录信息，有点像redis的rdb模式比较出名的有leveldb，基于leveldb，移除其mmap的rocksdb等。</code></pre>]]></content>
-    
-    
-    <summary type="html">&lt;h2 id=&quot;存储层次&quot;&gt;&lt;a href=&quot;#存储层次&quot; class=&quot;headerlink&quot; title=&quot;存储层次&quot;&gt;&lt;/a&gt;存储层次&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;/images/db-1.png&quot;&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;tips：在数据库存储上尽量不要使用mmap，这会带来内存&amp;#x2F;并发等一系列问题，会成为系统瓶颈。</summary>
     
     
     
@@ -344,6 +344,31 @@
   </entry>
   
   <entry>
+    <title>CMU-cs445:HashTable &amp;&amp; TableIndex</title>
+    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9AHashTable&amp;TableIndex/"/>
+    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9AHashTable&amp;TableIndex/</id>
+    <published>2022-09-24T17:40:36.323Z</published>
+    <updated>2022-10-19T09:12:59.310Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="我们需要表示的数据"><a href="#我们需要表示的数据" class="headerlink" title="我们需要表示的数据"></a>我们需要表示的数据</h3><pre><code>- Internal Mata-data- Core data storage- Temporary Data Strutures- Table Indexs</code></pre><span id="more"></span><h3 id="hash-function"><a href="#hash-function" class="headerlink" title="hash function"></a>hash function</h3><pre><code>- XXHash- CityHash- FarmHash</code></pre><h3 id="哈希算法"><a href="#哈希算法" class="headerlink" title="哈希算法"></a>哈希算法</h3><pre><code>- 开放地址法- robin 开放地址- cuckoo hashing- 链表法- extendible hashing（有些复杂）- Linear hashing（循环拆分，有点难以理解）</code></pre><h3 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h3><pre><code>- 为什么叶子结点的key和value不放在一起？为了cpu缓存，能够快速定位key。</code></pre><h3 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h3><pre><code>- 部分索引- 覆盖索引- 聚集索引- Include Columns：在建立索引的时候增加一些额外信息，能够加速查询。- 函数式/表达式索引- trie index- radix tree的垂直压缩- 倒排索引</code></pre>]]></content>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;我们需要表示的数据&quot;&gt;&lt;a href=&quot;#我们需要表示的数据&quot; class=&quot;headerlink&quot; title=&quot;我们需要表示的数据&quot;&gt;&lt;/a&gt;我们需要表示的数据&lt;/h3&gt;&lt;pre&gt;&lt;code&gt;- Internal Mata-data
+- Core data storage
+- Temporary Data Strutures
+- Table Indexs
+&lt;/code&gt;&lt;/pre&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+  </entry>
+  
+  <entry>
     <title>CMU-cs445:buffer pool</title>
     <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9Abuffer%E6%B1%A0/"/>
     <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9Abuffer%E6%B1%A0/</id>
@@ -372,31 +397,6 @@
     - 查询量小的时候使用
 - O_DIRECT
     - 避免操作系统文件缓存
-&lt;/code&gt;&lt;/pre&gt;</summary>
-    
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CMU-cs445:HashTable &amp;&amp; TableIndex</title>
-    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9AHashTable&amp;TableIndex/"/>
-    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9AHashTable&amp;TableIndex/</id>
-    <published>2022-09-24T17:40:36.323Z</published>
-    <updated>2022-10-19T09:12:59.310Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="我们需要表示的数据"><a href="#我们需要表示的数据" class="headerlink" title="我们需要表示的数据"></a>我们需要表示的数据</h3><pre><code>- Internal Mata-data- Core data storage- Temporary Data Strutures- Table Indexs</code></pre><span id="more"></span><h3 id="hash-function"><a href="#hash-function" class="headerlink" title="hash function"></a>hash function</h3><pre><code>- XXHash- CityHash- FarmHash</code></pre><h3 id="哈希算法"><a href="#哈希算法" class="headerlink" title="哈希算法"></a>哈希算法</h3><pre><code>- 开放地址法- robin 开放地址- cuckoo hashing- 链表法- extendible hashing（有些复杂）- Linear hashing（循环拆分，有点难以理解）</code></pre><h3 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h3><pre><code>- 为什么叶子结点的key和value不放在一起？为了cpu缓存，能够快速定位key。</code></pre><h3 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h3><pre><code>- 部分索引- 覆盖索引- 聚集索引- Include Columns：在建立索引的时候增加一些额外信息，能够加速查询。- 函数式/表达式索引- trie index- radix tree的垂直压缩- 倒排索引</code></pre>]]></content>
-    
-    
-    <summary type="html">&lt;h3 id=&quot;我们需要表示的数据&quot;&gt;&lt;a href=&quot;#我们需要表示的数据&quot; class=&quot;headerlink&quot; title=&quot;我们需要表示的数据&quot;&gt;&lt;/a&gt;我们需要表示的数据&lt;/h3&gt;&lt;pre&gt;&lt;code&gt;- Internal Mata-data
-- Core data storage
-- Temporary Data Strutures
-- Table Indexs
 &lt;/code&gt;&lt;/pre&gt;</summary>
     
     
