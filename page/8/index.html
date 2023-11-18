@@ -285,7 +285,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Adecltype/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Alambda/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.png">
@@ -299,7 +299,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Adecltype/" class="post-title-link" itemprop="url">c++11新特性：decltype</a>
+            <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Alambda/" class="post-title-link" itemprop="url">c++11新特性：lambda</a>
         </h2>
 
         <div class="post-meta">
@@ -316,7 +316,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-10-19 17:15:22" itemprop="dateModified" datetime="2022-10-19T17:15:22+08:00">2022-10-19</time>
+                <time title="Modified: 2022-10-19 17:15:31" itemprop="dateModified" datetime="2022-10-19T17:15:31+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -334,14 +334,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.2k</span>
+              <span>2.6k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
+              <span>2 mins.</span>
             </span>
 
         </div>
@@ -353,10 +353,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="源从何来"><a href="#源从何来" class="headerlink" title="源从何来"></a>源从何来</h3><p>很长时间以来我们都希望有这么一个功能：给定一个对象，通过某个函数或者关键字，获得它的类型。c++有typeid的实现，也就是返回一个对象的typeid字符串，但是这个字符串不能用来声明一个新变量。因此c++11就出现了decltype这个关键字。</p>
+          <h3 id="基本形式"><a href="#基本形式" class="headerlink" title="基本形式"></a>基本形式</h3><p>lambda表达式的本质就是重载了()运算符的类，这种类通常被称为functor，即行为像函数的类。因此lambda表达式对象其实就是一个匿名的functor。<br>一个标准的lambda表达式包括：捕获列表、参数列表、mutable指示符、尾置返回类型（-&gt;返回类型）和函数体：</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Adecltype/#more" rel="contents">
+              <a class="btn" href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Alambda/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -1049,7 +1049,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Alist/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Amap/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.png">
@@ -1063,7 +1063,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Alist/" class="post-title-link" itemprop="url">c++STL系列：list</a>
+            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Amap/" class="post-title-link" itemprop="url">c++STL系列：map & multimap</a>
         </h2>
 
         <div class="post-meta">
@@ -1080,7 +1080,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-10-19 17:17:50" itemprop="dateModified" datetime="2022-10-19T17:17:50+08:00">2022-10-19</time>
+                <time title="Modified: 2022-10-19 17:17:55" itemprop="dateModified" datetime="2022-10-19T17:17:55+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1098,7 +1098,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>854</span>
+              <span>269</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -1117,11 +1117,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="G2-9源码结构"><a href="#G2-9源码结构" class="headerlink" title="G2.9源码结构"></a>G2.9源码结构</h3><p><img src="/images/list-1.png"></p>
-<p>在低版本下list的结构比较简单，就是一个list模板类和一个node模板类。总体的数据结构事宜个环形双向链表。<br>begin()指向头结点，end()指向尾节点。</p>
+          <h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p>map&#x2F;multimap 也是以红黑树为底层结构。<br>红黑树的左旋右旋、性质在这里先不深究。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Alist/#more" rel="contents">
+              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Amap/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
