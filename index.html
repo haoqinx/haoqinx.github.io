@@ -215,7 +215,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2023-12-03 21:05:27 / Modified: 21:35:05" itemprop="dateCreated datePublished" datetime="2023-12-03T21:05:27+08:00">2023-12-03</time>
+              <time title="Created: 2023-12-03 21:05:27 / Modified: 23:40:17" itemprop="dateCreated datePublished" datetime="2023-12-03T21:05:27+08:00">2023-12-03</time>
             </span>
 
           <br>
@@ -224,14 +224,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.2k</span>
+              <span>5k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
+              <span>5 mins.</span>
             </span>
 
         </div>
@@ -271,7 +271,46 @@
 </ul>
 <p>当系统出现故障时，Base理论允许部分数据不可⽤，但是会保证核⼼功能可⽤；允许数据在⼀段时间内不⼀致，这种状态称为“软状态”，但是经过⼀段时间，数据最终是⼀致的。符合Base理论的事务可以称为柔性事务。</p>
 <h4 id="一致性分类"><a href="#一致性分类" class="headerlink" title="一致性分类"></a>一致性分类</h4><p><a href="https://haoqinx.github.io/2023/11/18/%E5%BC%84%E6%B8%85%E4%BA%8B%E5%8A%A1%E4%B8%80%E8%87%B4%E6%80%A7-md/#more">参考另一篇文章</a></p>
-<h3 id="分布式事务分类"><a href="#分布式事务分类" class="headerlink" title="分布式事务分类"></a>分布式事务分类</h3>
+<h3 id="分布式事务分类"><a href="#分布式事务分类" class="headerlink" title="分布式事务分类"></a>分布式事务分类</h3><p>如下思维导图所示，分为柔性事务和刚性事务，刚性事务满足CP理论，柔性事务满足BASE理论。</p>
+<p>按个人理解还可以通过数据库保证、业务保证两个层面进行分类。数据库保证表示数据库内核中实现了分布式事务的强一致性，或者提供一些接口供外部调用来保证一致性。业务保证表示通过业务层的控制来实现业务层面的一致性，无数据库本身的实现无关，本次介绍的Seata框架就是基于中间件框架去保证一致性。</p>
+<h3 id="分布式事务解决方案-Seata"><a href="#分布式事务解决方案-Seata" class="headerlink" title="分布式事务解决方案-Seata"></a>分布式事务解决方案-Seata</h3><h5 id="三大组件"><a href="#三大组件" class="headerlink" title="三大组件"></a>三大组件</h5><p><img src="/images/image-20231203224216006.png" alt="image-20231203224216006"></p>
+<ul>
+<li>TM（Transaction Manager）:事务管理器。与TC交互，开启、提交、回滚事务，负责AT模式事务的并发控制。</li>
+<li>RM（Resource Manager）：资源管理器。与TC交互，负责分支事务注册和分支事务状态上报。</li>
+<li>TC（Transaction Coordinator）：事务协调器。维护全局事务和分支事务的状态，推进事务两阶段处理。</li>
+</ul>
+<p>TC单独作为一个服务部署、TM和聚合服务一起部署、RM和微服务一起部署，如下图。</p>
+<p><img src="/images/image-20231203224820472.png" alt="image-20231203224820472"></p>
+<h5 id="四大模式："><a href="#四大模式：" class="headerlink" title="四大模式："></a>四大模式：</h5><ul>
+<li>TCC：用户根据自己的业务实现try()、confirm()、cancel()三个接口，事务发起方在一阶段之行try()、在二阶段提交执行confirm()、在二阶段回滚执行cancel()方法。</li>
+</ul>
+<p><img src="/images/image-20231203222946253.png" alt="image-20231203222946253"></p>
+<ul>
+<li>Saga：业务流程中每个参与者都提交本地事务，当出现某一个参与者失败则补偿前面已经成功的参与者，一阶段正向服务和二阶段补偿服务都由业务开发实现。</li>
+</ul>
+<p><img src="/images/image-20231203223045837.png" alt="image-20231203223045837"></p>
+<ul>
+<li>XA：使用支持XA事务的数据库即可。</li>
+</ul>
+<p><img src="/images/image-20231203223211867.png" alt="image-20231203223211867"></p>
+<ul>
+<li>AT：Seata自创的分布式事务解决方案，业务入侵少，对数据库本身的依赖小，应用最广泛的一种策略。</li>
+</ul>
+<h5 id="AT模式详解"><a href="#AT模式详解" class="headerlink" title="AT模式详解"></a>AT模式详解</h5><p>假设现在有两个服务，积分服务和余额服务，余额服务负责管理用户的余额并调用积分服务，积分服务负责管理用户的积分，用户充值的时候，两个事务被声明为全局事务，AT模式的执行流程如下图所示。</p>
+<p><img src="/images/image-20231203232303000.png" alt="image-20231203232303000"></p>
+<p>在业务逻辑中，如果用户使用Seata模式，那么Seata框架的数据代理源会拦截业务SQL语句，生成包含前镜像和后镜像的事务日志表（undo log），以MySQL为例，创建的undo log表结构如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `undo_log` (</span><br><span class="line">  `id` <span class="type">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  `branch_id` <span class="type">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `xid` <span class="type">varchar</span>(<span class="number">100</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `context` <span class="type">varchar</span>(<span class="number">128</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `rollback_info` longblob <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `log_status` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `log_created` datetime <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `log_modified` datetime <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `ext` <span class="type">varchar</span>(<span class="number">100</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`id`),</span><br><span class="line">  <span class="keyword">UNIQUE</span> KEY `ux_undo_log` (`xid`,`branch_id`)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB AUTO_INCREMENT<span class="operator">=</span><span class="number">1</span> <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span>utf8;</span><br></pre></td></tr></table></figure>
+
+<p>其中rollback_info字段记录了修改字段的前像和后像：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;@class&quot;</span><span class="punctuation">:</span> <span class="string">&quot;io.seata.rm.datasource.undo.BranchUndoLog&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;xid&quot;</span><span class="punctuation">:</span> <span class="string">&quot;192.168.181.2:8091:4386660905323926065&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;branchId&quot;</span><span class="punctuation">:</span> <span class="number">4386660905323926071</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;sqlUndoLogs&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;java.util.ArrayList&quot;</span><span class="punctuation">,</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;@class&quot;</span><span class="punctuation">:</span> <span class="string">&quot;io.seata.rm.datasource.undo.SQLUndoLog&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;sqlType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;INSERT&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;tableName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;t_order&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;beforeImage&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;@class&quot;</span><span class="punctuation">:</span> <span class="string">&quot;io.seata.rm.datasource.sql.struct.TableRecords$EmptyTableRecords&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;tableName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;t_order&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;rows&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;java.util.ArrayList&quot;</span><span class="punctuation">,</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">]</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;afterImage&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;@class&quot;</span><span class="punctuation">:</span> <span class="string">&quot;io.seata.rm.datasource.sql.struct.TableRecords&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;tableName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;t_order&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;rows&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;java.util.ArrayList&quot;</span><span class="punctuation">,</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;@class&quot;</span><span class="punctuation">:</span> <span class="string">&quot;io.seata.rm.datasource.sql.struct.Row&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;fields&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;java.util.ArrayList&quot;</span><span class="punctuation">,</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;@class&quot;</span><span class="punctuation">:</span> <span class="string">&quot;io.seata.rm.datasource.sql.struct.Field&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;id&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;keyType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;PRIMARY_KEY&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="number">4</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="number">31</span></span><br><span class="line">                <span class="punctuation">&#125;</span><span class="punctuation">,</span> <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;@class&quot;</span><span class="punctuation">:</span> <span class="string">&quot;io.seata.rm.datasource.sql.struct.Field&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;order_no&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;keyType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;NULL&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="number">12</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;63098e74e93b49bba77f1957e8fdab39&quot;</span></span><br><span class="line">                <span class="punctuation">&#125;</span><span class="punctuation">,</span> <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;@class&quot;</span><span class="punctuation">:</span> <span class="string">&quot;io.seata.rm.datasource.sql.struct.Field&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;user_id&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;keyType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;NULL&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="number">12</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1&quot;</span></span><br><span class="line">                <span class="punctuation">&#125;</span><span class="punctuation">,</span> <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;@class&quot;</span><span class="punctuation">:</span> <span class="string">&quot;io.seata.rm.datasource.sql.struct.Field&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;commodity_code&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;keyType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;NULL&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="number">12</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C201901140001&quot;</span></span><br><span class="line">                <span class="punctuation">&#125;</span><span class="punctuation">,</span> <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;@class&quot;</span><span class="punctuation">:</span> <span class="string">&quot;io.seata.rm.datasource.sql.struct.Field&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;count&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;keyType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;NULL&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="number">4</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="number">50</span></span><br><span class="line">                <span class="punctuation">&#125;</span><span class="punctuation">,</span> <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;@class&quot;</span><span class="punctuation">:</span> <span class="string">&quot;io.seata.rm.datasource.sql.struct.Field&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;amount&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;keyType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;NULL&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="number">8</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="number">100.0</span></span><br><span class="line">                <span class="punctuation">&#125;</span><span class="punctuation">]</span><span class="punctuation">]</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">]</span><span class="punctuation">]</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">]</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>insert操作，前镜像为空，后镜像为插入后数据</li>
+<li>delete操作，前镜像为删除前操作，后镜像为空</li>
+<li>update操作，前镜像为更新前操作，后镜像为更新后操作。</li>
+</ul>
+<p>前镜像和后镜像结合表元数据，就能执行基于业务的回滚操作了（表元数据通过seata执行一条查询语句从数据库中获得，包括主表和索引元数据）</p>
+
       
     </div>
 
@@ -685,103 +724,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.png">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/" class="post-title-link" itemprop="url">CMU-cs445:Undo && Redo</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-09-25 01:40:36" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-10-19 17:12:46" itemprop="dateModified" datetime="2022-10-19T17:12:46+08:00">2022-10-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>301</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="Undo-amp-Redo"><a href="#Undo-amp-Redo" class="headerlink" title="Undo &amp; Redo"></a>Undo &amp; Redo</h3><ul>
-<li>Undo:移除一个终止的事务的影响</li>
-<li>Redo：重新执行一个事务进行持久化
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E5%BC%95%E6%93%8E%E5%AE%9E%E7%8E%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -856,6 +798,103 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E5%BC%95%E6%93%8E%E5%AE%9E%E7%8E%B0/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.png">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/" class="post-title-link" itemprop="url">CMU-cs445:Undo && Redo</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-09-25 01:40:36" itemprop="dateCreated datePublished" datetime="2022-09-25T01:40:36+08:00">2022-09-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-10-19 17:12:46" itemprop="dateModified" datetime="2022-10-19T17:12:46+08:00">2022-10-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>301</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>1 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="Undo-amp-Redo"><a href="#Undo-amp-Redo" class="headerlink" title="Undo &amp; Redo"></a>Undo &amp; Redo</h3><ul>
+<li>Undo:移除一个终止的事务的影响</li>
+<li>Redo：重新执行一个事务进行持久化
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%97%A5%E5%BF%97%E5%92%8C%E5%A4%87%E4%BB%BD/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -1297,13 +1336,13 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">262k</span>
+    <span title="Symbols count total">266k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">3:58</span>
+    <span title="Reading time total">4:02</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
   </div>
