@@ -41,9 +41,9 @@
     <link href="http://haoqinx.github.io/2023/11/18/%E5%BC%84%E6%B8%85%E4%BA%8B%E5%8A%A1%E4%B8%80%E8%87%B4%E6%80%A7-md/"/>
     <id>http://haoqinx.github.io/2023/11/18/%E5%BC%84%E6%B8%85%E4%BA%8B%E5%8A%A1%E4%B8%80%E8%87%B4%E6%80%A7-md/</id>
     <published>2023-11-18T11:55:43.000Z</published>
-    <updated>2023-12-03T13:33:01.975Z</updated>
+    <updated>2023-12-03T13:34:32.261Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="请区分这些一致性"><a href="#请区分这些一致性" class="headerlink" title="请区分这些一致性"></a>请区分这些一致性</h3><ol><li>数据库ACID中的consistency：这里的一致性是指在数据库系统中的完整性约束没有被破坏，例如主键、外键、触发器、check等约束，或者用户程序中定义的一致性条件。</li><li>CAP理论的一致性：强一致性，所有节点在同一时刻具有相同的值，都是最新的数据副本。这里的一致性其实可以看作一致性模型的一种“线性一致性”。</li><li>一致性模型：在并发编程中，系统和开发这之间的一种约定，如果开发者遵循某些规则，那么执行读操作和写操作的结果是可预测的，所谓“可预测”，对应了程序逻辑的正确性。</li></ol><p>本次阐述的一致性均代指一致性模型中的一致性。</p><span id="more"></span><h3 id="常见的几个一致性模型"><a href="#常见的几个一致性模型" class="headerlink" title="常见的几个一致性模型"></a>常见的几个一致性模型</h3><p><img src="/images/image-20231203213149207.png" alt="image-20231203213149207"></p><p>如上图所示，一致性模型具有三类，绿色代表不可用，蓝色代表基本可用，黄色代表高可用。如何理解？“不可用”表示当系统为了保证CAP中的CP时，系统将变得不可用；“基本可用”表示当系统出现故障节点时仍然可用，但是客户端不能将请求发送到不可用的副本节点；“高可用”表示当系统发生了网络分区之后，在无故障节点上依然可用。下面介绍下这几个一致性。</p><ul><li><p>线性一致性（强一致性、严格一致性、原子一致性）：最强的一致性模型，当系统从表现上看就像是只有一个节点，所有操作看起来都好像是原子的，所有操作就像是在一个全局时钟下执行的原子操作。</p></li><li><p>顺序一致性：同一个客户端或进程的操作在排序后保持先后顺序不变，执行结果符合某个顺序执行的结果。</p></li><li><p>因果一致性：必须以相同的顺序看到因果相关的操作。</p><p>微信朋友圈评论就使用了因果—致性°微信的数据分布在上海、深训、香港和加拿大数据中心。加入一个用户发表了一条朋友圈,上海的朋友和香港的朋友都来评论，这时如何保持正确性和一致性呢？</p><p>（1）每条评论都有一个唯一且单调递增的数字ID,评论ID需要全局唯—；</p><p>（2）每条新评论的ID都必须比本地已经见过的全局最大的ID大,确保因果关系；</p><p>（3）广播本地看到的所有评论和新评论到其他数据中心;相同ID的评论合并排重；</p><p>例如香港的朋友发表ID为2的评论,接着系统广播上海朋友的评论到其他数据中心上，上海朋友的多条评论ID为［1，4，7］，此时如果香港的朋友再发表评论,那么ID就要为8以维持因果顺序。评论ID合并后为［1，2，4，7，8]</p></li><li><p>最终一致性：操作之间没有因果，允许使用更宽松的一致性模型。</p></li><li><p>单调读：如果客户端读到关键字x的值为v,那么该客户端对于x的任何后续的读操作必须返回v或比v更新的值，即保证客户端不会读到旧的值。</p></li><li><p>单调写：同一个客户端（或进程）的写操作在所有副本上都以同样的‖顷序执行’即保证客户端的写操作是串行的。例如,客户端先执行写操作×＝0再执行写操作x＝1,如果另—个客户端不停地读x的值，那么会读到x的值先为0再为1，不会读到1再读到0。</p></li><li><p>读你所写：当写操作完成后，在同一副本或其他副本上的读操作必须能够读到写入的值。注意，读你所写一致性必须是单个客户端（进程）。</p></li><li><p>PARM一致性：它由单调读、单调写和读你所写三个一致性模型组成，同一个客户端的多个写操作将被所有的副本按照同样的执行顺序观察到,但不同客户端发出的写操作可以以不同的执行顺序被观察到。</p></li></ul>]]></content>
+    <content type="html"><![CDATA[<h3 id="请区分这些一致性"><a href="#请区分这些一致性" class="headerlink" title="请区分这些一致性"></a>请区分这些一致性</h3><ol><li>数据库ACID中的consistency：这里的一致性是指在数据库系统中的完整性约束没有被破坏，例如主键、外键、触发器、check等约束，或者用户程序中定义的一致性条件。</li><li>CAP理论的一致性：强一致性，所有节点在同一时刻具有相同的值，都是最新的数据副本。这里的一致性其实可以看作一致性模型的一种“线性一致性”。</li><li>一致性模型：在并发编程中，系统和开发这之间的一种约定，如果开发者遵循某些规则，那么执行读操作和写操作的结果是可预测的，所谓“可预测”，对应了程序逻辑的正确性。</li></ol><p>本次阐述的一致性均代指一致性模型中的一致性。</p><span id="more"></span><h3 id="常见的几个一致性模型"><a href="#常见的几个一致性模型" class="headerlink" title="常见的几个一致性模型"></a>常见的几个一致性模型</h3><p><img src="/Users/haoqin/work/blog/source/images/image-20231203213149207.png" alt="image-20231203213149207"></p><p>如上图所示，一致性模型具有三类，绿色代表不可用，蓝色代表基本可用，黄色代表高可用。如何理解？“不可用”表示当系统为了保证CAP中的CP时，系统将变得不可用；“基本可用”表示当系统出现故障节点时仍然可用，但是客户端不能将请求发送到不可用的副本节点；“高可用”表示当系统发生了网络分区之后，在无故障节点上依然可用。下面介绍下这几个一致性。</p><ul><li><p>线性一致性（强一致性、严格一致性、原子一致性）：最强的一致性模型，当系统从表现上看就像是只有一个节点，所有操作看起来都好像是原子的，所有操作就像是在一个全局时钟下执行的原子操作。</p></li><li><p>顺序一致性：同一个客户端或进程的操作在排序后保持先后顺序不变，执行结果符合某个顺序执行的结果。</p></li><li><p>因果一致性：必须以相同的顺序看到因果相关的操作。</p><p>微信朋友圈评论就使用了因果—致性°微信的数据分布在上海、深训、香港和加拿大数据中心。加入一个用户发表了一条朋友圈,上海的朋友和香港的朋友都来评论，这时如何保持正确性和一致性呢？</p><p>（1）每条评论都有一个唯一且单调递增的数字ID,评论ID需要全局唯—；</p><p>（2）每条新评论的ID都必须比本地已经见过的全局最大的ID大,确保因果关系；</p><p>（3）广播本地看到的所有评论和新评论到其他数据中心;相同ID的评论合并排重；</p><p>例如香港的朋友发表ID为2的评论,接着系统广播上海朋友的评论到其他数据中心上，上海朋友的多条评论ID为［1，4，7］，此时如果香港的朋友再发表评论,那么ID就要为8以维持因果顺序。评论ID合并后为［1，2，4，7，8]</p></li><li><p>最终一致性：操作之间没有因果，允许使用更宽松的一致性模型。</p></li><li><p>单调读：如果客户端读到关键字x的值为v,那么该客户端对于x的任何后续的读操作必须返回v或比v更新的值，即保证客户端不会读到旧的值。</p></li><li><p>单调写：同一个客户端（或进程）的写操作在所有副本上都以同样的‖顷序执行’即保证客户端的写操作是串行的。例如,客户端先执行写操作×＝0再执行写操作x＝1,如果另—个客户端不停地读x的值，那么会读到x的值先为0再为1，不会读到1再读到0。</p></li><li><p>读你所写：当写操作完成后，在同一副本或其他副本上的读操作必须能够读到写入的值。注意，读你所写一致性必须是单个客户端（进程）。</p></li><li><p>PARM一致性：它由单调读、单调写和读你所写三个一致性模型组成，同一个客户端的多个写操作将被所有的副本按照同样的执行顺序观察到,但不同客户端发出的写操作可以以不同的执行顺序被观察到。</p></li></ul>]]></content>
     
     
     <summary type="html">&lt;h3 id=&quot;请区分这些一致性&quot;&gt;&lt;a href=&quot;#请区分这些一致性&quot; class=&quot;headerlink&quot; title=&quot;请区分这些一致性&quot;&gt;&lt;/a&gt;请区分这些一致性&lt;/h3&gt;&lt;ol&gt;
@@ -187,6 +187,29 @@
   </entry>
   
   <entry>
+    <title>CMU-cs445:存储引擎</title>
+    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%B8%80%E5%B8%83%E5%B1%80/"/>
+    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%B8%80%E5%B8%83%E5%B1%80/</id>
+    <published>2022-09-24T17:40:36.325Z</published>
+    <updated>2022-10-19T09:12:36.914Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="存储层次"><a href="#存储层次" class="headerlink" title="存储层次"></a>存储层次</h2><p><img src="/images/db-1.png"></p><ul><li>tips：在数据库存储上尽量不要使用mmap，这会带来内存&#x2F;并发等一系列问题，会成为系统瓶颈。<span id="more"></span></li></ul><h2 id="页式存储引擎"><a href="#页式存储引擎" class="headerlink" title="页式存储引擎"></a>页式存储引擎</h2><ol><li>页<br> a. 数据往往存储在以页为单位的空间中，页中包含元数据&#x2F;索引&#x2F;表数据，有的数据库将元数据和对应的表数据存放在一起，为了保证其他页丢失的情况下本页不受影响。<br> b. 通常一页不会存放不同类型的数据，例如某页都是tuple，另一页全都是索引数据.<br> c. 每个page会被赋予一个唯一的内部标识符，系统会生成属于page的ID.<br> d. indirection层会吧page id映射到某个文件的某个位置（也就是记录一个相对位置，当文件整体移动后，使用相对位置+偏移量就能重新找到page）<br> e. 物理页和操作系统页都在4kb左右，数据库的页在512b～16kb</li><li>管理页的方式<br> a. Heap File Organization<br> b. Sequential&#x2F;sorted File Organization<br> c. Hashing File Organization</li><li>Heap File管理方式<br> heap file是许多页的无序集合，有两种组织形式：链表和页目录<ul><li>链表管理就是定义两个链表，一个数据链表表示都是存满的数据页，另一个时空闲链表，用来新写入数据。</li><li>页目录管理：使用一些特殊的页记录数据页page id和他的位置的映射关系，甚至可以记录页的剩余空间的大小。</li></ul></li><li>页头（page header）<ul><li>page size</li><li>checksum</li><li>DBMS version</li><li>transaction Visibility</li><li>压缩信息</li></ul></li><li>页内tuple布局<ul><li>长度固定方法：每个tuple固定长度</li><li>slotted pages：如下图所示，为了支持可变长度的记录作出的妥协。<br> <img src="/images/db-2.png"></li></ul></li><li>tuple布局<br> <img src="/images/db-3.png"><ul><li>header：Visibility info（并发控制信息），Bit Map for NULL values.header并不需要存储数据的元数据，因为他们都是按顺序记录的。</li><li>record数据按定义时顺序写入</li></ul></li></ol><h2 id="日志式文件布局"><a href="#日志式文件布局" class="headerlink" title="日志式文件布局"></a>日志式文件布局</h2><pre><code>![](/images/db-3.png)通过追加命令的方式记录信息，有点像redis的rdb模式比较出名的有leveldb，基于leveldb，移除其mmap的rocksdb等。</code></pre>]]></content>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;存储层次&quot;&gt;&lt;a href=&quot;#存储层次&quot; class=&quot;headerlink&quot; title=&quot;存储层次&quot;&gt;&lt;/a&gt;存储层次&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;/images/db-1.png&quot;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;tips：在数据库存储上尽量不要使用mmap，这会带来内存&amp;#x2F;并发等一系列问题，会成为系统瓶颈。</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+  </entry>
+  
+  <entry>
     <title>CMU-cs445:数据存储表示</title>
     <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%BA%8C%E8%A1%A8%E7%A4%BA/"/>
     <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%BA%8C%E8%A1%A8%E7%A4%BA/</id>
@@ -209,18 +232,17 @@
   </entry>
   
   <entry>
-    <title>CMU-cs445:存储引擎</title>
-    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%B8%80%E5%B8%83%E5%B1%80/"/>
-    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E5%AD%98%E5%82%A8%E4%B8%80%E5%B8%83%E5%B1%80/</id>
+    <title>CMU-cs445:查询优化</title>
+    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/"/>
+    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/</id>
     <published>2022-09-24T17:40:36.325Z</published>
-    <updated>2022-10-19T09:12:36.914Z</updated>
+    <updated>2022-10-19T09:12:19.501Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="存储层次"><a href="#存储层次" class="headerlink" title="存储层次"></a>存储层次</h2><p><img src="/images/db-1.png"></p><ul><li>tips：在数据库存储上尽量不要使用mmap，这会带来内存&#x2F;并发等一系列问题，会成为系统瓶颈。<span id="more"></span></li></ul><h2 id="页式存储引擎"><a href="#页式存储引擎" class="headerlink" title="页式存储引擎"></a>页式存储引擎</h2><ol><li>页<br> a. 数据往往存储在以页为单位的空间中，页中包含元数据&#x2F;索引&#x2F;表数据，有的数据库将元数据和对应的表数据存放在一起，为了保证其他页丢失的情况下本页不受影响。<br> b. 通常一页不会存放不同类型的数据，例如某页都是tuple，另一页全都是索引数据.<br> c. 每个page会被赋予一个唯一的内部标识符，系统会生成属于page的ID.<br> d. indirection层会吧page id映射到某个文件的某个位置（也就是记录一个相对位置，当文件整体移动后，使用相对位置+偏移量就能重新找到page）<br> e. 物理页和操作系统页都在4kb左右，数据库的页在512b～16kb</li><li>管理页的方式<br> a. Heap File Organization<br> b. Sequential&#x2F;sorted File Organization<br> c. Hashing File Organization</li><li>Heap File管理方式<br> heap file是许多页的无序集合，有两种组织形式：链表和页目录<ul><li>链表管理就是定义两个链表，一个数据链表表示都是存满的数据页，另一个时空闲链表，用来新写入数据。</li><li>页目录管理：使用一些特殊的页记录数据页page id和他的位置的映射关系，甚至可以记录页的剩余空间的大小。</li></ul></li><li>页头（page header）<ul><li>page size</li><li>checksum</li><li>DBMS version</li><li>transaction Visibility</li><li>压缩信息</li></ul></li><li>页内tuple布局<ul><li>长度固定方法：每个tuple固定长度</li><li>slotted pages：如下图所示，为了支持可变长度的记录作出的妥协。<br> <img src="/images/db-2.png"></li></ul></li><li>tuple布局<br> <img src="/images/db-3.png"><ul><li>header：Visibility info（并发控制信息），Bit Map for NULL values.header并不需要存储数据的元数据，因为他们都是按顺序记录的。</li><li>record数据按定义时顺序写入</li></ul></li></ol><h2 id="日志式文件布局"><a href="#日志式文件布局" class="headerlink" title="日志式文件布局"></a>日志式文件布局</h2><pre><code>![](/images/db-3.png)通过追加命令的方式记录信息，有点像redis的rdb模式比较出名的有leveldb，基于leveldb，移除其mmap的rocksdb等。</code></pre>]]></content>
+    <content type="html"><![CDATA[<h3 id="查询优化"><a href="#查询优化" class="headerlink" title="查询优化"></a>查询优化</h3><ul><li><p>Heuristics&#x2F;Rules 规则&#x2F;静态触发</p><span id="more"></span><p>当查询中的某些部分满足我们的规则或者条件，我们就重写这部分.这部分需要我们去检查catelog.</p></li><li><p>Cost-based Search</p></li></ul><p>方法的思想是使用一个模型去评估一个查询的负载，然后使用多种不同的查询计划去替换这个查询，找出最小负载的方案。</p><p>下面是整个查询优化过程<br><img src="/images/db-26.png"></p><h3 id="Relational-Algebra-Equivalences-等价关系代数"><a href="#Relational-Algebra-Equivalences-等价关系代数" class="headerlink" title="Relational Algebra Equivalences(等价关系代数)"></a>Relational Algebra Equivalences(等价关系代数)</h3><ul><li>predicate pushdown:在join前尽量过滤数据。</li><li>对过滤条件进行排序，让更具有分辨性的条件排在前面。</li><li>对复杂判断进行简化</li><li>对于行存储类型数据库，projection越早越好。</li></ul><h3 id="Plan-Cost-Estimation"><a href="#Plan-Cost-Estimation" class="headerlink" title="Plan Cost Estimation"></a>Plan Cost Estimation</h3><ul><li>CPU</li><li>磁盘</li><li>内存</li><li>网络</li></ul><p>在数据库的catelog中，会维护相关信息，并且在特定时间或者遍历表的时候更跟这些信息，在执行查询之前，将这些变量带入公式，计算出最小代价的查询。在系统中，我们定义一些统计量：</p><ul><li>$N_R$: 关系R的tuple数量</li><li>V(A,R):属性A不同值的数量</li><li>Selection Cardinality：$N_R$&#x2F;V(A,R)</li><li>selectivity: 选择率，给定一个条件，计算table中符合条件的tuple数量</li><li>Range Predicate：计算范围值的比例，有点像概率计算，因此可以引入概率论中的结论,但是为了计算方便，有下面三个前提：<br><img src="/images/db-27.png"></li></ul><h5 id="直方图法"><a href="#直方图法" class="headerlink" title="直方图法"></a>直方图法</h5><p>对于数据分布不均匀的关系，在一些高端数据库中会使用直方图来跟踪数据的分布。对于数据量极大或者属性值分布很广的情况，我们会使用相同宽度的<strong>bucket</strong>来记录值的分布，但是这种情况会导致某个桶内数据分布极不均匀的情况，我们可以使用<strong>分位数</strong>来解决这个问题，即累计一定比例的数据分桶，桶的宽度可变，但是总体占比大致相当。</p><h5 id="采样法"><a href="#采样法" class="headerlink" title="采样法"></a>采样法</h5><p>对于直方图，其实是对表中数据的一种缩略表达，那么在大数据量的table中，我们可以直接采样来近似代表整个表的数据分布。当表进行大规模更新或者到达一个指定时间点，我们去更新这个采样表。</p><h3 id="Plan-Enumeration"><a href="#Plan-Enumeration" class="headerlink" title="Plan Enumeration"></a>Plan Enumeration</h3><h5 id="单关系查询计划"><a href="#单关系查询计划" class="headerlink" title="单关系查询计划"></a>单关系查询计划</h5><ul><li>循序遍历</li><li>二分查找（对于聚集索引）</li><li>索引遍历</li></ul><h5 id="多关系查询计划"><a href="#多关系查询计划" class="headerlink" title="多关系查询计划"></a>多关系查询计划</h5><ul><li><p>left-deep join tree<br><img src="/images/db-28.png"><br>在上面三个查询树中，System R不考虑后面两个，只考虑第一种。为什么采用第一种？后面两种实现过程中会有大量结果溢出到磁盘，影响性能。</p></li><li><p>步骤（System R based）<br><img src="/images/db-29.png"></p></li><li><p>步骤（遗传算法）<br><img src="/images/db-30.png"></p></li></ul><h3 id="Nested-Sub-queries"><a href="#Nested-Sub-queries" class="headerlink" title="Nested Sub-queries"></a>Nested Sub-queries</h3><p>通常情况下将where作为函数，穿入参数然后返回一组值，有两种方法进行查询优化：</p><ul><li>重写查询，去除关联性，让其扁平化</li><li>将内部查询提取出来作为单独查询来执行，将结果缓存起来，这样不用每次执行上层查询都再执行一次子查询</li></ul><p>(<a href="https://dbdb.io/">https://dbdb.io/</a>)</p>]]></content>
     
     
-    <summary type="html">&lt;h2 id=&quot;存储层次&quot;&gt;&lt;a href=&quot;#存储层次&quot; class=&quot;headerlink&quot; title=&quot;存储层次&quot;&gt;&lt;/a&gt;存储层次&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;/images/db-1.png&quot;&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;tips：在数据库存储上尽量不要使用mmap，这会带来内存&amp;#x2F;并发等一系列问题，会成为系统瓶颈。</summary>
+    <summary type="html">&lt;h3 id=&quot;查询优化&quot;&gt;&lt;a href=&quot;#查询优化&quot; class=&quot;headerlink&quot; title=&quot;查询优化&quot;&gt;&lt;/a&gt;查询优化&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Heuristics&amp;#x2F;Rules 规则&amp;#x2F;静态触发&lt;/p&gt;</summary>
     
     
     
@@ -259,28 +281,6 @@
 &lt;li&gt;线程崩溃导致进程崩溃&lt;/li&gt;
 &lt;li&gt;上下文切换开销很小&lt;/li&gt;
 &lt;li&gt;不需要管理共享内存</summary>
-    
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CMU-cs445:查询优化</title>
-    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/"/>
-    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/</id>
-    <published>2022-09-24T17:40:36.325Z</published>
-    <updated>2022-10-19T09:12:19.501Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="查询优化"><a href="#查询优化" class="headerlink" title="查询优化"></a>查询优化</h3><ul><li><p>Heuristics&#x2F;Rules 规则&#x2F;静态触发</p><span id="more"></span><p>当查询中的某些部分满足我们的规则或者条件，我们就重写这部分.这部分需要我们去检查catelog.</p></li><li><p>Cost-based Search</p></li></ul><p>方法的思想是使用一个模型去评估一个查询的负载，然后使用多种不同的查询计划去替换这个查询，找出最小负载的方案。</p><p>下面是整个查询优化过程<br><img src="/images/db-26.png"></p><h3 id="Relational-Algebra-Equivalences-等价关系代数"><a href="#Relational-Algebra-Equivalences-等价关系代数" class="headerlink" title="Relational Algebra Equivalences(等价关系代数)"></a>Relational Algebra Equivalences(等价关系代数)</h3><ul><li>predicate pushdown:在join前尽量过滤数据。</li><li>对过滤条件进行排序，让更具有分辨性的条件排在前面。</li><li>对复杂判断进行简化</li><li>对于行存储类型数据库，projection越早越好。</li></ul><h3 id="Plan-Cost-Estimation"><a href="#Plan-Cost-Estimation" class="headerlink" title="Plan Cost Estimation"></a>Plan Cost Estimation</h3><ul><li>CPU</li><li>磁盘</li><li>内存</li><li>网络</li></ul><p>在数据库的catelog中，会维护相关信息，并且在特定时间或者遍历表的时候更跟这些信息，在执行查询之前，将这些变量带入公式，计算出最小代价的查询。在系统中，我们定义一些统计量：</p><ul><li>$N_R$: 关系R的tuple数量</li><li>V(A,R):属性A不同值的数量</li><li>Selection Cardinality：$N_R$&#x2F;V(A,R)</li><li>selectivity: 选择率，给定一个条件，计算table中符合条件的tuple数量</li><li>Range Predicate：计算范围值的比例，有点像概率计算，因此可以引入概率论中的结论,但是为了计算方便，有下面三个前提：<br><img src="/images/db-27.png"></li></ul><h5 id="直方图法"><a href="#直方图法" class="headerlink" title="直方图法"></a>直方图法</h5><p>对于数据分布不均匀的关系，在一些高端数据库中会使用直方图来跟踪数据的分布。对于数据量极大或者属性值分布很广的情况，我们会使用相同宽度的<strong>bucket</strong>来记录值的分布，但是这种情况会导致某个桶内数据分布极不均匀的情况，我们可以使用<strong>分位数</strong>来解决这个问题，即累计一定比例的数据分桶，桶的宽度可变，但是总体占比大致相当。</p><h5 id="采样法"><a href="#采样法" class="headerlink" title="采样法"></a>采样法</h5><p>对于直方图，其实是对表中数据的一种缩略表达，那么在大数据量的table中，我们可以直接采样来近似代表整个表的数据分布。当表进行大规模更新或者到达一个指定时间点，我们去更新这个采样表。</p><h3 id="Plan-Enumeration"><a href="#Plan-Enumeration" class="headerlink" title="Plan Enumeration"></a>Plan Enumeration</h3><h5 id="单关系查询计划"><a href="#单关系查询计划" class="headerlink" title="单关系查询计划"></a>单关系查询计划</h5><ul><li>循序遍历</li><li>二分查找（对于聚集索引）</li><li>索引遍历</li></ul><h5 id="多关系查询计划"><a href="#多关系查询计划" class="headerlink" title="多关系查询计划"></a>多关系查询计划</h5><ul><li><p>left-deep join tree<br><img src="/images/db-28.png"><br>在上面三个查询树中，System R不考虑后面两个，只考虑第一种。为什么采用第一种？后面两种实现过程中会有大量结果溢出到磁盘，影响性能。</p></li><li><p>步骤（System R based）<br><img src="/images/db-29.png"></p></li><li><p>步骤（遗传算法）<br><img src="/images/db-30.png"></p></li></ul><h3 id="Nested-Sub-queries"><a href="#Nested-Sub-queries" class="headerlink" title="Nested Sub-queries"></a>Nested Sub-queries</h3><p>通常情况下将where作为函数，穿入参数然后返回一组值，有两种方法进行查询优化：</p><ul><li>重写查询，去除关联性，让其扁平化</li><li>将内部查询提取出来作为单独查询来执行，将结果缓存起来，这样不用每次执行上层查询都再执行一次子查询</li></ul><p>(<a href="https://dbdb.io/">https://dbdb.io/</a>)</p>]]></content>
-    
-    
-    <summary type="html">&lt;h3 id=&quot;查询优化&quot;&gt;&lt;a href=&quot;#查询优化&quot; class=&quot;headerlink&quot; title=&quot;查询优化&quot;&gt;&lt;/a&gt;查询优化&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Heuristics&amp;#x2F;Rules 规则&amp;#x2F;静态触发&lt;/p&gt;</summary>
     
     
     
