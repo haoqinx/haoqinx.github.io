@@ -382,7 +382,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9Araft%E5%92%8C%E5%A4%8D%E5%88%B6/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/muduo%E7%BD%91%E7%BB%9C%E5%BA%93%E7%B3%BB%E5%88%97-%E5%B9%B6%E5%8F%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AE%BE%E8%AE%A1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.png">
@@ -396,7 +396,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9Araft%E5%92%8C%E5%A4%8D%E5%88%B6/" class="post-title-link" itemprop="url">redis系列：raft一致性算法</a>
+            <a href="/2021/09/14/muduo%E7%BD%91%E7%BB%9C%E5%BA%93%E7%B3%BB%E5%88%97-%E5%B9%B6%E5%8F%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AE%BE%E8%AE%A1/" class="post-title-link" itemprop="url">muduo网络库：并发服务器设计</a>
         </h2>
 
         <div class="post-meta">
@@ -413,7 +413,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-10-19 17:38:03" itemprop="dateModified" datetime="2022-10-19T17:38:03+08:00">2022-10-19</time>
+                <time title="Modified: 2022-10-19 17:36:20" itemprop="dateModified" datetime="2022-10-19T17:36:20+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -421,7 +421,7 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                  <a href="/categories/muduo/" itemprop="url" rel="index"><span itemprop="name">muduo</span></a>
                 </span>
             </span>
 
@@ -431,14 +431,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>3.7k</span>
+              <span>1.4k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>3 mins.</span>
+              <span>1 mins.</span>
             </span>
 
         </div>
@@ -450,16 +450,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="Raft算法"><a href="#Raft算法" class="headerlink" title="Raft算法"></a>Raft算法</h3><ol>
-<li>基本概念<br>在任何时刻，服务器节点都处于三个状态之一：leader、follower或者candidate。</li>
-</ol>
-<ul>
-<li>follwer：不会发送任何请求，只相应leader和candidate的请求；</li>
-<li>leader：处理所有客户端请求，如果一个可会断和follower通信，那么follower会重定向给leader；</li>
-<li>candidate：用来选举新leader。<br>下图展示了上面三种状态的转换：<br><img src="/images/redis-raft-1.png">
+          <h3 id="常见并发服务器方案"><a href="#常见并发服务器方案" class="headerlink" title="常见并发服务器方案"></a>常见并发服务器方案</h3><ol>
+<li>循环式&#x2F;迭代式服务器<br><img src="/images/muduo-1.png">
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9Araft%E5%92%8C%E5%A4%8D%E5%88%B6/#more" rel="contents">
+              <a class="btn" href="/2021/09/14/muduo%E7%BD%91%E7%BB%9C%E5%BA%93%E7%B3%BB%E5%88%97-%E5%B9%B6%E5%8F%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AE%BE%E8%AE%A1/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -579,102 +574,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/muduo%E7%BD%91%E7%BB%9C%E5%BA%93%E7%B3%BB%E5%88%97-%E5%B9%B6%E5%8F%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AE%BE%E8%AE%A1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.png">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/14/muduo%E7%BD%91%E7%BB%9C%E5%BA%93%E7%B3%BB%E5%88%97-%E5%B9%B6%E5%8F%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AE%BE%E8%AE%A1/" class="post-title-link" itemprop="url">muduo网络库：并发服务器设计</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-10-19 17:36:20" itemprop="dateModified" datetime="2022-10-19T17:36:20+08:00">2022-10-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/muduo/" itemprop="url" rel="index"><span itemprop="name">muduo</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.4k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="常见并发服务器方案"><a href="#常见并发服务器方案" class="headerlink" title="常见并发服务器方案"></a>常见并发服务器方案</h3><ol>
-<li>循环式&#x2F;迭代式服务器<br><img src="/images/muduo-1.png">
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/14/muduo%E7%BD%91%E7%BB%9C%E5%BA%93%E7%B3%BB%E5%88%97-%E5%B9%B6%E5%8F%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AE%BE%E8%AE%A1/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -759,6 +658,107 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9ARDB&AOF/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9Araft%E5%92%8C%E5%A4%8D%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.png">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9Araft%E5%92%8C%E5%A4%8D%E5%88%B6/" class="post-title-link" itemprop="url">redis系列：raft一致性算法</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-14T00:00:00+08:00">2021-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-10-19 17:38:03" itemprop="dateModified" datetime="2022-10-19T17:38:03+08:00">2022-10-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>3.7k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>3 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="Raft算法"><a href="#Raft算法" class="headerlink" title="Raft算法"></a>Raft算法</h3><ol>
+<li>基本概念<br>在任何时刻，服务器节点都处于三个状态之一：leader、follower或者candidate。</li>
+</ol>
+<ul>
+<li>follwer：不会发送任何请求，只相应leader和candidate的请求；</li>
+<li>leader：处理所有客户端请求，如果一个可会断和follower通信，那么follower会重定向给leader；</li>
+<li>candidate：用来选举新leader。<br>下图展示了上面三种状态的转换：<br><img src="/images/redis-raft-1.png">
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/14/redis%E7%B3%BB%E5%88%97%EF%BC%9Araft%E5%92%8C%E5%A4%8D%E5%88%B6/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>

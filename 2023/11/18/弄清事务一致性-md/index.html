@@ -28,12 +28,12 @@
 <meta property="og:site_name" content="面向自由编程">
 <meta property="og:description" content="请区分这些一致性 数据库ACID中的consistency：这里的一致性是指在数据库系统中的完整性约束没有被破坏，例如主键、外键、触发器、check等约束，或者用户程序中定义的一致性条件。 CAP理论的一致性：强一致性，所有节点在同一时刻具有相同的值，都是最新的数据副本。这里的一致性其实可以看作一致性模型的一种“线性一致性”。 一致性模型：在并发编程中，系统和开发这之间的一种约定，如果开发者遵循某">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://haoqinx.github.io/Users/haoqin/work/blog/public/images/image-20231118211035364.png">
+<meta property="og:image" content="http://haoqinx.github.io/images/image-20231118211035364.png">
 <meta property="article:published_time" content="2023-11-18T11:55:43.000Z">
-<meta property="article:modified_time" content="2023-11-18T14:10:34.499Z">
+<meta property="article:modified_time" content="2023-12-03T13:00:32.221Z">
 <meta property="article:author" content="hqin">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://haoqinx.github.io/Users/haoqin/work/blog/public/images/image-20231118211035364.png">
+<meta name="twitter:image" content="http://haoqinx.github.io/images/image-20231118211035364.png">
 
 <link rel="canonical" href="http://haoqinx.github.io/2023/11/18/%E5%BC%84%E6%B8%85%E4%BA%8B%E5%8A%A1%E4%B8%80%E8%87%B4%E6%80%A7-md/">
 
@@ -217,10 +217,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2023-11-18 19:55:43 / Modified: 22:10:34" itemprop="dateCreated datePublished" datetime="2023-11-18T19:55:43+08:00">2023-11-18</time>
+              <time title="Created: 2023-11-18 19:55:43" itemprop="dateCreated datePublished" datetime="2023-11-18T19:55:43+08:00">2023-11-18</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-12-03 21:00:32" itemprop="dateModified" datetime="2023-12-03T21:00:32+08:00">2023-12-03</time>
+              </span>
 
           
             <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
@@ -262,7 +268,7 @@
 <p>本次阐述的一致性均代指一致性模型中的一致性。</p>
 <span id="more"></span>
 
-<h3 id="常见的几个一致性模型"><a href="#常见的几个一致性模型" class="headerlink" title="常见的几个一致性模型"></a>常见的几个一致性模型</h3><img src="/Users/haoqin/work/blog/public/images/image-20231118211035364.png" alt="image-20231118211035364" style="zoom:50%;" />
+<h3 id="常见的几个一致性模型"><a href="#常见的几个一致性模型" class="headerlink" title="常见的几个一致性模型"></a>常见的几个一致性模型</h3><img src="/images/image-20231118211035364.png" alt="image-20231118211035364" style="zoom:50%;" />
 
 <p>如上图所示，一致性模型具有三类，绿色代表不可用，蓝色代表基本可用，黄色代表高可用。如何理解？“不可用”表示当系统为了保证CAP中的CP时，系统将变得不可用；“基本可用”表示当系统出现故障节点时仍然可用，但是客户端不能将请求发送到不可用的副本节点；“高可用”表示当系统发生了网络分区之后，在无故障节点上依然可用。下面介绍下这几个一致性。</p>
 <ul>
