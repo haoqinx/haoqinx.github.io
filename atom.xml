@@ -6,7 +6,7 @@
   <link href="http://haoqinx.github.io/atom.xml" rel="self"/>
   
   <link href="http://haoqinx.github.io/"/>
-  <updated>2023-12-03T13:00:32.221Z</updated>
+  <updated>2023-12-03T13:28:08.534Z</updated>
   <id>http://haoqinx.github.io/</id>
   
   <author>
@@ -17,13 +17,33 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>分布式事务</title>
+    <link href="http://haoqinx.github.io/2023/12/03/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/"/>
+    <id>http://haoqinx.github.io/2023/12/03/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/</id>
+    <published>2023-12-03T13:05:27.000Z</published>
+    <updated>2023-12-03T13:28:08.534Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="事务基本概念"><a href="#事务基本概念" class="headerlink" title="事务基本概念"></a>事务基本概念</h3><h4 id="ACID特性"><a href="#ACID特性" class="headerlink" title="ACID特性"></a>ACID特性</h4><ol><li>原子性：构成事务的所有操作要不全部执行成功，要么全部执行失败，不可能出现部分成功，部分失败的情况</li><li>一致性：在事务执行之前和执行之后，数据完整性约束始终保持一致的状态。（比较重要，在后面章节将重点介绍）</li><li>隔离型：并发执行的两个事务之间互不干扰。</li><li>持久性：事务对数据的更改操作将会被持久化道数据库中。</li></ol><h3 id="CAP理论"><a href="#CAP理论" class="headerlink" title="CAP理论"></a>CAP理论</h3><h4 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h4><ol><li><p>一致性：实际应用中往往会将⼀份数据复制多份进⾏存储。⼀致性是指⽤户对数据的更新操作（包括新增、修改和删除），要么在所有的数据副本都执⾏成功，要么在所有的数据副本都执⾏失败。<strong>也就是说，⼀致性要求对所有数据节点的数据副本的修改是原⼦操作</strong>。所有数据节点的数据副本的数据都是最新的，从任意数据节点读取的数据都是最新的状态。</p></li><li><p>可用性：客户端访问数据的时候，能够快速得到响应。需要注意的是，系统处于可⽤性状态时，每个存储节点的数据可能会不⼀致，并不要求应⽤程序向数据库写⼊数据时能够⽴刻读取到最新的数据。也就是说，处于可⽤性状态的系统，任何事务的操作都可以得到响应的结果，不会存在超时或者响应错误的情况。</p></li><li><p>分区容忍性：如果只是将存储系统部署并运⾏在⼀个节点上，当系统出现故障时，整个系统将不可⽤。如果将存储系统部署并运⾏在多个不同的节点上，并且这些节点处于不同的⽹络中，这就形成了⽹络分区。此时，不可避免地会出现⽹络问题，导致节点之间的通信出现失败的情况，但是，此时的系统仍能对外提供服务，这就是分区容忍性。</p></li></ol><h4 id="一些组合方式"><a href="#一些组合方式" class="headerlink" title="一些组合方式"></a>一些组合方式</h4><ol><li>AP：放弃一致性，追求系统可用性和分区容忍性。实际工作中大部分分布式系统的设计方案。</li><li>CP：放弃可用性，追求系统一致性和分区容忍性。跨行转账业务中有应用。</li><li>CA：放弃分区容忍性，追求系统一致性和可用性。一般不采用，因为分区容忍性在现在的网络架构下不会被消除。</li></ol><h4 id="BASE理论"><a href="#BASE理论" class="headerlink" title="BASE理论"></a>BASE理论</h4><p>分布式系统最多只能同时满⾜CAP理论中的两个特性。在实际场景中，⼤部分分布式系统会采⽤AP⽅式，即舍弃⼀致性，保证可⽤性和分区容忍性。但是通常情况下还是要保证⼀致性，这种⼀致性与CAP中描述的⼀致性有所区别：CAP中的⼀致性要求的是强⼀致性，即任何时间读取任意节点的数据都必须⼀致，⽽这⾥的⼀致性指的是最终⼀致性，允许在⼀段时间内每个节点的数据不⼀致，但经过⼀段时间后，每个节点的数据达到⼀致。</p><h5 id="基本概念-1"><a href="#基本概念-1" class="headerlink" title="基本概念"></a>基本概念</h5><p>BASE理论是对CAP理论中AP的⼀个扩展，它通过牺牲强⼀致性来获得可⽤性。BASE理论中的Base是</p><ul><li>基本可⽤（Basically Available）</li><li>软状态（Soft State）</li><li>最终⼀致性（Eventually Consistent）</li></ul><p>当系统出现故障时，Base理论允许部分数据不可⽤，但是会保证核⼼功能可⽤；允许数据在⼀段时间内不⼀致，这种状态称为“软状态”，但是经过⼀段时间，数据最终是⼀致的。符合Base理论的事务可以称为柔性事务。</p><h4 id="一致性分类"><a href="#一致性分类" class="headerlink" title="一致性分类"></a>一致性分类</h4><p><a href="https://haoqinx.github.io/2023/11/18/%E5%BC%84%E6%B8%85%E4%BA%8B%E5%8A%A1%E4%B8%80%E8%87%B4%E6%80%A7-md/#more">参考另一篇文章</a></p><h3 id="分布式事务分类"><a href="#分布式事务分类" class="headerlink" title="分布式事务分类"></a>分布式事务分类</h3>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h3 id=&quot;事务基本概念&quot;&gt;&lt;a href=&quot;#事务基本概念&quot; class=&quot;headerlink&quot; title=&quot;事务基本概念&quot;&gt;&lt;/a&gt;事务基本概念&lt;/h3&gt;&lt;h4 id=&quot;ACID特性&quot;&gt;&lt;a href=&quot;#ACID特性&quot; class=&quot;headerlink&quot; titl</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
     <title>弄清事务一致性</title>
     <link href="http://haoqinx.github.io/2023/11/18/%E5%BC%84%E6%B8%85%E4%BA%8B%E5%8A%A1%E4%B8%80%E8%87%B4%E6%80%A7-md/"/>
     <id>http://haoqinx.github.io/2023/11/18/%E5%BC%84%E6%B8%85%E4%BA%8B%E5%8A%A1%E4%B8%80%E8%87%B4%E6%80%A7-md/</id>
     <published>2023-11-18T11:55:43.000Z</published>
-    <updated>2023-12-03T13:00:32.221Z</updated>
+    <updated>2023-12-03T13:33:01.975Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="请区分这些一致性"><a href="#请区分这些一致性" class="headerlink" title="请区分这些一致性"></a>请区分这些一致性</h3><ol><li>数据库ACID中的consistency：这里的一致性是指在数据库系统中的完整性约束没有被破坏，例如主键、外键、触发器、check等约束，或者用户程序中定义的一致性条件。</li><li>CAP理论的一致性：强一致性，所有节点在同一时刻具有相同的值，都是最新的数据副本。这里的一致性其实可以看作一致性模型的一种“线性一致性”。</li><li>一致性模型：在并发编程中，系统和开发这之间的一种约定，如果开发者遵循某些规则，那么执行读操作和写操作的结果是可预测的，所谓“可预测”，对应了程序逻辑的正确性。</li></ol><p>本次阐述的一致性均代指一致性模型中的一致性。</p><span id="more"></span><h3 id="常见的几个一致性模型"><a href="#常见的几个一致性模型" class="headerlink" title="常见的几个一致性模型"></a>常见的几个一致性模型</h3><img src="/images/image-20231118211035364.png" alt="image-20231118211035364" style="zoom:50%;" /><p>如上图所示，一致性模型具有三类，绿色代表不可用，蓝色代表基本可用，黄色代表高可用。如何理解？“不可用”表示当系统为了保证CAP中的CP时，系统将变得不可用；“基本可用”表示当系统出现故障节点时仍然可用，但是客户端不能将请求发送到不可用的副本节点；“高可用”表示当系统发生了网络分区之后，在无故障节点上依然可用。下面介绍下这几个一致性。</p><ul><li><p>线性一致性（强一致性、严格一致性、原子一致性）：最强的一致性模型，当系统从表现上看就像是只有一个节点，所有操作看起来都好像是原子的，所有操作就像是在一个全局时钟下执行的原子操作。</p></li><li><p>顺序一致性：同一个客户端或进程的操作在排序后保持先后顺序不变，执行结果符合某个顺序执行的结果。</p></li><li><p>因果一致性：必须以相同的顺序看到因果相关的操作。</p><p>微信朋友圈评论就使用了因果—致性°微信的数据分布在上海、深训、香港和加拿大数据中心。加入一个用户发表了一条朋友圈,上海的朋友和香港的朋友都来评论，这时如何保持正确性和一致性呢？</p><p>（1）每条评论都有一个唯一且单调递增的数字ID,评论ID需要全局唯—；</p><p>（2）每条新评论的ID都必须比本地已经见过的全局最大的ID大,确保因果关系；</p><p>（3）广播本地看到的所有评论和新评论到其他数据中心;相同ID的评论合并排重；</p><p>例如香港的朋友发表ID为2的评论,接着系统广播上海朋友的评论到其他数据中心上，上海朋友的多条评论ID为［1，4，7］，此时如果香港的朋友再发表评论,那么ID就要为8以维持因果顺序。评论ID合并后为［1，2，4，7，8]</p></li><li><p>最终一致性：操作之间没有因果，允许使用更宽松的一致性模型。</p></li><li><p>单调读：如果客户端读到关键字x的值为v,那么该客户端对于x的任何后续的读操作必须返回v或比v更新的值，即保证客户端不会读到旧的值。</p></li><li><p>单调写：同一个客户端（或进程）的写操作在所有副本上都以同样的‖顷序执行’即保证客户端的写操作是串行的。例如,客户端先执行写操作×＝0再执行写操作x＝1,如果另—个客户端不停地读x的值，那么会读到x的值先为0再为1，不会读到1再读到0。</p></li><li><p>读你所写：当写操作完成后，在同一副本或其他副本上的读操作必须能够读到写入的值。注意，读你所写一致性必须是单个客户端（进程）。</p></li><li><p>PARM一致性：它由单调读、单调写和读你所写三个一致性模型组成，同一个客户端的多个写操作将被所有的副本按照同样的执行顺序观察到,但不同客户端发出的写操作可以以不同的执行顺序被观察到。</p></li></ul>]]></content>
+    <content type="html"><![CDATA[<h3 id="请区分这些一致性"><a href="#请区分这些一致性" class="headerlink" title="请区分这些一致性"></a>请区分这些一致性</h3><ol><li>数据库ACID中的consistency：这里的一致性是指在数据库系统中的完整性约束没有被破坏，例如主键、外键、触发器、check等约束，或者用户程序中定义的一致性条件。</li><li>CAP理论的一致性：强一致性，所有节点在同一时刻具有相同的值，都是最新的数据副本。这里的一致性其实可以看作一致性模型的一种“线性一致性”。</li><li>一致性模型：在并发编程中，系统和开发这之间的一种约定，如果开发者遵循某些规则，那么执行读操作和写操作的结果是可预测的，所谓“可预测”，对应了程序逻辑的正确性。</li></ol><p>本次阐述的一致性均代指一致性模型中的一致性。</p><span id="more"></span><h3 id="常见的几个一致性模型"><a href="#常见的几个一致性模型" class="headerlink" title="常见的几个一致性模型"></a>常见的几个一致性模型</h3><p><img src="/images/image-20231203213149207.png" alt="image-20231203213149207"></p><p>如上图所示，一致性模型具有三类，绿色代表不可用，蓝色代表基本可用，黄色代表高可用。如何理解？“不可用”表示当系统为了保证CAP中的CP时，系统将变得不可用；“基本可用”表示当系统出现故障节点时仍然可用，但是客户端不能将请求发送到不可用的副本节点；“高可用”表示当系统发生了网络分区之后，在无故障节点上依然可用。下面介绍下这几个一致性。</p><ul><li><p>线性一致性（强一致性、严格一致性、原子一致性）：最强的一致性模型，当系统从表现上看就像是只有一个节点，所有操作看起来都好像是原子的，所有操作就像是在一个全局时钟下执行的原子操作。</p></li><li><p>顺序一致性：同一个客户端或进程的操作在排序后保持先后顺序不变，执行结果符合某个顺序执行的结果。</p></li><li><p>因果一致性：必须以相同的顺序看到因果相关的操作。</p><p>微信朋友圈评论就使用了因果—致性°微信的数据分布在上海、深训、香港和加拿大数据中心。加入一个用户发表了一条朋友圈,上海的朋友和香港的朋友都来评论，这时如何保持正确性和一致性呢？</p><p>（1）每条评论都有一个唯一且单调递增的数字ID,评论ID需要全局唯—；</p><p>（2）每条新评论的ID都必须比本地已经见过的全局最大的ID大,确保因果关系；</p><p>（3）广播本地看到的所有评论和新评论到其他数据中心;相同ID的评论合并排重；</p><p>例如香港的朋友发表ID为2的评论,接着系统广播上海朋友的评论到其他数据中心上，上海朋友的多条评论ID为［1，4，7］，此时如果香港的朋友再发表评论,那么ID就要为8以维持因果顺序。评论ID合并后为［1，2，4，7，8]</p></li><li><p>最终一致性：操作之间没有因果，允许使用更宽松的一致性模型。</p></li><li><p>单调读：如果客户端读到关键字x的值为v,那么该客户端对于x的任何后续的读操作必须返回v或比v更新的值，即保证客户端不会读到旧的值。</p></li><li><p>单调写：同一个客户端（或进程）的写操作在所有副本上都以同样的‖顷序执行’即保证客户端的写操作是串行的。例如,客户端先执行写操作×＝0再执行写操作x＝1,如果另—个客户端不停地读x的值，那么会读到x的值先为0再为1，不会读到1再读到0。</p></li><li><p>读你所写：当写操作完成后，在同一副本或其他副本上的读操作必须能够读到写入的值。注意，读你所写一致性必须是单个客户端（进程）。</p></li><li><p>PARM一致性：它由单调读、单调写和读你所写三个一致性模型组成，同一个客户端的多个写操作将被所有的副本按照同样的执行顺序观察到,但不同客户端发出的写操作可以以不同的执行顺序被观察到。</p></li></ul>]]></content>
     
     
     <summary type="html">&lt;h3 id=&quot;请区分这些一致性&quot;&gt;&lt;a href=&quot;#请区分这些一致性&quot; class=&quot;headerlink&quot; title=&quot;请区分这些一致性&quot;&gt;&lt;/a&gt;请区分这些一致性&lt;/h3&gt;&lt;ol&gt;
@@ -212,28 +232,6 @@
   </entry>
   
   <entry>
-    <title>CMU-cs445:查询优化</title>
-    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/"/>
-    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/</id>
-    <published>2022-09-24T17:40:36.325Z</published>
-    <updated>2022-10-19T09:12:19.501Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="查询优化"><a href="#查询优化" class="headerlink" title="查询优化"></a>查询优化</h3><ul><li><p>Heuristics&#x2F;Rules 规则&#x2F;静态触发</p><span id="more"></span><p>当查询中的某些部分满足我们的规则或者条件，我们就重写这部分.这部分需要我们去检查catelog.</p></li><li><p>Cost-based Search</p></li></ul><p>方法的思想是使用一个模型去评估一个查询的负载，然后使用多种不同的查询计划去替换这个查询，找出最小负载的方案。</p><p>下面是整个查询优化过程<br><img src="/images/db-26.png"></p><h3 id="Relational-Algebra-Equivalences-等价关系代数"><a href="#Relational-Algebra-Equivalences-等价关系代数" class="headerlink" title="Relational Algebra Equivalences(等价关系代数)"></a>Relational Algebra Equivalences(等价关系代数)</h3><ul><li>predicate pushdown:在join前尽量过滤数据。</li><li>对过滤条件进行排序，让更具有分辨性的条件排在前面。</li><li>对复杂判断进行简化</li><li>对于行存储类型数据库，projection越早越好。</li></ul><h3 id="Plan-Cost-Estimation"><a href="#Plan-Cost-Estimation" class="headerlink" title="Plan Cost Estimation"></a>Plan Cost Estimation</h3><ul><li>CPU</li><li>磁盘</li><li>内存</li><li>网络</li></ul><p>在数据库的catelog中，会维护相关信息，并且在特定时间或者遍历表的时候更跟这些信息，在执行查询之前，将这些变量带入公式，计算出最小代价的查询。在系统中，我们定义一些统计量：</p><ul><li>$N_R$: 关系R的tuple数量</li><li>V(A,R):属性A不同值的数量</li><li>Selection Cardinality：$N_R$&#x2F;V(A,R)</li><li>selectivity: 选择率，给定一个条件，计算table中符合条件的tuple数量</li><li>Range Predicate：计算范围值的比例，有点像概率计算，因此可以引入概率论中的结论,但是为了计算方便，有下面三个前提：<br><img src="/images/db-27.png"></li></ul><h5 id="直方图法"><a href="#直方图法" class="headerlink" title="直方图法"></a>直方图法</h5><p>对于数据分布不均匀的关系，在一些高端数据库中会使用直方图来跟踪数据的分布。对于数据量极大或者属性值分布很广的情况，我们会使用相同宽度的<strong>bucket</strong>来记录值的分布，但是这种情况会导致某个桶内数据分布极不均匀的情况，我们可以使用<strong>分位数</strong>来解决这个问题，即累计一定比例的数据分桶，桶的宽度可变，但是总体占比大致相当。</p><h5 id="采样法"><a href="#采样法" class="headerlink" title="采样法"></a>采样法</h5><p>对于直方图，其实是对表中数据的一种缩略表达，那么在大数据量的table中，我们可以直接采样来近似代表整个表的数据分布。当表进行大规模更新或者到达一个指定时间点，我们去更新这个采样表。</p><h3 id="Plan-Enumeration"><a href="#Plan-Enumeration" class="headerlink" title="Plan Enumeration"></a>Plan Enumeration</h3><h5 id="单关系查询计划"><a href="#单关系查询计划" class="headerlink" title="单关系查询计划"></a>单关系查询计划</h5><ul><li>循序遍历</li><li>二分查找（对于聚集索引）</li><li>索引遍历</li></ul><h5 id="多关系查询计划"><a href="#多关系查询计划" class="headerlink" title="多关系查询计划"></a>多关系查询计划</h5><ul><li><p>left-deep join tree<br><img src="/images/db-28.png"><br>在上面三个查询树中，System R不考虑后面两个，只考虑第一种。为什么采用第一种？后面两种实现过程中会有大量结果溢出到磁盘，影响性能。</p></li><li><p>步骤（System R based）<br><img src="/images/db-29.png"></p></li><li><p>步骤（遗传算法）<br><img src="/images/db-30.png"></p></li></ul><h3 id="Nested-Sub-queries"><a href="#Nested-Sub-queries" class="headerlink" title="Nested Sub-queries"></a>Nested Sub-queries</h3><p>通常情况下将where作为函数，穿入参数然后返回一组值，有两种方法进行查询优化：</p><ul><li>重写查询，去除关联性，让其扁平化</li><li>将内部查询提取出来作为单独查询来执行，将结果缓存起来，这样不用每次执行上层查询都再执行一次子查询</li></ul><p>(<a href="https://dbdb.io/">https://dbdb.io/</a>)</p>]]></content>
-    
-    
-    <summary type="html">&lt;h3 id=&quot;查询优化&quot;&gt;&lt;a href=&quot;#查询优化&quot; class=&quot;headerlink&quot; title=&quot;查询优化&quot;&gt;&lt;/a&gt;查询优化&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Heuristics&amp;#x2F;Rules 规则&amp;#x2F;静态触发&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-  </entry>
-  
-  <entry>
     <title>CMU-cs445:查询执行</title>
     <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C/"/>
     <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C/</id>
@@ -261,6 +259,28 @@
 &lt;li&gt;线程崩溃导致进程崩溃&lt;/li&gt;
 &lt;li&gt;上下文切换开销很小&lt;/li&gt;
 &lt;li&gt;不需要管理共享内存</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CMU-cs445:查询优化</title>
+    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/"/>
+    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9A%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/</id>
+    <published>2022-09-24T17:40:36.325Z</published>
+    <updated>2022-10-19T09:12:19.501Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="查询优化"><a href="#查询优化" class="headerlink" title="查询优化"></a>查询优化</h3><ul><li><p>Heuristics&#x2F;Rules 规则&#x2F;静态触发</p><span id="more"></span><p>当查询中的某些部分满足我们的规则或者条件，我们就重写这部分.这部分需要我们去检查catelog.</p></li><li><p>Cost-based Search</p></li></ul><p>方法的思想是使用一个模型去评估一个查询的负载，然后使用多种不同的查询计划去替换这个查询，找出最小负载的方案。</p><p>下面是整个查询优化过程<br><img src="/images/db-26.png"></p><h3 id="Relational-Algebra-Equivalences-等价关系代数"><a href="#Relational-Algebra-Equivalences-等价关系代数" class="headerlink" title="Relational Algebra Equivalences(等价关系代数)"></a>Relational Algebra Equivalences(等价关系代数)</h3><ul><li>predicate pushdown:在join前尽量过滤数据。</li><li>对过滤条件进行排序，让更具有分辨性的条件排在前面。</li><li>对复杂判断进行简化</li><li>对于行存储类型数据库，projection越早越好。</li></ul><h3 id="Plan-Cost-Estimation"><a href="#Plan-Cost-Estimation" class="headerlink" title="Plan Cost Estimation"></a>Plan Cost Estimation</h3><ul><li>CPU</li><li>磁盘</li><li>内存</li><li>网络</li></ul><p>在数据库的catelog中，会维护相关信息，并且在特定时间或者遍历表的时候更跟这些信息，在执行查询之前，将这些变量带入公式，计算出最小代价的查询。在系统中，我们定义一些统计量：</p><ul><li>$N_R$: 关系R的tuple数量</li><li>V(A,R):属性A不同值的数量</li><li>Selection Cardinality：$N_R$&#x2F;V(A,R)</li><li>selectivity: 选择率，给定一个条件，计算table中符合条件的tuple数量</li><li>Range Predicate：计算范围值的比例，有点像概率计算，因此可以引入概率论中的结论,但是为了计算方便，有下面三个前提：<br><img src="/images/db-27.png"></li></ul><h5 id="直方图法"><a href="#直方图法" class="headerlink" title="直方图法"></a>直方图法</h5><p>对于数据分布不均匀的关系，在一些高端数据库中会使用直方图来跟踪数据的分布。对于数据量极大或者属性值分布很广的情况，我们会使用相同宽度的<strong>bucket</strong>来记录值的分布，但是这种情况会导致某个桶内数据分布极不均匀的情况，我们可以使用<strong>分位数</strong>来解决这个问题，即累计一定比例的数据分桶，桶的宽度可变，但是总体占比大致相当。</p><h5 id="采样法"><a href="#采样法" class="headerlink" title="采样法"></a>采样法</h5><p>对于直方图，其实是对表中数据的一种缩略表达，那么在大数据量的table中，我们可以直接采样来近似代表整个表的数据分布。当表进行大规模更新或者到达一个指定时间点，我们去更新这个采样表。</p><h3 id="Plan-Enumeration"><a href="#Plan-Enumeration" class="headerlink" title="Plan Enumeration"></a>Plan Enumeration</h3><h5 id="单关系查询计划"><a href="#单关系查询计划" class="headerlink" title="单关系查询计划"></a>单关系查询计划</h5><ul><li>循序遍历</li><li>二分查找（对于聚集索引）</li><li>索引遍历</li></ul><h5 id="多关系查询计划"><a href="#多关系查询计划" class="headerlink" title="多关系查询计划"></a>多关系查询计划</h5><ul><li><p>left-deep join tree<br><img src="/images/db-28.png"><br>在上面三个查询树中，System R不考虑后面两个，只考虑第一种。为什么采用第一种？后面两种实现过程中会有大量结果溢出到磁盘，影响性能。</p></li><li><p>步骤（System R based）<br><img src="/images/db-29.png"></p></li><li><p>步骤（遗传算法）<br><img src="/images/db-30.png"></p></li></ul><h3 id="Nested-Sub-queries"><a href="#Nested-Sub-queries" class="headerlink" title="Nested Sub-queries"></a>Nested Sub-queries</h3><p>通常情况下将where作为函数，穿入参数然后返回一组值，有两种方法进行查询优化：</p><ul><li>重写查询，去除关联性，让其扁平化</li><li>将内部查询提取出来作为单独查询来执行，将结果缓存起来，这样不用每次执行上层查询都再执行一次子查询</li></ul><p>(<a href="https://dbdb.io/">https://dbdb.io/</a>)</p>]]></content>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;查询优化&quot;&gt;&lt;a href=&quot;#查询优化&quot; class=&quot;headerlink&quot; title=&quot;查询优化&quot;&gt;&lt;/a&gt;查询优化&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Heuristics&amp;#x2F;Rules 规则&amp;#x2F;静态触发&lt;/p&gt;</summary>
     
     
     
@@ -342,6 +362,31 @@
   </entry>
   
   <entry>
+    <title>CMU-cs445:HashTable &amp;&amp; TableIndex</title>
+    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9AHashTable&amp;TableIndex/"/>
+    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9AHashTable&amp;TableIndex/</id>
+    <published>2022-09-24T17:40:36.323Z</published>
+    <updated>2022-10-19T09:12:59.310Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="我们需要表示的数据"><a href="#我们需要表示的数据" class="headerlink" title="我们需要表示的数据"></a>我们需要表示的数据</h3><pre><code>- Internal Mata-data- Core data storage- Temporary Data Strutures- Table Indexs</code></pre><span id="more"></span><h3 id="hash-function"><a href="#hash-function" class="headerlink" title="hash function"></a>hash function</h3><pre><code>- XXHash- CityHash- FarmHash</code></pre><h3 id="哈希算法"><a href="#哈希算法" class="headerlink" title="哈希算法"></a>哈希算法</h3><pre><code>- 开放地址法- robin 开放地址- cuckoo hashing- 链表法- extendible hashing（有些复杂）- Linear hashing（循环拆分，有点难以理解）</code></pre><h3 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h3><pre><code>- 为什么叶子结点的key和value不放在一起？为了cpu缓存，能够快速定位key。</code></pre><h3 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h3><pre><code>- 部分索引- 覆盖索引- 聚集索引- Include Columns：在建立索引的时候增加一些额外信息，能够加速查询。- 函数式/表达式索引- trie index- radix tree的垂直压缩- 倒排索引</code></pre>]]></content>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;我们需要表示的数据&quot;&gt;&lt;a href=&quot;#我们需要表示的数据&quot; class=&quot;headerlink&quot; title=&quot;我们需要表示的数据&quot;&gt;&lt;/a&gt;我们需要表示的数据&lt;/h3&gt;&lt;pre&gt;&lt;code&gt;- Internal Mata-data
+- Core data storage
+- Temporary Data Strutures
+- Table Indexs
+&lt;/code&gt;&lt;/pre&gt;</summary>
+    
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+  </entry>
+  
+  <entry>
     <title>CMU-cs445:buffer pool</title>
     <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9Abuffer%E6%B1%A0/"/>
     <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9Abuffer%E6%B1%A0/</id>
@@ -382,52 +427,6 @@
   </entry>
   
   <entry>
-    <title>CMU-cs445:HashTable &amp;&amp; TableIndex</title>
-    <link href="http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9AHashTable&amp;TableIndex/"/>
-    <id>http://haoqinx.github.io/2022/09/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E5%88%97%EF%BC%9AHashTable&amp;TableIndex/</id>
-    <published>2022-09-24T17:40:36.323Z</published>
-    <updated>2022-10-19T09:12:59.310Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="我们需要表示的数据"><a href="#我们需要表示的数据" class="headerlink" title="我们需要表示的数据"></a>我们需要表示的数据</h3><pre><code>- Internal Mata-data- Core data storage- Temporary Data Strutures- Table Indexs</code></pre><span id="more"></span><h3 id="hash-function"><a href="#hash-function" class="headerlink" title="hash function"></a>hash function</h3><pre><code>- XXHash- CityHash- FarmHash</code></pre><h3 id="哈希算法"><a href="#哈希算法" class="headerlink" title="哈希算法"></a>哈希算法</h3><pre><code>- 开放地址法- robin 开放地址- cuckoo hashing- 链表法- extendible hashing（有些复杂）- Linear hashing（循环拆分，有点难以理解）</code></pre><h3 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h3><pre><code>- 为什么叶子结点的key和value不放在一起？为了cpu缓存，能够快速定位key。</code></pre><h3 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h3><pre><code>- 部分索引- 覆盖索引- 聚集索引- Include Columns：在建立索引的时候增加一些额外信息，能够加速查询。- 函数式/表达式索引- trie index- radix tree的垂直压缩- 倒排索引</code></pre>]]></content>
-    
-    
-    <summary type="html">&lt;h3 id=&quot;我们需要表示的数据&quot;&gt;&lt;a href=&quot;#我们需要表示的数据&quot; class=&quot;headerlink&quot; title=&quot;我们需要表示的数据&quot;&gt;&lt;/a&gt;我们需要表示的数据&lt;/h3&gt;&lt;pre&gt;&lt;code&gt;- Internal Mata-data
-- Core data storage
-- Temporary Data Strutures
-- Table Indexs
-&lt;/code&gt;&lt;/pre&gt;</summary>
-    
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-    <category term="数据库" scheme="http://haoqinx.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>k8s系列：基础概念</title>
-    <link href="http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/"/>
-    <id>http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</id>
-    <published>2022-02-16T16:00:00.000Z</published>
-    <updated>2022-10-20T06:18:57.917Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="borg系统"><a href="#borg系统" class="headerlink" title="borg系统"></a>borg系统</h3><p><img src="/images/k8s-1.png"></p><span id="more"></span><p>Master节点为奇数，scheduler向paxos写入数据，然后borglet监听到右自己的消息，就会执行命令。</p><h3 id="k8s架构"><a href="#k8s架构" class="headerlink" title="k8s架构"></a>k8s架构</h3><p><img src="/images/k8s-2.png"></p><p>和borg一样，但是中间加了一个apiserver层，etcd约等于paxos。</p><ul><li>scheduler：负责接收任务，选择合适的节点进行分配任务.</li><li>replication controller：负责控制node的副本数量，也就是删除或者创建pod.</li><li>apiserver：所有外界输入的入口，包括kubelet、kube proxy、replication controller、scheduler.</li><li>etcd：可信赖的分布式键值对数据库，存储k8s集群的所有重要信息，其内部结构如下图所示：<br><img src="/images/k8s-3.png"></li></ul><p>etcd使用http协议的c&#x2F;s架构，WAL是一种持久化策略，简单来说就是增量+完整备份，每一小段时间进行一个增量备份，每隔一大段时间进行完整备份，数据写入store中.</p><ul><li>kubelet：(CRI：container runtime interface)，操作docker，维护Pod的生命周期（pod运行在docker中）.</li><li>kube proxy：负责写入ipvs和iptables，执行负载均衡，实现pod和pod之间的通信.</li></ul><h3 id="其他概念"><a href="#其他概念" class="headerlink" title="其他概念"></a>其他概念</h3><ul><li>coreDNS：为集群中的SVC创建一个域名IP的对应关系解析。</li><li>dashboard：给k8s集群提供的B&#x2F;S访问体系。</li><li>ingress controller：官方只实现四层代理，ingress实现七层代理。</li><li>federation：提供一个可以跨集群中心多k8s统一管理功能。</li><li>prometheus：提供k8s集群的监控能力。</li><li>ELK：提供k8s日志统一管理平台。</li></ul>]]></content>
-    
-    
-    <summary type="html">&lt;h3 id=&quot;borg系统&quot;&gt;&lt;a href=&quot;#borg系统&quot; class=&quot;headerlink&quot; title=&quot;borg系统&quot;&gt;&lt;/a&gt;borg系统&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/images/k8s-1.png&quot;&gt;&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="K8S" scheme="http://haoqinx.github.io/categories/K8S/"/>
-    
-    
-    <category term="K8S" scheme="http://haoqinx.github.io/tags/K8S/"/>
-    
-  </entry>
-  
-  <entry>
     <title>k8s系列：pod</title>
     <link href="http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9Apod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E5%92%8C%E6%8E%A7%E5%88%B6%E5%99%A8/"/>
     <id>http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9Apod%E8%B5%84%E6%BA%90%E6%B8%85%E5%8D%95%E5%92%8C%E6%8E%A7%E5%88%B6%E5%99%A8/</id>
@@ -442,6 +441,27 @@
 &lt;li&gt;分类&lt;ul&gt;
 &lt;li&gt;自主式pod（不是被控制器管理的pod）&lt;/li&gt;
 &lt;li&gt;控制器管理的pod</summary>
+    
+    
+    
+    <category term="K8S" scheme="http://haoqinx.github.io/categories/K8S/"/>
+    
+    
+    <category term="K8S" scheme="http://haoqinx.github.io/tags/K8S/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>k8s系列：基础概念</title>
+    <link href="http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/"/>
+    <id>http://haoqinx.github.io/2022/02/17/k8s%E7%B3%BB%E5%88%97%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</id>
+    <published>2022-02-16T16:00:00.000Z</published>
+    <updated>2022-10-20T06:18:57.917Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="borg系统"><a href="#borg系统" class="headerlink" title="borg系统"></a>borg系统</h3><p><img src="/images/k8s-1.png"></p><span id="more"></span><p>Master节点为奇数，scheduler向paxos写入数据，然后borglet监听到右自己的消息，就会执行命令。</p><h3 id="k8s架构"><a href="#k8s架构" class="headerlink" title="k8s架构"></a>k8s架构</h3><p><img src="/images/k8s-2.png"></p><p>和borg一样，但是中间加了一个apiserver层，etcd约等于paxos。</p><ul><li>scheduler：负责接收任务，选择合适的节点进行分配任务.</li><li>replication controller：负责控制node的副本数量，也就是删除或者创建pod.</li><li>apiserver：所有外界输入的入口，包括kubelet、kube proxy、replication controller、scheduler.</li><li>etcd：可信赖的分布式键值对数据库，存储k8s集群的所有重要信息，其内部结构如下图所示：<br><img src="/images/k8s-3.png"></li></ul><p>etcd使用http协议的c&#x2F;s架构，WAL是一种持久化策略，简单来说就是增量+完整备份，每一小段时间进行一个增量备份，每隔一大段时间进行完整备份，数据写入store中.</p><ul><li>kubelet：(CRI：container runtime interface)，操作docker，维护Pod的生命周期（pod运行在docker中）.</li><li>kube proxy：负责写入ipvs和iptables，执行负载均衡，实现pod和pod之间的通信.</li></ul><h3 id="其他概念"><a href="#其他概念" class="headerlink" title="其他概念"></a>其他概念</h3><ul><li>coreDNS：为集群中的SVC创建一个域名IP的对应关系解析。</li><li>dashboard：给k8s集群提供的B&#x2F;S访问体系。</li><li>ingress controller：官方只实现四层代理，ingress实现七层代理。</li><li>federation：提供一个可以跨集群中心多k8s统一管理功能。</li><li>prometheus：提供k8s集群的监控能力。</li><li>ELK：提供k8s日志统一管理平台。</li></ul>]]></content>
+    
+    
+    <summary type="html">&lt;h3 id=&quot;borg系统&quot;&gt;&lt;a href=&quot;#borg系统&quot; class=&quot;headerlink&quot; title=&quot;borg系统&quot;&gt;&lt;/a&gt;borg系统&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/images/k8s-1.png&quot;&gt;&lt;/p&gt;</summary>
     
     
     
@@ -494,29 +514,6 @@
 &lt;li&gt;先把整个文件分割成若干个小文件，比如1000个小文件&lt;/li&gt;
 &lt;li&gt;找出每个文件中出现次数最多的记录（输出1000个记录+频次）&lt;/li&gt;
 &lt;li&gt;从每个文件出现最多的记录找出全局出现次数最多的记录（合并记录，找出最多的频次）</summary>
-    
-    
-    
-    <category term="场景设计" scheme="http://haoqinx.github.io/categories/%E5%9C%BA%E6%99%AF%E8%AE%BE%E8%AE%A1/"/>
-    
-    
-    <category term="场景设计" scheme="http://haoqinx.github.io/tags/%E5%9C%BA%E6%99%AF%E8%AE%BE%E8%AE%A1/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>服务器瓶颈</title>
-    <link href="http://haoqinx.github.io/2022/02/01/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%93%B6%E9%A2%88%E5%9C%A8%E5%93%AA%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3/"/>
-    <id>http://haoqinx.github.io/2022/02/01/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%93%B6%E9%A2%88%E5%9C%A8%E5%93%AA%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3/</id>
-    <published>2022-01-31T16:00:00.000Z</published>
-    <updated>2022-10-19T09:09:54.838Z</updated>
-    
-    <content type="html"><![CDATA[<p>服务器瓶颈</p><h3 id="瓶颈"><a href="#瓶颈" class="headerlink" title="瓶颈"></a>瓶颈</h3><ol><li><p>cpu<br>测试的时候cpu占用率70% 多核情况下占用60%</p><span id="more"></span></li><li><p>带宽<br>网络占用率</p></li><li><p>磁盘</p></li></ol><p>如果存在LOG日志写磁盘或者从磁盘映射文件，可能会存在瓶颈</p><ol start="4"><li>处理流程</li></ol><p>epoll ET&#x2F;LT模式</p><ol start="5"><li>进程能打开最大文件描述符数</li></ol><p>同时能打开65535个文件，但是一般情况下不可能并行打开这么多</p><ol start="6"><li>数据库连接等等软件层面的限制</li></ol><h3 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h3><ol><li><p>cpu<br>尽量利用多核优势，或者利用分布式进行负载均衡</p></li><li><p>带宽<br>增加网络带宽</p></li><li><p>磁盘<br>使用SSD，尽量减少磁盘IO次数</p></li><li><p>处理流程<br>各有优势，使用LT不容易犯错，使用ET模式更高效</p></li><li><p>进程能打开最大文件描述符</p></li></ol><p>这个一般不是瓶颈，在长链接情况下可能会成为瓶颈。</p>]]></content>
-    
-    
-    <summary type="html">&lt;p&gt;服务器瓶颈&lt;/p&gt;
-&lt;h3 id=&quot;瓶颈&quot;&gt;&lt;a href=&quot;#瓶颈&quot; class=&quot;headerlink&quot; title=&quot;瓶颈&quot;&gt;&lt;/a&gt;瓶颈&lt;/h3&gt;&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;cpu&lt;br&gt;测试的时候cpu占用率70% 多核情况下占用60%&lt;/p&gt;</summary>
     
     
     
