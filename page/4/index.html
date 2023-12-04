@@ -575,7 +575,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E9%94%81/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E7%B4%A2%E5%BC%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.png">
@@ -589,7 +589,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E9%94%81/" class="post-title-link" itemprop="url">InnoDB系列：锁</a>
+            <a href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E7%B4%A2%E5%BC%95/" class="post-title-link" itemprop="url">InnoDB系列：索引</a>
         </h2>
 
         <div class="post-meta">
@@ -606,7 +606,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-10-20 14:18:36" itemprop="dateModified" datetime="2022-10-20T14:18:36+08:00">2022-10-20</time>
+                <time title="Modified: 2022-10-20 14:18:30" itemprop="dateModified" datetime="2022-10-20T14:18:30+08:00">2022-10-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -624,7 +624,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>308</span>
+              <span>888</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -643,10 +643,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="lock-和-latch的不同"><a href="#lock-和-latch的不同" class="headerlink" title="lock 和 latch的不同"></a>lock 和 latch的不同</h2><p><img src="/images/mysql-6.png"></p>
+          <h2 id="B-树索引"><a href="#B-树索引" class="headerlink" title="B+树索引"></a>B+树索引</h2><ul>
+<li>聚集索引</li>
+<li>非聚集索引（辅助索引）</li>
+<li>Cardinality<ul>
+<li>获取B+树叶子节点的数据，记为A<br>  随机获得B+树索引中8个叶子节点。统计每个页不同记录的个数，分别记为P1,P2…P8<br>  计算cardinality &#x3D; (P1+P2+…P8)A&#x2F;8
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E9%94%81/#more" rel="contents">
+              <a class="btn" href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E7%B4%A2%E5%BC%95/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -765,7 +769,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E7%B4%A2%E5%BC%95/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E9%94%81/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.png">
@@ -779,7 +783,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E7%B4%A2%E5%BC%95/" class="post-title-link" itemprop="url">InnoDB系列：索引</a>
+            <a href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E9%94%81/" class="post-title-link" itemprop="url">InnoDB系列：锁</a>
         </h2>
 
         <div class="post-meta">
@@ -796,7 +800,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-10-20 14:18:30" itemprop="dateModified" datetime="2022-10-20T14:18:30+08:00">2022-10-20</time>
+                <time title="Modified: 2022-10-20 14:18:36" itemprop="dateModified" datetime="2022-10-20T14:18:36+08:00">2022-10-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -814,7 +818,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>888</span>
+              <span>308</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -833,14 +837,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="B-树索引"><a href="#B-树索引" class="headerlink" title="B+树索引"></a>B+树索引</h2><ul>
-<li>聚集索引</li>
-<li>非聚集索引（辅助索引）</li>
-<li>Cardinality<ul>
-<li>获取B+树叶子节点的数据，记为A<br>  随机获得B+树索引中8个叶子节点。统计每个页不同记录的个数，分别记为P1,P2…P8<br>  计算cardinality &#x3D; (P1+P2+…P8)A&#x2F;8
+          <h2 id="lock-和-latch的不同"><a href="#lock-和-latch的不同" class="headerlink" title="lock 和 latch的不同"></a>lock 和 latch的不同</h2><p><img src="/images/mysql-6.png"></p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E7%B4%A2%E5%BC%95/#more" rel="contents">
+              <a class="btn" href="/2021/11/06/innodb%E7%B3%BB%E5%88%97%EF%BC%9A%E9%94%81/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -1055,7 +1055,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9Aselect,poll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9Aepoll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.png">
@@ -1069,7 +1069,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9Aselect,poll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">Linux网络编程：select/poll内核原理</a>
+            <a href="/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9Aepoll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">Linux网络编程：epoll内核原理</a>
         </h2>
 
         <div class="post-meta">
@@ -1086,7 +1086,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-10-19 17:35:51" itemprop="dateModified" datetime="2022-10-19T17:35:51+08:00">2022-10-19</time>
+                <time title="Modified: 2022-10-19 17:35:47" itemprop="dateModified" datetime="2022-10-19T17:35:47+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1104,14 +1104,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>3.2k</span>
+              <span>4.2k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>3 mins.</span>
+              <span>4 mins.</span>
             </span>
 
         </div>
@@ -1123,10 +1123,12 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="select函数"><a href="#select函数" class="headerlink" title="select函数"></a>select函数</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">select</span><span class="params">(<span class="type">int</span> maxfdp,fd_set *readfds,fd_set *writefds,fd_set *errorfds,<span class="keyword">struct</span> timeval *timeout)</span>;</span><br></pre></td></tr></table></figure>
+          <h3 id="内核函数poll-wait"><a href="#内核函数poll-wait" class="headerlink" title="内核函数poll_wait"></a>内核函数poll_wait</h3><ul>
+<li>作用：把当前进程加入到驱动里自定义的等待队列上 </li>
+<li>当驱动事件就绪后，就可以在驱动里自定义的等待队列上唤醒调用poll的进程
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9Aselect,poll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86/#more" rel="contents">
+              <a class="btn" href="/2021/09/14/Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%EF%BC%9Aepoll%E5%86%85%E6%A0%B8%E5%8E%9F%E7%90%86/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -1279,13 +1281,13 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">266k</span>
+    <span title="Symbols count total">268k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">4:02</span>
+    <span title="Reading time total">4:03</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
   </div>
