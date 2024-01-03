@@ -190,7 +190,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Alambda/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atype-Alias,noexcept,override,final/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.png">
@@ -204,7 +204,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Alambda/" class="post-title-link" itemprop="url">c++11新特性：lambda</a>
+            <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atype-Alias,noexcept,override,final/" class="post-title-link" itemprop="url">c++11新特性：type-Alias,noexcept,override,final</a>
         </h2>
 
         <div class="post-meta">
@@ -221,7 +221,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-10-19 17:15:31" itemprop="dateModified" datetime="2022-10-19T17:15:31+08:00">2022-10-19</time>
+                <time title="Modified: 2022-10-19 17:15:45" itemprop="dateModified" datetime="2022-10-19T17:15:45+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -239,7 +239,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>2.6k</span>
+              <span>2.7k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -258,10 +258,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="基本形式"><a href="#基本形式" class="headerlink" title="基本形式"></a>基本形式</h3><p>lambda表达式的本质就是重载了()运算符的类，这种类通常被称为functor，即行为像函数的类。因此lambda表达式对象其实就是一个匿名的functor。<br>一个标准的lambda表达式包括：捕获列表、参数列表、mutable指示符、尾置返回类型（-&gt;返回类型）和函数体：</p>
+          <h3 id="Type-Alias"><a href="#Type-Alias" class="headerlink" title="Type Alias"></a>Type Alias</h3><p>在c++11之前定义函数指针需要typedef或者#define：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span><span class="params">(*func)</span><span class="params">(<span class="type">int</span>,<span class="type">int</span>)</span></span>;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Alambda/#more" rel="contents">
+              <a class="btn" href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atype-Alias,noexcept,override,final/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -285,7 +286,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atemplate-template-parameter/">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9A%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/001.png">
@@ -299,7 +300,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atemplate-template-parameter/" class="post-title-link" itemprop="url">c++11新特性：template-template-parameter</a>
+            <a href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9A%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/" class="post-title-link" itemprop="url">c++11新特性：右值引用</a>
         </h2>
 
         <div class="post-meta">
@@ -316,7 +317,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-10-19 17:15:38" itemprop="dateModified" datetime="2022-10-19T17:15:38+08:00">2022-10-19</time>
+                <time title="Modified: 2022-10-19 17:14:53" itemprop="dateModified" datetime="2022-10-19T17:14:53+08:00">2022-10-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -334,14 +335,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>790</span>
+              <span>4.2k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
+              <span>4 mins.</span>
             </span>
 
         </div>
@@ -353,10 +354,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><p>模板参数就是模板的参数，它是一种模板技巧，形式如下：</p>
+          <h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>是一种新的引用类型。可以来帮助解决unnecessary copying问题和实现完美转发。<br>当右手边是一个右值，那么左手边可以steal resources from right side，而不需要重新分配内存。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9Atemplate-template-parameter/#more" rel="contents">
+              <a class="btn" href="/2021/09/04/c++11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9A%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -954,6 +955,102 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Alist/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/001.png">
+      <meta itemprop="name" content="hqin">
+      <meta itemprop="description" content="星海横流 岁月成碑">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="面向自由编程">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Alist/" class="post-title-link" itemprop="url">c++STL系列：list</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-10-19 17:17:50" itemprop="dateModified" datetime="2022-10-19T17:17:50+08:00">2022-10-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>854</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>1 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="G2-9源码结构"><a href="#G2-9源码结构" class="headerlink" title="G2.9源码结构"></a>G2.9源码结构</h3><p><img src="/images/list-1.png"></p>
+<p>在低版本下list的结构比较简单，就是一个list模板类和一个node模板类。总体的数据结构事宜个环形双向链表。<br>begin()指向头结点，end()指向尾节点。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Alist/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Amap/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1026,101 +1123,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Amap/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://haoqinx.github.io/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Aset/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/001.png">
-      <meta itemprop="name" content="hqin">
-      <meta itemprop="description" content="星海横流 岁月成碑">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="面向自由编程">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Aset/" class="post-title-link" itemprop="url">c++STL系列：set & multiset</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-09-02 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-02T00:00:00+08:00">2021-09-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-10-19 17:18:01" itemprop="dateModified" datetime="2022-10-19T17:18:01+08:00">2022-10-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/STL/" itemprop="url" rel="index"><span itemprop="name">STL</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>304</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p>set&#x2F;multiset以红黑树为底层结构，因此元素在插入过程中自动排序。<br><img src="/images/rbtree.png"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/02/c++STL%E7%B3%BB%E5%88%97%EF%BC%9Aset/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -1263,7 +1265,7 @@
 <div class="copyright">
   
   &copy; 2019 – 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -1279,7 +1281,7 @@
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">4:03</span>
+    <span title="Reading time total">4:04</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
   </div>
